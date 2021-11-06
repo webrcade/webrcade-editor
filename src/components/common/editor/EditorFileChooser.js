@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 
 export default function EditorFileChooser(props) {
   const fileInput = React.useRef();
-  const { label, sx, ...other } = props;
+  const { label, sx, onChange, ...other } = props;
 
   return (
     <Box
@@ -24,6 +24,7 @@ export default function EditorFileChooser(props) {
         ref={fileInput}
         type="file"
         style={{ display: 'none' }}
+        onChange={onChange}
       />
     </Box>
   );

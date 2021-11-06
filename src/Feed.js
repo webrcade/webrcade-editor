@@ -98,26 +98,41 @@ const assignIds = (feed) => {
   return feed;
 }
 
+const loadFeed = (feedJson) => {
+  const feed = new Feed(feedJson, 0, false);
+  const result = feed.getClonedFeed();
+  assignIds(result);
+  return result;
+}
+
 const loadFeedFromUrl = (url) => {
   return new Promise((resolve, reject) => {
-    let feedJson = null;
     new FetchAppData(url).fetch()
       .then(response => response.json())
       .then(json => {
-        feedJson = json;
-        const feed = new Feed(feedJson, 0);
-        feedJson = feed.getClonedFeed();
-        assignIds(feedJson);
-        return feed;
-      })
-      .then(feed => {
-        console.log(feedJson);
-        resolve([feed, feedJson]);
+        resolve(loadFeed(json))
       })
       .catch(msg => {
-        // TODO: Error with ...
         reject('Error reading feed: ' + msg);
       })
+  });
+}
+
+const loadFeedFromFile = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = (e) => {
+      reject('Error reading feed: ' + e);
+    }
+    reader.onload = (e) => {
+      try {
+        const json = JSON.parse(e.target.result);
+        resolve(loadFeed(json))
+      } catch (e) {
+        reject('Error reading feed: ' + e);
+      }
+    }
+    reader.readAsText(file)  
   });
 }
 
@@ -128,5 +143,6 @@ export {
   getCategory,
   getItem,
   replaceItem,
+  loadFeedFromFile,
   loadFeedFromUrl 
 };
