@@ -12,7 +12,21 @@ import Toolbar from '@mui/material/Toolbar';
 import UploadIcon from '@mui/icons-material/Upload';
 
 import * as WrcCommon from '@webrcade/app-common'
+import * as Feed from '../Feed';
 import { Global, GlobalHolder } from '../Global';
+
+function downloadFeed() {
+  const feed = Feed.exportFeed(Global.getFeed());
+  var element = document.createElement('a');
+  element.setAttribute('href', 
+    'data:text/json;charset=utf-8,' + 
+    encodeURIComponent(JSON.stringify(feed, null, 2)));
+  element.setAttribute('download', feed.title + '.json');
+  element.style.display = 'none';
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+}
 
 function EditorDrawer(props) {
   const { drawerWidth } = props;
@@ -43,7 +57,9 @@ function EditorDrawer(props) {
       </List>
       <Divider />
       <List>
-        <ListItem button key="download">
+        <ListItem button key="download" onClick={() => {
+          downloadFeed();
+        }}>
           <ListItemIcon><DownloadIcon /></ListItemIcon>
           <ListItemText primary="Download" />
         </ListItem>

@@ -136,10 +136,28 @@ const loadFeedFromFile = (file) => {
   });
 }
 
+const exportFeed = (feed) => {
+  const result = Util.cloneObject(feed);
+  delete result.id;
+  if (result.categories) {
+    result.categories.forEach((cat, i) => {
+      delete cat.id;
+      if (cat.items) {
+        cat.items.forEach((item, i) => {
+          delete item.id;
+        }); 
+      }
+    });
+  }
+   
+  return result;
+}
+
 export { 
   addId,
   addItemsToCategory,
   deleteItemsFromCategory,
+  exportFeed,
   getCategory,
   getItem,
   replaceItem,
