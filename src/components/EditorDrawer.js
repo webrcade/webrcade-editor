@@ -58,6 +58,7 @@ function EditorDrawer(props) {
       <Divider />
       <List>
         <ListItem button key="download" onClick={() => {
+          setOpen(false);
           downloadFeed();
         }}>
           <ListItemIcon><DownloadIcon /></ListItemIcon>

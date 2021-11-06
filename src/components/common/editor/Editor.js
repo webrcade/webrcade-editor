@@ -32,6 +32,7 @@ export default function Editor(props) {
     setTabValue,
     tabValue,
     onShow,
+    onSubmit,
     onOk,
     height,
     maxWidth
@@ -69,7 +70,7 @@ export default function Editor(props) {
         onClose={() => { setOpen(false) }}
         fullWidth
         onSubmit= {(event) => {
-          //onOkHandler();
+          if (onSubmit) onSubmit(event);
           event.preventDefault();
         }}
         {...mwidth}

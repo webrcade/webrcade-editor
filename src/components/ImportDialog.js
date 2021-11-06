@@ -39,6 +39,17 @@ export default function ImportDialog(props) {
   const urlTab = 0;
   const fileTab = 1;
 
+  const onOk = () => {
+    if (tabValue === urlTab) {
+      if (!validator.checkMinLength(urlTab, "feedUrl", feedUrl)) {
+        forceUpdate();
+        return false;
+      }
+      importFeed(feedUrl);
+    }
+    return true;
+  }
+
   return (
     <Editor
       title="Import Feed"
@@ -52,15 +63,11 @@ export default function ImportDialog(props) {
         validator.reset();
         forceUpdate();
       }}
-      onOk={() => {
-        if (tabValue === urlTab) {
-          if (!validator.checkMinLength(urlTab, "feedUrl", feedUrl)) {
-            forceUpdate();
-            return false;
-          }
-          importFeed(feedUrl);
-        }
-        return true;
+      onOk={onOk}
+      onSubmit={() =>{
+        if (tabValue === urlTab && onOk()) { 
+          setOpen(false);
+        }        
       }}
       tabs={[
         <Tab label="URL" key={urlTab} />,
