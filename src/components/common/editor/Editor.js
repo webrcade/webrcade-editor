@@ -43,7 +43,6 @@ export default function Editor(props) {
 
   React.useEffect(() => {
     if (isOpen && !prevOpen) {
-      console.log('RESET!')
       // Reset here
       setTabValue(0);
       if (onShow) onShow();  

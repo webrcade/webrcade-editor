@@ -11,13 +11,19 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import TableCell from '@mui/material/TableCell';
 import Tooltip from '@mui/material/Tooltip';
 
+import { 
+  AppRegistry
+} from '@webrcade/app-common'
+
 import { Global } from '../Global';
+import * as Util from '../Util';
+import * as Feed from '../Feed';
 import ImageLabel from './common/ImageLabel';
 import ToolbarVerticalDivider from './common/ToolbarVerticalDivider';
-import { Router } from '@mui/icons-material';
 
 function createData(id, title, type, thumbSrc, lastUpdate) {
   return {
+    id,
     title,
     type,
     lastUpdate,
@@ -25,8 +31,24 @@ function createData(id, title, type, thumbSrc, lastUpdate) {
   };
 }
 
+function cloneSelectedItems(feed, category, selection) {
+  const cloned = [];
+  selection.forEach((id) => {
+    const item = Feed.getItem(feed, category, id);
+    if (item) {
+      const clone = Util.cloneObject(item);
+      if (clone) {
+        Feed.addId(clone);
+        cloned.push(clone);        
+      }      
+    }
+  });
+  return cloned;
+}
+
 export default function ItemsTable(props) {
   const { feed, category } = props;
+  const [clipboard, setClipboard] = React.useState([]);
 
   const rows = [];
 
@@ -37,7 +59,11 @@ export default function ItemsTable(props) {
         if (cat.items) {
           cat.items.forEach((item) => {
             rows.push(createData(
-              item.id, item.title, item.type, item.thumbnail, ''
+              item.id, 
+              item.title, 
+              AppRegistry.instance.getShortNameForType(item.type), 
+              item.thumbnail, 
+              ''
             ))
           });      
         }
@@ -47,6 +73,7 @@ export default function ItemsTable(props) {
 
   return (
     <CommonTable
+      resetKey={category}
       defaultSortColumn="title"
       headCells={
         [
@@ -54,6 +81,7 @@ export default function ItemsTable(props) {
             id: 'title',
             numeric: false,
             disablePadding: true,
+            sortable: true,
             label: 'Title'
           },
           {
@@ -72,12 +100,14 @@ export default function ItemsTable(props) {
             id: 'type',
             numeric: false,
             disablePadding: false,
+            sortable: true,
             label: 'Application'
           },
           {
             id: 'lastUpdate',
             numeric: false,
             disablePadding: false,
+            sortable: true,
             label: 'Updated'
           }
         ]
@@ -99,10 +129,9 @@ export default function ItemsTable(props) {
               <Tooltip title="Edit">
                 <IconButton onClick={(e) => {
                   e.stopPropagation(); 
-                  Global.editItem({
-                    title: row.title,
-                    thumbnail: row.thumbSrc
-                  });}}
+                  Global.editItem(
+                    Feed.getItem(feed, category, row.id)
+                  );}}
                 >
                   <EditIcon />
                 </IconButton>
@@ -115,12 +144,14 @@ export default function ItemsTable(props) {
                 </IconButton>
               </Tooltip>
             </TableCell>
-            <TableCell style={{ width: '0%', whiteSpace: 'noWrap' }}>{row.type}</TableCell>
+            <TableCell style={{ width: '0%', whiteSpace: 'noWrap' }}>
+              {row.type}
+            </TableCell>
             <TableCell>{row.lastUpdate}</TableCell>
           </>
         );
       }}
-      renderToolbarItems={(selection) => {
+      renderToolbarItems={(selection, selected) => {      
         return (
           <>
             <Tooltip title="Add">
@@ -131,21 +162,39 @@ export default function ItemsTable(props) {
             <ToolbarVerticalDivider />
             <Tooltip title="Cut">
               <div>
-                <IconButton disabled={!selection}>
+                <IconButton 
+                  disabled={!selection}
+                  onClick={() => {
+                    setClipboard(cloneSelectedItems(feed, category, selected));
+                    Feed.deleteItemsFromCategory(feed, category, selected);
+                    Global.setFeed({...feed});
+                  }}  
+                >
                   <ContentCutIcon />
                 </IconButton>
               </div>
             </Tooltip>
             <Tooltip title="Copy">
               <div>
-                <IconButton disabled={!selection}>              
+                <IconButton 
+                  disabled={!selection} 
+                  onClick={() => {
+                     setClipboard(cloneSelectedItems(feed, category, selected));
+                  }}
+                >              
                   <ContentCopyIcon />
                 </IconButton>
               </div>
             </Tooltip>
             <Tooltip title="Paste">
               <div>
-                <IconButton disabled={!selection}>
+                <IconButton 
+                  disabled={clipboard.length === 0}
+                  onClick={() => {
+                    Feed.addItemsToCategory(feed, category, clipboard);
+                    Global.setFeed({...feed});
+                  }}
+                >
                   <ContentPasteIcon />
                 </IconButton>
               </div>
@@ -153,7 +202,12 @@ export default function ItemsTable(props) {
             <ToolbarVerticalDivider />
             <Tooltip title="Delete">
               <div>
-                <IconButton disabled={!selection}>
+                <IconButton disabled={!selection} 
+                  onClick={() => {
+                    Feed.deleteItemsFromCategory(feed, category, selected);
+                    Global.setFeed({...feed});
+                  }}
+                >
                   <DeleteIcon />
                 </IconButton>
               </div>

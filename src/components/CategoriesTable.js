@@ -40,6 +40,7 @@ export default function CategoriesTable(props) {
             id: 'title',
             numeric: false,
             disablePadding: true,
+            sortable: true,
             label: 'Title'
           },
           {
@@ -52,6 +53,7 @@ export default function CategoriesTable(props) {
             id: 'lastUpdate',
             numeric: false,
             disablePadding: false,
+            sortable: true,
             label: 'Updated'
           }
         ]

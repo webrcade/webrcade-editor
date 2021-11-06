@@ -34,6 +34,9 @@ function App(props) {
   }, []);
 
   GlobalHolder.setFeed = setFeed;
+  GlobalHolder.getFeed = () => {
+    return feed;
+  }
   
   return (
     <>

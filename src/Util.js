@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
+import * as WrcCommon from '@webrcade/app-common'
 
 export function cloneObject(obj) {
-  return JSON.parse(JSON.stringify(obj));
+  return WrcCommon.cloneObject(obj);
 }
 
 export function asString(str) {

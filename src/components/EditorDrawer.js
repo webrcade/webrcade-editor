@@ -15,9 +15,9 @@ import * as WrcCommon from '@webrcade/app-common'
 import { Global, GlobalHolder } from '../Global';
 
 function EditorDrawer(props) {
-  const {drawerWidth} = props;
+  const { drawerWidth } = props;
 
-  const [open, setOpen] = React.useState(false);  
+  const [open, setOpen] = React.useState(false);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -34,7 +34,8 @@ function EditorDrawer(props) {
           <ListItemText primary="New" />
         </ListItem>
         <ListItem button key="import" onClick={(e) => {
-           Global.openImportDialog(true);
+          setOpen(false);
+          Global.openImportDialog(true);
         }}>
           <ListItemIcon><UploadIcon /></ListItemIcon>
           <ListItemText primary="Import" />
@@ -50,10 +51,11 @@ function EditorDrawer(props) {
       <Divider />
       <List>
         <ListItem button key="test" onClick={() => {
+          setOpen(false);
           const url = (
             WrcCommon.isDev() ?
               WrcCommon.config.getLocalUrl() :
-              (WrcCommon.isStaging() ? 
+              (WrcCommon.isStaging() ?
                 "https://webrcade.github.io/webrcade-staging" :
                 "https://play.webrcade.com"));
           window.open(url, "_webrcade")

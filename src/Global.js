@@ -1,3 +1,5 @@
+import * as Util from './Util';
+
 class Holder {
   static instance = Holder.instance || new Holder();
 
@@ -5,8 +7,9 @@ class Holder {
   setBusyScreenMessage = null;
   setEditItem = null;
   setFeed = null;
-  setFeedCategoryId = null;
-  setMessage = null;  
+  getFeed = null;
+  getFeedCategoryId = null;
+  setMessage = null;
   setMessageSeverity = null;
   toggleDrawer = null;
   setItemEditorOpen = null;
@@ -30,7 +33,7 @@ const Global = {
   },
   editItem: (item) => {
     Global.openItemEditor(true);
-    GlobalHolder.setEditItem(item);
+    GlobalHolder.setEditItem(Util.cloneObject(item));
   },
   toggleDrawer: () => {
     GlobalHolder.toggleDrawer();
@@ -41,10 +44,13 @@ const Global = {
   },
   setFeed: (feed) => {
     GlobalHolder.setFeed(feed);
-    GlobalHolder.setFeedCategoryId( 
-      feed.categories && feed.categories.length > 0 ?
-        feed.categories[0].id : "");
-  }  
+  },
+  getFeed: () => {
+    return GlobalHolder.getFeed();
+  },
+  getFeedCategoryId: () => {
+    return GlobalHolder.getFeedCategoryId();
+  }
 }
 
 export { Global, GlobalHolder };

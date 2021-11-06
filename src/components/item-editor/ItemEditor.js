@@ -1,13 +1,14 @@
 import * as React from 'react';
 import Tab from '@mui/material/Tab';
 
+import * as Feed from '../../Feed';
 import * as Util from '../../Util';
 import Editor from '../common/editor/Editor';
 import EditorImage from '../common/editor/EditorImage';
 import EditorTabPanel from '../common/editor/EditorTabPanel';
 import EditorTextField from '../common/editor/EditorTextField';
 import EditorValidator from '../common/editor/EditorValidator'
-import { GlobalHolder } from '../../Global';
+import { GlobalHolder, Global } from '../../Global';
 
 // import * as deepmerge from 'deepmerge'
 // const a = {a: 'a', b: { b1: 'b1', b2: 'b2'}}
@@ -33,7 +34,7 @@ export default function ItemEditor(props) {
 
   return (
     <Editor
-      title="Item Editor"
+      title="Edit Item"
       isOpen={isOpen}
       setOpen={setOpen}
       tabValue={tabValue}
@@ -45,13 +46,22 @@ export default function ItemEditor(props) {
       }}
       onOk={() => {
         console.log(item);
+
         validator.checkMinLength(genTab, "title", item.title);
-        const minTab = validator.getMinInvalidTab();
+        const minTab = validator.getMinInvalidTab();                
         if (minTab >= 0) {
           setTabValue(minTab);
           forceUpdate();
           return false;
         }
+
+        // Get the feed
+        const feed = Global.getFeed();
+        // Replace the item in the feed
+        Feed.replaceItem(feed, Global.getFeedCategoryId(), item.id, item);
+        // Update the feed (shallow clone)
+        Global.setFeed({...feed});
+        
         return true;
       }}
       tabs={[
@@ -85,7 +95,7 @@ export default function ItemEditor(props) {
                 sx={{ width: '50ch' }}
                 label="Description" 
                 multiline
-                rows={3} 
+                rows={4} 
                 onChange={(e) => { setItem({ ...item, description: e.target.value }) }}
                 value={Util.asString(item.description)}
               />
@@ -117,7 +127,10 @@ export default function ItemEditor(props) {
               />
             </div>
             <div>
-              <EditorImage src={item.background} />
+              <EditorImage sx={{
+                objectFit: 'cover',
+                height: '100%'
+              }} src={item.background} />
             </div>
           </EditorTabPanel>
         </>

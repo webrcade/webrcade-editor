@@ -2,7 +2,6 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import Paper from '@mui/material/Paper';
-import PropTypes from 'prop-types';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -16,12 +15,19 @@ import Typography from '@mui/material/Typography';
 
 import { alpha } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
+import * as Util from '../../Util';
 
 function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
+  let aVal = a[orderBy];
+  let bVal = b[orderBy];
+  if (aVal.toUpperCase && bVal.toUpperCase) {
+    aVal = aVal.toUpperCase();
+    bVal = bVal.toUpperCase();
+  }
+  if (bVal < aVal) {
     return -1;
   }
-  if (b[orderBy] > a[orderBy]) {
+  if (bVal > aVal) {
     return 1;
   }
   return 0;
@@ -33,23 +39,9 @@ function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-// This method is created for cross-browser compatibility, if you don't
-// need to support IE11, you can use Array.prototype.sort() directly
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
-
 function EnhancedTableHead(props) {
-  const { headCells, onSelectAllClick, order, orderBy, 
-    numSelected, rowCount, onRequestSort } =props;
+  const { headCells, onSelectAllClick, order, orderBy,
+    numSelected, rowCount, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -70,20 +62,25 @@ function EnhancedTableHead(props) {
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
+            sortDirection={
+              headCell.sortable && orderBy === headCell.id ? order : false
+            }
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
+            {headCell.sortable ? (
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={orderBy === headCell.id ? order : 'asc'}
+                onClick={createSortHandler(headCell.id)}
+              >
+                {headCell.label}
+                {orderBy === headCell.id ? (
+                  <Box component="span" sx={visuallyHidden}>
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                  </Box>
+                ) : null}
+              </TableSortLabel>
+            ) : <>{headCell.label}</>
+            }
           </TableCell>
         ))}
       </TableRow>
@@ -91,17 +88,9 @@ function EnhancedTableHead(props) {
   );
 }
 
-EnhancedTableHead.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-  orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
-};
-
 const EnhancedTableToolbar = (props) => {
-  const { numSelected, renderToolbarItems } = props;
+  const { selected, renderToolbarItems } = props;
+  const numSelected = selected.length;
   const selection = numSelected > 0;
 
   return (
@@ -115,7 +104,7 @@ const EnhancedTableToolbar = (props) => {
         }),
       }}
     >
-      {renderToolbarItems(selection)}
+      {renderToolbarItems(selection, selected)}
       {selection ? (
         <Typography
           sx={{ flex: '1 1 100%' }}
@@ -140,18 +129,71 @@ const EnhancedTableToolbar = (props) => {
   );
 };
 
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-};
+
+function performSort(arr, comparator, firstSort) {
+  let rows  = arr;
+  if (firstSort) {
+    rows = rows.sort(getComparator('asc', firstSort));
+  }
+  return rows.sort(comparator);
+}
 
 export default function CommonTable(props) {
-  const { defaultSortColumn, headCells, rows, renderToolbarItems, renderRow } = props;
+  const {
+    defaultSortColumn,
+    headCells,
+    rows,
+    renderToolbarItems,
+    renderRow,
+    resetKey
+  } = props;
+
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState(defaultSortColumn);
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  
+
+  const prevRows = Util.usePrevious(rows);
+  const prevResetKey = Util.usePrevious(resetKey);
+
+  // Reset page (if applicable)
+  React.useEffect(() => {
+    // See if reset key changed
+    if (prevResetKey !== resetKey) {
+      setPage(0);
+    } else {
+      // See if we are passed last page
+      if (rowsPerPage * page >= rows.length) {
+        // Determine last page
+        if (rows.length === 0) {
+          setPage(0);
+        } else {
+          setPage(((rows.length - 1) / rowsPerPage) | 0);
+        }
+      }
+    }
+  }, [resetKey, prevResetKey, rowsPerPage, rows, page, setPage]);
+
+  // Reset the selected items when rows change
+  React.useEffect(() => {
+    if (rows !== prevRows) {
+      if (selected.length > 0) {
+        const selMap = {};
+        selected.forEach((e) => {
+          selMap[e] = true;
+        });
+        const newSel = [];
+        rows.forEach((r) => {
+          if (selMap[r.id]) {
+            newSel.push(r.id);
+          }
+        });
+        setSelected(newSel);
+      }
+    }
+  }, [rows, selected, prevRows, setPage]);
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -160,7 +202,7 @@ export default function CommonTable(props) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.title);
+      const newSelecteds = rows.map((n) => n.id);
       setSelected(newSelecteds);
       return;
     }
@@ -201,9 +243,9 @@ export default function CommonTable(props) {
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar 
-            numSelected={selected.length} 
-            renderToolbarItems={renderToolbarItems}
+        <EnhancedTableToolbar
+          selected={selected}
+          renderToolbarItems={renderToolbarItems}
         />
         <TableContainer>
           <Table
@@ -211,7 +253,7 @@ export default function CommonTable(props) {
             size={'medium'}
           >
             <EnhancedTableHead
-              headCells={headCells}              
+              headCells={headCells}
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
@@ -220,20 +262,19 @@ export default function CommonTable(props) {
               rowCount={rows.length}
             />
             <TableBody>
-              {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-                 rows.slice().sort(getComparator(order, orderBy)) */}
-              {stableSort(rows, getComparator(order, orderBy))
+              {performSort(rows, getComparator(order, orderBy), 
+                  (defaultSortColumn === orderBy ? null : defaultSortColumn))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.title);                  
+                  const isItemSelected = isSelected(row.id);
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.title)}
+                      onClick={(event) => handleClick(event, row.id)}
                       role="checkbox"
                       tabIndex={-1}
-                      key={row.title}
+                      key={row.id}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">

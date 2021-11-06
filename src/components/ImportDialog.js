@@ -45,7 +45,6 @@ export default function ImportDialog(props) {
           Global.openBusyScreen(true, "Importing feed...");
           Feed.loadFeedFromUrl(feedUrl)
             .then((feed) => {
-              console.log(feed);
               Global.setFeed(feed[1]);
             })
             .catch(msg => {
