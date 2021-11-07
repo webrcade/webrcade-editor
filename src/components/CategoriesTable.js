@@ -3,6 +3,7 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import CommonTable from './common/CommonTable';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -10,37 +11,38 @@ import IconButton from '@mui/material/IconButton';
 import TableCell from '@mui/material/TableCell';
 import Tooltip from '@mui/material/Tooltip';
 
+import { Global } from '../Global';
+import * as Feed from '../Feed';
 import ImageLabel from './common/ImageLabel';
 import ToolbarVerticalDivider from './common/ToolbarVerticalDivider';
 
-function createData(id, title, thumbSrc, lastUpdate) {
+function createData(id, title, thumbSrc, itemCount) {
   return {
-    id, title, thumbSrc, lastUpdate
+    id, title, thumbSrc, itemCount
   };
 }
 
 export default function CategoriesTable(props) {
-  const { feed } = props;
+  const { feed, showCategoryItems } = props;
 
   const rows = [];
   if (feed.categories) {
     feed.categories.forEach((c) => {
       rows.push(createData(
-        c.id, c.title, c.thumbnail, ''
+        c.id, c.title, c.thumbnail, c.items ? c.items.length : 0
       ))
     });
   }
 
   return (
     <CommonTable
-      defaultSortColumn="title"
+      resetKey={feed.id}
       headCells={
         [
           {
             id: 'title',
             numeric: false,
             disablePadding: true,
-            sortable: true,
             label: 'Title'
           },
           {
@@ -50,11 +52,10 @@ export default function CategoriesTable(props) {
             label: 'Edit'
           },
           {
-            id: 'lastUpdate',
+            id: 'items',
             numeric: false,
             disablePadding: false,
-            sortable: true,
-            label: 'Updated'
+            label: 'Item Count'
           }
         ]
       }
@@ -78,11 +79,20 @@ export default function CategoriesTable(props) {
                 </IconButton>
               </Tooltip>
             </TableCell>
-            <TableCell>{row.lastUpdate}</TableCell>
+            <TableCell>
+              <Button 
+                variant="text"
+                onClick={(e) => { 
+                  e.stopPropagation();
+                  showCategoryItems(row.id) }}
+              >
+                {row.itemCount}
+              </Button>              
+            </TableCell>
           </>
         );
       }}
-      renderToolbarItems={(selection) => {
+      renderToolbarItems={(selection, selected) => {
         return (
           <>
             <Tooltip title="Add">
@@ -93,14 +103,26 @@ export default function CategoriesTable(props) {
             <ToolbarVerticalDivider />
             <Tooltip title="Move Up">
               <div>
-                <IconButton disabled={!selection}>              
+                <IconButton 
+                  disabled={!selection}
+                  onClick={() => {
+                    Feed.moveCategoriesUp(feed, selected);
+                    Global.setFeed({...feed});
+                  }}
+                >              
                   <ArrowUpwardIcon />
                 </IconButton>
               </div>
             </Tooltip>            
             <Tooltip title="Move Down">
               <div>
-                <IconButton disabled={!selection}>              
+                <IconButton 
+                  disabled={!selection}
+                  onClick={() => {
+                    Feed.moveCategoriesDown(feed, selected);
+                    Global.setFeed({...feed});
+                  }}
+                >              
                   <ArrowDownwardIcon />
                 </IconButton>
               </div>
@@ -108,7 +130,13 @@ export default function CategoriesTable(props) {
             <ToolbarVerticalDivider />
             <Tooltip title="Duplicate">
               <div>
-                <IconButton disabled={!selection}>              
+                <IconButton 
+                  disabled={!selection}
+                  onClick={() => {
+                    Feed.cloneCategories(feed, selected);
+                    Global.setFeed({...feed});
+                  }}
+                >              
                   <ContentCopyIcon />
                 </IconButton>
               </div>
@@ -116,7 +144,13 @@ export default function CategoriesTable(props) {
             <ToolbarVerticalDivider />
             <Tooltip title="Delete">
               <div>
-                <IconButton disabled={!selection}>
+                <IconButton 
+                  disabled={!selection}
+                  onClick={() => {
+                    Feed.deleteCategories(feed, selected);
+                    Global.setFeed({...feed});
+                  }}                  
+                >
                   <DeleteIcon />
                 </IconButton>
               </div>

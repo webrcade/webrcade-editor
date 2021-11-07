@@ -12,6 +12,7 @@ export default function ItemsTab(props) {
 
   const prevFeed = Util.usePrevious(feed);
 
+  GlobalHolder.setFeedCategoryId = setCategory;
   GlobalHolder.getFeedCategoryId = () => {
     return category;
   } 

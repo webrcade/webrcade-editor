@@ -43,7 +43,11 @@ function EditorDrawer(props) {
     <div>
       <Toolbar />
       <List>
-        <ListItem button key="new">
+        <ListItem button key="new" onClick={() => {
+          setOpen(false);
+          const feed = Feed.newFeed();
+          Global.setFeed({...feed});
+        }}>
           <ListItemIcon><NoteAddIcon /></ListItemIcon>
           <ListItemText primary="New" />
         </ListItem>

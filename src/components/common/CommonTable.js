@@ -131,7 +131,7 @@ const EnhancedTableToolbar = (props) => {
 
 
 function performSort(arr, comparator, firstSort) {
-  let rows  = arr;
+  let rows = arr;
   if (firstSort) {
     rows = rows.sort(getComparator('asc', firstSort));
   }
@@ -262,8 +262,9 @@ export default function CommonTable(props) {
               rowCount={rows.length}
             />
             <TableBody>
-              {performSort(rows, getComparator(order, orderBy), 
-                  (defaultSortColumn === orderBy ? null : defaultSortColumn))
+              {(orderBy ?
+                performSort(rows, getComparator(order, orderBy),
+                  (defaultSortColumn === orderBy ? null : defaultSortColumn)) : rows)
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.id);

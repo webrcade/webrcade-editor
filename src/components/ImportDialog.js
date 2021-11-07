@@ -90,7 +90,6 @@ export default function ImportDialog(props) {
               label="Select feed file..."
               onChange={
                 (e) => {
-                  console.log(e.target.files);
                   const files = e.target.files;
                   if (files.length > 0) {
                     const f = files[0];

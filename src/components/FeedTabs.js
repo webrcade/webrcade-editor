@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 
+import { Global } from '../Global';
 import CategoriesTable from './CategoriesTable';
 import ItemsTab from './ItemsTab';
 
@@ -30,6 +31,11 @@ function FeedTabs(props) {
     setTabValue(newValue);
   };
 
+  const showCategoryItems = (catId) => {
+    Global.setFeedCategoryId(catId);
+    setTabValue(1);    
+  };
+
   return (
     <>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -39,7 +45,10 @@ function FeedTabs(props) {
         </Tabs>
       </Box>
       <TabPanel value={tabValue} index={0}>
-        <CategoriesTable feed={feed} />
+        <CategoriesTable 
+          feed={feed} 
+          showCategoryItems={showCategoryItems}
+        />
       </TabPanel>
       <TabPanel value={tabValue} index={1}>
         <ItemsTab feed={feed} />

@@ -8,6 +8,7 @@ class Holder {
   setEditItem = null;
   setFeed = null;
   getFeed = null;
+  setFeedCategoryId = null;
   getFeedCategoryId = null;
   setMessage = null;
   setMessageSeverity = null;
@@ -50,6 +51,9 @@ const Global = {
   },
   getFeedCategoryId: () => {
     return GlobalHolder.getFeedCategoryId();
+  },
+  setFeedCategoryId: (id) => {
+    return GlobalHolder.setFeedCategoryId(id);
   }
 }
 

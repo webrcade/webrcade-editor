@@ -45,8 +45,6 @@ export default function ItemEditor(props) {
         forceUpdate();
       }}
       onOk={() => {
-        console.log(item);
-
         validator.checkMinLength(genTab, "title", item.title);
         const minTab = validator.getMinInvalidTab();                
         if (minTab >= 0) {

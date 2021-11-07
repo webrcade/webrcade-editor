@@ -1,21 +1,29 @@
-import { 
+import {
   uuidv4,
   Feed,
-  FetchAppData,  
+  FetchAppData,
 } from '@webrcade/app-common'
 
 import * as Util from './Util';
 
+const createIdsMap = (ids) => {
+  const idsMap = {};
+  ids.forEach((id) => {
+    idsMap[id] = true;
+  });
+  return idsMap;
+}
+
 const findItem = (feed, categoryId, itemId) => {
   if (feed.categories) {
-    for(let i = 0; i < feed.categories.length; i++) {
+    for (let i = 0; i < feed.categories.length; i++) {
       const cat = feed.categories[i];
       if (cat.items && categoryId === cat.id) {
-        for(let j = 0; j < cat.items.length; j++) {
+        for (let j = 0; j < cat.items.length; j++) {
           const item = cat.items[j];
           if (itemId === item.id) {
             return [i, j];
-          }          
+          }
         }
       }
     }
@@ -54,26 +62,35 @@ const addItemsToCategory = (feed, categoryId, items) => {
       cat.items.push(clone);
     });
   }
-} 
+}
 
 const deleteItemsFromCategory = (feed, categoryId, itemIds) => {
-  const itemIdsMap = {};
-  itemIds.forEach((id) => {
-    itemIdsMap[id] = true;
-  });
+  const itemIdsMap = createIdsMap(itemIds);
   const cat = getCategory(feed, categoryId);
   if (cat && cat.items) {
     for (let i = cat.items.length - 1; i >= 0; i--) {
-      if(itemIdsMap[cat.items[i].id]) {
+      if (itemIdsMap[cat.items[i].id]) {
         cat.items.splice(i, 1);
       }
     }
   }
-} 
+}
+
+const deleteCategories = (feed, categoryIds) => {
+  const categoryIdsMap = createIdsMap(categoryIds);
+  if (feed.categories) {
+    const cats = feed.categories;
+    for (let i = cats.length - 1; i >= 0; i--) {
+      if (categoryIdsMap[cats[i].id]) {
+        cats.splice(i, 1);
+      }
+    }
+  }
+}
 
 const getCategory = (feed, categoryId) => {
   if (feed.categories) {
-    for(let i = 0; i < feed.categories.length; i++) {
+    for (let i = 0; i < feed.categories.length; i++) {
       const cat = feed.categories[i];
       if (categoryId === cat.id) {
         return cat;
@@ -81,6 +98,58 @@ const getCategory = (feed, categoryId) => {
     }
   }
   return null;
+}
+
+const cloneCategories = (feed, categoryIds) => {
+  const categoryIdsMap = createIdsMap(categoryIds);
+  if (feed.categories) {
+    const cats = feed.categories;
+    for (let i = cats.length - 1; i >= 0; i--) {
+      if (categoryIdsMap[cats[i].id]) {
+        const clone = Util.cloneObject(cats[i]);
+        clone.id = uuidv4();
+        cats.splice(i + 1, 0, clone);
+      }
+    }
+  }
+}
+
+const moveCategoriesUp = (feed, categoryIds) => {
+  const categoryIdsMap = createIdsMap(categoryIds);
+  let allowed = false;
+  if (feed.categories) {
+    const cats = feed.categories;
+    for (let i = 0; i < cats.length; i++) {
+      if (categoryIdsMap[cats[i].id]) {
+        if (allowed) {
+          let prev = cats[i - 1];
+          cats[i - 1] = cats[i];
+          cats[i] = prev;
+        }
+      } else {
+        allowed = true;
+      }
+    }
+  }
+}
+
+const moveCategoriesDown = (feed, categoryIds) => {
+  const categoryIdsMap = createIdsMap(categoryIds);
+  let allowed = false;
+  if (feed.categories) {
+    const cats = feed.categories;
+    for (let i = cats.length - 1; i >= 0; i--) {
+      if (categoryIdsMap[cats[i].id]) {
+        if (allowed) {
+          let prev = cats[i + 1];
+          cats[i + 1] = cats[i];
+          cats[i] = prev;
+        }
+      } else {
+        allowed = true;
+      }
+    }
+  }
 }
 
 const assignIds = (feed) => {
@@ -91,7 +160,7 @@ const assignIds = (feed) => {
       if (cat.items) {
         cat.items.forEach((item, i) => {
           item.id = uuidv4();
-        }); 
+        });
       }
     });
   }
@@ -132,7 +201,7 @@ const loadFeedFromFile = (file) => {
         reject('Error reading feed: ' + e);
       }
     }
-    reader.readAsText(file)  
+    reader.readAsText(file)
   });
 }
 
@@ -145,22 +214,45 @@ const exportFeed = (feed) => {
       if (cat.items) {
         cat.items.forEach((item, i) => {
           delete item.id;
-        }); 
+        });
       }
     });
   }
-   
+
   return result;
 }
 
-export { 
+const newFeed = () => {
+  const feed = {
+    title: "Example Feed",
+    categories: [{
+      title: "Example Category",
+      items: [{
+        "title": "Freedoom II",
+        "type": "doom",
+        "props": {
+          "game": "freedoom2"
+        }
+      }]
+    }]
+  };
+
+  return assignIds(feed);
+}
+
+export {
   addId,
   addItemsToCategory,
+  cloneCategories,
+  deleteCategories,
   deleteItemsFromCategory,
   exportFeed,
   getCategory,
   getItem,
+  moveCategoriesUp,
+  moveCategoriesDown,
+  newFeed,
   replaceItem,
   loadFeedFromFile,
-  loadFeedFromUrl 
+  loadFeedFromUrl
 };
