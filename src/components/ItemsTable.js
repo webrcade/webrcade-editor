@@ -21,13 +21,14 @@ import * as Feed from '../Feed';
 import ImageLabel from './common/ImageLabel';
 import ToolbarVerticalDivider from './common/ToolbarVerticalDivider';
 
-function createData(id, title, type, thumbSrc, lastUpdate) {
+function createData(id, title, type, typeName, thumbSrc, lastUpdate) {
   return {
     id,
     title,
     type,
+    typeName,
+    thumbSrc,
     lastUpdate,
-    thumbSrc
   };
 }
 
@@ -61,6 +62,7 @@ export default function ItemsTable(props) {
             rows.push(createData(
               item.id, 
               item.title, 
+              item.type,
               AppRegistry.instance.getShortNameForType(item.type), 
               item.thumbnail, 
               ''
@@ -82,26 +84,30 @@ export default function ItemsTable(props) {
             numeric: false,
             disablePadding: true,
             sortable: true,
-            label: 'Title'
+            label: 'Title',
+            width: '1%'
           },
           {
             id: 'edit',
             numeric: false,
             disablePadding: false,
-            label: 'Edit'
+            label: 'Edit',
+            width: '1%'
           },
           {
             id: 'play',
             numeric: false,
             disablePadding: false,
-            label: 'Play'
+            label: 'Play',
+            width: '1%'
           },
           {
-            id: 'type',
+            id: 'typeName',
             numeric: false,
             disablePadding: false,
             sortable: true,
-            label: 'Application'
+            label: 'Application',
+            width: '1%'
           },
           {
             id: 'lastUpdate',
@@ -123,7 +129,15 @@ export default function ItemsTable(props) {
               padding="checkbox"
               style={{ width: '0%', whiteSpace: 'noWrap' }}
             >
-              <ImageLabel label={row.title} imageSrc={row.thumbSrc} />
+              <ImageLabel 
+                label={row.title} 
+                imageSrc={
+                  AppRegistry.instance.getThumbnailForType(row.type, row.thumbSrc)
+                }
+                defaultImageSrc={
+                  AppRegistry.instance.getDefaultThumbnailForType(row.type)
+                }
+              />
             </TableCell>
             <TableCell style={{ width: '0%', whiteSpace: 'noWrap' }}>
               <Tooltip title="Edit">
@@ -145,7 +159,7 @@ export default function ItemsTable(props) {
               </Tooltip>
             </TableCell>
             <TableCell style={{ width: '0%', whiteSpace: 'noWrap' }}>
-              {row.type}
+              {row.typeName}
             </TableCell>
             <TableCell>{row.lastUpdate}</TableCell>
           </>

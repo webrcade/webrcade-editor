@@ -65,6 +65,10 @@ function EnhancedTableHead(props) {
             sortDirection={
               headCell.sortable && orderBy === headCell.id ? order : false
             }
+            style={{
+              width: headCell.width,
+              whiteSpace: 'noWrap'
+            }}
           >
             {headCell.sortable ? (
               <TableSortLabel

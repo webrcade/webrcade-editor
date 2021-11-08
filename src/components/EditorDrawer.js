@@ -18,8 +18,8 @@ import { Global, GlobalHolder } from '../Global';
 function downloadFeed() {
   const feed = Feed.exportFeed(Global.getFeed());
   var element = document.createElement('a');
-  element.setAttribute('href', 
-    'data:text/json;charset=utf-8,' + 
+  element.setAttribute('href',
+    'data:text/json;charset=utf-8,' +
     encodeURIComponent(JSON.stringify(feed, null, 2)));
   element.setAttribute('download', feed.title + '.json');
   element.style.display = 'none';
@@ -46,11 +46,14 @@ function EditorDrawer(props) {
         <ListItem button key="new" onClick={() => {
           setOpen(false);
           const feed = Feed.newFeed();
-          Global.setFeed({...feed});
+          Global.setFeed({ ...feed });
         }}>
           <ListItemIcon><NoteAddIcon /></ListItemIcon>
           <ListItemText primary="New" />
         </ListItem>
+      </List>
+      <Divider />
+      <List>
         <ListItem button key="import" onClick={(e) => {
           setOpen(false);
           Global.openImportDialog(true);
@@ -58,9 +61,6 @@ function EditorDrawer(props) {
           <ListItemIcon><UploadIcon /></ListItemIcon>
           <ListItemText primary="Import" />
         </ListItem>
-      </List>
-      <Divider />
-      <List>
         <ListItem button key="download" onClick={() => {
           setOpen(false);
           downloadFeed();

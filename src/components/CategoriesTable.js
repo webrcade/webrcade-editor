@@ -11,10 +11,12 @@ import IconButton from '@mui/material/IconButton';
 import TableCell from '@mui/material/TableCell';
 import Tooltip from '@mui/material/Tooltip';
 
+import * as WrcCommon from '@webrcade/app-common'
 import { Global } from '../Global';
 import * as Feed from '../Feed';
 import ImageLabel from './common/ImageLabel';
 import ToolbarVerticalDivider from './common/ToolbarVerticalDivider';
+
 
 function createData(id, title, thumbSrc, itemCount) {
   return {
@@ -43,13 +45,15 @@ export default function CategoriesTable(props) {
             id: 'title',
             numeric: false,
             disablePadding: true,
-            label: 'Title'
+            label: 'Title',
+            width: '1%'
           },
           {
             id: 'edit',
             numeric: false,
             disablePadding: false,
-            label: 'Edit'
+            label: 'Edit',
+            width: '1%'
           },
           {
             id: 'items',
@@ -70,24 +74,35 @@ export default function CategoriesTable(props) {
               padding="checkbox"
               style={{ width: '0%', whiteSpace: 'noWrap' }}
             >
-              <ImageLabel label={row.title} imageSrc={row.thumbSrc} />
+              <ImageLabel
+                label={row.title}
+                imageSrc={row.thumbSrc}
+                defaultImageSrc={WrcCommon.CategoryThumbImage}
+              />
             </TableCell>
             <TableCell style={{ width: '0%', whiteSpace: 'noWrap' }}>
               <Tooltip title="Edit">
-                <IconButton onClick={(e) => {e.stopPropagation();}}>
+                <IconButton onClick={(e) => {
+                  e.stopPropagation();
+                  Global.editCategory(
+                    Feed.getCategory(feed, row.id)
+                  );
+                }}
+                >
                   <EditIcon />
                 </IconButton>
               </Tooltip>
             </TableCell>
             <TableCell>
-              <Button 
+              <Button
                 variant="text"
-                onClick={(e) => { 
+                onClick={(e) => {
                   e.stopPropagation();
-                  showCategoryItems(row.id) }}
+                  showCategoryItems(row.id)
+                }}
               >
                 {row.itemCount}
-              </Button>              
+              </Button>
             </TableCell>
           </>
         );
@@ -103,58 +118,58 @@ export default function CategoriesTable(props) {
             <ToolbarVerticalDivider />
             <Tooltip title="Move Up">
               <div>
-                <IconButton 
+                <IconButton
                   disabled={!selection}
                   onClick={() => {
                     Feed.moveCategoriesUp(feed, selected);
-                    Global.setFeed({...feed});
+                    Global.setFeed({ ...feed });
                   }}
-                >              
+                >
                   <ArrowUpwardIcon />
                 </IconButton>
               </div>
-            </Tooltip>            
+            </Tooltip>
             <Tooltip title="Move Down">
               <div>
-                <IconButton 
+                <IconButton
                   disabled={!selection}
                   onClick={() => {
                     Feed.moveCategoriesDown(feed, selected);
-                    Global.setFeed({...feed});
+                    Global.setFeed({ ...feed });
                   }}
-                >              
+                >
                   <ArrowDownwardIcon />
                 </IconButton>
               </div>
-            </Tooltip>            
+            </Tooltip>
             <ToolbarVerticalDivider />
             <Tooltip title="Duplicate">
               <div>
-                <IconButton 
+                <IconButton
                   disabled={!selection}
                   onClick={() => {
                     Feed.cloneCategories(feed, selected);
-                    Global.setFeed({...feed});
+                    Global.setFeed({ ...feed });
                   }}
-                >              
+                >
                   <ContentCopyIcon />
                 </IconButton>
               </div>
-            </Tooltip>            
+            </Tooltip>
             <ToolbarVerticalDivider />
             <Tooltip title="Delete">
               <div>
-                <IconButton 
+                <IconButton
                   disabled={!selection}
                   onClick={() => {
                     Feed.deleteCategories(feed, selected);
-                    Global.setFeed({...feed});
-                  }}                  
+                    Global.setFeed({ ...feed });
+                  }}
                 >
                   <DeleteIcon />
                 </IconButton>
               </div>
-            </Tooltip>            
+            </Tooltip>
             <ToolbarVerticalDivider />
           </>
         );

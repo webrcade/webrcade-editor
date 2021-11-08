@@ -1,20 +1,30 @@
-import Avatar from '@mui/material/Avatar';
+import CommonImage from '../CommonImage'
 
 export default function EditorImage(props) {
-  const { sx, ...other } = props;
+  const { 
+    sx, 
+    src, 
+    defaultSrc, 
+    requiredSize, 
+    errorCallback,
+    ...other 
+  } = props;
   return (
-    <Avatar
-      variant="rounded"
+    <CommonImage
+      imageSrc={src}
+      defaultImageSrc={defaultSrc}      
+      requiredSize={requiredSize}
+      errorCallback={errorCallback}
       sx={{
-        m: 1.5, 
-        width: 400, 
-        height: 300,
+        m: 1.5,
         backgroundColor: 'transparent',
+        width: 360,
+        height: 270,
         ...sx
       }}
       {...other}
     >
       &nbsp;
-    </Avatar>
+    </CommonImage>
   );
 }

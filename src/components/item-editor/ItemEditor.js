@@ -3,12 +3,17 @@ import Tab from '@mui/material/Tab';
 
 import * as Feed from '../../Feed';
 import * as Util from '../../Util';
+import BackgroundTab from '../common/editor/BackgroundTab';
+import GeneralTab from '../common/editor/GeneralTab';
 import Editor from '../common/editor/Editor';
-import EditorImage from '../common/editor/EditorImage';
 import EditorTabPanel from '../common/editor/EditorTabPanel';
-import EditorTextField from '../common/editor/EditorTextField';
 import EditorValidator from '../common/editor/EditorValidator'
+import ThumbnailTab from '../common/editor/ThumbnailTab';
 import { GlobalHolder, Global } from '../../Global';
+
+import { 
+  AppRegistry
+} from '@webrcade/app-common'
 
 // import * as deepmerge from 'deepmerge'
 // const a = {a: 'a', b: { b1: 'b1', b2: 'b2'}}
@@ -26,6 +31,15 @@ export default function ItemEditor(props) {
   GlobalHolder.setEditItem = setItem;
 
   const forceUpdate = Util.useForceUpdate();
+
+  let defaultThumbnail = "";
+  let defaultBackground = "";
+  if (item.type) {
+    defaultThumbnail = 
+      AppRegistry.instance.getDefaultThumbnailForType(item.type);
+    defaultBackground = 
+      AppRegistry.instance.getDefaultBackgroundForType(item.type);
+  }
 
   const genTab = 0;
   const propsTab = 1;
@@ -70,67 +84,30 @@ export default function ItemEditor(props) {
       ]}
       tabPanels={(
         <>
-          <EditorTabPanel value={tabValue} index={genTab}>
-            <div>
-              <EditorTextField 
-                required
-                label="Title"
-                onChange={(e) => { setItem({ ...item, title: e.target.value }) }}
-                value={Util.asString(item.title)}
-                error={!validator.isValid(genTab, "title")}
-              />
-            </div>
-            <div>
-              <EditorTextField
-                sx={{ width: '50ch' }}
-                label="Long title"
-                onChange={(e) => { setItem({ ...item, longTitle: e.target.value }) }}
-                value={Util.asString(item.longTitle)}
-              />
-            </div>
-            <div>
-              <EditorTextField
-                sx={{ width: '50ch' }}
-                label="Description" 
-                multiline
-                rows={4} 
-                onChange={(e) => { setItem({ ...item, description: e.target.value }) }}
-                value={Util.asString(item.description)}
-              />
-            </div>
-          </EditorTabPanel>
+          <GeneralTab
+            tabValue={tabValue}
+            tabIndex={genTab}
+            object={item}
+            setObject={setItem}
+            validator={validator}
+          />
           <EditorTabPanel value={tabValue} index={propsTab}>
             Item Two
           </EditorTabPanel>
-          <EditorTabPanel value={tabValue} index={thumbTab}>
-            <div>
-              <EditorTextField
-                sx={{ width: '50ch' }}
-                label="Thumbnail location (URL)"
-                onChange={(e) => { setItem({ ...item, thumbnail: e.target.value }) }}
-                value={Util.asString(item.thumbnail)}
-              />
-            </div>
-            <div>
-              <EditorImage src={item.thumbnail} />
-            </div>
-          </EditorTabPanel>
-          <EditorTabPanel value={tabValue} index={bgTab}>
-            <div>
-              <EditorTextField
-                sx={{ width: '50ch' }}
-                label="Background location (URL)"
-                onChange={(e) => { setItem({ ...item, background: e.target.value }) }}
-                value={Util.asString(item.background)}
-              />
-            </div>
-            <div>
-              <EditorImage sx={{
-                objectFit: 'cover',
-                height: '100%'
-              }} src={item.background} />
-            </div>
-          </EditorTabPanel>
+          <ThumbnailTab
+            tabValue={tabValue}
+            tabIndex={thumbTab}
+            thumbSrc={item.thumbnail}
+            defaultThumbSrc={defaultThumbnail}
+            onChange={(e) => {setItem({ ...item, thumbnail: e.target.value })}}          
+          />
+          <BackgroundTab
+            tabValue={tabValue}
+            tabIndex={bgTab}
+            thumbSrc={item.background}
+            defaultThumbSrc={defaultBackground}
+            onChange={(e) => {setItem({ ...item, background: e.target.value })}}
+          />
         </>
       )}
     />

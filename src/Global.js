@@ -15,6 +15,8 @@ class Holder {
   toggleDrawer = null;
   setItemEditorOpen = null;
   setImportDialogOpen = null;
+  setCategoryEditorOpen = null;
+  setEditCategory = null;
 }
 
 const GlobalHolder = Holder.instance;
@@ -35,6 +37,13 @@ const Global = {
   editItem: (item) => {
     Global.openItemEditor(true);
     GlobalHolder.setEditItem(Util.cloneObject(item));
+  },
+  openCategoryEditor: (open) => {
+    GlobalHolder.setCategoryEditorOpen(open);
+  },
+  editCategory: (cat) => {
+    Global.openCategoryEditor(true);
+    GlobalHolder.setEditCategory(Util.cloneObject(cat));
   },
   toggleDrawer: () => {
     GlobalHolder.toggleDrawer();
