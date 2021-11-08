@@ -1,3 +1,4 @@
+import { addId } from './Feed';
 import * as Util from './Util';
 
 class Holder {
@@ -42,8 +43,8 @@ const Global = {
     Global.openItemEditor(true);
     GlobalHolder.setEditItem(Util.cloneObject(item));
   },
-  openCategoryEditor: (open) => {
-    GlobalHolder.setCategoryEditorOpen(open);
+  openCategoryEditor: (open, isCreate = false) => {
+    GlobalHolder.setCategoryEditorOpen(open, isCreate);
   },
   openFeedEditor: (open) => {
     GlobalHolder.setFeedEditorOpen(open);
@@ -51,6 +52,12 @@ const Global = {
   editCategory: (cat) => {
     Global.openCategoryEditor(true);
     GlobalHolder.setEditCategory(Util.cloneObject(cat));
+  },
+  createNewCategory: () => {
+    Global.openCategoryEditor(true, true);
+    const newCat = {};
+    addId(newCat);
+    GlobalHolder.setEditCategory(newCat);
   },
   editFeed: (feed) => {
     Global.openFeedEditor(true);

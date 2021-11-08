@@ -76,6 +76,10 @@ const addItemsToCategory = (feed, categoryId, items) => {
   }
 }
 
+const addCategoryToFeed = (feed, cat) => {
+  feed.categories.push(cat);
+}
+
 const replaceCategory = (feed, categoryId, category) => {
   const idx = findCategory(feed, categoryId);
   if (idx >= 0) {
@@ -348,7 +352,8 @@ const newFeed = () => {
 }
 
 export {
-  addId,
+  addCategoryToFeed,
+  addId,  
   addItemsToCategory,
   cloneCategories,
   deleteCategories,

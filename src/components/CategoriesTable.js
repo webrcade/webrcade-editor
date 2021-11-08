@@ -110,8 +110,12 @@ export default function CategoriesTable(props) {
       renderToolbarItems={(selection, selected) => {
         return (
           <>
-            <Tooltip title="Add">
-              <IconButton>
+            <Tooltip title="Create Category">
+              <IconButton
+                onClick={() => {
+                  Global.createNewCategory();
+                }}
+              >
                 <AddBoxIcon />
               </IconButton>
             </Tooltip>

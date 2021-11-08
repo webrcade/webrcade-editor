@@ -25,8 +25,12 @@ export default function CategoryEditor(props) {
   const [tabValue, setTabValue] = React.useState(0);
   const [category, setCategory] = React.useState({});
   const [isOpen, setOpen] = React.useState(false);
+  const [isCreate, setCreate] = React.useState(false);
 
-  GlobalHolder.setCategoryEditorOpen = setOpen;
+  GlobalHolder.setCategoryEditorOpen = (open, isCreate = false) => {
+    setCreate(isCreate);
+    setOpen(open);
+  }
   GlobalHolder.setEditCategory = setCategory;
 
   const forceUpdate = Util.useForceUpdate();
@@ -37,7 +41,7 @@ export default function CategoryEditor(props) {
 
   return (
     <Editor
-      title="Edit Category"
+      title={`${isCreate ? "Create" : "Edit"} Category`}
       isOpen={isOpen}
       setOpen={setOpen}
       tabValue={tabValue}
@@ -59,7 +63,11 @@ export default function CategoryEditor(props) {
         // Get the feed
         const feed = Global.getFeed();
         // Replace the category in the feed
-        Feed.replaceCategory(feed, category.id, category);
+        if (isCreate) {
+          Feed.addCategoryToFeed(feed, category);
+        } else {
+          Feed.replaceCategory(feed, category.id, category);
+        }
         // Update the feed (shallow clone)
         Global.setFeed({ ...feed });
 
