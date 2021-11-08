@@ -10,8 +10,19 @@ export default function GeneralTab(props) {
     tabIndex,
     object,
     setObject,
-    validator
+    validator,
+    addValidateCallback
   } = props;
+
+  React.useEffect(() => {
+    if (addValidateCallback) {
+      addValidateCallback(
+        "GeneralTab-" + tabIndex,
+        () => { validator.checkMinLength(tabIndex, "title", object.title); }
+      );
+    }
+  }, [addValidateCallback, object, tabIndex, validator]);
+
   return (
     <EditorTabPanel value={tabValue} index={tabIndex}>
       <div>

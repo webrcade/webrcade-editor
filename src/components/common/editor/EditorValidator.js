@@ -1,6 +1,7 @@
 export default class EditorValidator {
 
   errors = []
+  callbacks = {}
 
   updateErrors(tab, prop, valid) {
     let found = false;
@@ -37,6 +38,7 @@ export default class EditorValidator {
   reset() {
     // console.log('## RESET');    
     this.errors = [];
+    this.callbacks = {};
   }
 
   getMinInvalidTab() {
@@ -68,5 +70,15 @@ export default class EditorValidator {
       }
     }       
     return true;
+  }
+
+  addCallback(key, cb) {
+    this.callbacks[key] = cb;
+  }
+
+  executeCallbacks() {
+    for(const id in this.callbacks) {
+      this.callbacks[id]();
+    } 
   }
 }

@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import { Global } from '../../../Global';
 import * as Util from '../../../Util';
 import EditorImage from '../../common/editor/EditorImage';
 import EditorTabPanel from '../../common/editor/EditorTabPanel';
@@ -32,10 +33,8 @@ export default function ThumbnailTab(props) {
         <EditorImage
           src={thumbSrc}
           defaultSrc={defaultThumbSrc}
-          requiredSize={[400, 300]}
-          errorCallback={(valid, message) => {
-            setThumbnailError(valid ? null : message);
-          }}
+          requiredSize={Global.getThumbSize()}
+          errorCallback={setThumbnailError}
         />
       </div>
     </EditorTabPanel>

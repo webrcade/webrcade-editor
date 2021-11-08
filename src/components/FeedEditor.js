@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Tab from '@mui/material/Tab';
 
-import * as Feed from '../Feed';
 import * as Util from '../Util';
 import BackgroundTab from './common/editor/BackgroundTab';
 import GeneralTab from './common/editor/GeneralTab';
@@ -11,8 +10,8 @@ import ThumbnailTab from './common/editor/ThumbnailTab';
 import { GlobalHolder, Global } from '../Global';
 
 import {
-  CategoryBackgroundImage,
-  CategoryThumbImage
+  FeedBackgroundImage,
+  FeedThumbImage
 } from '@webrcade/app-common'
 
 const validator = new EditorValidator();
@@ -21,13 +20,13 @@ const addValidatorCallback = (id, cb) => {
   validator.addCallback(id, cb);
 }
 
-export default function CategoryEditor(props) {
+export default function FeedEditor(props) {
   const [tabValue, setTabValue] = React.useState(0);
-  const [category, setCategory] = React.useState({});
+  const [feed, setFeed] = React.useState({});
   const [isOpen, setOpen] = React.useState(false);
 
-  GlobalHolder.setCategoryEditorOpen = setOpen;
-  GlobalHolder.setEditCategory = setCategory;
+  GlobalHolder.setFeedEditorOpen = setOpen;
+  GlobalHolder.setEditFeed = setFeed;
 
   const forceUpdate = Util.useForceUpdate();
 
@@ -37,14 +36,14 @@ export default function CategoryEditor(props) {
 
   return (
     <Editor
-      title="Edit Category"
+      title="Edit Feed"
       isOpen={isOpen}
       setOpen={setOpen}
       tabValue={tabValue}
       setTabValue={setTabValue}
       onShow={() => {
         validator.reset();
-        setCategory(Util.cloneObject(category))
+        setFeed(Util.cloneObject(feed))
         forceUpdate();
       }}
       onOk={() => {
@@ -56,10 +55,6 @@ export default function CategoryEditor(props) {
           return false;
         }
 
-        // Get the feed
-        const feed = Global.getFeed();
-        // Replace the category in the feed
-        Feed.replaceCategory(feed, category.id, category);
         // Update the feed (shallow clone)
         Global.setFeed({ ...feed });
 
@@ -75,24 +70,24 @@ export default function CategoryEditor(props) {
           <GeneralTab
             tabValue={tabValue}
             tabIndex={genTab}
-            object={category}
-            setObject={setCategory}
+            object={feed}
+            setObject={setFeed}
             validator={validator}
             addValidateCallback={addValidatorCallback}
           />
           <ThumbnailTab
             tabValue={tabValue}
             tabIndex={thumbTab}
-            thumbSrc={category.thumbnail}
-            defaultThumbSrc={CategoryThumbImage}
-            onChange={(e) => { setCategory({ ...category, thumbnail: e.target.value }) }}
+            thumbSrc={feed.thumbnail}
+            defaultThumbSrc={FeedThumbImage}
+            onChange={(e) => { setFeed({ ...feed, thumbnail: e.target.value }) }}
           />
           <BackgroundTab
             tabValue={tabValue}
             tabIndex={bgTab}
-            thumbSrc={category.background}
-            defaultThumbSrc={CategoryBackgroundImage}
-            onChange={(e) => { setCategory({ ...category, background: e.target.value }) }}
+            thumbSrc={feed.background}
+            defaultThumbSrc={FeedBackgroundImage}
+            onChange={(e) => { setFeed({ ...feed, background: e.target.value }) }}
           />
         </>
       )}

@@ -3,7 +3,8 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 
-import CommonImage from './CommonImage'
+import { Global } from '../../Global';
+import CommonImage from './CommonImage';
 
 export default function ImageLabel(props) {
   const { label, imageSrc, defaultImageSrc } = props;
@@ -13,7 +14,7 @@ export default function ImageLabel(props) {
       <CommonImage
         imageSrc={imageSrc}
         defaultImageSrc={defaultImageSrc}
-        requiredSize={[400, 300]}
+        requiredSize={Global.getThumbSize()}
         sx={{mr: 1.6, width: 48, height: 36}}        
       />
       <Box component="div" sx={{

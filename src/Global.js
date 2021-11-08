@@ -17,9 +17,13 @@ class Holder {
   setImportDialogOpen = null;
   setCategoryEditorOpen = null;
   setEditCategory = null;
+  setFeedEditorOpen = null;
+  setEditFeed = null;
 }
 
 const GlobalHolder = Holder.instance;
+
+const THUMB_SIZE = [400, 300];
 
 const Global = {
   openBusyScreen: (open, message = null) => {
@@ -41,9 +45,16 @@ const Global = {
   openCategoryEditor: (open) => {
     GlobalHolder.setCategoryEditorOpen(open);
   },
+  openFeedEditor: (open) => {
+    GlobalHolder.setFeedEditorOpen(open);
+  },
   editCategory: (cat) => {
     Global.openCategoryEditor(true);
     GlobalHolder.setEditCategory(Util.cloneObject(cat));
+  },
+  editFeed: (feed) => {
+    Global.openFeedEditor(true);
+    GlobalHolder.setEditFeed(Util.cloneObject(feed));
   },
   toggleDrawer: () => {
     GlobalHolder.toggleDrawer();
@@ -63,6 +74,9 @@ const Global = {
   },
   setFeedCategoryId: (id) => {
     return GlobalHolder.setFeedCategoryId(id);
+  },
+  getThumbSize: () => {
+    return THUMB_SIZE;
   }
 }
 

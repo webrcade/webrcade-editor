@@ -22,6 +22,10 @@ import {
 
 const validator = new EditorValidator();
 
+const addValidatorCallback = (id, cb) => {
+  validator.addCallback(id, cb);
+}
+
 export default function ItemEditor(props) {
   const [tabValue, setTabValue] = React.useState(0);
   const [item, setItem] = React.useState({});
@@ -59,7 +63,7 @@ export default function ItemEditor(props) {
         forceUpdate();
       }}
       onOk={() => {
-        validator.checkMinLength(genTab, "title", item.title);
+        validator.executeCallbacks();
         const minTab = validator.getMinInvalidTab();                
         if (minTab >= 0) {
           setTabValue(minTab);
@@ -90,6 +94,7 @@ export default function ItemEditor(props) {
             object={item}
             setObject={setItem}
             validator={validator}
+            addValidateCallback={addValidatorCallback}
           />
           <EditorTabPanel value={tabValue} index={propsTab}>
             Item Two

@@ -11,14 +11,6 @@ import { useTheme } from '@mui/material/styles';
 
 import { usePrevious } from '../../../Util';
 
-// function usePrevious(value) {
-//   const ref = React.useRef();
-//   React.useEffect(() => {
-//     ref.current = value;
-//   });
-//   return ref.current;
-// }
-
 export default function Editor(props) {
 
   const [okCount, setOkCount] = React.useState(0);

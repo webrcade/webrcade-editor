@@ -32,9 +32,7 @@ export default function BackgroundTab(props) {
         <EditorImage
           src={thumbSrc}
           defaultSrc={defaultThumbSrc}
-          errorCallback={(valid, message) => {
-            setBackgroundError(valid ? null : message);
-          }}
+          errorCallback={setBackgroundError}
           sx={{
             objectFit: 'cover',
             height: '100%'
