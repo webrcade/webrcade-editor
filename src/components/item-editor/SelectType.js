@@ -10,9 +10,9 @@ import {
 export default function SelectType(props) {
   const { item, setItem, onChange } = props;
 
-  const handleChange = (e) => {
-    setItem({ ...item, type: e.target.value });
+  const handleChange = (e) => {    
     if (onChange) onChange(e);
+    setItem({ ...item, type: e.target.value });
   };
 
   const aliasTypes = [];

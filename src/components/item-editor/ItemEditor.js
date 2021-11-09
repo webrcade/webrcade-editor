@@ -37,6 +37,15 @@ const removeDefaults = (item, defaults) => {
   }
 }
 
+const applyDefaults = (item, type) => {
+  const defaults = AppRegistry.instance.getDefaultsForType(type);
+  for (const p in defaults) {
+    if (item.props[p] === undefined) {
+      item.props[p] = defaults[p];
+    }
+  }
+}
+
 export default function ItemEditor(props) {
   const [tabValue, setTabValue] = React.useState(0);
   const [item, setItem] = React.useState({});
@@ -87,13 +96,13 @@ export default function ItemEditor(props) {
           return false;          
         }
 
-// console.log(AppRegistry.instance.getDefaultsForType(item.type));
-// console.log(item);
+//  console.log(AppRegistry.instance.getDefaultsForType(item.type));
+//  console.log(item);
 
         // Remove the default values
         removeDefaults(item, AppRegistry.instance.getDefaultsForType(item.type));
 
-// console.log(item);
+        console.log(item);
 
         // Get the feed
         const feed = Global.getFeed();
@@ -130,9 +139,14 @@ export default function ItemEditor(props) {
                   item={item}
                   setItem={setItem}
                   onChange={(e) => {
+                    const type = e.target.value;
+                    applyDefaults(item, type)
+
+                    console.log(item);
+
                     // Set the default when Doom type is selected
-                    if (e.target.value === APP_TYPE_KEYS.PRBOOM ||
-                      e.target.value === APP_TYPE_KEYS.DOOM) {
+                    if (type === APP_TYPE_KEYS.PRBOOM ||
+                      type === APP_TYPE_KEYS.DOOM) {
                       if (isEmptyString(item.props.game)) {
                         item.props.game = 'freedoom1';
                       }
