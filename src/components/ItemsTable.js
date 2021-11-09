@@ -168,8 +168,11 @@ export default function ItemsTable(props) {
       renderToolbarItems={(selection, selected) => {      
         return (
           <>
-            <Tooltip title="Add">
-              <IconButton>
+            <Tooltip title="Create Item">
+              <IconButton
+                  onClick={() => {
+                    Global.createNewItem();
+                  }}>
                 <AddBoxIcon />
               </IconButton>
             </Tooltip>

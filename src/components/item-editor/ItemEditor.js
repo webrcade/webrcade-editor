@@ -6,13 +6,14 @@ import * as Util from '../../Util';
 import BackgroundTab from '../common/editor/BackgroundTab';
 import GeneralTab from '../common/editor/GeneralTab';
 import Editor from '../common/editor/Editor';
-import EditorTabPanel from '../common/editor/EditorTabPanel';
 import EditorValidator from '../common/editor/EditorValidator'
+import PropertiesTab from './PropertiesTab';
+import SelectType from './SelectType';
 import ThumbnailTab from '../common/editor/ThumbnailTab';
 import { GlobalHolder, Global } from '../../Global';
 
-import { 
-  AppRegistry
+import {
+  AppRegistry, APP_TYPE_KEYS, isEmptyString
 } from '@webrcade/app-common'
 
 // import * as deepmerge from 'deepmerge'
@@ -26,12 +27,27 @@ const addValidatorCallback = (id, cb) => {
   validator.addCallback(id, cb);
 }
 
+const removeDefaults = (item, defaults) => {
+  const clonedProps = Util.cloneObject(item.props);
+  for (const p in clonedProps) {
+    if (defaults[p] === undefined ||
+        defaults[p] === clonedProps[p]) {
+      delete item.props[p];
+    }
+  }
+}
+
 export default function ItemEditor(props) {
   const [tabValue, setTabValue] = React.useState(0);
   const [item, setItem] = React.useState({});
   const [isOpen, setOpen] = React.useState(false);
+  const [isCreate, setCreate] = React.useState(false);
 
-  GlobalHolder.setItemEditorOpen = setOpen;
+  GlobalHolder.setItemEditorOpen = (open, isCreate = false) => {
+    setCreate(isCreate);
+    setOpen(open);
+  }  
+
   GlobalHolder.setEditItem = setItem;
 
   const forceUpdate = Util.useForceUpdate();
@@ -39,9 +55,9 @@ export default function ItemEditor(props) {
   let defaultThumbnail = "";
   let defaultBackground = "";
   if (item.type) {
-    defaultThumbnail = 
+    defaultThumbnail =
       AppRegistry.instance.getDefaultThumbnailForType(item.type);
-    defaultBackground = 
+    defaultBackground =
       AppRegistry.instance.getDefaultBackgroundForType(item.type);
   }
 
@@ -52,7 +68,7 @@ export default function ItemEditor(props) {
 
   return (
     <Editor
-      title="Edit Item"
+      title={`${isCreate ? "Create" : "Edit"} Item`}
       isOpen={isOpen}
       setOpen={setOpen}
       tabValue={tabValue}
@@ -64,20 +80,33 @@ export default function ItemEditor(props) {
       }}
       onOk={() => {
         validator.executeCallbacks();
-        const minTab = validator.getMinInvalidTab();                
+        const minTab = validator.getMinInvalidTab();
         if (minTab >= 0) {
           setTabValue(minTab);
           forceUpdate();
-          return false;
+          return false;          
         }
+
+// console.log(AppRegistry.instance.getDefaultsForType(item.type));
+// console.log(item);
+
+        // Remove the default values
+        removeDefaults(item, AppRegistry.instance.getDefaultsForType(item.type));
+
+// console.log(item);
 
         // Get the feed
         const feed = Global.getFeed();
-        // Replace the item in the feed
-        Feed.replaceItem(feed, Global.getFeedCategoryId(), item.id, item);
+
+        if (isCreate) {
+          Feed.addItemsToCategory(feed, Global.getFeedCategoryId(), [item]);
+        } else {
+          // Replace the item in the feed
+          Feed.replaceItem(feed, Global.getFeedCategoryId(), item.id, item);
+        }
         // Update the feed (shallow clone)
-        Global.setFeed({...feed});
-        
+        Global.setFeed({ ...feed });
+
         return true;
       }}
       tabs={[
@@ -95,23 +124,45 @@ export default function ItemEditor(props) {
             setObject={setItem}
             validator={validator}
             addValidateCallback={addValidatorCallback}
+            otherFields={
+              <div>
+                <SelectType
+                  item={item}
+                  setItem={setItem}
+                  onChange={(e) => {
+                    // Set the default when Doom type is selected
+                    if (e.target.value === APP_TYPE_KEYS.PRBOOM ||
+                      e.target.value === APP_TYPE_KEYS.DOOM) {
+                      if (isEmptyString(item.props.game)) {
+                        item.props.game = 'freedoom1';
+                      }
+                    }
+                  }}
+                />
+              </div>
+            }
           />
-          <EditorTabPanel value={tabValue} index={propsTab}>
-            Item Two
-          </EditorTabPanel>
+          <PropertiesTab
+            tabValue={tabValue}
+            tabIndex={propsTab}
+            object={item}
+            setObject={setItem}
+            validator={validator}
+            addValidateCallback={addValidatorCallback}
+          />
           <ThumbnailTab
             tabValue={tabValue}
             tabIndex={thumbTab}
             thumbSrc={item.thumbnail}
             defaultThumbSrc={defaultThumbnail}
-            onChange={(e) => {setItem({ ...item, thumbnail: e.target.value })}}          
+            onChange={(e) => { setItem({ ...item, thumbnail: e.target.value }) }}
           />
           <BackgroundTab
             tabValue={tabValue}
             tabIndex={bgTab}
             thumbSrc={item.background}
             defaultThumbSrc={defaultBackground}
-            onChange={(e) => {setItem({ ...item, background: e.target.value })}}
+            onChange={(e) => { setItem({ ...item, background: e.target.value }) }}
           />
         </>
       )}

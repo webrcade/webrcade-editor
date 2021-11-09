@@ -33,8 +33,8 @@ const Global = {
       GlobalHolder.setBusyScreenMessage(message);
     }
   },
-  openItemEditor: (open) => {
-    GlobalHolder.setItemEditorOpen(open);
+  openItemEditor: (open, isCreate = false) => {
+    GlobalHolder.setItemEditorOpen(open, isCreate);
   },
   openImportDialog: (open) => {
     GlobalHolder.setImportDialogOpen(open);
@@ -42,6 +42,14 @@ const Global = {
   editItem: (item) => {
     Global.openItemEditor(true);
     GlobalHolder.setEditItem(Util.cloneObject(item));
+  },
+  createNewItem: () => {
+    Global.openItemEditor(true, true);
+    const newItem = {
+      props: {}, type: "2600"
+    };
+    addId(newItem);
+    GlobalHolder.setEditItem(newItem);
   },
   openCategoryEditor: (open, isCreate = false) => {
     GlobalHolder.setCategoryEditorOpen(open, isCreate);

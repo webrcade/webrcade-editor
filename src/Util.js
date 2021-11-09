@@ -9,6 +9,13 @@ export function asString(str) {
   return str ? str : '';
 }
 
+export function asBoolean(obj) {
+  if (obj === undefined) {
+    return false;
+  }
+  return obj === true;
+}
+
 export function useForceUpdate(){
   const [, setValue] = useState(0); // integer state
   return () => setValue(value => value + 1); // update the state to force render

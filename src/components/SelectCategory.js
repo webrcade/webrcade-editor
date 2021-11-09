@@ -14,10 +14,8 @@ export default function SelectCategory(props) {
   return (
     <div>
       <FormControl sx={{ marginBottom: 3, marginTop: .5, minWidth: 200 }}>
-        <InputLabel id="demo-simple-select-autowidth-label">Category</InputLabel>
+        <InputLabel>Category</InputLabel>
         <Select
-          labelId="demo-simple-select-autowidth-label"
-          id="demo-simple-select-autowidth"
           value={category}
           onChange={handleChange}
           autoWidth

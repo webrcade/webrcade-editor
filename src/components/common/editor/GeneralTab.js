@@ -11,7 +11,8 @@ export default function GeneralTab(props) {
     object,
     setObject,
     validator,
-    addValidateCallback
+    addValidateCallback,
+    otherFields
   } = props;
 
   React.useEffect(() => {
@@ -52,6 +53,7 @@ export default function GeneralTab(props) {
           value={Util.asString(object.description)}
         />
       </div>
+      {otherFields}
     </EditorTabPanel>
   );
 }

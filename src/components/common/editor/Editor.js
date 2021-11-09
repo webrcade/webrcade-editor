@@ -68,7 +68,7 @@ export default function Editor(props) {
         {...mwidth}
       >
         <DialogTitle>{title}</DialogTitle>
-        <DialogContent sx={{ height: height ? height : 500 }}>
+        <DialogContent sx={{ height: height ? height : 520 }}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={tabValue} onChange={(e, value) => { setTabValue(value) }}  
             variant="scrollable"
