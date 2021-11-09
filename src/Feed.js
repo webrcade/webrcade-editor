@@ -243,7 +243,7 @@ const exportFeed = (feed) => {
   return result;
 }
 
-const newFeed = () => {
+const exampleFeed = () => {
   const feed = {
     title: "Example Feed",
     longTitle: "WebЯcade Example Feed",
@@ -255,37 +255,37 @@ const newFeed = () => {
         title: "Shooters",
         longTitle: "Shooter Games",
         description: "A \"shoot 'em up\", also known as a \"shmup\" or \"STG\" (the common Japanese abbreviation for \"shooting games\"), is a game in which the protagonist combats a large number of enemies by shooting at them while dodging their fire.",
-        thumbnail: "https://tinyurl.com/ba4w9ze6",
-        background: "https://tinyurl.com/bw45h77k",
+        thumbnail: "https://i.imgur.com/OjDedze.jpg",
+        background: "https://i.imgur.com/IfvC9S8.jpg",
         items: [
           {
             title: "Astro Force",
             type: "sms",
             description: "Astro Force is a nod to classic Shoot ’em ups from back in the day. Heavily inspired by Thunder force, RSG, Aleste, Gaiares, MSX Nemesis, and R-Type. Astro Force features 6 stages, 30+ enemy types, and 11 bosses.",
-            thumbnail: "https://tinyurl.com/da6s5adj",
-            background: "https://tinyurl.com/3bubjkn4",
+            thumbnail: "https://i.imgur.com/yObH5Yt.png",
+            background: "https://i.imgur.com/298qtC7.png",
             props: {
-              rom: "https://tinyurl.com/cvdbtdth"
+              rom: "https://dl.dropboxusercontent.com/s/ggc87mfds9bax9p/astroforce.sms"
             }
           },
           {
             title: "Blade Buster",
             type: "nes",
             description: "Blade Buster is a score attack shmup that comes with two game modes; two and five minutes, each ending with an epic boss battle.",
-            thumbnail: "https://tinyurl.com/xszmcbvu",
-            background: "https://tinyurl.com/ya43xf2j",
+            thumbnail: "https://i.imgur.com/eW9RoYg.png",
+            background: "https://i.imgur.com/ZxeaHXo.png",
             props: {
-              rom: "https://tinyurl.com/32fkc5r7"
+              rom: "https://dl.dropboxusercontent.com/s/ye4f2tqtujvo1ny/bladebuster.nes"
             }
           },
           {
             title: "Omega Blast",
             type: "genesis",
             description: "Omega Blast was created by homebrew developer Nendo. It is a bullet hell shooter in which you have 2 minutes to blast everything you possibly can to achieve the highest score.",
-            thumbnail: "https://tinyurl.com/rtubmv28",
-            background: "https://tinyurl.com/6czsp3pm",
+            thumbnail: "https://i.imgur.com/b0hu9rV.png",
+            background: "https://i.imgur.com/o0zxHO3.png",
             props: {
-              rom: "https://tinyurl.com/pzv5mssx"
+              rom: "https://dl.dropboxusercontent.com/s/i6x579gv1unalh6/omegablast.bin"
             }
           }
         ]
@@ -294,27 +294,27 @@ const newFeed = () => {
         title: "Puzzlers",
         longTitle: "Puzzle Games",
         description: "Puzzle video games make up a broad genre of video games that emphasize puzzle-solving. The types of puzzles can test many problem-solving skills including logic, pattern recognition, sequence solving, spatial recognition, and word completion.",
-        thumbnail: "https://tinyurl.com/svsc7cnp",
-        background: "https://tinyurl.com/y5ywdxpz",
+        thumbnail: "https://i.imgur.com/rnKiCqW.jpg",
+        background: "https://i.imgur.com/SikCzND.jpg",
         items: [
           {
             title: "Alter Ego",
             type: "nes",
             description: "You control a hero who has a phantom twin, his alter ego. When the hero moves, his alter ego moves in a mirrored fashion. In some levels the movements are mirrored horizontally, in others vertically. You can switch between the hero and his alter ego a limited number of times per level.",
-            thumbnail: "https://tinyurl.com/f39vd77r",
-            background: "https://tinyurl.com/4tnsjhm9",
+            thumbnail: "https://i.imgur.com/5kqQ8OY.png",
+            background: "https://i.imgur.com/EKcsCaR.png",
             props: {
-              rom: "https://tinyurl.com/4ce8z8a2"
+              rom: "https://dl.dropboxusercontent.com/s/v61vhu3nhzc0jt9/alterego.nes"
             }
           },
           {
             title: "Skipp and Friends",
             type: "snes",
             description: "The object of the game is to move all three characters to the exit in each level. Each player has 2 limited special abilities that you may use to help advance through the level. The in-game status bar displays the name of each ability and how many times it can be used during that level.",
-            thumbnail: "https://tinyurl.com/4usmwc8w",
-            background: "https://tinyurl.com/zuysuszd",
+            thumbnail: "https://i.imgur.com/zNp5I6B.png",
+            background: "https://i.imgur.com/VaPqpBG.png",
             props: {
-              rom: "https://tinyurl.com/wffek74"
+              rom: "https://dl.dropboxusercontent.com/s/t3ch4yg4s8nrf4t/skippandfriends.smc"
             }
           },
           {
@@ -322,38 +322,29 @@ const newFeed = () => {
             longTitle: "Slide Boy in Mazeland",
             type: "7800",
             description: "Slide your way out of dangerous mazes, avoid the obstacles, activate some switches and exit each room before the time run out.",
-            thumbnail: "https://tinyurl.com/jvkn9h92",
-            background: "https://tinyurl.com/292r6tkm",
+            thumbnail: "https://i.imgur.com/MJ0wnBq.png",
+            background: "https://i.imgur.com/KmCqj21.png",
             props: {
-              rom: "https://tinyurl.com/r5a5ekhb"
+              rom: "https://dl.dropboxusercontent.com/s/rngpvg45je9x80r/slideboy.a78"
             }
           }
         ]
       }
     ]
   }
+  return assignIds(feed);
+}
 
-  /*
-  title: "Example Feed",
-  categories: [{
-    title: "Example Category",
-    items: [{
-      "title": "Freedoom II",
-      "type": "doom",
-      "props": {
-        "game": "freedoom2"
-      }
-    }]
-  }]
-};
-*/
-
+const newFeed = () => {
+  const feed = {
+    title: "New feed"
+  };
   return assignIds(feed);
 }
 
 export {
   addCategoryToFeed,
-  addId,  
+  addId,
   addItemsToCategory,
   cloneCategories,
   deleteCategories,
@@ -364,6 +355,7 @@ export {
   moveCategoriesUp,
   moveCategoriesDown,
   newFeed,
+  exampleFeed,
   replaceCategory,
   replaceItem,
   loadFeedFromFile,
