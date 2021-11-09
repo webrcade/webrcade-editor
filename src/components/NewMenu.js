@@ -18,17 +18,16 @@ const StyledPopper = styled(Popper)(({ theme }) => ({
 
 export default function NewMenu(props) {
   const { anchorEl, setAnchorEl, setOpen } = props;
-  const open = Boolean(anchorEl);
+  const isOpen = Boolean(anchorEl);
 
-  const handleClose = () => {
+  const handleClose = () => {    
     setAnchorEl(null);
-    setOpen(false);
   };
 
   return (
     <StyledPopper
       anchorEl={anchorEl}
-      open={open}
+      open={isOpen}
       placement="right-start"
       // transition
     >
@@ -45,6 +44,7 @@ export default function NewMenu(props) {
                 <MenuItem onClick={() => {
                   const feed = Feed.exampleFeed();
                   Global.setFeed({ ...feed });
+                  setOpen(false);
                   handleClose();
                 }}>
                   <ListItemIcon>
@@ -55,6 +55,7 @@ export default function NewMenu(props) {
                 <MenuItem onClick={() => {
                   const feed = Feed.newFeed();
                   Global.setFeed({ ...feed });
+                  setOpen(false);
                   handleClose();
                 }}>
                 <ListItemIcon>
