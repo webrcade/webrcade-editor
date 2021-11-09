@@ -337,7 +337,8 @@ const exampleFeed = () => {
 
 const newFeed = () => {
   const feed = {
-    title: "New feed"
+    title: "New feed",
+    categories: []
   };
   return assignIds(feed);
 }
