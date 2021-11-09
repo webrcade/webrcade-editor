@@ -14,6 +14,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import * as WrcCommon from '@webrcade/app-common'
 import * as Feed from '../Feed';
 import { Global, GlobalHolder } from '../Global';
+import NewMenu from './NewMenu';
 
 function downloadFeed() {
   const feed = Feed.exportFeed(Global.getFeed());
@@ -32,6 +33,7 @@ function EditorDrawer(props) {
   const { drawerWidth } = props;
 
   const [open, setOpen] = React.useState(false);
+  const [newMenuAnchor, setNewMenuAnchor] = React.useState(false);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -43,10 +45,8 @@ function EditorDrawer(props) {
     <div>
       <Toolbar />
       <List>
-        <ListItem button key="new" onClick={() => {
-          setOpen(false);
-          const feed = Feed.newFeed();
-          Global.setFeed({ ...feed });
+        <ListItem button key="new" onClick={(e) => {
+          setNewMenuAnchor(e.target);
         }}>
           <ListItemIcon><NoteAddIcon /></ListItemIcon>
           <ListItemText primary="New" />
@@ -114,6 +114,11 @@ function EditorDrawer(props) {
       >
         {drawer}
       </Drawer>
+      <NewMenu 
+        anchorEl={newMenuAnchor} 
+        setAnchorEl={setNewMenuAnchor}
+        setOpen={setOpen}
+      />
     </>
   );
 }
