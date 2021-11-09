@@ -248,8 +248,8 @@ const exampleFeed = () => {
     title: "Example Feed",
     longTitle: "WebЯcade Example Feed",
     description: "A simple example feed that demonstrates the use of optional properties, multiple categories, and multiple games.",
-    thumbnail: "https://tinyurl.com/3tda3493",
-    background: "https://tinyurl.com/4ma324en",
+    thumbnail: "https://i.imgur.com/4lT1CSt.jpg",
+    background: "https://i.imgur.com/IfP6ZnI.jpg",
     categories: [
       {
         title: "Shooters",
