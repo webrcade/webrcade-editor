@@ -21,7 +21,7 @@ import * as Feed from '../Feed';
 import ImageLabel from './common/ImageLabel';
 import ToolbarVerticalDivider from './common/ToolbarVerticalDivider';
 
-function createData(id, title, type, typeName, thumbSrc, lastUpdate) {
+function createData(id, title, type, typeName, thumbSrc, lastUpdate, item) {
   return {
     id,
     title,
@@ -29,6 +29,7 @@ function createData(id, title, type, typeName, thumbSrc, lastUpdate) {
     typeName,
     thumbSrc,
     lastUpdate,
+    item
   };
 }
 
@@ -65,7 +66,8 @@ export default function ItemsTable(props) {
               item.type,
               AppRegistry.instance.getShortNameForType(item.type), 
               item.thumbnail, 
-              ''
+              '',
+              item
             ))
           });      
         }
@@ -153,7 +155,10 @@ export default function ItemsTable(props) {
             </TableCell>
             <TableCell style={{ width: '0%', whiteSpace: 'noWrap' }}>
               <Tooltip title="Play">
-                <IconButton onClick={(e) => {e.stopPropagation();}}>
+                <IconButton onClick={(e) => {
+                    e.stopPropagation();
+                    Global.setApp(row.item);
+                  }}>
                   <PlayArrowIcon />
                 </IconButton>
               </Tooltip>
@@ -170,6 +175,10 @@ export default function ItemsTable(props) {
           <>
             <Tooltip title="Create Item">
               <IconButton
+                  disabled={
+                    feed === undefined ||
+                    feed.categories === undefined ||
+                    feed.categories.length === 0} 
                   onClick={() => {
                     Global.createNewItem();
                   }}>

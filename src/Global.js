@@ -8,6 +8,7 @@ class Holder {
   setBusyScreenMessage = null;
   setEditItem = null;
   setFeed = null;
+  setApp = null;
   getFeed = null;
   setFeedCategoryId = null;
   getFeedCategoryId = null;
@@ -92,6 +93,9 @@ const Global = {
   },
   getThumbSize: () => {
     return THUMB_SIZE;
+  },
+  setApp: (app) => {
+    GlobalHolder.setApp(app);
   }
 }
 
