@@ -3,18 +3,20 @@ import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Toolbar from '@mui/material/Toolbar';
 
-import { 
+import {
   AppProps,
-  AppScreen, 
-  LOG 
+  AppScreen,
+  LOG
 } from '@webrcade/app-common'
 
-import { GlobalHolder } from './Global';
+import { Global, GlobalHolder } from './Global';
 import * as Feed from './Feed';
+import BusyScreen from './components/BusyScreen';
 import Dialogs from './components/Screens';
 import EditorDrawer from './components/EditorDrawer';
 import FeedTabs from './components/FeedTabs';
 import MainAppBar from './components/MainAppBar';
+import Prefs from './Prefs';
 import SelectedFeed from './components/SelectedFeed';
 
 const HASH_PLAY = "play";
@@ -50,11 +52,14 @@ const createMessageListener = (setApp) => {
 function App(props) {
   const [feed, setFeed] = React.useState({});
   const [app, setApp] = React.useState(null);
+  const [started, setStarted] = React.useState(false);
   const appScreenFrameRef = React.useRef();
 
   currentApp = app;
 
   React.useEffect(() => {
+    Global.openBusyScreen(true, "Preparing editor...");
+
     console.log("Application was loaded");
     window.addEventListener("popstate",
       createPopstateHandler(appScreenFrameRef), false);
@@ -68,16 +73,28 @@ function App(props) {
       window.history.pushState(null, "", window.location.href.substring(0, hash));
     }
 
-    // For now set to example, ultimately will come from preferences
-    setFeed(Feed.exampleFeed());
-  // eslint-disable-next-line    
+    // Load prefs
+    Prefs.load()
+      .then(() => {
+        const feed = Prefs.getFeed();
+
+        // For now set to example, ultimately will come from preferences
+        setFeed(feed ? feed : Feed.exampleFeed());        
+
+        // Mark as started
+        setStarted(true);
+      })
+      .finally(() => {
+        Global.openBusyScreen(false);
+      })
+    // eslint-disable-next-line    
   }, []);
 
 
   GlobalHolder.setApp = (app) => {
     window.location.hash = HASH_PLAY;
     setApp(app);
-  }  
+  }
   GlobalHolder.setFeed = setFeed;
   GlobalHolder.getFeed = () => {
     return feed;
@@ -85,31 +102,35 @@ function App(props) {
 
   return (
     <>
-      <Box sx={{ display: app ? 'none' : 'flex' }}>
-        <CssBaseline />
-        <MainAppBar />
-        <Box sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}>
-          <EditorDrawer drawerWidth={drawerWidth} />
-        </Box>
-        <Box sx={{
-          flexGrow: 1, p: 3,
-          width: { xs: '100%', sm: `calc(100% - ${drawerWidth}px)` }
-        }}
-        >
-          <Toolbar />
-          <SelectedFeed feed={feed} />
-          <FeedTabs feed={feed} />
-        </Box>
-      </Box>
-      <Dialogs />
-      {app ? (
-        <AppScreen 
-          app={app} 
-          frameRef={appScreenFrameRef} 
-          context={AppProps.RV_CONTEXT_EDITOR}          
-        />
-      ) : null
-      }
+      <CssBaseline />
+      <BusyScreen />
+      {started ? (
+        <>
+          <Box sx={{ display: app ? 'none' : 'flex' }}>            
+            <MainAppBar />
+            <Box sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}>
+              <EditorDrawer drawerWidth={drawerWidth} />
+            </Box>
+            <Box sx={{
+              flexGrow: 1, p: 3,
+              width: { xs: '100%', sm: `calc(100% - ${drawerWidth}px)` }
+            }}
+            >
+              <Toolbar />
+              <SelectedFeed feed={feed} />
+              <FeedTabs feed={feed} />
+            </Box>
+          </Box>
+          <Dialogs />
+          {app ? (
+            <AppScreen
+              app={app}
+              frameRef={appScreenFrameRef}
+              context={AppProps.RV_CONTEXT_EDITOR}
+            />
+          ) : null}
+        </>
+      ) : null}
     </>
   );
 }

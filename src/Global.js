@@ -1,4 +1,5 @@
 import { addId } from './Feed';
+import Prefs from './Prefs';
 import * as Util from './Util';
 
 class Holder {
@@ -81,6 +82,7 @@ const Global = {
   },
   setFeed: (feed) => {
     GlobalHolder.setFeed(feed);
+    Prefs.setFeed(feed);
   },
   getFeed: () => {
     return GlobalHolder.getFeed();

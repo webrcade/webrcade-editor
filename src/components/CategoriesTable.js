@@ -38,6 +38,7 @@ export default function CategoriesTable(props) {
 
   return (
     <CommonTable
+      tableName="categories"
       resetKey={feed.id}
       headCells={
         [

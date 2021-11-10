@@ -17,6 +17,8 @@ import { alpha } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 import * as Util from '../../Util';
 
+import Prefs from '../../Prefs';
+
 function descendingComparator(a, b, orderBy) {
   let aVal = a[orderBy];
   let bVal = b[orderBy];
@@ -144,6 +146,7 @@ function performSort(arr, comparator, firstSort) {
 
 export default function CommonTable(props) {
   const {
+    tableName,
     defaultSortColumn,
     headCells,
     rows,
@@ -152,11 +155,19 @@ export default function CommonTable(props) {
     resetKey
   } = props;
 
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState(defaultSortColumn);
+  const PREF_PREFIX = "table." + tableName + ".";
+  const PREF_PAGE_SIZE = PREF_PREFIX + "pageSize";
+  const PREF_SORT_COLUMN = PREF_PREFIX + "sortColumn";
+  const PREF_SORT_DIR = PREF_PREFIX + "sortDir";
+
+  const [order, setOrder] = React.useState(
+    Prefs.getPreference(PREF_SORT_DIR, 'asc'));
+  const [orderBy, setOrderBy] = React.useState(
+    Prefs.getPreference(PREF_SORT_COLUMN, defaultSortColumn));
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(
+    Prefs.getPreference(PREF_PAGE_SIZE, 5));
 
   const prevRows = Util.usePrevious(rows);
   const prevResetKey = Util.usePrevious(resetKey);
@@ -200,8 +211,11 @@ export default function CommonTable(props) {
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
+    const newOrder = isAsc ? 'desc' : 'asc';
+    setOrder(newOrder);    
     setOrderBy(property);
+    Prefs.setPreference(PREF_SORT_COLUMN, property);    
+    Prefs.setPreference(PREF_SORT_DIR, newOrder);
   };
 
   const handleSelectAllClick = (event) => {
@@ -238,7 +252,9 @@ export default function CommonTable(props) {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    const rowsPerPage = parseInt(event.target.value, 10);
+    setRowsPerPage(rowsPerPage);
+    Prefs.setPreference(PREF_PAGE_SIZE, rowsPerPage);
     setPage(0);
   };
 

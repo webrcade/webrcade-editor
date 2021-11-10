@@ -8,6 +8,7 @@ import EditorFileChooser from './common/editor/EditorFileChooser';
 import EditorTabPanel from './common/editor/EditorTabPanel';
 import EditorTextField from './common/editor/EditorTextField';
 import EditorValidator from './common/editor/EditorValidator';
+import Prefs from '../Prefs';
 import * as Feed from '../Feed';
 
 const validator = new EditorValidator();
@@ -33,7 +34,7 @@ export default function ImportDialog(props) {
   const [tabValue, setTabValue] = React.useState(0);
   const [feedUrl, setFeedUrl] = React.useState('');
   const forceUpdate = Util.useForceUpdate();
-
+  
   GlobalHolder.setImportDialogOpen = setOpen;
 
   const urlTab = 0;
@@ -45,6 +46,7 @@ export default function ImportDialog(props) {
         forceUpdate();
         return false;
       }
+      Prefs.setLastFeedUrl(feedUrl);
       importFeed(feedUrl);
     }
     return true;
@@ -60,6 +62,7 @@ export default function ImportDialog(props) {
       tabValue={tabValue}
       setTabValue={setTabValue}
       onShow={() => {
+        setFeedUrl(Prefs.getLastFeedUrl());
         validator.reset();
         forceUpdate();
       }}

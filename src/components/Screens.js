@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import BusyScreen from './BusyScreen';
 import CategoryEditor from './CategoryEditor'; 
 import DisplayMessage from './DisplayMessage'; 
 import FeedEditor from './FeedEditor';
@@ -11,7 +10,6 @@ export default function Screens() {
 
   return (
     <>
-      <BusyScreen />
       <CategoryEditor />
       <FeedEditor />
       <DisplayMessage />

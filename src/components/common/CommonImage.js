@@ -26,7 +26,7 @@ export default function CommonImage(props) {
       (defaultImageSrc !== prevValues.defaultImageSrc) ||
       (requiredSize !== prevValues.requiredSize))) {
 
-console.log('Load image! ' + imageSrc)
+//console.log('Load image! ' + imageSrc)
 
       const tempImg = new Image();
       tempImg.onload = (e) => {

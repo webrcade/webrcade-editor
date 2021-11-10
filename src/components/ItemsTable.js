@@ -11,7 +11,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import TableCell from '@mui/material/TableCell';
 import Tooltip from '@mui/material/Tooltip';
 
-import { 
+import {
   AppRegistry
 } from '@webrcade/app-common'
 
@@ -20,6 +20,11 @@ import * as Util from '../Util';
 import * as Feed from '../Feed';
 import ImageLabel from './common/ImageLabel';
 import ToolbarVerticalDivider from './common/ToolbarVerticalDivider';
+
+const DATE_FORMAT = {
+  month: '2-digit', day: '2-digit', year: '2-digit',
+  hour: '2-digit', minute: '2-digit'
+};
 
 function createData(id, title, type, typeName, thumbSrc, lastUpdate, item) {
   return {
@@ -41,8 +46,8 @@ function cloneSelectedItems(feed, category, selection) {
       const clone = Util.cloneObject(item);
       if (clone) {
         Feed.addId(clone);
-        cloned.push(clone);        
-      }      
+        cloned.push(clone);
+      }
     }
   });
   return cloned;
@@ -61,22 +66,23 @@ export default function ItemsTable(props) {
         if (cat.items) {
           cat.items.forEach((item) => {
             rows.push(createData(
-              item.id, 
-              item.title, 
+              item.id,
+              item.title,
               item.type,
-              AppRegistry.instance.getShortNameForType(item.type), 
-              item.thumbnail, 
-              '',
+              AppRegistry.instance.getShortNameForType(item.type),
+              item.thumbnail,
+              item.updated ? item.updated : 0,
               item
             ))
-          });      
+          });
         }
       }
     }
-  }  
+  }
 
   return (
     <CommonTable
+      tableName="items"
       resetKey={category}
       defaultSortColumn="title"
       headCells={
@@ -131,8 +137,8 @@ export default function ItemsTable(props) {
               padding="checkbox"
               style={{ width: '0%', whiteSpace: 'noWrap' }}
             >
-              <ImageLabel 
-                label={row.title} 
+              <ImageLabel
+                label={row.title}
                 imageSrc={
                   AppRegistry.instance.getThumbnailForType(row.type, row.thumbSrc)
                 }
@@ -144,10 +150,11 @@ export default function ItemsTable(props) {
             <TableCell style={{ width: '0%', whiteSpace: 'noWrap' }}>
               <Tooltip title="Edit">
                 <IconButton onClick={(e) => {
-                  e.stopPropagation(); 
+                  e.stopPropagation();
                   Global.editItem(
                     Feed.getItem(feed, category, row.id)
-                  );}}
+                  );
+                }}
                 >
                   <EditIcon />
                 </IconButton>
@@ -156,9 +163,9 @@ export default function ItemsTable(props) {
             <TableCell style={{ width: '0%', whiteSpace: 'noWrap' }}>
               <Tooltip title="Play">
                 <IconButton onClick={(e) => {
-                    e.stopPropagation();
-                    Global.setApp(row.item);
-                  }}>
+                  e.stopPropagation();
+                  Global.setApp(row.item);
+                }}>
                   <PlayArrowIcon />
                 </IconButton>
               </Tooltip>
@@ -166,35 +173,40 @@ export default function ItemsTable(props) {
             <TableCell style={{ width: '0%', whiteSpace: 'noWrap' }}>
               {row.typeName}
             </TableCell>
-            <TableCell>{row.lastUpdate}</TableCell>
+            <TableCell>{
+              row.lastUpdate > 0 ?
+                new Date(row.lastUpdate).toLocaleString([], DATE_FORMAT) : ""
+            }</TableCell>
           </>
         );
       }}
-      renderToolbarItems={(selection, selected) => {      
+      renderToolbarItems={(selection, selected) => {
         return (
           <>
             <Tooltip title="Create Item">
-              <IconButton
+              <div>
+                <IconButton
                   disabled={
                     feed === undefined ||
                     feed.categories === undefined ||
-                    feed.categories.length === 0} 
+                    feed.categories.length === 0}
                   onClick={() => {
                     Global.createNewItem();
                   }}>
-                <AddBoxIcon />
-              </IconButton>
+                  <AddBoxIcon />
+                </IconButton>
+              </div>
             </Tooltip>
             <ToolbarVerticalDivider />
             <Tooltip title="Cut">
               <div>
-                <IconButton 
+                <IconButton
                   disabled={!selection}
                   onClick={() => {
                     setClipboard(cloneSelectedItems(feed, category, selected));
                     Feed.deleteItemsFromCategory(feed, category, selected);
-                    Global.setFeed({...feed});
-                  }}  
+                    Global.setFeed({ ...feed });
+                  }}
                 >
                   <ContentCutIcon />
                 </IconButton>
@@ -202,23 +214,23 @@ export default function ItemsTable(props) {
             </Tooltip>
             <Tooltip title="Copy">
               <div>
-                <IconButton 
-                  disabled={!selection} 
+                <IconButton
+                  disabled={!selection}
                   onClick={() => {
-                     setClipboard(cloneSelectedItems(feed, category, selected));
+                    setClipboard(cloneSelectedItems(feed, category, selected));
                   }}
-                >              
+                >
                   <ContentCopyIcon />
                 </IconButton>
               </div>
             </Tooltip>
             <Tooltip title="Paste">
               <div>
-                <IconButton 
+                <IconButton
                   disabled={clipboard.length === 0}
                   onClick={() => {
                     Feed.addItemsToCategory(feed, category, clipboard);
-                    Global.setFeed({...feed});
+                    Global.setFeed({ ...feed });
                   }}
                 >
                   <ContentPasteIcon />
@@ -228,16 +240,16 @@ export default function ItemsTable(props) {
             <ToolbarVerticalDivider />
             <Tooltip title="Delete">
               <div>
-                <IconButton disabled={!selection} 
+                <IconButton disabled={!selection}
                   onClick={() => {
                     Feed.deleteItemsFromCategory(feed, category, selected);
-                    Global.setFeed({...feed});
+                    Global.setFeed({ ...feed });
                   }}
                 >
                   <DeleteIcon />
                 </IconButton>
               </div>
-            </Tooltip>            
+            </Tooltip>
             <ToolbarVerticalDivider />
           </>
         );
