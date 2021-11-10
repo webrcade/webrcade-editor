@@ -173,7 +173,7 @@ export default function ItemsTable(props) {
             <TableCell style={{ width: '0%', whiteSpace: 'noWrap' }}>
               {row.typeName}
             </TableCell>
-            <TableCell>{
+            <TableCell style={{ whiteSpace: 'noWrap' }}>{
               row.lastUpdate > 0 ?
                 new Date(row.lastUpdate).toLocaleString([], DATE_FORMAT) : ""
             }</TableCell>
