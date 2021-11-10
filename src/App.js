@@ -4,6 +4,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Toolbar from '@mui/material/Toolbar';
 
 import {
+  applyIosNavBarHack,
+  removeIosNavBarHack,
   AppProps,
   AppScreen,
   LOG
@@ -11,6 +13,7 @@ import {
 
 import { Global, GlobalHolder } from './Global';
 import * as Feed from './Feed';
+import * as Util from './Util';
 import BusyScreen from './components/BusyScreen';
 import Dialogs from './components/Screens';
 import EditorDrawer from './components/EditorDrawer';
@@ -54,6 +57,16 @@ function App(props) {
   const [app, setApp] = React.useState(null);
   const [started, setStarted] = React.useState(false);
   const appScreenFrameRef = React.useRef();
+  const previousApp = Util.usePrevious(app);
+
+
+  if (previousApp && !app) {
+    removeIosNavBarHack();
+  }
+
+  if (app && !previousApp) {
+    applyIosNavBarHack();
+  }
 
   currentApp = app;
 
