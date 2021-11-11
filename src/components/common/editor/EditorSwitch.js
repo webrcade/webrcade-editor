@@ -2,7 +2,8 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import Tooltip from '@mui/material/Tooltip';
+
+import CommonTooltip from '../CommonTooltip';
 
 export default function EditorSwitch(props) {
   const { label, checked, sx, onChange, tooltip, ...other } = props;
@@ -26,14 +27,11 @@ export default function EditorSwitch(props) {
       {...other}
     >
       {tooltip !== undefined && tooltip.length > 0 ? (
-        <Tooltip
-          enterDelay={500}
-          enterNextDelay={500}
-          arrow={true}
+        <CommonTooltip
           title={tooltip}
         >
           {switchControl}
-        </Tooltip>
+        </CommonTooltip>
       ) : (
         <>
           {switchControl}

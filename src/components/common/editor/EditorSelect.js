@@ -4,7 +4,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
-import Tooltip from '@mui/material/Tooltip';
+
+import CommonTooltip from '../CommonTooltip';
 
 export default function EditorSelect(props) {
   const { 
@@ -45,14 +46,11 @@ export default function EditorSelect(props) {
       {...other}
     >
       {tooltip !== undefined && tooltip.length > 0 ? (
-        <Tooltip
-          enterDelay={500}
-          enterNextDelay={500}
-          arrow={true}
+        <CommonTooltip
           title={tooltip}
         >
           {selectControl}
-        </Tooltip>
+        </CommonTooltip>
       ) : (
         <>
           {selectControl}

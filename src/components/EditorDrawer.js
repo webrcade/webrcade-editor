@@ -9,14 +9,15 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import Toolbar from '@mui/material/Toolbar';
-import Tooltip from '@mui/material/Tooltip';
 import UploadIcon from '@mui/icons-material/Upload';
 
 import * as WrcCommon from '@webrcade/app-common'
-import * as Feed from '../Feed';
-import Prefs from '../Prefs';
+
 import { Global, GlobalHolder } from '../Global';
+import CommonTooltip from './common/CommonTooltip';
+import * as Feed from '../Feed';
 import NewMenu from './NewMenu';
+import Prefs from '../Prefs';
 
 function downloadFeed() {
   const feed = Feed.exportFeed(Global.getFeed());
@@ -56,10 +57,7 @@ function EditorDrawer(props) {
       </List>
       <Divider />
       <List>
-        <Tooltip
-          enterDelay={500}
-          enterNextDelay={500}
-          arrow={true}
+        <CommonTooltip
           title="Import a feed from a URL or local file."
         >
           <ListItem button key="import" onClick={(e) => {
@@ -69,11 +67,8 @@ function EditorDrawer(props) {
             <ListItemIcon><UploadIcon /></ListItemIcon>
             <ListItemText primary="Import" />
           </ListItem>
-        </Tooltip>
-        <Tooltip
-          enterDelay={500}
-          enterNextDelay={500}
-          arrow={true}
+        </CommonTooltip>
+        <CommonTooltip
           title="Export and download the feed."
         >
           <ListItem button key="export" onClick={() => {
@@ -83,14 +78,11 @@ function EditorDrawer(props) {
             <ListItemIcon><DownloadIcon /></ListItemIcon>
             <ListItemText primary="Export" />
           </ListItem>
-        </Tooltip>
+        </CommonTooltip>
       </List>
       <Divider />
       <List>
-        <Tooltip
-          enterDelay={500}
-          enterNextDelay={500}
-          arrow={true}
+        <CommonTooltip
           title="Test the feed in the webЯcade font-end."
         >
           <ListItem button key="test" onClick={() => {
@@ -107,8 +99,7 @@ function EditorDrawer(props) {
             <ListItemIcon><CheckCircleIcon /></ListItemIcon>
             <ListItemText primary="Test" />
           </ListItem>
-        </Tooltip>
-
+        </CommonTooltip>
       </List>
     </div>
   );
