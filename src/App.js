@@ -59,12 +59,15 @@ function App(props) {
   const appScreenFrameRef = React.useRef();
   const previousApp = Util.usePrevious(app);
 
-
   if (previousApp && !app) {
+    document.body.style.removeProperty('overflow');
     removeIosNavBarHack();
   }
 
   if (app && !previousApp) {
+    setTimeout(() => {
+      document.body.style.overflow = 'hidden';
+    }, 0);
     applyIosNavBarHack();
   }
 

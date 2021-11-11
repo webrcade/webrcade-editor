@@ -13,6 +13,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 
 import * as WrcCommon from '@webrcade/app-common'
 import * as Feed from '../Feed';
+import Prefs from '../Prefs';
 import { Global, GlobalHolder } from '../Global';
 import NewMenu from './NewMenu';
 
@@ -71,15 +72,16 @@ function EditorDrawer(props) {
       </List>
       <Divider />
       <List>
-        <ListItem button key="test" onClick={() => {
+        <ListItem button key="test" onClick={() => {          
           setOpen(false);
-          const url = (
-            WrcCommon.isDev() ?
-              WrcCommon.config.getLocalUrl() :
-              (WrcCommon.isStaging() ?
-                "https://webrcade.github.io/webrcade-staging" :
-                "https://play.webrcade.com"));
-          window.open(url, "_webrcade")
+          // Store the test feed
+          Prefs.storeTestFeed(GlobalHolder.getFeed())
+
+          // Open webrcade
+          let url = (WrcCommon.isDev() ? 
+            WrcCommon.config.getLocalUrl() : "../../");
+          url += `?${WrcCommon.AppProps.RP_EDITOR_TEST}=${WrcCommon.AppProps.RV_EDITOR_TEST_ENABLED}`;
+          window.open(url/*, "_webrcade"*/)
         }}>
           <ListItemIcon><CheckCircleIcon /></ListItemIcon>
           <ListItemText primary="Test" />
@@ -114,8 +116,8 @@ function EditorDrawer(props) {
       >
         {drawer}
       </Drawer>
-      <NewMenu 
-        anchorEl={newMenuAnchor} 
+      <NewMenu
+        anchorEl={newMenuAnchor}
         setAnchorEl={setNewMenuAnchor}
         setOpen={setOpen}
       />

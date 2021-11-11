@@ -15,6 +15,7 @@ import { GlobalHolder, Global } from '../../Global';
 import {
   AppRegistry, APP_TYPE_KEYS, isEmptyString
 } from '@webrcade/app-common'
+import Prefs from '../../Prefs';
 
 // import * as deepmerge from 'deepmerge'
 // const a = {a: 'a', b: { b1: 'b1', b2: 'b2'}}
@@ -84,7 +85,15 @@ export default function ItemEditor(props) {
       setTabValue={setTabValue}
       onShow={() => {
         validator.reset();
-        setItem(Util.cloneObject(item))
+        const clone = Util.cloneObject(item);
+        if (isCreate) {
+          const type = Prefs.getLastNewType();
+          if (!isEmptyString(type)) {
+            clone.type = type;
+          }
+        }
+        setItem(clone)
+
         forceUpdate();
       }}
       onOk={() => {
@@ -143,6 +152,10 @@ export default function ItemEditor(props) {
                     applyDefaults(item, type)
 
                     console.log(item);
+
+                    if (isCreate) {
+                      Prefs.setLastNewType(type);
+                    }
 
                     // Set the default when Doom type is selected
                     if (type === APP_TYPE_KEYS.PRBOOM ||

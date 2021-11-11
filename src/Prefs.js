@@ -15,6 +15,7 @@ class PrefsImpl {
   PREFIX = "editor.";
   PREFERENCES_PROP = this.PREFIX + "prefs";
   FEED_PROP = this.PREFIX + "feed";
+  TEST_FEED_PROP = this.PREFIX + "testFeed";
 
   async load() {
     const { storage, PREFERENCES_PROP, FEED_PROP } = this;
@@ -53,9 +54,22 @@ class PrefsImpl {
     return Util.asString(this.prefs.lastUrl);
   }
 
+  async setLastNewType(type) {
+    this.prefs.lastNewType = type;
+    this.save();
+  }
+
+  getLastNewType() {
+    return Util.asString(this.prefs.lastNewType);
+  }
+
   async setFeed(feed) {
     this.feed = feed;
-    this.saveFeed();
+    this.saveFeed(this.FEED_PROP, feed);
+  }
+
+  async storeTestFeed(feed) {
+    this.saveFeed(this.TEST_FEED_PROP, feed);
   }
 
   getFeed() {
@@ -72,10 +86,10 @@ class PrefsImpl {
     }
   }
 
-  async saveFeed() {
-    const { feed, storage, FEED_PROP } = this;
+  async saveFeed(key, feed) {
+    const {storage } = this;
     try {
-      await storage.put(FEED_PROP, JSON.stringify(feed));
+      await storage.put(key, JSON.stringify(feed));
     } catch (e) {
       LOG.error("Error saving feed: " + e);
     }
