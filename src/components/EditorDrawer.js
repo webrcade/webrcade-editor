@@ -9,6 +9,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import Toolbar from '@mui/material/Toolbar';
+import Tooltip from '@mui/material/Tooltip';
 import UploadIcon from '@mui/icons-material/Upload';
 
 import * as WrcCommon from '@webrcade/app-common'
@@ -55,41 +56,62 @@ function EditorDrawer(props) {
       </List>
       <Divider />
       <List>
-        <ListItem button key="import" onClick={(e) => {
-          setOpen(false);
-          Global.openImportDialog(true);
-        }}>
-          <ListItemIcon><UploadIcon /></ListItemIcon>
-          <ListItemText primary="Import" />
-        </ListItem>
-        <ListItem button key="download" onClick={() => {
-          setOpen(false);
-          downloadFeed();
-        }}>
-          <ListItemIcon><DownloadIcon /></ListItemIcon>
-          <ListItemText primary="Download" />
-        </ListItem>
+        <Tooltip
+          enterDelay={500}
+          enterNextDelay={500}
+          arrow={true}
+          title="Import a feed from a URL or local file."
+        >
+          <ListItem button key="import" onClick={(e) => {
+            setOpen(false);
+            Global.openImportDialog(true);
+          }}>
+            <ListItemIcon><UploadIcon /></ListItemIcon>
+            <ListItemText primary="Import" />
+          </ListItem>
+        </Tooltip>
+        <Tooltip
+          enterDelay={500}
+          enterNextDelay={500}
+          arrow={true}
+          title="Export and download the feed."
+        >
+          <ListItem button key="export" onClick={() => {
+            setOpen(false);
+            downloadFeed();
+          }}>
+            <ListItemIcon><DownloadIcon /></ListItemIcon>
+            <ListItemText primary="Export" />
+          </ListItem>
+        </Tooltip>
       </List>
       <Divider />
       <List>
-        <ListItem button key="test" onClick={() => {          
-          setOpen(false);
-          // Store the test feed
-          Prefs.storeTestFeed(GlobalHolder.getFeed())
+        <Tooltip
+          enterDelay={500}
+          enterNextDelay={500}
+          arrow={true}
+          title="Test the feed in the webЯcade font-end."
+        >
+          <ListItem button key="test" onClick={() => {
+            setOpen(false);
+            // Store the test feed
+            Prefs.storeTestFeed(GlobalHolder.getFeed())
 
-          // Open webrcade
-          let url = (WrcCommon.isDev() ? 
-            WrcCommon.config.getLocalUrl() : "../../");
-          url += `?${WrcCommon.AppProps.RP_EDITOR_TEST}=${WrcCommon.AppProps.RV_EDITOR_TEST_ENABLED}`;
-          window.open(url/*, "_webrcade"*/)
-        }}>
-          <ListItemIcon><CheckCircleIcon /></ListItemIcon>
-          <ListItemText primary="Test" />
-        </ListItem>
+            // Open webrcade
+            let url = (WrcCommon.isDev() ?
+              WrcCommon.config.getLocalUrl() : "../../");
+            url += `?${WrcCommon.AppProps.RP_EDITOR_TEST}=${WrcCommon.AppProps.RV_EDITOR_TEST_ENABLED}`;
+            window.open(url/*, "_webrcade"*/)
+          }}>
+            <ListItemIcon><CheckCircleIcon /></ListItemIcon>
+            <ListItemText primary="Test" />
+          </ListItem>
+        </Tooltip>
+
       </List>
     </div>
   );
-
   return (
     <>
       <Drawer
