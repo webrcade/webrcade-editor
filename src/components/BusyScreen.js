@@ -5,6 +5,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
+import { enableDropHandler } from '../UrlProcessor';
 import { GlobalHolder } from '../Global';
 
 export default function BusyScreen(props) {
@@ -14,11 +15,14 @@ export default function BusyScreen(props) {
   GlobalHolder.setBusyScreenOpen = setOpen;
   GlobalHolder.setBusyScreenMessage = setMessage;
 
+  // Enable/disable drop handler
+  enableDropHandler(!open);
+
   return (
     <Backdrop
       sx={{ 
         backgroundColor: 'rgba(0,0,0,0.85)', 
-        zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        zIndex: (theme) => theme.zIndex.drawer + 100 }}
       open={open}
     >
       <Box>

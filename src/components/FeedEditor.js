@@ -80,14 +80,16 @@ export default function FeedEditor(props) {
             tabIndex={thumbTab}
             thumbSrc={feed.thumbnail}
             defaultThumbSrc={FeedThumbImage}
-            onChange={(e) => { setFeed({ ...feed, thumbnail: e.target.value }) }}
+            object={feed}
+            setObject={setFeed}
           />
           <BackgroundTab
             tabValue={tabValue}
             tabIndex={bgTab}
             thumbSrc={feed.background}
             defaultThumbSrc={FeedBackgroundImage}
-            onChange={(e) => { setFeed({ ...feed, background: e.target.value }) }}
+            object={feed}
+            setObject={setFeed}
           />
         </>
       )}

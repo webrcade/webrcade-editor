@@ -12,7 +12,8 @@ export default function ThumbnailTab(props) {
     tabIndex,
     thumbSrc, 
     defaultThumbSrc,
-    onChange
+    setObject,
+    object
   } = props;
   const [thumbnailError, setThumbnailError] = React.useState(null);
 
@@ -22,11 +23,12 @@ export default function ThumbnailTab(props) {
         <EditorTextField
           sx={{ width: '50ch' }}
           label="Thumbnail location (URL)"
-          onChange={onChange}
           value={Util.asString(thumbSrc)}
           helperText={thumbnailError}
           color={thumbnailError ? "warning" : undefined}
           focused={thumbnailError ? true : false}
+          onDropText={(text) => { setObject({ ...object, thumbnail: text }) }}
+          onChange={(e) => { setObject({ ...object, thumbnail: e.target.value }) }}
         />
       </div>
       <div>

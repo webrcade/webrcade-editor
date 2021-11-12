@@ -9,6 +9,7 @@ import Tabs from '@mui/material/Tabs';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 
+import { enableDropHandler } from '../../../UrlProcessor';
 import { usePrevious } from '../../../Util';
 
 export default function Editor(props) {
@@ -33,6 +34,9 @@ export default function Editor(props) {
   const prevOpen = usePrevious(isOpen);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+
+  // Enable/disable the drop handler
+  enableDropHandler(!isOpen);
 
   React.useEffect(() => {
     if (isOpen && !prevOpen) {
@@ -73,7 +77,9 @@ export default function Editor(props) {
             <Tabs value={tabValue} onChange={(e, value) => { setTabValue(value) }}  
             variant="scrollable"
             scrollButtons="auto"
-            allowScrollButtonsMobile>
+            allowScrollButtonsMobile
+            sx={{display: tabs.length === 1 ? 'none' : undefined}}
+          >
               {tabs}
             </Tabs>
           </Box>

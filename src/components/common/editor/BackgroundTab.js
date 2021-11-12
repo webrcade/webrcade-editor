@@ -11,7 +11,8 @@ export default function BackgroundTab(props) {
     tabIndex,
     thumbSrc,
     defaultThumbSrc,
-    onChange
+    object,
+    setObject
   } = props;
   const [backgroundError, setBackgroundError] = React.useState(null);
 
@@ -21,11 +22,12 @@ export default function BackgroundTab(props) {
         <EditorTextField
           sx={{ width: '50ch' }}
           label="Background location (URL)"
-          onChange={onChange}
           value={Util.asString(thumbSrc)}
           helperText={backgroundError}
           color={backgroundError ? "warning" : undefined}
           focused={backgroundError ? true : false}
+          onDropText={(text) => { setObject({ ...object, background: text }) }}
+          onChange={(e) => { setObject({ ...object, background: e.target.value }) }}
         />
       </div>
       <div>

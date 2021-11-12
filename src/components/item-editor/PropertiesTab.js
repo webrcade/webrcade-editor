@@ -149,6 +149,10 @@ export default function PropertiesTab(props) {
             required
             sx={{ width: '50ch' }}
             label="ROM (URL)"
+            onDropText={(text) => {
+              const props = { ...object.props, rom: text }
+              setObject({ ...object, props })
+            }}
             onChange={(e) => {
               const props = { ...object.props, rom: e.target.value }
               setObject({ ...object, props })

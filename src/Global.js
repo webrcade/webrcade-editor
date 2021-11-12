@@ -22,6 +22,7 @@ class Holder {
   setEditCategory = null;
   setFeedEditorOpen = null;
   setEditFeed = null;
+  setCreateFromUrlDialogOpen = null;
 }
 
 const GlobalHolder = Holder.instance;
@@ -33,6 +34,8 @@ const Global = {
     GlobalHolder.setBusyScreenOpen(open);
     if (open && message) {
       GlobalHolder.setBusyScreenMessage(message);
+    } else {
+      GlobalHolder.setBusyScreenMessage("");
     }
   },
   openItemEditor: (open, isCreate = false) => {
@@ -40,6 +43,9 @@ const Global = {
   },
   openImportDialog: (open) => {
     GlobalHolder.setImportDialogOpen(open);
+  },
+  openCreateFromUrlDialog: (open) => {
+    GlobalHolder.setCreateFromUrlDialogOpen(open);
   },
   editItem: (item) => {
     Global.openItemEditor(true);

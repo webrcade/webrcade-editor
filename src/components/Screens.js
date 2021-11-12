@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import CategoryEditor from './CategoryEditor'; 
+import CreateFromUrlDialog from './CreateFromUrlDialog';
 import DisplayMessage from './DisplayMessage'; 
 import FeedEditor from './FeedEditor';
 import ImportDialog from './ImportDialog';
@@ -11,6 +12,7 @@ export default function Screens() {
   return (
     <>
       <CategoryEditor />
+      <CreateFromUrlDialog />
       <FeedEditor />
       <DisplayMessage />
       <ImportDialog/>

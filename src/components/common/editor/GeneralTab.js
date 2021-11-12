@@ -30,6 +30,7 @@ export default function GeneralTab(props) {
         <EditorTextField
           required
           label="Title"
+          onDropText={(text) => { setObject({ ...object, title: text }) }}
           onChange={(e) => { setObject({ ...object, title: e.target.value }) }}
           value={Util.asString(object.title)}
           error={!validator.isValid(tabIndex, "title")}
@@ -39,6 +40,7 @@ export default function GeneralTab(props) {
         <EditorTextField
           sx={{ width: '50ch' }}
           label="Long title"
+          onDropText={(text) => { setObject({ ...object, longTitle: text }) }}
           onChange={(e) => { setObject({ ...object, longTitle: e.target.value }) }}
           value={Util.asString(object.longTitle)}
         />
@@ -49,6 +51,7 @@ export default function GeneralTab(props) {
           label="Description"
           multiline
           rows={4}
+          onDropText={(text) => { setObject({ ...object, description: text }) }}
           onChange={(e) => { setObject({ ...object, description: e.target.value }) }}
           value={Util.asString(object.description)}
         />

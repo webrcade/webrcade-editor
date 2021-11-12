@@ -83,6 +83,7 @@ export default function ImportDialog(props) {
               required
               sx={{ width: '50ch' }}
               label="Feed location (URL)"
+              onDropText={(text) => { setFeedUrl(text); }}
               onChange={(e) => { setFeedUrl(e.target.value); }}
               value={feedUrl}
               error={!validator.isValid(urlTab, "feedUrl")}

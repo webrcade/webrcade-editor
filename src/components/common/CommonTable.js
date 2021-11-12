@@ -104,6 +104,7 @@ const EnhancedTableToolbar = (props) => {
       sx={{
         pl: { xs: 1 },
         pr: { xs: 2 },
+        overflow: 'hidden',
         ...(numSelected >= 0 && {
           bgcolor: (theme) =>
             alpha(theme.palette.primary.main, theme.palette.action.hoverOpacity),
@@ -113,11 +114,11 @@ const EnhancedTableToolbar = (props) => {
       {renderToolbarItems(selection, selected)}
       {selection ? (
         <Typography
-          sx={{ flex: '1 1 100%' }}
+          sx={{ flex: '1 1 100%', whiteSpace: 'noWrap'}}
           color="inherit"
           variant="subtitle1"
           component="div"
-          align="right"
+          align="right"          
         >
           {numSelected} selected
         </Typography>
@@ -127,14 +128,13 @@ const EnhancedTableToolbar = (props) => {
           variant="h6"
           id="tableTitle"
           component="div"
-          align="right"
+          align="right"          
         >
         </Typography>
       )}
     </Toolbar>
   );
 };
-
 
 function performSort(arr, comparator, firstSort) {
   let rows = arr;

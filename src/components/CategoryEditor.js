@@ -93,14 +93,16 @@ export default function CategoryEditor(props) {
             tabIndex={thumbTab}
             thumbSrc={category.thumbnail}
             defaultThumbSrc={CategoryThumbImage}
-            onChange={(e) => { setCategory({ ...category, thumbnail: e.target.value }) }}
+            object={category}
+            setObject={setCategory}
           />
           <BackgroundTab
             tabValue={tabValue}
             tabIndex={bgTab}
             thumbSrc={category.background}
             defaultThumbSrc={CategoryBackgroundImage}
-            onChange={(e) => { setCategory({ ...category, background: e.target.value }) }}
+            object={category}
+            setObject={setCategory}
           />
         </>
       )}

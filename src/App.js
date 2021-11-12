@@ -7,11 +7,12 @@ import {
   applyIosNavBarHack,
   removeIosNavBarHack,
   AppProps,
-  AppScreen,
+  AppScreen,  
   LOG
 } from '@webrcade/app-common'
 
 import { Global, GlobalHolder } from './Global';
+import { dropHandler } from './UrlProcessor';
 import * as Feed from './Feed';
 import * as Util from './Util';
 import BusyScreen from './components/BusyScreen';
@@ -26,6 +27,10 @@ const HASH_PLAY = "play";
 const drawerWidth = 190;
 
 let currentApp = null;
+let popstateListener = null;
+let messageListener = null;
+
+function ignore(event) { event.preventDefault(); }
 
 const createPopstateHandler = (frameRef) => {
   return (e) => {
@@ -74,13 +79,17 @@ function App(props) {
   currentApp = app;
 
   React.useEffect(() => {
+    console.log("Application was loaded");
     Global.openBusyScreen(true, "Preparing editor...");
 
-    console.log("Application was loaded");
-    window.addEventListener("popstate",
-      createPopstateHandler(appScreenFrameRef), false);
-    window.addEventListener("message",
-      createMessageListener(setApp));
+    document.addEventListener("drop", dropHandler);
+    document.addEventListener("dragenter", ignore);
+    document.addEventListener("dragover", ignore);    
+    
+    popstateListener = createPopstateHandler(appScreenFrameRef);
+    window.addEventListener("popstate", popstateListener, false);
+    messageListener = createMessageListener(setApp);
+    window.addEventListener("message", messageListener);
 
     // Clear hash if an app is not loaded
     const hash = window.location.href.indexOf('#');
@@ -95,14 +104,25 @@ function App(props) {
         const feed = Prefs.getFeed();
 
         // For now set to example, ultimately will come from preferences
-        setFeed(feed ? feed : Feed.exampleFeed());        
+        setFeed(feed ? feed : Feed.exampleFeed());
 
         // Mark as started
         setStarted(true);
       })
       .finally(() => {
         Global.openBusyScreen(false);
-      })
+      })    
+    
+    return () => {
+      console.log("Application was unloaded");
+
+      document.removeEventListener("drop", dropHandler);
+      document.removeEventListener("dragenter", ignore);
+      document.removeEventListener("dragover", ignore);       
+
+      window.removeEventListener("popstate", popstateListener, false);    
+      window.removeEventListener("message", messageListener);  
+    }
     // eslint-disable-next-line    
   }, []);
 
@@ -122,7 +142,11 @@ function App(props) {
       <BusyScreen />
       {started ? (
         <>
-          <Box sx={{ display: app ? 'none' : 'flex' }}>            
+          <Box 
+            sx={{ 
+              display: app ? 'none' : 'flex'              
+            }}
+          >
             <MainAppBar />
             <Box sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}>
               <EditorDrawer drawerWidth={drawerWidth} />

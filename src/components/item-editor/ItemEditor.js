@@ -182,14 +182,16 @@ export default function ItemEditor(props) {
             tabIndex={thumbTab}
             thumbSrc={item.thumbnail}
             defaultThumbSrc={defaultThumbnail}
-            onChange={(e) => { setItem({ ...item, thumbnail: e.target.value }) }}
+            object={item}
+            setObject={setItem}
           />
           <BackgroundTab
             tabValue={tabValue}
             tabIndex={bgTab}
             thumbSrc={item.background}
             defaultThumbSrc={defaultBackground}
-            onChange={(e) => { setItem({ ...item, background: e.target.value }) }}
+            object={item}
+            setObject={setItem}
           />
         </>
       )}
