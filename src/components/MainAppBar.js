@@ -1,8 +1,10 @@
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
+import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 
@@ -25,14 +27,24 @@ function MainAppBar(props) {
         >
           <MenuIcon />
         </IconButton>
-        <Avatar  
-          sx={{ mr: 1.3, width: 32, height:32 }} 
+        <Avatar
+          sx={{ mr: 1.3, width: 32, height: 32 }}
           variant="square"
-          src={WrcCommon.WebrcadeLogoDarkImage}           
+          src={WrcCommon.WebrcadeLogoDarkImage}
         />
-        <Typography variant="h6" noWrap>
+        <Typography variant="h6" noWrap sx={{ flexGrow: 1 }}>
           webЯcade Feed Editor
-          </Typography>
+        </Typography>
+        <Tooltip title="Help">
+          <IconButton
+            color="inherit"
+            edge="start"
+            onClick={() => { window.open('https://docs.webrcade.com/feeds/editor/'); }}
+            sx={{ ml: 2 }}
+          >
+            <HelpCenterIcon />
+          </IconButton>
+        </Tooltip>
       </Toolbar>
     </StyledAppBar>
   );
