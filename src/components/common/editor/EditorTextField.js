@@ -1,9 +1,6 @@
 import TextField from '@mui/material/TextField';
 
-import {
-  isValidString
-} from '@webrcade/app-common'
-
+import { dropHandler } from '../../../Drop';
 
 export default function ItemTextField(props) {
   const {
@@ -17,18 +14,7 @@ export default function ItemTextField(props) {
       onDrop={(e) => {
         if (onDropText) {
           e.preventDefault();
-
-          for (let i = 0; i < e.dataTransfer.items.length; i++) {
-            const item = e.dataTransfer.items[i];
-            if (item.kind === 'string' &&
-              (item.type.match('^text/uri-list') || item.type.match('^text/plain'))) {
-              item.getAsString((text) => {
-                if (isValidString(text)) {
-                  onDropText(text);
-                }
-              });
-            }
-          }
+          dropHandler(e, (text) => { onDropText(text); });
         }
       }}
       sx={{

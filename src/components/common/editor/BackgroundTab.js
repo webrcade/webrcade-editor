@@ -35,6 +35,7 @@ export default function BackgroundTab(props) {
           src={thumbSrc}
           defaultSrc={defaultThumbSrc}
           errorCallback={setBackgroundError}
+          onDropText={(text) => { setObject({ ...object, background: text }) }}
           sx={{
             objectFit: 'cover',
             height: '100%'

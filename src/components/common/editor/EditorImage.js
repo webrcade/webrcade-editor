@@ -7,6 +7,7 @@ export default function EditorImage(props) {
     defaultSrc, 
     requiredSize, 
     errorCallback,
+    onDropText,
     ...other 
   } = props;
   return (
@@ -15,6 +16,7 @@ export default function EditorImage(props) {
       defaultImageSrc={defaultSrc}      
       requiredSize={requiredSize}
       errorCallback={errorCallback}
+      onDropText={onDropText}
       sx={{
         m: 1.5,
         backgroundColor: 'transparent',

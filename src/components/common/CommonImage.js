@@ -4,6 +4,7 @@ import Avatar from '@mui/material/Avatar';
 import Link from '@mui/material/Link';
 
 import * as WrcCommon from '@webrcade/app-common'
+import { dropHandler } from '../../Drop';
 import { usePrevious } from '../../Util';
 
 export default function CommonImage(props) {
@@ -12,6 +13,7 @@ export default function CommonImage(props) {
     defaultImageSrc,
     requiredSize,
     errorCallback,
+    onDropText,
     sx
   } = props;
   const [img, setImg] = React.useState(null);
@@ -25,8 +27,6 @@ export default function CommonImage(props) {
       (imageSrc !== prevValues.imageSrc) ||
       (defaultImageSrc !== prevValues.defaultImageSrc) ||
       (requiredSize !== prevValues.requiredSize))) {
-
-//console.log('Load image! ' + imageSrc)
 
       const tempImg = new Image();
       tempImg.onload = (e) => {
@@ -48,8 +48,22 @@ export default function CommonImage(props) {
                 target="_blank">(Rect Fitter)</Link>
             </>
           );
+
           if (errorCallback) errorCallback(msg);
-          setImg(defaultImageSrc);
+
+          // Attempt to use proxy
+          const proxyImg = new Image();
+          proxyImg.onload = (e) => {
+            const proxyTarget = e.target;
+            setImg(proxyTarget.src);
+          }
+          proxyImg.onerror = (e) => {            
+            setImg(defaultImageSrc);
+          }
+          const url = encodeURIComponent(target.src);
+          //&fpy=0&a=focal          
+          //&fit=contain&cbg=00FFFFFF
+          proxyImg.src = `https://images.weserv.nl/?url=${url}&w=${requiredSize[0]}&h=${requiredSize[1]}&fit=cover`; 
         } else {
           if (errorCallback) errorCallback(null);
           setImg(target.src);
@@ -68,6 +82,12 @@ export default function CommonImage(props) {
   return (
     <Avatar
       variant="rounded"
+      onDrop={(e) => {
+        if (onDropText) {
+          e.preventDefault();
+          dropHandler(e, (text) => { onDropText(text); });
+        }
+      }}
       sx={{
         backgroundColor: 'black',
         ...sx

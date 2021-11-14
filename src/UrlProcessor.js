@@ -6,6 +6,7 @@ import {
 } from '@webrcade/app-common'
 
 import * as Feed from './Feed';
+import * as Drop from './Drop';
 import { Global } from './Global';
 
 class Processor {
@@ -175,21 +176,10 @@ const enableDropHandler = (enable) => {
 const dropHandler = (e) => {
   e.preventDefault();
   if (dropHandlerEnabled) {
-    console.log('HANDLE DROP!');
-    if (e.dataTransfer.items) {
-      for (let i = 0; i < e.dataTransfer.items.length; i++) {
-        const item = e.dataTransfer.items[i];
-        if (item.kind === 'string' &&
-          (item.type.match('^text/uri-list') || item.type.match('^text/plain'))) {
-          item.getAsString(function (url) {
-            process([url])
-          });
-          break;
-        }
-      }
-    }
+    e.preventDefault();
+    Drop.dropHandler(e, (text) => { process([text]); });
   }
-}
+};
 
 const process = (urls) => {
   const catId = Global.getFeedCategoryId();

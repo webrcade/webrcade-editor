@@ -101,15 +101,25 @@ function App(props) {
     // Load prefs
     Prefs.load()
       .then(() => {
-        const feed = Prefs.getFeed();
-
-        // For now set to example, ultimately will come from preferences
-        setFeed(feed ? feed : Feed.exampleFeed());
-
-        // Mark as started
-        setStarted(true);
+        const feed = Prefs.getFeed() 
+        if (feed) {
+          // return feed from prefs
+          return feed;
+        } else {
+          // load default feed
+          return Feed.loadFeedFromUrl('https://play.webrcade.com/default-feed.json')
+        }        
+      })
+      .then((feed) => {
+        setFeed(feed);
+      })
+      .catch(e => {
+        LOG.error("Error during startup: " + e);
       })
       .finally(() => {
+        // Mark as started
+        setStarted(true);
+
         Global.openBusyScreen(false);
       })    
     

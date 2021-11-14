@@ -5,18 +5,26 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
+import { usePrevious } from '../Util';
 import { enableDropHandler } from '../UrlProcessor';
 import { GlobalHolder } from '../Global';
 
-export default function BusyScreen(props) {
+export default function BusyScreen(props) {  
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState(false);
+  const prevOpen = usePrevious(open);
 
   GlobalHolder.setBusyScreenOpen = setOpen;
   GlobalHolder.setBusyScreenMessage = setMessage;
 
-  // Enable/disable drop handler
-  enableDropHandler(!open);
+  // Enable/disable the drop handler
+  if (prevOpen && !open) {
+    enableDropHandler(true);
+//console.log('enable drop');
+  } else if (!prevOpen && open) {
+//console.log('disable drop');    
+    enableDropHandler(false);
+  }
 
   return (
     <Backdrop

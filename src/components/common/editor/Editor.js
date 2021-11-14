@@ -36,7 +36,13 @@ export default function Editor(props) {
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   // Enable/disable the drop handler
-  enableDropHandler(!isOpen);
+  if (prevOpen && !isOpen) {
+    enableDropHandler(true);
+//console.log('enable drop');
+  } else if (!prevOpen && isOpen) {
+//console.log('disable drop');    
+    enableDropHandler(false);
+  }
 
   React.useEffect(() => {
     if (isOpen && !prevOpen) {

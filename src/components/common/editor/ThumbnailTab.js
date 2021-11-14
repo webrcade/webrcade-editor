@@ -37,6 +37,7 @@ export default function ThumbnailTab(props) {
           defaultSrc={defaultThumbSrc}
           requiredSize={Global.getThumbSize()}
           errorCallback={setThumbnailError}
+          onDropText={(text) => { setObject({ ...object, thumbnail: text }) }}
         />
       </div>
     </EditorTabPanel>
