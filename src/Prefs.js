@@ -47,7 +47,7 @@ class PrefsImpl {
 
   async setLastFeedUrl(lastUrl) {
     this.prefs.lastUrl = lastUrl;
-    this.save();
+    await this.save();
   }
 
   getLastFeedUrl() {
@@ -56,7 +56,7 @@ class PrefsImpl {
 
   async setLastNewType(type) {
     this.prefs.lastNewType = type;
-    this.save();
+    await this.save();
   }
 
   getLastNewType() {
@@ -65,11 +65,11 @@ class PrefsImpl {
 
   async setFeed(feed) {
     this.feed = feed;
-    this.saveFeed(this.FEED_PROP, feed);
+    await this.saveFeed(this.FEED_PROP, feed);
   }
 
   async storeTestFeed(feed) {
-    this.saveFeed(this.TEST_FEED_PROP, feed);
+    await this.saveFeed(this.TEST_FEED_PROP, feed);
   }
 
   getFeed() {

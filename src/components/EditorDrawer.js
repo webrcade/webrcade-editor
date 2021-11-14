@@ -85,10 +85,11 @@ function EditorDrawer(props) {
         <CommonTooltip
           title="Test the feed in the webЯcade font-end."
         >
-          <ListItem button key="test" onClick={() => {
+          <ListItem button key="test" onClick={async () => {
             setOpen(false);
+
             // Store the test feed
-            Prefs.storeTestFeed(GlobalHolder.getFeed())
+            await Prefs.storeTestFeed(GlobalHolder.getFeed())
 
             // Open webrcade
             let url = (WrcCommon.isDev() ?
