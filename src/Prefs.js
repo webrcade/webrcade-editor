@@ -20,14 +20,13 @@ class PrefsImpl {
   async load() {
     const { storage, PREFERENCES_PROP, FEED_PROP } = this;
     try {
-      this.prefs = JSON.parse(await storage.get(PREFERENCES_PROP));
+      this.prefs = await storage.get(PREFERENCES_PROP);
       if (!this.prefs) {
         this.prefs = {};
       }
-//console.log("Loaded prefs: " + JSON.stringify(this.prefs));
       const feed = await storage.get(FEED_PROP);
       if (feed) {
-        this.feed = JSON.parse(feed);
+        this.feed = feed;
       }
       
     } catch (e) {
@@ -79,8 +78,7 @@ class PrefsImpl {
   async save() {
     const { prefs, storage, PREFERENCES_PROP } = this;
     try {
-//console.log("Saving prefs: " + JSON.stringify(prefs))      
-      await storage.put(PREFERENCES_PROP, JSON.stringify(prefs));
+      await storage.put(PREFERENCES_PROP, prefs);
     } catch (e) {
       LOG.error("Error saving preferences: " + e);
     }
@@ -89,7 +87,7 @@ class PrefsImpl {
   async saveFeed(key, feed) {
     const {storage } = this;
     try {
-      await storage.put(key, JSON.stringify(feed));
+      await storage.put(key, feed);
     } catch (e) {
       LOG.error("Error saving feed: " + e);
     }

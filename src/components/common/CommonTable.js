@@ -22,6 +22,11 @@ import Prefs from '../../Prefs';
 function descendingComparator(a, b, orderBy) {
   let aVal = a[orderBy];
   let bVal = b[orderBy];
+
+  if (aVal === undefined || bVal === undefined) {
+    return 0;
+  }
+
   if (aVal.toUpperCase && bVal.toUpperCase) {
     aVal = aVal.toUpperCase();
     bVal = bVal.toUpperCase();

@@ -47,8 +47,8 @@ const addId = (obj) => {
   obj.id = uuidv4();
 }
 
-const addUpdated = (obj) => {
-  obj.updated = Date.now();
+const addAddedTime = (obj) => {
+  obj.added = Date.now();
   return obj;
 }
 
@@ -62,7 +62,6 @@ const getItem = (feed, categoryId, itemId) => {
 
 const replaceItem = (feed, categoryId, itemId, item) => {
   const res = findItem(feed, categoryId, itemId);
-  addUpdated(item);
   if (res) {
     feed.categories[res[0]].items[res[1]] = item;
   }
@@ -77,7 +76,7 @@ const addItemsToCategory = (feed, categoryId, items) => {
     items.forEach((i) => {
       const clone = Util.cloneObject(i);
       clone.id = uuidv4()
-      addUpdated(clone);
+      addAddedTime(clone);
       cat.items.push(clone);
     });
   }

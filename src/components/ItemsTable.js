@@ -28,14 +28,14 @@ const DATE_FORMAT = {
   hour: '2-digit', minute: '2-digit'
 };
 
-function createData(id, title, type, typeName, thumbSrc, lastUpdate, item) {
+function createData(id, title, type, typeName, thumbSrc, addedTime, item) {
   return {
     id,
     title,
     type,
     typeName,
     thumbSrc,
-    lastUpdate,
+    addedTime,
     item
   };
 }
@@ -74,7 +74,7 @@ export default function ItemsTable(props) {
               item.type,
               AppRegistry.instance.getShortNameForType(item.type),
               item.thumbnail,
-              item.updated ? item.updated : 0,
+              item.added ? item.added : 0,
               item
             ))
           });
@@ -126,11 +126,11 @@ export default function ItemsTable(props) {
               width: '1%'
             },
             {
-              id: 'lastUpdate',
+              id: 'addedTime',
               numeric: false,
               disablePadding: false,
               sortable: true,
-              label: 'Updated'
+              label: 'Date Added'
             }
           ]
         }
@@ -182,8 +182,8 @@ export default function ItemsTable(props) {
                 {row.typeName}
               </TableCell>
               <TableCell style={{ whiteSpace: 'noWrap' }}>{
-                row.lastUpdate > 0 ?
-                  new Date(row.lastUpdate).toLocaleString([], DATE_FORMAT) : ""
+                row.addedTime > 0 ?
+                  new Date(row.addedTime).toLocaleString([], DATE_FORMAT) : ""
               }</TableCell>
             </>
           );
