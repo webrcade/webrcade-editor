@@ -16,40 +16,92 @@ class Processor {
     this.failed = 0;
     this.catId = catId;
     this.urls = urls;
-    this.allExtensions = AppRegistry.instance.getAllExtensions();
+    this.allExtensions = 
+      // dotted and unique
+      AppRegistry.instance.getAllExtensions(true, false);
+    this.allExtensionsNonUnique = 
+      // dotted and non-unique
+      AppRegistry.instance.getAllExtensions(true, true);
     console.log(this.allExtensions);
+    console.log(this.allExtensionsNonUnique);
   }
 
-  async processZip(url, nameParts) {
+  async processZip(blob, nameParts) {
     const uz = new Unzip();
-    const res = await new FetchAppData(url).fetch();
-    console.log(res);
+    const unzipBlob = await uz.unzip(
+      blob, this.allExtensionsNonUnique, this.allExtensions); 
+    const name = uz.getName();
+    const parts = name ? this.getNameParts(name) : null;
 
-    if (res.ok) {
-      const blob = await res.blob();
-      await uz.unzip(blob, this.allExtensions);
-      const name = uz.getName();
-      const parts = this.getNameParts(name);
-      const ext = parts[1];
-
-      const type = AppRegistry.instance.getTypeForExtension(ext);
-      return type ? [parts[0], type] : null;
-    }
-    return null;
+    return [unzipBlob, 
+      parts ? parts[0] : null, 
+      parts ? parts[1] : null
+    ];
   }
 
   async processUrl(url, nameParts) {
     let title = nameParts[0];
-    const ext = nameParts[1];
+    let ext = nameParts[1];
 
+    // Check for extension from URL
     let type = AppRegistry.instance.getTypeForExtension(ext);
 
     if (!type) {
-      const res = await this.processZip(url, nameParts);
-      if (res) {
-        title = res[0];
-        type = res[1];
+      // No type based on extension, download the file:
+      // 1) Check content-disposition
+      // 2) Check if it is a zip
+      // 3) Check magic
+      const fad = new FetchAppData(url);
+      const res = await fad.fetch();
+
+// TODO: Content-disposition for file name always
+
+      if (res.ok) {
+        const headers = fad.getHeaders(res);
+        const disposition = headers['content-disposition'];
+        if (disposition) {
+          const matches = /.*filename="(.*)".*/gmi.exec(disposition);
+          if (matches.length > 1) {
+            let match = matches[1];
+            match = match.trim();
+            if (match.length > 0) {
+              const parts = this.getNameParts(match);
+              title = parts[0];
+              ext = parts[1];
+
+              type = AppRegistry.instance.getTypeForExtension(ext);
+              if (type) {
+                LOG.info("Found type in content disposition.");
+              }    
+            }
+          }
+        }
+        
+        if (!type) {
+          let blob = await res.blob();
+          // Check for zip, no-op if it is non-zip
+          const zipRes = await this.processZip(blob, nameParts);
+          blob = zipRes[0];
+          if (zipRes[1] && zipRes[2]) {
+            title = zipRes[1];
+            ext = zipRes[2];
+            type = AppRegistry.instance.getTypeForExtension(ext);
+            if (type) {
+              LOG.info("Found type in zip.");
+            }
+          }  
+
+          if (!type) {
+            const abuffer = await new Response(blob).arrayBuffer()        
+            type = AppRegistry.instance.testMagic(new Uint8Array(abuffer));              
+            if (type) {
+              LOG.info("Found type in magic.")
+            }          
+          }
+        }
       }
+    } else {
+      LOG.info("Found type based on extension.");
     }
 
     return(type ? {
