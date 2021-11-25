@@ -5,8 +5,9 @@ import {
   LOG
 } from '@webrcade/app-common'
 
-import * as Feed from './Feed';
 import * as Drop from './Drop';
+import * as Feed from './Feed';
+import GameRegistry from './GameRegistry';
 import { Global } from './Global';
 
 class Processor {
@@ -26,7 +27,7 @@ class Processor {
     console.log(this.allExtensionsNonUnique);
   }
 
-  async processZip(blob, nameParts) {
+  async processZip(blob) {
     const uz = new Unzip();
     const unzipBlob = await uz.unzip(
       blob, this.allExtensionsNonUnique, this.allExtensions); 
@@ -42,33 +43,35 @@ class Processor {
   async processUrl(url, nameParts) {
     let title = nameParts[0];
     let ext = nameParts[1];
+    let typeName = null;
 
     // Check for extension from URL
     let type = AppRegistry.instance.getTypeForExtension(ext);
+    if (type) {
+      LOG.info("Found type based on extension.");
+    }
 
-    if (!type) {
-      // No type based on extension, download the file:
-      // 1) Check content-disposition
-      // 2) Check if it is a zip
-      // 3) Check magic
-      const fad = new FetchAppData(url);
-      const res = await fad.fetch();
+    // Fetch the file
+    const fad = new FetchAppData(url);
+    const res = await fad.fetch();
 
-// TODO: Content-disposition for file name always
+    if (res.ok) {
+      // Capture content disposition 
+      const headers = fad.getHeaders(res);      
+      const disposition = headers['content-disposition'];
+      if (disposition) {
+        const matches = /.*filename="(.*)".*/gmi.exec(disposition);
+        if (matches.length > 1) {
+          let match = matches[1];
+          match = match.trim();
+          if (match.length > 0) {
+            // Update name parts based on content disposition
+            const parts = this.getNameParts(match);
+            title = parts[0];
+            ext = parts[1];
 
-      if (res.ok) {
-        const headers = fad.getHeaders(res);
-        const disposition = headers['content-disposition'];
-        if (disposition) {
-          const matches = /.*filename="(.*)".*/gmi.exec(disposition);
-          if (matches.length > 1) {
-            let match = matches[1];
-            match = match.trim();
-            if (match.length > 0) {
-              const parts = this.getNameParts(match);
-              title = parts[0];
-              ext = parts[1];
-
+            // Check for type from content disposition (if not already resolved)
+            if (!type) {
               type = AppRegistry.instance.getTypeForExtension(ext);
               if (type) {
                 LOG.info("Found type in content disposition.");
@@ -76,36 +79,56 @@ class Processor {
             }
           }
         }
-        
-        if (!type) {
-          let blob = await res.blob();
-          // Check for zip, no-op if it is non-zip
-          const zipRes = await this.processZip(blob, nameParts);
-          blob = zipRes[0];
-          if (zipRes[1] && zipRes[2]) {
-            title = zipRes[1];
-            ext = zipRes[2];
-            type = AppRegistry.instance.getTypeForExtension(ext);
-            if (type) {
-              LOG.info("Found type in zip.");
-            }
-          }  
+      }
+      
+      let blob = await res.blob();      
+      if (blob.size === 0) {
+        LOG.info("File size is 0.");
+        return null;
+      }
 
-          if (!type) {
-            const abuffer = await new Response(blob).arrayBuffer()        
-            type = AppRegistry.instance.testMagic(new Uint8Array(abuffer));              
-            if (type) {
-              LOG.info("Found type in magic.")
-            }          
+      // Check for zip, no-op if it is non-zip
+      const zipRes = await this.processZip(blob);
+      blob = zipRes[0];
+      if (zipRes[1] && zipRes[2]) {
+        // Update name based on file found in zip
+        title = zipRes[1];
+        ext = zipRes[2];
+
+        // Check for type from zip (if not already resolved)
+        if (!type) {
+          type = AppRegistry.instance.getTypeForExtension(ext);
+          if (type) {
+            LOG.info("Found type in zip.");
           }
         }
+      }  
+
+      // Check for type in magic (if not already resolved)      
+      if (!type) {        
+        const abuffer = await new Response(blob).arrayBuffer();
+        type = AppRegistry.instance.testMagic(new Uint8Array(abuffer));              
+        if (type) {
+          LOG.info("Found type in magic.")
+        }
       }
-    } else {
-      LOG.info("Found type based on extension.");
+      
+      const iMd5 = await AppRegistry.instance.getMd5(blob, type);
+      LOG.info(iMd5);      
+      const game = GameRegistry.find(iMd5);
+      LOG.info(game);
+      if (game) {
+        typeName = game[0];
+        title = game[1];        
+      }
     }
 
-    return(type ? {
-      title: title, type: type.key,
+    if (!typeName && type) {
+      typeName = type.key;
+    }
+
+    return(typeName && title ? {
+      title: title, type: typeName,
       props: {
         rom: url
       }

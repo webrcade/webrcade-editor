@@ -19,6 +19,7 @@ import BusyScreen from './components/BusyScreen';
 import Dialogs from './components/Screens';
 import EditorDrawer from './components/EditorDrawer';
 import FeedTabs from './components/FeedTabs';
+import GameRegistry from './GameRegistry';
 import MainAppBar from './components/MainAppBar';
 import Prefs from './Prefs';
 import SelectedFeed from './components/SelectedFeed';
@@ -100,6 +101,7 @@ function App(props) {
 
     // Load prefs
     Prefs.load()
+      .then(() => GameRegistry.init()) // Init the game registry
       .then(() => {
         const feed = Prefs.getFeed() 
         if (feed) {
