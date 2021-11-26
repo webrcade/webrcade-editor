@@ -43,7 +43,7 @@ class Processor {
   async processUrl(url, nameParts) {
     let title = nameParts[0];
     let ext = nameParts[1];
-    let typeName = null;
+    let registryGame = {};
 
     // Check for extension from URL
     let type = AppRegistry.instance.getTypeForExtension(ext);
@@ -115,24 +115,25 @@ class Processor {
       
       const iMd5 = await AppRegistry.instance.getMd5(blob, type);
       LOG.info(iMd5);      
-      const game = GameRegistry.find(iMd5);
-      LOG.info(game);
-      if (game) {
-        typeName = game[0];
-        title = game[1];        
-      }
+      registryGame = await GameRegistry.find(iMd5);
+      LOG.info(registryGame);
     }
 
-    if (!typeName && type) {
-      typeName = type.key;
-    }
-
-    return(typeName && title ? {
-      title: title, type: typeName,
+    const game = {
+      ...registryGame,
       props: {
         rom: url
       }
-    } : null);
+    };    
+
+    if (!game.type && type) {
+      game.type = type.key;
+    }
+    if (!game.title && title) {
+      game.title = title;
+    }
+
+    return(game.type && game.title ? game : null);
   }
 
   getNameParts(url) {
