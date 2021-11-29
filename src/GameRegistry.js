@@ -11,47 +11,49 @@ class GameRegistryImpl {
   }
 
   DB_FILE = resolvePath("roms.json.zip");
+   // eslint-disable-next-line
+  TITLE_REGEX = /^([^\(]*).*.{4}$/i
 
   METADATA = {
     '2600': {
-      thumbPrefix: 'https://raw.githubusercontent.com/raz0red/Atari_-_2600/master/Named_Titles',
-      backPrefix: 'https://raw.githubusercontent.com/raz0red/Atari_-_2600/master/Named_Snaps',
-      descriptionPrefix: 'https://raw.githubusercontent.com/raz0red/RetroFe-Game-info/master/RetroFE%20Story%20Files/Atari%202600'
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-2600-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-2600-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Atari%202600/output'
     },
     '7800': {
-      thumbPrefix: 'https://raw.githubusercontent.com/raz0red/Atari_-_7800/master/Named_Titles',
-      backPrefix: 'https://raw.githubusercontent.com/raz0red/Atari_-_7800/master/Named_Snaps',
-      descriptionPrefix: 'https://raw.githubusercontent.com/raz0red/RetroFe-Game-info/master/RetroFE%20Story%20Files/Atari%207800'
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-7800-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-7800-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Atari%207800/output'
     },
     'gba': {
-      thumbPrefix: 'https://raw.githubusercontent.com/raz0red/Nintendo_-_Game_Boy_Advance/master/Named_Titles',
-      backPrefix: 'https://raw.githubusercontent.com/raz0red/Nintendo_-_Game_Boy_Advance/master/Named_Snaps',
-      descriptionPrefix: 'https://raw.githubusercontent.com/raz0red/RetroFe-Game-info/master/RetroFE%20Story%20Files/Nintendo%20Game%20Boy%20Advance'
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-gba-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-gba-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Nintendo%20Game%20Boy%20Advance/output'
     },
     'nes': {
-      thumbPrefix: 'https://raw.githubusercontent.com/raz0red/Nintendo_-_Nintendo_Entertainment_System/master/Named_Titles',
-      backPrefix: 'https://raw.githubusercontent.com/raz0red/Nintendo_-_Nintendo_Entertainment_System/master/Named_Snaps',
-      descriptionPrefix: 'https://raw.githubusercontent.com/raz0red/RetroFe-Game-info/master/RetroFE%20Story%20Files/Nintendo%20Entertainment%20System'          
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-nes-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-nes-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Nintendo%20Entertainment%20System/output'          
     },
     'snes': {
-      thumbPrefix: 'https://raw.githubusercontent.com/raz0red/Nintendo_-_Super_Nintendo_Entertainment_System/master/Named_Titles',
-      backPrefix: 'https://raw.githubusercontent.com/raz0red/Nintendo_-_Super_Nintendo_Entertainment_System/master/Named_Snaps',
-      descriptionPrefix: 'https://raw.githubusercontent.com/raz0red/RetroFe-Game-info/master/RetroFE%20Story%20Files/Super%20Nintendo%20Entertainment%20System'          
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-snes-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-snes-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Super%20Nintendo%20Entertainment%20System/output'          
     },
     'sms': {
-      thumbPrefix: 'https://raw.githubusercontent.com/raz0red/Sega_-_Master_System_-_Mark_III/master/Named_Titles',
-      backPrefix: 'https://raw.githubusercontent.com/raz0red/Sega_-_Master_System_-_Mark_III/master/Named_Snaps',
-      descriptionPrefix: 'https://raw.githubusercontent.com/raz0red/RetroFe-Game-info/master/RetroFE%20Story%20Files/Sega%20Master%20System'          
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-sms-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-sms-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sega%20Master%20System/output'          
     },
     'gg': {
-      thumbPrefix: 'https://raw.githubusercontent.com/raz0red/Sega_-_Game_Gear/master/Named_Titles',
-      backPrefix: 'https://raw.githubusercontent.com/raz0red/Sega_-_Game_Gear/master/Named_Snaps',
-      descriptionPrefix: 'https://raw.githubusercontent.com/raz0red/RetroFe-Game-info/master/RetroFE%20Story%20Files/Sega%20Game%20Gear'          
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-gg-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-gg-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sega%20Game%20Gear/output'          
     },
     'genesis': {
-      thumbPrefix: 'https://raw.githubusercontent.com/raz0red/Sega_-_Mega_Drive_-_Genesis/master/Named_Titles',
-      backPrefix: 'https://raw.githubusercontent.com/raz0red/Sega_-_Mega_Drive_-_Genesis/master/Named_Snaps',
-      descriptionPrefix: 'https://raw.githubusercontent.com/raz0red/RetroFe-Game-info/master/RetroFE%20Story%20Files/Sega%20Genesis'          
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-genesis-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-genesis-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sega%20Genesis/output'          
     }
   }
 
@@ -96,13 +98,24 @@ class GameRegistryImpl {
   }
 
   async find(md5) {
-    const { METADATA } = this;
+    const { METADATA, TITLE_REGEX } = this;
     const ret = {};
     for (let type in this.db) {
-      const name = this.db[type][md5];
+      let shortName = null;
+      let name = this.db[type][md5];
 
       if (name) {
-        ret.title = name;
+        const matches = name.match(TITLE_REGEX);
+        if (matches.length > 1) {
+          shortName = matches[1].trim();          
+        }
+
+        const hasShortName = shortName && shortName.length > 0;
+
+        ret.title = hasShortName ? shortName : name;
+        if (hasShortName) {
+          ret.longTitle = name;
+        }
         ret.type = type;
         const md = METADATA[type];
         const file = encodeURIComponent(name);
@@ -123,17 +136,17 @@ class GameRegistryImpl {
             const url = `${md.descriptionPrefix}/${file}.txt`;
             const description = await this.getText(url);            
             if (description) {
-              const lines = description.split("\n");
-              let trimmed = "";
-              for (let i = 0; i < lines.length; i++) {
-                const line = lines[i].trim();                
-                if (line.length > 0) {
-                  trimmed += (i > 0) ? (" " + line) : line;
-                } else {
-                  break;
-                }
-              }
-              ret.description = trimmed;
+              // const lines = description.split("\n");
+              // let trimmed = "";
+              // for (let i = 0; i < lines.length; i++) {
+              //   const line = lines[i].trim();                
+              //   if (line.length > 0) {
+              //     trimmed += (i > 0) ? (" " + line) : line;
+              //   } else {
+              //     break;
+              //   }
+              // }
+              ret.description = description; //trimmed;
             }
           }
 
@@ -142,6 +155,9 @@ class GameRegistryImpl {
           }
           if (ret.background && !ret.thumbnail) {
             ret.thumbnail = ret.background;
+          }
+          if (ret.background) {
+            ret.backgroundPixelated = true;
           }
         }
       }

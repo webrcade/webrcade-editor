@@ -1,5 +1,7 @@
 import * as React from 'react';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+// import Divider from '@mui/material/Divider';
+// import FindInPageIcon from '@mui/icons-material/FindInPage';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -8,11 +10,19 @@ import * as UrlProcessor from '../UrlProcessor';
 import { Global } from '../Global';
 
 export default function ItemsTableMoreMenu(props) {
-  const { anchorEl, setAnchorEl } = props;
+  const { 
+    anchorEl, 
+    setAnchorEl, 
+    // feed, 
+    // category, 
+    selected 
+  } = props;
   const open = Boolean(anchorEl);
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  console.log(selected);
 
   return (
     <div>
@@ -61,6 +71,18 @@ export default function ItemsTableMoreMenu(props) {
           </ListItemIcon>
           Add from Dropbox...
         </MenuItem>
+        {/* <Divider />
+        <MenuItem 
+          disabled={selected.length === 0}
+          onClick={() => {
+            handleClose();
+            // TODO: Analyze selected files
+        }}>
+          <ListItemIcon>
+            <FindInPageIcon fontSize="small" />
+          </ListItemIcon>
+          Analyze
+        </MenuItem>         */}
       </Menu>
     </div>
   );

@@ -85,10 +85,6 @@ export default function ItemsTable(props) {
 
   return (
     <>
-      <ItemsTableMoreMenu
-        anchorEl={moreMenuAnchor}
-        setAnchorEl={setMoreMenuAnchor}
-      />
       <CommonTable
         tableName="items"
         resetKey={category}
@@ -192,6 +188,13 @@ export default function ItemsTable(props) {
           const hasFeed = feed && feed.categories && feed.categories.length > 0;
           return (
             <>
+              <ItemsTableMoreMenu
+                anchorEl={moreMenuAnchor}
+                setAnchorEl={setMoreMenuAnchor}
+                feed={feed}
+                category={category}                                    
+                selected={selected}
+              />
               <Tooltip title="Create Item">
                 <div>
                   <IconButton
