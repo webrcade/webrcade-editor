@@ -22,8 +22,6 @@ export default function ItemsTableMoreMenu(props) {
     setAnchorEl(null);
   };
 
-  console.log(selected);
-
   return (
     <div>
       <Menu
