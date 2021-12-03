@@ -60,7 +60,7 @@ export default function CommonImage(props) {
           proxyImg.onerror = (e) => {            
             setImg(defaultImageSrc);
           }
-          const url = encodeURIComponent(encodeURI(target.src));
+          const url = encodeURIComponent(target.src);
           //&fpy=0&a=focal          
           //&fit=contain&cbg=00FFFFFF
           proxyImg.src = `https://images.weserv.nl/?url=${url}&w=${requiredSize[0]}&h=${requiredSize[1]}&fit=cover&output=gif`; 
