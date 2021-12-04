@@ -2,7 +2,8 @@ import {
   AppRegistry,
   FetchAppData,
   Unzip,
-  LOG
+  LOG,
+  isValidString
 } from '@webrcade/app-common'
 
 import * as Drop from './Drop';
@@ -11,11 +12,10 @@ import GameRegistry from './GameRegistry';
 import { Global } from './Global';
 
 class Processor {
-  constructor(catId, urls) {
+  constructor(urls, processor) {
     this.total = urls.length;
-    this.succeeded = 0;
+    this.processor = processor;
     this.failed = 0;
-    this.catId = catId;
     this.urls = urls;
     this.allExtensions = 
       // dotted and unique
@@ -168,6 +168,7 @@ class Processor {
   async process() {
     const urls = this.urls;
     Global.openBusyScreen(true);
+    let message = null;
 
     const items = [];
     try {
@@ -186,7 +187,6 @@ class Processor {
 
           const item = await this.processUrl(url, nameParts);
           if (item) {
-            this.succeeded++;
             items.push(item);
           }
         } catch (e) {
@@ -194,51 +194,15 @@ class Processor {
         }
       }
 
-      if (items.length > 0) {
-        Global.openBusyScreen(true, "Creating items...");
-        console.log(items);
-        const feed = Global.getFeed();
-        Feed.addItemsToCategory(feed, this.catId, items);
-        Global.setFeed({ ...feed });          
-      }
+      message = this.processor(items);
     } catch (e) {
       LOG.error('Error processing URLs: ' + e);
     } finally {
       Global.openBusyScreen(false);
     }
 
-    const failed = this.total - this.succeeded;
-    console.log("Succeeded: " + this.succeeded + ", Failed: " + failed);
-
-    const failureMessage = (fcount) => {
-      if (fcount === 1) {
-        return `A failure occurred attempting to add the item.`;
-      } else {
-        return `Failures occurred attempting to add all items.`;
-      }
-    }
-
-    const successMessage = (scount) => {
-      if (scount === 1) {
-        return `Successfully added the item.`;
-      } else {
-        return `Successfully added ${scount} new items.`;
-      }
-    }
-
-    let message = null;
-    let severity = "success";
-    if (this.succeeded > 0 && failed > 0) {
-      message = `Successfully added ${this.succeeded} new item${this.succeeded > 1 ? 's' : ''}, Failures occurred on ${failed} item${failed > 1 ? 's' : ''}.`;
-      severity = 'warning';
-    } else if (this.succeeded > 0) {
-      message = successMessage(this.succeeded);
-    } else if (failed > 0) {
-      message = failureMessage(failed);
-      severity = 'error';
-    }
     if (message) {
-      Global.displayMessage(message, severity);
+      Global.displayMessage(message[0], message[1]);
     }
   }
 }
@@ -257,11 +221,147 @@ const dropHandler = (e) => {
   }
 };
 
+const getMessage = (succeeded, failed, isAdd = true) => {
+  const opName = isAdd ? 'add' : 'update';
+  const opedName = isAdd ? 'added' : 'updated';
+
+
+  const failureMessage = (fcount) => {
+    if (fcount === 1) {
+      return `A failure occurred attempting to ${opName} the item.`;
+    } else {
+      return `Failures occurred attempting to ${opName} all items.`;
+    }
+  }
+
+  const successMessage = (scount) => {
+    if (scount === 1) {
+      return `Successfully ${opedName} the item.`;
+    } else {
+      return `Successfully ${opedName} ${scount} items.`;
+    }
+  }
+
+  let message = null;
+  let severity = "success";
+  if (succeeded > 0 && failed > 0) {
+    message = `Successfully ${opedName} ${succeeded} item${succeeded > 1 ? 's' : ''}, Failures occurred on ${failed} item${failed > 1 ? 's' : ''}.`;
+    severity = 'warning';
+  } else if (succeeded > 0) {
+    message = successMessage(succeeded);
+  } else if (failed > 0) {
+    message = failureMessage(failed);
+    severity = 'error';
+  }
+
+  return [message, severity];
+}
+
 const process = (urls) => {
   const catId = Global.getFeedCategoryId();
   if (catId) {
-    new Processor(catId, urls).process();
+    new Processor(urls,
+      (items) => {
+        let succeeded = 0;
+        if (items.length > 0) {
+          Global.openBusyScreen(true, "Creating items...");
+          console.log(items);
+          try {
+            const feed = Global.getFeed();
+            Feed.addItemsToCategory(feed, catId, items);
+            Global.setFeed({ ...feed });                    
+            succeeded = items.length;
+          } catch(e) {
+            LOG.error("Error creating items" + e);
+          }
+        }
+        return getMessage(succeeded, urls.length - succeeded);
+      }).process();
+  }  
+}
+
+const analyze = (categoryId, itemIds) => {
+  const feed = Global.getFeed();
+  const urls = new Set();
+  const urlToItems = new Map();
+
+  // Create list of URLs to process
+  // Map items by their URL
+  for (let i = 0; i < itemIds.length; i++) {
+    const itemId = itemIds[i];
+    const item = Feed.getItem(feed, categoryId, itemId);
+    if (item && item.props.rom) {
+      const romUrl = item.props.rom.trim();
+      if (romUrl.length > 0) {
+        // Track unique URLs
+        urls.add(romUrl);
+        // Map items by their URL
+        let items = urlToItems.get(romUrl);
+        if (!items) {
+          items = [item];
+        } else {
+          items.push(item);
+        }
+        urlToItems.set(romUrl, items);
+      }      
+    }
+  }
+
+  const urlArr = Array.from(urls);
+  if (urlArr.length > 0) {
+    new Processor(urlArr,
+      (items) => {
+        let updatedItems = 0;
+        if (items.length > 0) {
+          Global.openBusyScreen(true, "Updating items...");
+
+          // Walk all of the analysis results
+          for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            const currentUrl = item.props.rom;
+            delete item.props;
+
+            // Get the items to update
+            const updateItems = urlToItems.get(currentUrl);
+            for (let j = 0; j < updateItems.length; j++) {
+              try {
+                const updateItem = updateItems[j];
+                const props = [
+                  'title', 'longTitle', 'description', 'background', 
+                  'thumbnail', 'type'
+                ];
+
+                // Copy props from results to item to update
+                for (let x = 0; x < props.length; x++) {
+                  const prop = props[x];
+                  if (isValidString(item[prop])) {
+                    if (prop === 'type' && (updateItem[prop] !== item[prop])) {
+                      // Reset props for item if type has changed
+                      LOG.info('Type has changed.');
+                      updateItem.props = {rom: currentUrl};
+                    } else if (prop === 'background') {
+                      // If background was found, force pixelated
+                      updateItem.backgroundPixelated = true;
+                    }
+                    updateItem[prop] = item[prop];                  
+                  }  
+                }                
+                updatedItems++;
+              } catch(e) {
+                LOG.error("Error updating item: " + e);
+              }
+            }
+          }
+          Global.setFeed({ ...feed });
+        }
+        return getMessage(updatedItems, itemIds.length - updatedItems, false);
+      }).process();
   }
 }
 
-export { process, dropHandler, enableDropHandler };
+export { 
+  analyze,
+  process, 
+  dropHandler, 
+  enableDropHandler 
+};
