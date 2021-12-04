@@ -44,6 +44,18 @@ class PrefsImpl {
       this.prefs[name] : defaultValue;
   }
 
+  getIntPreference(name, defaultValue) {
+    const val = this.getPreference(name, defaultValue);
+    try {
+      if (val) {
+        return parseInt(val);
+      }
+    } catch(e) {
+      LOG.error("Preferece is not an integer: " + name + ", " + val);
+    }
+    return defaultValue;
+  }
+
   async setLastFeedUrl(lastUrl) {
     this.prefs.lastUrl = lastUrl;
     await this.save();

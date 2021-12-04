@@ -85,17 +85,22 @@ function EditorDrawer(props) {
         <CommonTooltip
           title="Test the feed in the webЯcade font-end."
         >
-          <ListItem button key="test" onClick={async () => {
-            setOpen(false);
+          <ListItem button key="test" onClick={() => {
+            // The window is opened outside async to support iOS 
+            const newWindow = window.open();
+            newWindow.document.write("<html><body style=\"background-color:black;\"></body></html>");
+            (async () => {
+              setOpen(false);
 
-            // Store the test feed
-            await Prefs.storeTestFeed(GlobalHolder.getFeed())
+              // Store the test feed
+              await Prefs.storeTestFeed(GlobalHolder.getFeed())
 
-            // Open webrcade
-            let url = (WrcCommon.isDev() ?
-              WrcCommon.config.getLocalUrl() : "../../");
-            url += `?${WrcCommon.AppProps.RP_EDITOR_TEST}=${WrcCommon.AppProps.RV_EDITOR_TEST_ENABLED}`;
-            window.open(url/*, "_webrcade"*/)
+              // Open webrcade
+              let url = (WrcCommon.isDev() ?
+                WrcCommon.config.getLocalUrl() : "../../");
+              url += `?${WrcCommon.AppProps.RP_EDITOR_TEST}=${WrcCommon.AppProps.RV_EDITOR_TEST_ENABLED}`;
+              newWindow.location = url;
+            })();
           }}>
             <ListItemIcon><CheckCircleIcon /></ListItemIcon>
             <ListItemText primary="Test" />

@@ -6,6 +6,8 @@ import Tabs from '@mui/material/Tabs';
 import { Global } from '../Global';
 import CategoriesTable from './CategoriesTable';
 import ItemsTab from './ItemsTab';
+import Prefs from '../Prefs';
+import { usePrevious } from '../Util';
 
 function TabPanel(props) {
   const { children, value, index } = props;
@@ -19,9 +21,22 @@ function TabPanel(props) {
   );
 }
 
+const PREF_FEED_TAB = "feedsTab.tab";
+
 function FeedTabs(props) {
   const { feed } = props;
-  const [tabValue, setTabValue] = React.useState(0);
+  const [tabValue, setTabValue] = 
+    React.useState(Prefs.getIntPreference(PREF_FEED_TAB, 0));
+  const prevTabValue = usePrevious(tabValue);
+
+  // Store prefs (if applicable)
+  React.useEffect(() => {
+    // See if tab has changed
+    if (prevTabValue !== tabValue) {
+      Prefs.setPreference(PREF_FEED_TAB, tabValue);
+      Prefs.save();
+    }
+  }, [prevTabValue, tabValue]);
 
   function tabProps(index) {
     return { id: `feed-tab-${index}` };
