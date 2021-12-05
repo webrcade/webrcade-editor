@@ -19,6 +19,10 @@
   background-color: #a8bbbf;
 }
 
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
 .webrcade-app {
   position: absolute;
   left: 0;

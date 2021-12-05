@@ -36,7 +36,7 @@ export default function ItemsTableMoreMenu(props) {
         <ListItemIcon>
           <AutoAwesomeIcon fontSize="small" />
         </ListItemIcon>
-        Create from URL...
+        Create from URLs...
       </MenuItem>
       <MenuItem onClick={() => {
         handleClose();

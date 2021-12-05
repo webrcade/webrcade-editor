@@ -265,7 +265,7 @@ const getMessage = (succeeded, failed, isAdd = true) => {
   } else if (failed > 0) {
     message = failureMessage(failed);
     severity = 'error';
-  } else if (!isAdd && succeeded == 0) {
+  } else if (!isAdd && succeeded === 0) {
     message = "No items were updated.";
     severity = 'warning';
   }

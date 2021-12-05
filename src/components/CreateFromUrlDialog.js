@@ -27,14 +27,31 @@ export default function CreateFromUrlDialog(props) {
       forceUpdate();
       return false;
     }
-    UrlProcessor.process([url]);
+    const urls = url.split("\n");
+    const validatedUrls = [];
+    for (let i = 0; i < urls.length; i++) {
+      const curUrl = urls[i].trim();
+      if (curUrl.length > 0) {
+        validatedUrls.push(curUrl);
+      }
+    }
+    UrlProcessor.process(validatedUrls);
     return true;
+  }
+
+  let urlCount = 0;
+  const urls = url.split("\n");
+  for (let i = 0; i < urls.length; i++) {
+    const curUrl = urls[i].trim();
+    if (curUrl.length > 0) {
+      urlCount++;
+    }
   }
 
   return (
     <Editor
-      title="Create Item from URL"
-      height={190}
+      title="Create Items from URLs"
+      height={250}
       maxWidth={false}
       isOpen={isOpen}
       setOpen={Global.openCreateFromUrlDialog}
@@ -59,12 +76,19 @@ export default function CreateFromUrlDialog(props) {
           <EditorTabPanel value={urlTab} index={urlTab}>
             <EditorTextField
               required
-              sx={{ width: '50ch' }}
-              label="URL"
-              onDropText={(text) => { setUrl(text); }}
+              multiline
+              rows={5}
+              sx={{ width: '50ch'}}
+              label="URLs (one per line)"
+              onDropText={(text) => { setUrl(url + (url.trim().length > 0 ? "\n" : "") + text); }}
               onChange={(e) => { setUrl(e.target.value); }}
               value={url}
               error={!validator.isValid(urlTab, "url")}
+              inputProps={{ref: input => {if (input) {input.style['white-space']='nowrap'}}}}
+              helperText={
+                urlCount === 0 ? "" :
+                  urlCount === 1 ? "1 URL entered." : `${urlCount} URLs entered.`
+              }
             />
           </EditorTabPanel>
         </>
