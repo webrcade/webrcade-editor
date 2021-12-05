@@ -241,7 +241,7 @@ const getMessage = (succeeded, failed, isAdd = true) => {
 
   const failureMessage = (fcount) => {
     if (fcount === 1) {
-      return `A failure occurred attempting to ${opName} the item.`;
+      return `A failure occurred attempting to ${opName} 1 item.`;
     } else {
       return `Failures occurred attempting to ${opName} ${fcount} items.`;
     }
@@ -249,7 +249,7 @@ const getMessage = (succeeded, failed, isAdd = true) => {
 
   const successMessage = (scount) => {
     if (scount === 1) {
-      return `Successfully ${opedName} the item.`;
+      return `Successfully ${opedName} 1 item.`;
     } else {
       return `Successfully ${opedName} ${scount} items.`;
     }
@@ -296,10 +296,8 @@ const process = (urls) => {
   }
 }
 
-const analyze = (categoryId, itemIds) => {
+const _updateAnalyzeUrls = (categoryId, itemIds, urls, urlToItems) => {
   const feed = Global.getFeed();
-  const urls = new Set();
-  const urlToItems = new Map();
 
   // Create list of URLs to process
   // Map items by their URL
@@ -322,8 +320,12 @@ const analyze = (categoryId, itemIds) => {
       }
     }
   }
+}
 
+const _analyze = (urls, urlToItems) => {
+  const feed = Global.getFeed();
   const urlArr = Array.from(urls);
+
   new Processor(urlArr,
     (items) => {
       let updatedItems = 0;
@@ -383,8 +385,38 @@ const analyze = (categoryId, itemIds) => {
     }).setRecordTitleSource(true).process();
 }
 
+const analyzeCategories = (categoryIds) => {
+  const feed = Global.getFeed();
+  const urls = new Set();
+  const urlToItems = new Map();
+
+  for (let i = 0; i < categoryIds.length; i++) {    
+    const catId = categoryIds[i];
+    const cat = Feed.getCategory(feed, catId);
+    const itemIds = [];
+    if (cat.items) {
+      for (let j = 0; j < cat.items.length; j++) {
+        itemIds.push(cat.items[j].id);
+      }    
+      if (itemIds.length > 0) {
+        _updateAnalyzeUrls(catId, itemIds, urls, urlToItems);
+      }
+    }
+  }
+  _analyze(urls, urlToItems);
+}
+
+const analyze = (categoryId, itemIds) => {
+  const urls = new Set();
+  const urlToItems = new Map();
+
+  _updateAnalyzeUrls(categoryId, itemIds, urls, urlToItems);
+  _analyze(urls, urlToItems);
+}
+
 export {
   analyze,
+  analyzeCategories,
   process,
   dropHandler,
   enableDropHandler

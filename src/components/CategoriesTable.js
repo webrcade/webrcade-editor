@@ -4,16 +4,18 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import CommonTable from './common/CommonTable';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import Button from '@mui/material/Button';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import IconButton from '@mui/material/IconButton';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import TableCell from '@mui/material/TableCell';
 import Tooltip from '@mui/material/Tooltip';
 
 import * as WrcCommon from '@webrcade/app-common'
 import { Global } from '../Global';
 import * as Feed from '../Feed';
+import CategoriesTableMoreMenu from './CategoriesTableMoreMenu';
 import ImageLabel from './common/ImageLabel';
 import ToolbarVerticalDivider from './common/ToolbarVerticalDivider';
 
@@ -26,6 +28,7 @@ function createData(id, title, thumbSrc, itemCount) {
 
 export default function CategoriesTable(props) {
   const { feed, showCategoryItems } = props;
+  const [moreMenuAnchor, setMoreMenuAnchor] = React.useState(false);
 
   const rows = [];
   if (feed.categories) {
@@ -109,8 +112,15 @@ export default function CategoriesTable(props) {
         );
       }}
       renderToolbarItems={(selection, selected) => {
+        const hasFeed = feed && feed.categories && feed.categories.length > 0;
         return (
           <>
+              <CategoriesTableMoreMenu
+                anchorEl={moreMenuAnchor}
+                setAnchorEl={setMoreMenuAnchor}
+                feed={feed}
+                selected={selected}
+              />
             <Tooltip title="Create Category">
               <IconButton
                 onClick={() => {
@@ -176,6 +186,18 @@ export default function CategoriesTable(props) {
               </div>
             </Tooltip>
             <ToolbarVerticalDivider />
+              <Tooltip title="More">
+                <div>
+                  <IconButton disabled={!hasFeed}
+                    onClick={(e) => {
+                      setMoreMenuAnchor(e.target);
+                    }}
+                  >
+                    <MoreHorizIcon />
+                  </IconButton>
+                </div>
+              </Tooltip>
+              <ToolbarVerticalDivider />
           </>
         );
       }}
