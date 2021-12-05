@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Backdrop from '@mui/material/Backdrop';
+import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
@@ -9,7 +10,7 @@ import { usePrevious } from '../Util';
 import { enableDropHandler } from '../UrlProcessor';
 import { GlobalHolder } from '../Global';
 
-export default function BusyScreen(props) {  
+export default function BusyScreen(props) {
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState(false);
   const prevOpen = usePrevious(open);
@@ -20,34 +21,36 @@ export default function BusyScreen(props) {
   // Enable/disable the drop handler
   if (prevOpen && !open) {
     enableDropHandler(true);
-//console.log('enable drop');
+    //console.log('enable drop');
   } else if (!prevOpen && open) {
-//console.log('disable drop');    
+    //console.log('disable drop');    
     enableDropHandler(false);
   }
 
   return (
-    <Backdrop
-      sx={{ 
-        backgroundColor: 'rgba(0,0,0,0.85)', 
-        zIndex: (theme) => theme.zIndex.drawer + 100 }}
-      open={open}
-    >
-      <Box>
-        <Grid 
-          container
-          justifyContent="center">
-          <CircularProgress color="primary"/>
-        </Grid>
-        {message ? (
-          <Box sx={{mt: 3}}>
-            <Typography variant="body1">
-              {message}
-            </Typography>
-          </Box>
-        ) : null}
-      </Box>
-    </Backdrop>
+    <Modal open={open}>
+      <Backdrop 
+        open={open}
+        sx={{ 
+          backgroundColor: 'rgba(0,0,0,0.7)' 
+        }}
+      >
+        <Box>
+          <Grid
+            container
+            justifyContent="center">
+            <CircularProgress color="primary" />
+          </Grid>
+          {message ? (
+            <Box sx={{ mt: 3 }}>
+              <Typography variant="body1">
+                {message}
+              </Typography>
+            </Box>
+          ) : null}
+        </Box>
+      </Backdrop>
+    </Modal>
   );
 }
 

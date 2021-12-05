@@ -10,12 +10,12 @@ import * as UrlProcessor from '../UrlProcessor';
 import { Global } from '../Global';
 
 export default function ItemsTableMoreMenu(props) {
-  const { 
-    anchorEl, 
-    setAnchorEl, 
+  const {
+    anchorEl,
+    setAnchorEl,
     // feed, 
-    category, 
-    selected 
+    category,
+    selected
   } = props;
   const open = Boolean(anchorEl);
   const handleClose = () => {
@@ -23,65 +23,64 @@ export default function ItemsTableMoreMenu(props) {
   };
 
   return (
-    <div>
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-      >
-        <MenuItem onClick={() => {
+    <Menu
+      anchorEl={anchorEl}
+      open={open}
+      onClose={handleClose}
+      disablePortal
+    >
+      <MenuItem onClick={() => {
+        handleClose();
+        Global.openCreateFromUrlDialog(true);
+      }}>
+        <ListItemIcon>
+          <AutoAwesomeIcon fontSize="small" />
+        </ListItemIcon>
+        Create from URL...
+      </MenuItem>
+      <MenuItem onClick={() => {
+        handleClose();
+        const options = {
+          linkType: "preview",
+          multiselect: true,
+          folderselect: false,
+          success: function (files) {
+            const res = [];
+            for (let i = 0; i < files.length; i++) {
+              const f = files[i];
+              res.push(f.link);
+            }
+            if (res.length > 0) {
+              UrlProcessor.process(res);
+            }
+          },
+          sizeLimit: 65 * 1024 * 1024 // 65mb
+        };
+        window.Dropbox.choose(options);
+      }}>
+        <ListItemIcon>
+          <span className="iconify"
+            data-icon="mdi:dropbox"
+            data-width="20"
+            data-height="20"
+            sx={{
+              color: 'white',
+            }}></span>
+        </ListItemIcon>
+        Add from Dropbox...
+      </MenuItem>
+      <Divider />
+      <MenuItem
+        disabled={selected.length === 0}
+        onClick={() => {
           handleClose();
-          Global.openCreateFromUrlDialog(true);
+          UrlProcessor.analyze(category, selected);
         }}>
-          <ListItemIcon>
-            <AutoAwesomeIcon fontSize="small" />
-          </ListItemIcon>
-          Create from URL...
-        </MenuItem>
-        <MenuItem onClick={() => {
-          handleClose();
-          const options = {
-            linkType: "preview",
-            multiselect: true,
-            folderselect: false,
-            success: function(files) {
-              const res = [];
-              for (let i = 0; i < files.length; i++) {
-                const f = files[i];
-                res.push(f.link);
-              }
-              if (res.length > 0) {
-                UrlProcessor.process(res);
-              }
-            },
-            sizeLimit: 65 * 1024 * 1024 // 65mb
-          };
-          window.Dropbox.choose(options);
-        }}>
-          <ListItemIcon>
-            <span className="iconify"
-              data-icon="mdi:dropbox"
-              data-width="20"
-              data-height="20"
-              sx={{
-                color: 'white',
-              }}></span>
-          </ListItemIcon>
-          Add from Dropbox...
-        </MenuItem>
-        <Divider />
-        <MenuItem 
-          disabled={selected.length === 0}
-          onClick={() => {
-            handleClose();
-            UrlProcessor.analyze(category, selected);
-        }}>
-          <ListItemIcon>
-            <FindInPageIcon fontSize="small" />
-          </ListItemIcon>
-          Analyze
-        </MenuItem>        
-      </Menu>
-    </div>
+        <ListItemIcon>
+          <FindInPageIcon fontSize="small" />
+        </ListItemIcon>
+        Analyze
+      </MenuItem>
+    </Menu>
   );
 }

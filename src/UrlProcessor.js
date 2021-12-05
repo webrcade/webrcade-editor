@@ -15,27 +15,33 @@ class Processor {
   constructor(urls, processor) {
     this.total = urls.length;
     this.processor = processor;
+    this.recordTitleSource = false;
     this.failed = 0;
     this.urls = urls;
-    this.allExtensions = 
+    this.allExtensions =
       // dotted and unique
       AppRegistry.instance.getAllExtensions(true, false);
-    this.allExtensionsNonUnique = 
+    this.allExtensionsNonUnique =
       // dotted and non-unique
       AppRegistry.instance.getAllExtensions(true, true);
     console.log(this.allExtensions);
     console.log(this.allExtensionsNonUnique);
   }
 
+  setRecordTitleSource(record) {
+    this.recordTitleSource = record;
+    return this;
+  }
+
   async processZip(blob) {
     const uz = new Unzip();
     const unzipBlob = await uz.unzip(
-      blob, this.allExtensionsNonUnique, this.allExtensions); 
+      blob, this.allExtensionsNonUnique, this.allExtensions);
     const name = uz.getName();
     const parts = name ? this.getNameParts(name) : null;
 
-    return [unzipBlob, 
-      parts ? parts[0] : null, 
+    return [unzipBlob,
+      parts ? parts[0] : null,
       parts ? parts[1] : null
     ];
   }
@@ -57,7 +63,7 @@ class Processor {
 
     if (res.ok) {
       // Capture content disposition 
-      const headers = fad.getHeaders(res);      
+      const headers = fad.getHeaders(res);
       const disposition = headers['content-disposition'];
       if (disposition) {
         const matches = /.*filename="(.*)".*/gmi.exec(disposition);
@@ -75,13 +81,13 @@ class Processor {
               type = AppRegistry.instance.getTypeForExtension(ext);
               if (type) {
                 LOG.info("Found type in content disposition.");
-              }    
+              }
             }
           }
         }
       }
-      
-      let blob = await res.blob();      
+
+      let blob = await res.blob();
       if (blob.size === 0) {
         LOG.info("File size is 0.");
         return null;
@@ -102,19 +108,19 @@ class Processor {
             LOG.info("Found type in zip.");
           }
         }
-      }  
+      }
 
       // Check for type in magic (if not already resolved)      
-      if (!type) {        
+      if (!type) {
         const abuffer = await new Response(blob).arrayBuffer();
-        type = AppRegistry.instance.testMagic(new Uint8Array(abuffer));              
+        type = AppRegistry.instance.testMagic(new Uint8Array(abuffer));
         if (type) {
           LOG.info("Found type in magic.")
         }
       }
-      
+
       const iMd5 = await AppRegistry.instance.getMd5(blob, type);
-      LOG.info(iMd5);      
+      LOG.info(iMd5);
       registryGame = await GameRegistry.find(iMd5);
       LOG.info(registryGame);
     }
@@ -124,16 +130,23 @@ class Processor {
       props: {
         rom: url
       }
-    };    
+    };
 
     if (!game.type && type) {
       game.type = type.key;
     }
+
+    let titleFromReg = true;
     if (!game.title && title) {
       game.title = title;
+      titleFromReg = false;
     }
 
-    return(game.type && game.title ? game : null);
+    if (this.recordTitleSource) {
+      game._titleFromRegistry = titleFromReg;
+    }
+
+    return (game.type && game.title ? game : null);
   }
 
   getNameParts(url) {
@@ -230,7 +243,7 @@ const getMessage = (succeeded, failed, isAdd = true) => {
     if (fcount === 1) {
       return `A failure occurred attempting to ${opName} the item.`;
     } else {
-      return `Failures occurred attempting to ${opName} all items.`;
+      return `Failures occurred attempting to ${opName} ${fcount} items.`;
     }
   }
 
@@ -252,6 +265,9 @@ const getMessage = (succeeded, failed, isAdd = true) => {
   } else if (failed > 0) {
     message = failureMessage(failed);
     severity = 'error';
+  } else if (!isAdd && succeeded == 0) {
+    message = "No items were updated.";
+    severity = 'warning';
   }
 
   return [message, severity];
@@ -269,15 +285,15 @@ const process = (urls) => {
           try {
             const feed = Global.getFeed();
             Feed.addItemsToCategory(feed, catId, items);
-            Global.setFeed({ ...feed });                    
+            Global.setFeed({ ...feed });
             succeeded = items.length;
-          } catch(e) {
+          } catch (e) {
             LOG.error("Error creating items" + e);
           }
         }
         return getMessage(succeeded, urls.length - succeeded);
       }).process();
-  }  
+  }
 }
 
 const analyze = (categoryId, itemIds) => {
@@ -303,65 +319,73 @@ const analyze = (categoryId, itemIds) => {
           items.push(item);
         }
         urlToItems.set(romUrl, items);
-      }      
+      }
     }
   }
 
   const urlArr = Array.from(urls);
-  if (urlArr.length > 0) {
-    new Processor(urlArr,
-      (items) => {
-        let updatedItems = 0;
-        if (items.length > 0) {
-          Global.openBusyScreen(true, "Updating items...");
+  new Processor(urlArr,
+    (items) => {
+      let updatedItems = 0;
+      let errors = 0;
+      if (items.length > 0) {
+        Global.openBusyScreen(true, "Updating items...");
 
-          // Walk all of the analysis results
-          for (let i = 0; i < items.length; i++) {
-            const item = items[i];
-            const currentUrl = item.props.rom;
-            delete item.props;
+        // Walk all of the analysis results
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          const currentUrl = item.props.rom;
+          const titleFromReg = item._titleFromRegistry;
+          delete item.props;
 
-            // Get the items to update
-            const updateItems = urlToItems.get(currentUrl);
-            for (let j = 0; j < updateItems.length; j++) {
-              try {
-                const updateItem = updateItems[j];
-                const props = [
-                  'title', 'longTitle', 'description', 'background', 
-                  'thumbnail', 'type'
-                ];
+          // Get the items to update
+          const updateItems = urlToItems.get(currentUrl);
+          for (let j = 0; j < updateItems.length; j++) {
+            try {
+              const updateItem = updateItems[j];
+              const props = [
+                'title', 'longTitle', 'description', 'background',
+                'thumbnail', 'type'
+              ];
 
-                // Copy props from results to item to update
-                for (let x = 0; x < props.length; x++) {
-                  const prop = props[x];
-                  if (isValidString(item[prop])) {
-                    if (prop === 'type' && (updateItem[prop] !== item[prop])) {
-                      // Reset props for item if type has changed
-                      LOG.info('Type has changed.');
-                      updateItem.props = {rom: currentUrl};
-                    } else if (prop === 'background') {
-                      // If background was found, force pixelated
-                      updateItem.backgroundPixelated = true;
-                    }
-                    updateItem[prop] = item[prop];                  
-                  }  
-                }                
-                updatedItems++;
-              } catch(e) {
-                LOG.error("Error updating item: " + e);
+              // Copy props from results to item to update
+              let updated = false;
+              for (let x = 0; x < props.length; x++) {
+                const prop = props[x];
+
+                if (prop === 'title' && !titleFromReg) {
+                  continue;
+                }
+
+                if (isValidString(item[prop]) && (updateItem[prop] !== item[prop])) {
+                  updated = true;
+                  if (prop === 'type' && (updateItem[prop] !== item[prop])) {
+                    // Reset props for item if type has changed
+                    LOG.info('Type has changed.');
+                    updateItem.props = { rom: currentUrl };
+                  } else if (prop === 'background') {
+                    // If background was found, force pixelated
+                    updateItem.backgroundPixelated = true;
+                  }
+                  updateItem[prop] = item[prop];
+                }
               }
+              if (updated) updatedItems++;
+            } catch (e) {
+              errors++;
+              LOG.error("Error updating item: " + e);
             }
           }
-          Global.setFeed({ ...feed });
         }
-        return getMessage(updatedItems, itemIds.length - updatedItems, false);
-      }).process();
-  }
+        Global.setFeed({ ...feed });
+      }
+      return getMessage(updatedItems, errors, false);
+    }).setRecordTitleSource(true).process();
 }
 
-export { 
+export {
   analyze,
-  process, 
-  dropHandler, 
-  enableDropHandler 
+  process,
+  dropHandler,
+  enableDropHandler
 };
