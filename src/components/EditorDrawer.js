@@ -8,6 +8,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import SaveIcon from '@mui/icons-material/Save';
 import Toolbar from '@mui/material/Toolbar';
 import UploadIcon from '@mui/icons-material/Upload';
 
@@ -104,6 +105,47 @@ function EditorDrawer(props) {
           }}>
             <ListItemIcon><CheckCircleIcon /></ListItemIcon>
             <ListItemText primary="Test" />
+          </ListItem>
+        </CommonTooltip>
+      </List>
+      <Divider />
+      <List>
+        <CommonTooltip
+          title="Save the feed locally."
+        >
+          <ListItem button key="save" onClick={async () => {
+            setOpen(false);
+            const feeds = await WrcCommon.loadFeeds(0);
+            const feed = Global.getFeed();
+            const existing = feeds.isExistingLocalFeed(feed.title);
+            const f = async () => {              
+              let succeeded = false;
+              Global.openBusyScreen(true, "Saving feed...");
+              try {
+                if (await feeds.addLocalFeed(Feed.exportFeed(feed))) {
+                  succeeded = true;
+                }
+              } catch (e) {
+                WrcCommon.LOG.error('Error saving feed: ' + e);
+              } finally {
+                Global.openBusyScreen(false);              
+              }
+              if (succeeded) {
+                Global.displayMessage("Succesfully saved feed.", "success");
+              } else {
+                Global.displayMessage("Error saving feed.", "error");
+              }
+            }
+
+            if (existing) {
+              Global.openConfirmDialog(true,
+                "Save Feed", "Continue and overwrite the existing feed?", f);
+            } else {
+              f();
+            }
+          }}>
+            <ListItemIcon><SaveIcon /></ListItemIcon>
+            <ListItemText primary="Save" />
           </ListItem>
         </CommonTooltip>
       </List>

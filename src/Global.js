@@ -23,6 +23,8 @@ class Holder {
   setFeedEditorOpen = null;
   setEditFeed = null;
   setCreateFromUrlDialogOpen = null;
+  setConfirmDialogOpen = null;
+  setConfirmDialogProps = null;
 }
 
 const GlobalHolder = Holder.instance;
@@ -40,6 +42,16 @@ const Global = {
   },
   openItemEditor: (open, isCreate = false) => {
     GlobalHolder.setItemEditorOpen(open, isCreate);
+  },
+  openConfirmDialog: (open, title, message, callback) => {    
+    if (title && message && callback) {
+      GlobalHolder.setConfirmDialogProps({
+        title: title,
+        message: message,
+        callback: callback
+      });
+    }
+    GlobalHolder.setConfirmDialogOpen(open);
   },
   openImportDialog: (open) => {
     GlobalHolder.setImportDialogOpen(open);

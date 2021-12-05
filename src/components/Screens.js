@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import CategoryEditor from './CategoryEditor'; 
+import ConfirmDialog from './ConfirmDialog';
 import CreateFromUrlDialog from './CreateFromUrlDialog';
 import DisplayMessage from './DisplayMessage'; 
 import FeedEditor from './FeedEditor';
@@ -17,6 +18,7 @@ export default function Screens() {
       <DisplayMessage />
       <ImportDialog/>
       <ItemEditor />
+      <ConfirmDialog />
     </>
   );
 }
