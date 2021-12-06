@@ -44,6 +44,15 @@ class PrefsImpl {
       this.prefs[name] : defaultValue;
   }
 
+  getBoolPreference(name, defaultValue) {
+    const val = this.prefs[name];
+    if (val === undefined) {
+      return defaultValue;
+    } else {
+      return val === true;
+    }    
+  }
+
   getIntPreference(name, defaultValue) {
     const val = this.getPreference(name, defaultValue);
     try {

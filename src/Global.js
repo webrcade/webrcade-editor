@@ -25,6 +25,7 @@ class Holder {
   setCreateFromUrlDialogOpen = null;
   setConfirmDialogOpen = null;
   setConfirmDialogProps = null;
+  setLoadFeedDialogOpen = null;
 }
 
 const GlobalHolder = Holder.instance;
@@ -42,6 +43,9 @@ const Global = {
   },
   openItemEditor: (open, isCreate = false) => {
     GlobalHolder.setItemEditorOpen(open, isCreate);
+  },
+  openLoadFeedDialog: (open) => {
+    GlobalHolder.setLoadFeedDialogOpen(true);
   },
   openConfirmDialog: (open, title, message, callback) => {    
     if (title && message && callback) {

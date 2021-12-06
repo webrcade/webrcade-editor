@@ -16,11 +16,11 @@ export default function Editor(props) {
 
   const [okCount, setOkCount] = React.useState(0);
 
-  const { 
-    isOpen, 
+  const {
+    isOpen,
     setOpen,
     title,
-    tabs, 
+    tabs,
     tabPanels,
     setTabValue,
     tabValue,
@@ -28,7 +28,9 @@ export default function Editor(props) {
     onSubmit,
     onOk,
     height,
-    maxWidth
+    maxWidth,
+    closeButton,
+    ...other
   } = props;
 
   const prevOpen = usePrevious(isOpen);
@@ -38,9 +40,9 @@ export default function Editor(props) {
   // Enable/disable the drop handler
   if (prevOpen && !isOpen) {
     enableDropHandler(true);
-//console.log('enable drop');
+    //console.log('enable drop');
   } else if (!prevOpen && isOpen) {
-//console.log('disable drop');    
+    //console.log('disable drop');    
     enableDropHandler(false);
   }
 
@@ -48,58 +50,67 @@ export default function Editor(props) {
     if (isOpen && !prevOpen) {
       // Reset here
       setTabValue(0);
-      if (onShow) onShow();  
+      if (onShow) onShow();
     }
   }, [isOpen, prevOpen, setTabValue, onShow]);
 
-  const mwidth = 
+  const mwidth =
     maxWidth === false ? {} :
-      {"maxWidth" : maxWidth ? maxWidth : "md"}
+      { "maxWidth": maxWidth ? maxWidth : "md" }
 
   const onOkHandler = () => {
     if (onOk && onOk()) {
-      setOpen(false) 
+      setOpen(false)
     } else {
       setOkCount(okCount + 1);
     }
   }
 
-  return (    
+  return (
     <div>
       <Dialog
         fullScreen={fullScreen}
         open={isOpen}
         onClose={() => { setOpen(false) }}
         fullWidth
-        onSubmit= {(event) => {
+        onSubmit={(event) => {
           if (onSubmit) onSubmit(event);
           event.preventDefault();
         }}
         {...mwidth}
+        {...other}
       >
         <DialogTitle>{title}</DialogTitle>
         <DialogContent sx={{ height: height ? height : 520 }}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={tabValue} onChange={(e, value) => { setTabValue(value) }}  
-            variant="scrollable"
-            scrollButtons="auto"
-            allowScrollButtonsMobile
-            sx={{display: tabs.length === 1 ? 'none' : undefined}}
-          >
+            <Tabs value={tabValue} onChange={(e, value) => { setTabValue(value) }}
+              variant="scrollable"
+              scrollButtons="auto"
+              allowScrollButtonsMobile
+              sx={{ display: tabs.length === 1 ? 'none' : undefined }}
+            >
               {tabs}
             </Tabs>
           </Box>
           {tabPanels}
         </DialogContent>
         <DialogActions>
-          <Button onClick={onOkHandler}>
-            OK
-          </Button>
-          <Button onClick={() => { setOpen(false) }}>
-            Cancel
-          </Button>
+        {
+            closeButton ?
+              <Button onClick={onOkHandler}>
+                  Close
+              </Button> :
+              <>              
+                <Button onClick={onOkHandler}>
+                  OK
+                </Button>
+                <Button onClick={() => { setOpen(false) }}>
+                  Cancel
+                </Button>
+              </>
+          }
         </DialogActions>
       </Dialog>
     </div>
   );
-} 
+}

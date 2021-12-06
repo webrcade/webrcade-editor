@@ -7,7 +7,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 
-import { GlobalHolder, Global } from '../Global';
+import { GlobalHolder } from '../Global';
 import { enableDropHandler } from '../UrlProcessor';
 import { usePrevious } from '../Util';
 

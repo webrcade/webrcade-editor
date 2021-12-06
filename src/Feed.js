@@ -367,6 +367,7 @@ export {
   exampleFeed,
   replaceCategory,
   replaceItem,
+  loadFeed,
   loadFeedFromFile,
   loadFeedFromUrl
 };

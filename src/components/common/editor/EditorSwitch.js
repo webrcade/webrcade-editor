@@ -9,8 +9,8 @@ export default function EditorSwitch(props) {
   const { label, checked, sx, onChange, tooltip, ...other } = props;
 
   const switchControl = (
-    <FormControlLabel control={
-      <Switch
+    <FormControlLabel sx={{whiteSpace: 'nowrap'}} control={
+      <Switch        
         checked={checked}
         onChange={onChange}
       />

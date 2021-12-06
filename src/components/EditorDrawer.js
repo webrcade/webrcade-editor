@@ -3,6 +3,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Divider from '@mui/material/Divider';
 import DownloadIcon from '@mui/icons-material/Download';
 import Drawer from '@mui/material/Drawer';
+import FileOpenIcon from '@mui/icons-material/FileOpen';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -11,6 +12,7 @@ import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import SaveIcon from '@mui/icons-material/Save';
 import Toolbar from '@mui/material/Toolbar';
 import UploadIcon from '@mui/icons-material/Upload';
+
 
 import * as WrcCommon from '@webrcade/app-common'
 
@@ -110,6 +112,17 @@ function EditorDrawer(props) {
       </List>
       <Divider />
       <List>
+        <CommonTooltip
+          title="Load feed."
+        >
+          <ListItem button key="load" onClick={() => {
+            setOpen(false);
+            Global.openLoadFeedDialog(true);
+          }}>
+            <ListItemIcon><FileOpenIcon /></ListItemIcon>
+            <ListItemText primary="Load" />
+          </ListItem>
+        </CommonTooltip>
         <CommonTooltip
           title="Save the feed locally."
         >

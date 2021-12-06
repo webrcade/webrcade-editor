@@ -7,6 +7,7 @@ import DisplayMessage from './DisplayMessage';
 import FeedEditor from './FeedEditor';
 import ImportDialog from './ImportDialog';
 import ItemEditor from './item-editor/ItemEditor';
+import LoadFeedDialog from './load-dialog/LoadFeedDialog';
 
 export default function Screens() {
 
@@ -19,6 +20,7 @@ export default function Screens() {
       <ImportDialog/>
       <ItemEditor />
       <ConfirmDialog />
+      <LoadFeedDialog />
     </>
   );
 }

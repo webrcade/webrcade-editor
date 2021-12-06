@@ -157,7 +157,8 @@ export default function CommonTable(props) {
     rows,
     renderToolbarItems,
     renderRow,
-    resetKey
+    resetKey,
+    size
   } = props;
 
   const PREF_PREFIX = "table." + tableName + ".";
@@ -275,7 +276,7 @@ export default function CommonTable(props) {
         <TableContainer>
           <Table
             sx={{ minWidth: 500 }}
-            size={'medium'}
+            size={size ? size : 'medium'}
           >
             <EnhancedTableHead
               headCells={headCells}
