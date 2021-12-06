@@ -95,20 +95,23 @@ export default function FeedsTable(props) {
                   e.stopPropagation();
                   Global.openBusyScreen(true, "Loading feed...");
                   try {
+                    let feed = null;
                     if (row.localId) {
                       const localFeed = await feeds.getLocalFeed(row.localId);
                       if (localFeed) {
-                        const clonedFeed = Feed.loadFeed(localFeed);
-                        Global.setFeed({...clonedFeed});
-                        setOpen(false);
+                        feed = await Feed.loadFeed(localFeed);
                       } 
                     } else if (row.location && row.location.trim().length > 0) {
-                      const remoteFeed = await Feed.loadFeedFromUrl(row.location);
-                      if (remoteFeed) {
-                        Global.setFeed({...remoteFeed});
-                        setOpen(false);
-                      } 
+                      feed = await Feed.loadFeedFromUrl(row.location);
                     }
+                    if (feed) {
+                      Global.setFeed({...feed});
+                      setOpen(false);
+                    } else {
+                      Global.displayMessage("The feed no longer exists.", "error");
+                    }
+                  } catch (e) {
+                    Global.displayMessage("An error occurrred attempting to load the feed.", "error");
                   } finally {
                     Global.openBusyScreen(false);
                   }
