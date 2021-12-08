@@ -12,7 +12,7 @@ class GameRegistryImpl {
 
   DB_FILE = resolvePath("roms.json.zip");
    // eslint-disable-next-line
-  TITLE_REGEX = /^([^\(]*).*.{4}$/i
+  TITLE_REGEX = /^([^\(]*).*$/i
 
   METADATA = {
     '2600': {
@@ -55,6 +55,35 @@ class GameRegistryImpl {
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-genesis-images/master/Named_Snaps/output',
       descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sega%20Genesis/output'          
     }
+  }
+
+  CUSTOM_PROPS = {
+    // Driar (NES)
+    "ac6adbbc2f43faa64a86463c1a594aee": { pal: true },
+    // Elite (NES)
+    "ada42a2576d85b29da663bbf35b69288": { pal: true },
+    // Anguna (GBA)
+    "9d3a663de5228414d7e6cda7244c5d91": { saveType: 2, flashSize: 65536 },
+    // Another World (GBA) 
+    "9cef2ca9fba8a4532629f8c7e7c9ddf8": { saveType: 2, flashSize: 65536 },
+    // Blast Arena Advance (GBA)
+    "10f2557e1deb8629c04c071cd180c707": { saveType: 2, flashSize: 65536 },
+    // Broken Circle (GBA)
+    "420a1cf3e052ec30d3612d7d945c525e": { saveType: 1 },
+    // Flappy Bird (GBA)
+    "38f78ab97bbbb9bd210d8c96497f788a": { rotation: 270, saveType: 2, flashSize: 65536 },
+    // POWDER (GBA)
+    "09f9a4252a88f839f40fdfb44942cb20": { saveType: 2, flashSize: 65536 },
+    // SM Quest (GBA)
+    "d6b69c7d686163350141a5860d1599ad": { saveType: 2 },
+    // DARC (SMS)
+    "466f43446d151b9e6793212d5ce8c373": { ym2413: true },
+    // Flight of Pigarus (SMS)
+    "42b79384a1352b47b9ea32d6d3ec6849": { pal: true },
+    // Mecha 8 (SMS)
+    "d736dc90807bea45e2dc7aa3ff2e8be9": { ym2413: true },
+    // Wing Warriors (SMS)
+    "bdae4042a7cef61e0ee22346fa8c3a6d": { sms2: true  },
   }
 
   async checkExists(url) {   
@@ -158,6 +187,12 @@ class GameRegistryImpl {
           }
           if (ret.background) {
             ret.backgroundPixelated = true;
+          }
+
+          // Lookup custom props
+          const props = this.CUSTOM_PROPS[md5];
+          if (props) {
+            ret.props = props;
           }
         }
       }

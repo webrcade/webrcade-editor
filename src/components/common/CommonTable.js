@@ -220,6 +220,8 @@ export default function CommonTable(props) {
     const newOrder = isAsc ? 'desc' : 'asc';
     setOrder(newOrder);    
     setOrderBy(property);
+    // Reset to page 0 when sort has changed
+    setPage(0);
     Prefs.setPreference(PREF_SORT_COLUMN, property);    
     Prefs.setPreference(PREF_SORT_DIR, newOrder);
   };

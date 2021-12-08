@@ -125,10 +125,17 @@ class Processor {
       LOG.info(registryGame);
     }
 
+    let regProps = {}
+    if (registryGame.props) {
+      regProps = {...registryGame.props};
+      delete registryGame.props;
+    }
+
     const game = {
       ...registryGame,
       props: {
-        rom: url
+        rom: url,
+        ...regProps
       }
     };
 
@@ -338,7 +345,6 @@ const _analyze = (urls, urlToItems) => {
           const item = items[i];
           const currentUrl = item.props.rom;
           const titleFromReg = item._titleFromRegistry;
-          delete item.props;
 
           // Get the items to update
           const updateItems = urlToItems.get(currentUrl);
@@ -347,7 +353,7 @@ const _analyze = (urls, urlToItems) => {
               const updateItem = updateItems[j];
               const props = [
                 'title', 'longTitle', 'description', 'background',
-                'thumbnail', 'type'
+                'thumbnail', 'type', 'props' /* Props is always last */
               ];
 
               // Copy props from results to item to update
@@ -356,6 +362,36 @@ const _analyze = (urls, urlToItems) => {
                 const prop = props[x];
 
                 if (prop === 'title' && !titleFromReg) {
+                  continue;
+                }                
+
+                // Copy properties if applicable
+                if (prop === 'props') {
+                  if (!item.props) {
+                    item.props = {};
+                  }
+                  if (!updateItem.props) {
+                    updateItem.props = {};
+                  }
+
+                  if (Object.keys(item.props).length ==
+                    Object.keys(updateItem.props).length) {
+                    let diff = false;
+                    for (let p in item.props) {
+                      if (item.props[p] !== updateItem.props[p]) {                        
+                        diff = true;
+                        break;                        
+                      }
+                    }
+                    if (diff) {
+                      updated = true;
+                      updateItem.props = {...item.props}  
+                    }
+                  } else {
+                    updated = true;
+                    updateItem.props = {...item.props}
+                  }
+                  // Move to the next property
                   continue;
                 }
 
