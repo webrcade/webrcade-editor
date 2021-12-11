@@ -58,10 +58,19 @@ class GameRegistryImpl {
   }
 
   CUSTOM_PROPS = {
+    // Air Sea Battle (2600)
+    "16cb43492987d2f32b423817cdaaf7c4": { swap: true },
+    // Basketball (2600)
+    "ab4ac994865fb16ebb85738316309457": { swap: true },
+    // Home Run (2600)
+    "0bfabf1e98bdb180643f35f2165995d0": { swap: true },
+    // Surround (2600)
+    "4d7517ae69f95cfbc053be01312b7dba": { swap: true },
     // Driar (NES)
     "ac6adbbc2f43faa64a86463c1a594aee": { pal: true },
     // Elite (NES)
     "ada42a2576d85b29da663bbf35b69288": { pal: true },
+    "2c832d9fac3229cb7c32a5fe1dd65ad7": { pal: true },
     // Anguna (GBA)
     "9d3a663de5228414d7e6cda7244c5d91": { saveType: 2, flashSize: 65536 },
     // Another World (GBA) 
