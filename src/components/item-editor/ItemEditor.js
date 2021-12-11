@@ -47,6 +47,16 @@ const applyDefaults = (item, type) => {
   }
 }
 
+const setDefaultForDoom = (type, item) => {
+  //  Set the default when Doom type is selected
+  if (type === APP_TYPE_KEYS.PRBOOM ||
+    type === APP_TYPE_KEYS.DOOM) {
+    if (isEmptyString(item.props.game)) {
+      item.props.game = 'freedoom1';
+    }
+  }
+}
+
 export default function ItemEditor(props) {
   const [tabValue, setTabValue] = React.useState(0);
   const [item, setItem] = React.useState({});
@@ -90,7 +100,9 @@ export default function ItemEditor(props) {
           const type = Prefs.getLastNewType();
           if (!isEmptyString(type)) {
             clone.type = type;
-          }
+            // Set default for doom type
+            setDefaultForDoom(type, clone);
+          }          
         }
         setItem(clone)
 
@@ -151,19 +163,12 @@ export default function ItemEditor(props) {
                     const type = e.target.value;
                     applyDefaults(item, type)
 
-                    console.log(item);
-
                     if (isCreate) {
                       Prefs.setLastNewType(type);
                     }
 
-                    // Set the default when Doom type is selected
-                    if (type === APP_TYPE_KEYS.PRBOOM ||
-                      type === APP_TYPE_KEYS.DOOM) {
-                      if (isEmptyString(item.props.game)) {
-                        item.props.game = 'freedoom1';
-                      }
-                    }
+                    //  Set the default when Doom type is selected
+                    setDefaultForDoom(type, item);
                   }}
                 />
               </div>

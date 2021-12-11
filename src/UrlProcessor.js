@@ -3,13 +3,16 @@ import {
   FetchAppData,
   Unzip,
   LOG,
-  isValidString
+  isValidString,
+  md5
 } from '@webrcade/app-common'
 
 import * as Drop from './Drop';
 import * as Feed from './Feed';
 import GameRegistry from './GameRegistry';
 import { Global } from './Global';
+
+const MD5_PREFIX = "_md5_:";
 
 class Processor {
   constructor(urls, processor) {
@@ -56,73 +59,78 @@ class Processor {
     if (type) {
       LOG.info("Found type based on extension.");
     }
+    
+    if (url.indexOf(MD5_PREFIX) !== -1) {
+      const md5 = url.substring(MD5_PREFIX.length);
+      registryGame = await GameRegistry.find(md5);
+    } else {    
+      // Fetch the file
+      const fad = new FetchAppData(url);
+      const res = await fad.fetch();
 
-    // Fetch the file
-    const fad = new FetchAppData(url);
-    const res = await fad.fetch();
+      if (res.ok) {
+        // Capture content disposition 
+        const headers = fad.getHeaders(res);
+        const disposition = headers['content-disposition'];
+        if (disposition) {
+          const matches = /.*filename="(.*)".*/gmi.exec(disposition);
+          if (matches.length > 1) {
+            let match = matches[1];
+            match = match.trim();
+            if (match.length > 0) {
+              // Update name parts based on content disposition
+              const parts = this.getNameParts(match);
+              title = parts[0];
+              ext = parts[1];
 
-    if (res.ok) {
-      // Capture content disposition 
-      const headers = fad.getHeaders(res);
-      const disposition = headers['content-disposition'];
-      if (disposition) {
-        const matches = /.*filename="(.*)".*/gmi.exec(disposition);
-        if (matches.length > 1) {
-          let match = matches[1];
-          match = match.trim();
-          if (match.length > 0) {
-            // Update name parts based on content disposition
-            const parts = this.getNameParts(match);
-            title = parts[0];
-            ext = parts[1];
-
-            // Check for type from content disposition (if not already resolved)
-            if (!type) {
-              type = AppRegistry.instance.getTypeForExtension(ext);
-              if (type) {
-                LOG.info("Found type in content disposition.");
+              // Check for type from content disposition (if not already resolved)
+              if (!type) {
+                type = AppRegistry.instance.getTypeForExtension(ext);
+                if (type) {
+                  LOG.info("Found type in content disposition.");
+                }
               }
             }
           }
         }
-      }
 
-      let blob = await res.blob();
-      if (blob.size === 0) {
-        LOG.info("File size is 0.");
-        return null;
-      }
+        let blob = await res.blob();
+        if (blob.size === 0) {
+          LOG.info("File size is 0.");
+          return null;
+        }
 
-      // Check for zip, no-op if it is non-zip
-      const zipRes = await this.processZip(blob);
-      blob = zipRes[0];
-      if (zipRes[1] && zipRes[2]) {
-        // Update name based on file found in zip
-        title = zipRes[1];
-        ext = zipRes[2];
+        // Check for zip, no-op if it is non-zip
+        const zipRes = await this.processZip(blob);
+        blob = zipRes[0];
+        if (zipRes[1] && zipRes[2]) {
+          // Update name based on file found in zip
+          title = zipRes[1];
+          ext = zipRes[2];
 
-        // Check for type from zip (if not already resolved)
-        if (!type) {
-          type = AppRegistry.instance.getTypeForExtension(ext);
-          if (type) {
-            LOG.info("Found type in zip.");
+          // Check for type from zip (if not already resolved)
+          if (!type) {
+            type = AppRegistry.instance.getTypeForExtension(ext);
+            if (type) {
+              LOG.info("Found type in zip.");
+            }
           }
         }
-      }
 
-      // Check for type in magic (if not already resolved)      
-      if (!type) {
-        const abuffer = await new Response(blob).arrayBuffer();
-        type = AppRegistry.instance.testMagic(new Uint8Array(abuffer));
-        if (type) {
-          LOG.info("Found type in magic.")
+        // Check for type in magic (if not already resolved)      
+        if (!type) {
+          const abuffer = await new Response(blob).arrayBuffer();
+          type = AppRegistry.instance.testMagic(new Uint8Array(abuffer));
+          if (type) {
+            LOG.info("Found type in magic.")
+          }
         }
-      }
 
-      const iMd5 = await AppRegistry.instance.getMd5(blob, type);
-      LOG.info(iMd5);
-      registryGame = await GameRegistry.find(iMd5);
-      LOG.info(registryGame);
+        const iMd5 = await AppRegistry.instance.getMd5(blob, type);
+        LOG.info(iMd5);
+        registryGame = await GameRegistry.find(iMd5);
+        LOG.info(registryGame);
+      }
     }
 
     let regProps = {}
@@ -305,14 +313,18 @@ const process = (urls) => {
 
 const _updateAnalyzeUrls = (categoryId, itemIds, urls, urlToItems) => {
   const feed = Global.getFeed();
-
   // Create list of URLs to process
   // Map items by their URL
   for (let i = 0; i < itemIds.length; i++) {
     const itemId = itemIds[i];
     const item = Feed.getItem(feed, categoryId, itemId);
-    if (item && item.props.rom) {
-      const romUrl = item.props.rom.trim();
+    if (item) {
+      let romUrl = "";
+      if (item.props.rom) {
+        romUrl = item.props.rom.trim();
+      } else if (item.props.game) {
+        romUrl = MD5_PREFIX + md5(item.props.game.trim());
+      }      
       if (romUrl.length > 0) {
         // Track unique URLs
         urls.add(romUrl);
@@ -346,6 +358,11 @@ const _analyze = (urls, urlToItems) => {
           const currentUrl = item.props.rom;
           const titleFromReg = item._titleFromRegistry;
 
+          if (currentUrl.indexOf(MD5_PREFIX) !== -1) {
+            // Remove rom for MD5 hacks (doom, etc.)
+            delete item.props.rom;
+          }
+ 
           // Get the items to update
           const updateItems = urlToItems.get(currentUrl);
           for (let j = 0; j < updateItems.length; j++) {

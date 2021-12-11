@@ -1,7 +1,7 @@
 import {
   resolvePath,
   FetchAppData,
-  Unzip,  
+  Unzip,
   LOG
 } from '@webrcade/app-common'
 
@@ -11,7 +11,7 @@ class GameRegistryImpl {
   }
 
   DB_FILE = resolvePath("roms.json.zip");
-   // eslint-disable-next-line
+  // eslint-disable-next-line
   TITLE_REGEX = /^([^\(]*).*$/i
 
   METADATA = {
@@ -33,27 +33,27 @@ class GameRegistryImpl {
     'nes': {
       thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-nes-images/master/Named_Titles/resized',
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-nes-images/master/Named_Snaps/output',
-      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Nintendo%20Entertainment%20System/output'          
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Nintendo%20Entertainment%20System/output'
     },
     'snes': {
       thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-snes-images/master/Named_Titles/resized',
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-snes-images/master/Named_Snaps/output',
-      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Super%20Nintendo%20Entertainment%20System/output'          
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Super%20Nintendo%20Entertainment%20System/output'
     },
     'sms': {
       thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-sms-images/master/Named_Titles/resized',
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-sms-images/master/Named_Snaps/output',
-      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sega%20Master%20System/output'          
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sega%20Master%20System/output'
     },
     'gg': {
       thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-gg-images/master/Named_Titles/resized',
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-gg-images/master/Named_Snaps/output',
-      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sega%20Game%20Gear/output'          
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sega%20Game%20Gear/output'
     },
     'genesis': {
       thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-genesis-images/master/Named_Titles/resized',
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-genesis-images/master/Named_Snaps/output',
-      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sega%20Genesis/output'          
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sega%20Genesis/output'
     }
   }
 
@@ -93,10 +93,37 @@ class GameRegistryImpl {
     // Mecha 8 (SMS)
     "d736dc90807bea45e2dc7aa3ff2e8be9": { ym2413: true },
     // Wing Warriors (SMS)
-    "bdae4042a7cef61e0ee22346fa8c3a6d": { sms2: true  },
+    "bdae4042a7cef61e0ee22346fa8c3a6d": { sms2: true },
+    // Freedoom Phase 1
+    "c92783594290d9259017cadd746a62bb": { game: "freedoom1" },
+    // Freedoom Phase 2
+    "88e0c5180391f5b4eedea0f06df24c4c": { game: "freedoom2" },
+    // Doom 1 (Shareware)
+    "9c69ed31b99047073cbe9a5aaf616b5b": { game: "doom1" },    
   }
 
-  async checkExists(url) {   
+  METADATA_OVERRIDE = {
+    // Freedoom Phase 1
+    "c92783594290d9259017cadd746a62bb": {
+      description: "The Freedoom project aims to create a complete, free content first person shooter game. Phase 1contains four episodes, nine levels each, totalling 36 levels. This game aims for compatibility with The Ultimate Doom mods, also known as plain Doom or Doom 1.",
+      thumbnail: "https://play.webrcade.com/default-feed/images/doom/freedoom1-thumb.png",
+      background: "https://play.webrcade.com/default-feed/images/doom/freedoom1-background.png"
+    },
+    // Freedoom Phase 2
+    "88e0c5180391f5b4eedea0f06df24c4c": {
+      description: "The Freedoom project aims to create a complete, free content first person shooter game. Phase 2 includes 32 levels in one long episode, featuring extra monsters and a double-barrelled shotgun. This project aims for compatibility with Doom II mods.",
+      thumbnail: "https://play.webrcade.com/default-feed/images/doom/freedoom2-thumb.png",
+      background: "https://play.webrcade.com/default-feed/images/doom/freedoom2-background.png"
+    },
+    // Doom 1 (Shareware)
+    "9c69ed31b99047073cbe9a5aaf616b5b": {
+      description: "Doom is a 1993 first-person shooter (FPS) game developed by id Software for MS-DOS. Players assume the role of a space marine, popularly known as Doomguy, fighting his way through hordes of invading demons from Hell. The first episode, comprising nine levels, was distributed freely as shareware and played by an estimated 15–20 million people within two years.",
+      thumbnail: "https://play.webrcade.com/default-feed/images/doom/doom1-thumb.png",
+      background: "https://play.webrcade.com/default-feed/images/doom/freedoom2-background.png"
+    }
+  }
+
+  async checkExists(url) {
     try {
       const r = await new FetchAppData(url, { method: "HEAD" })
         .setRetries(0).setProxyDisabled(true).fetch();
@@ -107,7 +134,7 @@ class GameRegistryImpl {
     }
   }
 
-  async getText(url) {   
+  async getText(url) {
     try {
       const r = await new FetchAppData(url)
         .setRetries(0).setProxyDisabled(true).fetch();
@@ -126,19 +153,19 @@ class GameRegistryImpl {
       if (res.ok) {
         let blob = await res.blob();
         const uz = new Unzip();
-        blob = await uz.unzip(blob, [".json"]); 
+        blob = await uz.unzip(blob, [".json"]);
         const json = await blob.text();
         this.db = JSON.parse(json);
         LOG.info(`Loaded types database (MD5), ${Object.keys(this.db).length} types.`);
       }
-    } catch(e) {
+    } catch (e) {
       LOG.error("Error loading types database: " + e);
     }
   }
 
   async find(md5) {
     const { METADATA, TITLE_REGEX } = this;
-    const ret = {};
+    let ret = {};
     for (let type in this.db) {
       let shortName = null;
       let name = this.db[type][md5];
@@ -146,7 +173,7 @@ class GameRegistryImpl {
       if (name) {
         const matches = name.match(TITLE_REGEX);
         if (matches.length > 1) {
-          shortName = matches[1].trim();          
+          shortName = matches[1].trim();
         }
 
         const hasShortName = shortName && shortName.length > 0;
@@ -164,16 +191,16 @@ class GameRegistryImpl {
             if (await this.checkExists(url)) {
               ret.background = url;
             }
-          }          
+          }
           if (md.thumbPrefix) {
             const url = `${md.thumbPrefix}/${file}.png`;
             if (await this.checkExists(url)) {
               ret.thumbnail = url;
             }
-          }          
+          }
           if (md.descriptionPrefix) {
             const url = `${md.descriptionPrefix}/${file}.txt`;
-            const description = await this.getText(url);            
+            const description = await this.getText(url);
             if (description) {
               // const lines = description.split("\n");
               // let trimmed = "";
@@ -198,15 +225,22 @@ class GameRegistryImpl {
           if (ret.background) {
             ret.backgroundPixelated = true;
           }
+        }
 
-          // Lookup custom props
-          const props = this.CUSTOM_PROPS[md5];
-          if (props) {
-            ret.props = props;
-          }
+        // Lookup metadata override
+        const mdOverride = this.METADATA_OVERRIDE[md5];
+        if (mdOverride) {
+          ret = { ...ret, ...mdOverride };
+        }
+
+        // Lookup custom props
+        const props = this.CUSTOM_PROPS[md5];
+        if (props) {
+          ret.props = props;
         }
       }
     }
+
     return ret;
   }
 }
