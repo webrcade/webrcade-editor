@@ -68,6 +68,7 @@ class GameRegistryImpl {
     "9cef2ca9fba8a4532629f8c7e7c9ddf8": { saveType: 2, flashSize: 65536 },
     // Blast Arena Advance (GBA)
     "10f2557e1deb8629c04c071cd180c707": { saveType: 2, flashSize: 65536 },
+    "cde17fc4f3d41365cb92dd1187196cd8": { saveType: 2, flashSize: 65536 },
     // Broken Circle (GBA)
     "420a1cf3e052ec30d3612d7d945c525e": { saveType: 1 },
     // Flappy Bird (GBA)

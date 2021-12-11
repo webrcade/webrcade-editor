@@ -374,7 +374,7 @@ const _analyze = (urls, urlToItems) => {
                     updateItem.props = {};
                   }
 
-                  if (Object.keys(item.props).length ==
+                  if (Object.keys(item.props).length ===
                     Object.keys(updateItem.props).length) {
                     let diff = false;
                     for (let p in item.props) {
