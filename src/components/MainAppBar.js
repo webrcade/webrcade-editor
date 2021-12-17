@@ -39,7 +39,7 @@ function MainAppBar(props) {
           <IconButton
             color="inherit"
             edge="start"
-            onClick={() => { window.open('https://docs.webrcade.com/feeds/editor/'); }}
+            onClick={() => { window.open('https://docs.webrcade.com/editor/'); }}
             sx={{ ml: 2 }}
           >
             <HelpCenterIcon />
