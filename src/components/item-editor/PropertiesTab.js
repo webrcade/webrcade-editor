@@ -10,6 +10,7 @@ import EditorSwitch from '../common/editor/EditorSwitch';
 import EditorTabPanel from '../common/editor/EditorTabPanel';
 import EditorTextField from '../common/editor/EditorTextField';
 
+const PROP_3BUTTON = "PROP_3BUTTON";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
 const PROP_FORCE_PAL = "PROP_FORCE_PAL";
@@ -23,6 +24,7 @@ const PROP_SAVE_TYPE = "PROP_SAVE_TYPE"
 const PROP_SWAP_CONTROLLERS = "PROP_SWAP_CONTROLLERS";
 
 const ALL_PROPS = [
+  PROP_3BUTTON,
   PROP_DOOM_GAME,
   PROP_FLASH_SIZE,
   PROP_FORCE_PAL,
@@ -62,7 +64,7 @@ const FIELD_MAP = {
     PROP_ROM, PROP_FORCE_PAL
   },
   [APP_TYPE_KEYS.GENESIS]: {
-    PROP_ROM, PROP_FORCE_PAL
+    PROP_ROM, PROP_FORCE_PAL, PROP_3BUTTON
   },
   [APP_TYPE_KEYS.GENPLUSGX_MD]: {
     PROP_ROM, PROP_FORCE_PAL
@@ -185,6 +187,19 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.pal)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_3BUTTON) ? (
+        <div>
+          <EditorSwitch
+            label="3-Button Control Pads"
+            tooltip="Whether to use 3-button control pads (6-button is the default)."
+            onChange={(e) => {
+              const props = { ...object.props, pad3button: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.pad3button)}
           />
         </div>
       ) : null}
