@@ -58,42 +58,61 @@ class GameRegistryImpl {
   }
 
   CUSTOM_PROPS = {
-    // Air Sea Battle (2600)
+    /* Genesis */
+
+    // Ms. Pac-Man
+    "cfe7f3023b21bcf697bcf5e1be461ee7": { pad3button: true },
+
+    /* 2600 */
+
+    // Air Sea Battle
     "16cb43492987d2f32b423817cdaaf7c4": { swap: true },
-    // Basketball (2600)
+    // Basketball
     "ab4ac994865fb16ebb85738316309457": { swap: true },
-    // Home Run (2600)
+    // Home Run
     "0bfabf1e98bdb180643f35f2165995d0": { swap: true },
-    // Surround (2600)
+    // Surround
     "4d7517ae69f95cfbc053be01312b7dba": { swap: true },
-    // Driar (NES)
+
+    /* NES */
+
+    // Driar 
     "ac6adbbc2f43faa64a86463c1a594aee": { pal: true },
-    // Elite (NES)
+    // Elite 
     "ada42a2576d85b29da663bbf35b69288": { pal: true },
     "2c832d9fac3229cb7c32a5fe1dd65ad7": { pal: true },
-    // Anguna (GBA)
+
+    /* GBA */
+
+    // Anguna
     "9d3a663de5228414d7e6cda7244c5d91": { saveType: 2, flashSize: 65536 },
-    // Another World (GBA) 
+    // Another World
     "9cef2ca9fba8a4532629f8c7e7c9ddf8": { saveType: 2, flashSize: 65536 },
-    // Blast Arena Advance (GBA)
+    // Blast Arena Advance
     "10f2557e1deb8629c04c071cd180c707": { saveType: 2, flashSize: 65536 },
     "cde17fc4f3d41365cb92dd1187196cd8": { saveType: 2, flashSize: 65536 },
-    // Broken Circle (GBA)
+    // Broken Circle
     "420a1cf3e052ec30d3612d7d945c525e": { saveType: 1 },
-    // Flappy Bird (GBA)
+    // Flappy Bird
     "38f78ab97bbbb9bd210d8c96497f788a": { rotation: 270, saveType: 2, flashSize: 65536 },
-    // POWDER (GBA)
+    // POWDER
     "09f9a4252a88f839f40fdfb44942cb20": { saveType: 2, flashSize: 65536 },
-    // SM Quest (GBA)
+    // SM Quest
     "d6b69c7d686163350141a5860d1599ad": { saveType: 2 },
-    // DARC (SMS)
+
+    /* SMS */
+
+    // DARC 
     "466f43446d151b9e6793212d5ce8c373": { ym2413: true },
-    // Flight of Pigarus (SMS)
+    // Flight of Pigarus
     "42b79384a1352b47b9ea32d6d3ec6849": { pal: true },
-    // Mecha 8 (SMS)
+    // Mecha 8
     "d736dc90807bea45e2dc7aa3ff2e8be9": { ym2413: true },
-    // Wing Warriors (SMS)
-    "bdae4042a7cef61e0ee22346fa8c3a6d": { sms2: true },
+    // Wing Warriors
+    "bdae4042a7cef61e0ee22346fa8c3a6d": { sms2: true },    
+
+    /* DOOM */
+
     // Freedoom Phase 1
     "c92783594290d9259017cadd746a62bb": { game: "freedoom1" },
     // Freedoom Phase 2
