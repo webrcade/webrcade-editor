@@ -4,7 +4,8 @@ import {
   Unzip,
   LOG,
   isValidString,
-  md5
+  md5,
+  romNameScorer
 } from '@webrcade/app-common'
 
 import * as Drop from './Drop';
@@ -39,7 +40,7 @@ class Processor {
   async processZip(blob) {
     const uz = new Unzip();
     const unzipBlob = await uz.unzip(
-      blob, this.allExtensionsNonUnique, this.allExtensions);
+      blob, this.allExtensionsNonUnique, this.allExtensions, romNameScorer);
     const name = uz.getName();
     const parts = name ? this.getNameParts(name) : null;
 
