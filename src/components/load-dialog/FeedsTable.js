@@ -156,7 +156,6 @@ export default function FeedsTable(props) {
                           Global.openBusyScreen(true, `Deleting feed${single ? "" : "s"}...`);
                           for (let i = 0; i < selected.length; i++) {
                             const id = selected[i];
-                            console.log(id);
                             await feeds.removeFeed(id);
                           }
                           if (onDelete) await onDelete();

@@ -13,7 +13,7 @@ import ThumbnailTab from '../common/editor/ThumbnailTab';
 import { GlobalHolder, Global } from '../../Global';
 
 import {
-  AppRegistry, APP_TYPE_KEYS, isEmptyString
+  AppRegistry, APP_TYPE_KEYS, LOG, isEmptyString
 } from '@webrcade/app-common'
 import Prefs from '../../Prefs';
 
@@ -22,6 +22,7 @@ import Prefs from '../../Prefs';
 // const b = {a: 'ba', b: { b1: 'bb1', b4: 'bb2'}}
 // console.log(deepmerge(a,b));
 
+const isDebug = Global.isDebug();
 const validator = new EditorValidator();
 
 const addValidatorCallback = (id, cb) => {
@@ -123,7 +124,9 @@ export default function ItemEditor(props) {
         // Remove the default values
         removeDefaults(item, AppRegistry.instance.getDefaultsForType(item.type));
 
-        console.log(item);
+        if (isDebug) {          
+          LOG.info(item);
+        }
 
         // Get the feed
         const feed = Global.getFeed();

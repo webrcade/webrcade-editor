@@ -13,6 +13,8 @@ import * as Feed from './Feed';
 import GameRegistry from './GameRegistry';
 import { Global } from './Global';
 
+const isDebug = Global.isDebug();
+
 const MD5_PREFIX = "_md5_:";
 
 class Processor {
@@ -28,8 +30,11 @@ class Processor {
     this.allExtensionsNonUnique =
       // dotted and non-unique
       AppRegistry.instance.getAllExtensions(true, true);
-    console.log(this.allExtensions);
-    console.log(this.allExtensionsNonUnique);
+
+    if (isDebug) {
+      LOG.info(this.allExtensions);
+      LOG.info(this.allExtensionsNonUnique);
+    }
   }
 
   setRecordTitleSource(record) {
@@ -38,7 +43,7 @@ class Processor {
   }
 
   async processZip(blob) {
-    const uz = new Unzip();
+    const uz = new Unzip().setDebug(isDebug);
     const unzipBlob = await uz.unzip(
       blob, this.allExtensionsNonUnique, this.allExtensions, romNameScorer);
     const name = uz.getName();
@@ -57,7 +62,7 @@ class Processor {
 
     // Check for extension from URL
     let type = AppRegistry.instance.getTypeForExtension(ext);
-    if (type) {
+    if (type && isDebug) {
       LOG.info("Found type based on extension.");
     }
     
@@ -87,7 +92,7 @@ class Processor {
               // Check for type from content disposition (if not already resolved)
               if (!type) {
                 type = AppRegistry.instance.getTypeForExtension(ext);
-                if (type) {
+                if (type && isDebug) {
                   LOG.info("Found type in content disposition.");
                 }
               }
@@ -112,7 +117,7 @@ class Processor {
           // Check for type from zip (if not already resolved)
           if (!type) {
             type = AppRegistry.instance.getTypeForExtension(ext);
-            if (type) {
+            if (type && isDebug) {
               LOG.info("Found type in zip.");
             }
           }
@@ -122,15 +127,19 @@ class Processor {
         if (!type) {
           const abuffer = await new Response(blob).arrayBuffer();
           type = AppRegistry.instance.testMagic(new Uint8Array(abuffer));
-          if (type) {
+          if (type && isDebug) {
             LOG.info("Found type in magic.")
           }
         }
 
         const iMd5 = await AppRegistry.instance.getMd5(blob, type);
-        LOG.info(iMd5);
+        if (isDebug) {
+          LOG.info(iMd5);
+        }
         registryGame = await GameRegistry.find(iMd5);
-        LOG.info(registryGame);
+        if (isDebug) {
+          LOG.info(registryGame);
+        }
       }
     }
 
@@ -188,7 +197,9 @@ class Processor {
     if (urlLower.substring(0, DB_PREFIX.length) === DB_PREFIX) {
       url = "https://dl.dropboxusercontent.com/" + url.substring(DB_PREFIX.length);
       url = url.split('?')[0];
-      console.log("Dropbox url: '" + url + "'");
+      if (isDebug) {
+        LOG.info("Dropbox url: '" + url + "'");
+      }
     }
 
     return url;
@@ -207,8 +218,9 @@ class Processor {
         try {
           url = this.normalize(url);
           const nameParts = this.getNameParts(url);
-          console.log(nameParts);
-
+          if (isDebug) {
+            LOG.info(nameParts);
+          }
           Global.openBusyScreen(true,
             len > 1 ?
               `Analyzing ${i + 1} of ${len}...` :
@@ -297,7 +309,9 @@ const process = (urls) => {
         let succeeded = 0;
         if (items.length > 0) {
           Global.openBusyScreen(true, "Creating items...");
-          console.log(items);
+          if (isDebug) {
+            LOG.info(items);
+          }
           try {
             const feed = Global.getFeed();
             Feed.addItemsToCategory(feed, catId, items);

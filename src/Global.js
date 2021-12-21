@@ -1,3 +1,8 @@
+import {
+  AppProps,
+  UrlUtil
+} from '@webrcade/app-common'
+
 import { addId } from './Feed';
 import Prefs from './Prefs';
 import * as Util from './Util';
@@ -26,6 +31,7 @@ class Holder {
   setConfirmDialogOpen = null;
   setConfirmDialogProps = null;
   setLoadFeedDialogOpen = null;
+  isDebug = UrlUtil.getBoolParam(window.location.search, AppProps.RP_DEBUG); 
 }
 
 const GlobalHolder = Holder.instance;
@@ -33,6 +39,9 @@ const GlobalHolder = Holder.instance;
 const THUMB_SIZE = [400, 300];
 
 const Global = {
+  isDebug: () => {
+    return GlobalHolder.isDebug
+  },
   openBusyScreen: (open, message = null) => {
     GlobalHolder.setBusyScreenOpen(open);
     if (open && message) {
