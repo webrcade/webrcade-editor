@@ -183,7 +183,7 @@ export default function PropertiesTab(props) {
         <div>
           <EditorSelect
             label="Hardware Type"
-            tooltip="The hardware model and revision."
+            tooltip="The type of hardware to emulate."
             value={object.props.hwType ? object.props.hwType : 0}
             menuItems={[
               { value: 0, name: "Master System II" },
