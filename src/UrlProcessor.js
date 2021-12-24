@@ -2,6 +2,7 @@ import {
   AppRegistry,
   FetchAppData,
   Unzip,
+  APP_TYPE_KEYS,
   LOG,
   isValidString,
   md5,
@@ -159,6 +160,12 @@ class Processor {
 
     if (!game.type && type) {
       game.type = type.key;
+    }
+
+    // Hack for SG-1000 
+    // TODO: Find a better place to do this...
+    if (game.type === APP_TYPE_KEYS.SMS && ext.toLowerCase() === "sg") {
+      game.props.hwType = 2; // SG-1000
     }
 
     let titleFromReg = true;

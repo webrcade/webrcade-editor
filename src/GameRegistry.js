@@ -108,8 +108,6 @@ class GameRegistryImpl {
     "42b79384a1352b47b9ea32d6d3ec6849": { pal: true },
     // Mecha 8
     "d736dc90807bea45e2dc7aa3ff2e8be9": { ym2413: true },
-    // Wing Warriors
-    "bdae4042a7cef61e0ee22346fa8c3a6d": { sms2: true },    
 
     /* DOOM */
 

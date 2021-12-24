@@ -14,13 +14,14 @@ const PROP_3BUTTON = "PROP_3BUTTON";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
 const PROP_FORCE_PAL = "PROP_FORCE_PAL";
-const PROP_FORCE_SMS = "PROP_FORCE_SMS";
+// const PROP_FORCE_SMS = "PROP_FORCE_SMS";
 const PROP_FORCE_YM2413 = "PROP_FORCE_YM2413";
 const PROP_MIRRORING = "PROP_MIRRORING";
 const PROP_ROM = "PROP_ROM";
 const PROP_ROTATION = "PROP_ROTATION";
-const PROP_RTC = "PROP_RTC"
-const PROP_SAVE_TYPE = "PROP_SAVE_TYPE"
+const PROP_RTC = "PROP_RTC";
+const PROP_SAVE_TYPE = "PROP_SAVE_TYPE";
+const PROP_SMS_HW_TYPE = "PROP_SMS_HW_TYPE";
 const PROP_SWAP_CONTROLLERS = "PROP_SWAP_CONTROLLERS";
 
 const ALL_PROPS = [
@@ -28,7 +29,8 @@ const ALL_PROPS = [
   PROP_DOOM_GAME,
   PROP_FLASH_SIZE,
   PROP_FORCE_PAL,
-  PROP_FORCE_SMS,
+  // PROP_FORCE_SMS,
+  PROP_SMS_HW_TYPE,
   PROP_FORCE_YM2413,
   PROP_MIRRORING,
   PROP_ROM,
@@ -76,10 +78,10 @@ const FIELD_MAP = {
     PROP_ROM
   },
   [APP_TYPE_KEYS.SMS]: {
-    PROP_ROM, PROP_FORCE_PAL, PROP_FORCE_SMS, PROP_FORCE_YM2413
+    PROP_ROM, PROP_FORCE_PAL, PROP_SMS_HW_TYPE, PROP_FORCE_YM2413
   },
   [APP_TYPE_KEYS.GENPLUSGX_SMS]: {
-    PROP_ROM, PROP_FORCE_PAL, PROP_FORCE_SMS, PROP_FORCE_YM2413
+    PROP_ROM, PROP_FORCE_PAL, PROP_SMS_HW_TYPE, PROP_FORCE_YM2413
   },
   [APP_TYPE_KEYS.DOOM]: {
     PROP_DOOM_GAME
@@ -177,6 +179,24 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_SMS_HW_TYPE) ? (
+        <div>
+          <EditorSelect
+            label="Hardware Type"
+            tooltip="The hardware model and revision."
+            value={object.props.hwType ? object.props.hwType : 0}
+            menuItems={[
+              { value: 0, name: "Master System II" },
+              { value: 1, name: "Master System" },
+              { value: 2, name: "SG-1000" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, hwType: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
       {hasProp(object, PROP_FORCE_PAL) ? (
         <div>
           <EditorSwitch
@@ -200,19 +220,6 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.pad3button)}
-          />
-        </div>
-      ) : null}
-      {hasProp(object, PROP_FORCE_SMS) ? (
-        <div>
-          <EditorSwitch
-            label="Force Master System II"
-            tooltip="Whether to emulate the Sega Master System II console. The Master System II contains the 315-5246 VDP which supports the extra-height 224 and 240-line modes."
-            onChange={(e) => {
-              const props = { ...object.props, sms2: e.target.checked }
-              setObject({ ...object, props })
-            }}
-            checked={Util.asBoolean(object.props.sms2)}
           />
         </div>
       ) : null}
