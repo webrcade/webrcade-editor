@@ -8,8 +8,15 @@ The webЯcade feed editor, located at [editor.webrcade.com](https://editor.webrc
  <a href="https://editor.webrcade.com">
   <img src="https://docs.webrcade.com/assets/images/editor/main.png" width="97%">
  </a>
+</p>
  
 The editor also includes a ROM *analyzer* that is capable of determining the appropriate [Application](https://docs.webrcade.com/apps/) type (emulator, etc.) for ROMs as well as any associated meta-information (title, properties, description, and related artwork). The *analyze* operation is similar to *scraping* functionality found in other front-ends with the primary difference being that in addition to meta-information the analyzer also establishes the application type and related properties.
+
+<p align="center">
+ <a href="https://editor.webrcade.com">
+  <img src="https://docs.webrcade.com/assets/images/editor/itemeditor/backgroundtab.png" width="97%">
+ </a>
+</p>
 
 The editor provides [several ways](https://docs.webrcade.com/editor/workspace/addingitems/) to create and add items (games, etc.) to feeds. The simplest way being to simply [drag and drop ROM-based links](https://docs.webrcade.com/editor/draganddrop/#drag-rom-urls) into the editor's [workspace](https://docs.webrcade.com/editor/workspace/).
 
