@@ -1,70 +1,26 @@
-# Getting Started with Create React App
+# WebЯcade Feed Editor
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-## Available Scripts
+The webЯcade feed editor, located at [editor.webrcade.com](https://editor.webrcade.com), provides a much simpler alternative to the [manual creation](https://docs.webrcade.com/feeds/tutorial/) of feeds. The editor allows for quickly creating webЯcade feeds without requiring any knowledge of the underlying [document format](https://docs.webrcade.com/feeds/format/).
 
-In the project directory, you can run:
+<p align="center">
+ <a href="https://editor.webrcade.com">
+  <img src="https://docs.webrcade.com/assets/images/editor/main.png" width="97%">
+ </a>
+ 
+The editor also includes a ROM *analyzer* that is capable of determining the appropriate [Application](https://docs.webrcade.com/apps/) type (emulator, etc.) for ROMs as well as any associated meta-information (title, properties, description, and related artwork). The *analyze* operation is similar to *scraping* functionality found in other front-ends with the primary difference being that in addition to meta-information the analyzer also establishes the application type and related properties.
 
-### `npm start`
+The editor provides [several ways](https://docs.webrcade.com/editor/workspace/addingitems/) to create and add items (games, etc.) to feeds. The simplest way being to simply [drag and drop ROM-based links](https://docs.webrcade.com/editor/draganddrop/#drag-rom-urls) into the editor's [workspace](https://docs.webrcade.com/editor/workspace/).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Documentation
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+The [webЯcade Feed Editor Documentation](https://docs.webrcade.com/editor/) provides detailed information about the editor's interface, available actions, and overall functionality.
 
-### `npm test`
+## LICENSE
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
-### `npm run build`
+http://www.apache.org/licenses/LICENSE-2.0
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
