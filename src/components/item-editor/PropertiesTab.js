@@ -22,13 +22,17 @@ const PROP_RTC = "PROP_RTC";
 const PROP_SAVE_TYPE = "PROP_SAVE_TYPE";
 const PROP_SMS_HW_TYPE = "PROP_SMS_HW_TYPE";
 const PROP_SWAP_CONTROLLERS = "PROP_SWAP_CONTROLLERS";
+const PROP_GB_HW_TYPE = "PROP_GB_HW_TYPE";
+const PROP_GB_COLORS = "PROP_GB_COLORS";
 
 const ALL_PROPS = [
   PROP_3BUTTON,
   PROP_DOOM_GAME,
   PROP_FLASH_SIZE,
   PROP_FORCE_PAL,
-  PROP_SMS_HW_TYPE,
+  PROP_SMS_HW_TYPE,  
+  PROP_GB_HW_TYPE,
+  PROP_GB_COLORS,
   PROP_FORCE_YM2413,
   PROP_MIRRORING,
   PROP_ROM,
@@ -99,6 +103,18 @@ const FIELD_MAP = {
   [APP_TYPE_KEYS.VBA_M_GBA]: {
     PROP_ROM, PROP_ROTATION, PROP_RTC, PROP_MIRRORING, PROP_SAVE_TYPE, PROP_FLASH_SIZE
   },
+  [APP_TYPE_KEYS.GB]: {
+    PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS
+  },
+  [APP_TYPE_KEYS.VBA_M_GB]: {
+    PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS
+  },
+  [APP_TYPE_KEYS.GBC]: {
+    PROP_ROM
+  },
+  [APP_TYPE_KEYS.VBA_M_GBC]: {
+    PROP_ROM
+  },  
 }
 
 const hasProp = (object, prop) => {
@@ -201,6 +217,53 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_GB_HW_TYPE) ? (
+        <div>
+          <EditorSelect
+            label="Hardware Type"
+            tooltip="The type of hardware to emulate."
+            value={object.props.hwType ? object.props.hwType : 0}
+            menuItems={[
+              { value: 0, name: "Automatic" },
+              { value: 3, name: "Game Boy" },
+              { value: 1, name: "Game Boy Color" },
+              { value: 4, name: "Game Boy Advance" },                            
+              { value: 2, name: "Super Game Boy" },              
+              { value: 5, name: "Super Game Boy 2" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, hwType: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_GB_COLORS) ? (
+        <div>
+          <EditorSelect
+            label="Screen Colors"
+            tooltip="The palette to use for the Game Boy screen colors."
+            value={object.props.colors ? object.props.colors : 0}
+            menuItems={[
+              { value: 0, name: "Standard" },
+              { value: 7, name: "Game Boy" },
+              { value: 8, name: "Game Boy on GBA SP" },
+              { value: 1, name: "Blue Sea" },
+              { value: 2, name: "Dark Night" },
+              { value: 3, name: "Green Forest" },                            
+              { value: 4, name: "Hot Desert" },              
+              { value: 5, name: "Pink Dreams" },
+              { value: 6, name: "Odd Colors" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, colors: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+
+      
       {hasProp(object, PROP_FORCE_PAL) ? (
         <div>
           <EditorSwitch
@@ -344,3 +407,4 @@ export default function PropertiesTab(props) {
     </EditorTabPanel>
   );
 }
+
