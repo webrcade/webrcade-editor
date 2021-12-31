@@ -24,6 +24,7 @@ const PROP_SMS_HW_TYPE = "PROP_SMS_HW_TYPE";
 const PROP_SWAP_CONTROLLERS = "PROP_SWAP_CONTROLLERS";
 const PROP_GB_HW_TYPE = "PROP_GB_HW_TYPE";
 const PROP_GB_COLORS = "PROP_GB_COLORS";
+const PROP_GB_BORDER = "PROP_GB_BORDER";
 
 const ALL_PROPS = [
   PROP_3BUTTON,
@@ -33,6 +34,7 @@ const ALL_PROPS = [
   PROP_SMS_HW_TYPE,  
   PROP_GB_HW_TYPE,
   PROP_GB_COLORS,
+  PROP_GB_BORDER,
   PROP_FORCE_YM2413,
   PROP_MIRRORING,
   PROP_ROM,
@@ -104,10 +106,10 @@ const FIELD_MAP = {
     PROP_ROM, PROP_ROTATION, PROP_RTC, PROP_MIRRORING, PROP_SAVE_TYPE, PROP_FLASH_SIZE
   },
   [APP_TYPE_KEYS.GB]: {
-    PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS
+    PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_BORDER
   },
   [APP_TYPE_KEYS.VBA_M_GB]: {
-    PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS
+    PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_BORDER
   },
   [APP_TYPE_KEYS.GBC]: {
     PROP_ROM
@@ -262,8 +264,24 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
-
-      
+      {hasProp(object, PROP_GB_BORDER) ? (
+        <div>
+          <EditorSelect
+            label="Border"
+            tooltip="Whether to display a border around the screen."
+            value={object.props.border ? object.props.border : 0}
+            menuItems={[
+              { value: 2, name: "Automatic" },
+              { value: 1, name: "On" },
+              { value: 0, name: "Off" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, border: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}      
       {hasProp(object, PROP_FORCE_PAL) ? (
         <div>
           <EditorSwitch
