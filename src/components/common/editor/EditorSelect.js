@@ -15,6 +15,7 @@ export default function EditorSelect(props) {
     sx, 
     onChange, 
     tooltip, 
+    children,
     ...other 
   } = props;
 
@@ -27,13 +28,14 @@ export default function EditorSelect(props) {
         onChange={onChange}        
         label={label}
       >
-        {
+        {menuItems ?
           menuItems.map(menuItem => {
             return (
               <MenuItem key={menuItem.value} value={menuItem.value}>{menuItem.name}</MenuItem>
             )
-          })
+          }) : null
         }
+        {children}
       </Select>
     </FormControl>
   );

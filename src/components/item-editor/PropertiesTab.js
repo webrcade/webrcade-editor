@@ -9,6 +9,7 @@ import EditorSelect from '../common/editor/EditorSelect';
 import EditorSwitch from '../common/editor/EditorSwitch';
 import EditorTabPanel from '../common/editor/EditorTabPanel';
 import EditorTextField from '../common/editor/EditorTextField';
+import SelectPalette from './gb/SelectPalette';
 
 const PROP_3BUTTON = "PROP_3BUTTON";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
@@ -24,6 +25,7 @@ const PROP_SMS_HW_TYPE = "PROP_SMS_HW_TYPE";
 const PROP_SWAP_CONTROLLERS = "PROP_SWAP_CONTROLLERS";
 const PROP_GB_HW_TYPE = "PROP_GB_HW_TYPE";
 const PROP_GB_COLORS = "PROP_GB_COLORS";
+const PROP_GB_PALETTE = "PROP_GB_PALETTE";
 const PROP_GB_BORDER = "PROP_GB_BORDER";
 
 const ALL_PROPS = [
@@ -34,6 +36,7 @@ const ALL_PROPS = [
   PROP_SMS_HW_TYPE,  
   PROP_GB_HW_TYPE,
   PROP_GB_COLORS,
+  PROP_GB_PALETTE,
   PROP_GB_BORDER,
   PROP_FORCE_YM2413,
   PROP_MIRRORING,
@@ -106,10 +109,10 @@ const FIELD_MAP = {
     PROP_ROM, PROP_ROTATION, PROP_RTC, PROP_MIRRORING, PROP_SAVE_TYPE, PROP_FLASH_SIZE
   },
   [APP_TYPE_KEYS.GB]: {
-    PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_BORDER
+    PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_PALETTE, PROP_GB_BORDER
   },
   [APP_TYPE_KEYS.VBA_M_GB]: {
-    PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_BORDER
+    PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_PALETTE, PROP_GB_BORDER
   },
   [APP_TYPE_KEYS.GBC]: {
     PROP_ROM
@@ -166,6 +169,8 @@ export default function PropertiesTab(props) {
       );
     }
   }, [addValidateCallback, object, tabIndex, validator]);
+
+  const showGbColors = object.props.hwType !== 1 && object.props.hwType !== 4;
 
   return (
     <EditorTabPanel value={tabValue} index={tabIndex}>
@@ -240,25 +245,31 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
-      {hasProp(object, PROP_GB_COLORS) ? (
+      {hasProp(object, PROP_GB_COLORS) && showGbColors ? (
         <div>
           <EditorSelect
             label="Screen Colors"
             tooltip="The palette to use for the Game Boy screen colors."
             value={object.props.colors ? object.props.colors : 0}
             menuItems={[
-              { value: 0, name: "Standard" },
-              { value: 7, name: "Game Boy" },
-              { value: 8, name: "Game Boy on GBA SP" },
-              { value: 1, name: "Blue Sea" },
-              { value: 2, name: "Dark Night" },
-              { value: 3, name: "Green Forest" },                            
-              { value: 4, name: "Hot Desert" },              
-              { value: 5, name: "Pink Dreams" },
-              { value: 6, name: "Odd Colors" },
+              { value: 0, name: "Grayscale" },
+              { value: 1, name: "Greenscale" },
+              { value: 2, name: "Super Game Boy" },
             ]}
             onChange={(e) => {
-              const props = { ...object.props, colors: e.target.value }
+              const props = { ...object.props, colors: e.target.value, palette: 0 }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_GB_PALETTE) && showGbColors ? (
+        <div>
+          <SelectPalette 
+            colorsValue={object.props.colors}
+            value={object.props.palette ? object.props.palette : 0}
+            onChange={(e) => {
+              const props = { ...object.props, palette: e.target.value }
               setObject({ ...object, props })
             }}
           />

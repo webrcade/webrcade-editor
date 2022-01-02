@@ -10,6 +10,7 @@ export default function CommonTooltip(props) {
       enterNextDelay={500}
       arrow={true}
       title={title}
+      placement='right'
     >
       {children}
     </Tooltip>

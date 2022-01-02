@@ -2,7 +2,6 @@ import {
   AppRegistry,
   FetchAppData,
   Unzip,
-  APP_TYPE_KEYS,
   LOG,
   isValidString,
   md5,
