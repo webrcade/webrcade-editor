@@ -249,7 +249,7 @@ export default function PropertiesTab(props) {
         <div>
           <EditorSelect
             label="Screen Colors"
-            tooltip="The palette to use for the Game Boy screen colors."
+            tooltip="The category of colors to use for the display."
             value={object.props.colors ? object.props.colors : 0}
             menuItems={[
               { value: 0, name: "Grayscale" },
