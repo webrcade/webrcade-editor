@@ -8,6 +8,7 @@ import {
   removeIosNavBarHack,
   AppProps,
   AppScreen,  
+  config,
   LOG
 } from '@webrcade/app-common'
 
@@ -108,8 +109,10 @@ function App(props) {
           // return feed from prefs
           return feed;
         } else {
-          // load default feed
-          return Feed.loadFeedFromUrl('https://play.webrcade.com/default-feed.json')
+          // load default feed (if applicable)
+          return config.isPublicServer() ?                    
+            Feed.loadFeedFromUrl(Feed.getDefaultFeedUrl()) :
+            Feed.newFeed();
         }        
       })
       .then((feed) => {
