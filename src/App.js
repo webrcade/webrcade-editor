@@ -8,6 +8,7 @@ import {
   removeIosNavBarHack,
   AppProps,
   AppScreen,  
+  Feed as CommonFeed,
   config,
   LOG
 } from '@webrcade/app-common'
@@ -107,7 +108,10 @@ function App(props) {
         const feed = Prefs.getFeed() 
         if (feed) {
           // return feed from prefs
-          return feed;
+          const feedObj = new CommonFeed(feed, 0, false);
+          const result = feedObj.getClonedFeed();
+          // Add ids?
+          return result;
         } else {
           // load default feed (if applicable)
           return config.isPublicServer() ?                    
