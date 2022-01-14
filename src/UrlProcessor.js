@@ -5,6 +5,7 @@ import {
   LOG,
   isValidString,
   md5,
+  remapUrl,
   romNameScorer
 } from '@webrcade/app-common'
 
@@ -190,19 +191,7 @@ class Processor {
   }
 
   normalize(url) {
-    const urlLower = url.toLowerCase();
-
-    // Check for Dropbox
-    const DB_PREFIX = "https://www.dropbox.com/";
-    if (urlLower.substring(0, DB_PREFIX.length) === DB_PREFIX) {
-      url = "https://dl.dropboxusercontent.com/" + url.substring(DB_PREFIX.length);
-      url = url.split('?')[0];
-      if (isDebug) {
-        LOG.info("Dropbox url: '" + url + "'");
-      }
-    }
-
-    return url;
+    return remapUrl(url);
   }
 
   async process() {
