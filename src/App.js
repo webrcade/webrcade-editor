@@ -8,6 +8,8 @@ import {
   removeIosNavBarHack,
   AppProps,
   AppScreen,  
+  Feed as CommonFeed,
+  config,
   LOG
 } from '@webrcade/app-common'
 
@@ -106,10 +108,15 @@ function App(props) {
         const feed = Prefs.getFeed() 
         if (feed) {
           // return feed from prefs
-          return feed;
+          const feedObj = new CommonFeed(feed, 0, false);
+          const result = feedObj.getClonedFeed();
+          // Add ids?
+          return result;
         } else {
-          // load default feed
-          return Feed.loadFeedFromUrl('https://play.webrcade.com/default-feed.json')
+          // load default feed (if applicable)
+          return config.isPublicServer() ?                    
+            Feed.loadFeedFromUrl(Feed.getDefaultFeedUrl()) :
+            Feed.newFeed();
         }        
       })
       .then((feed) => {

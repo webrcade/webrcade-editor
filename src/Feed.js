@@ -2,6 +2,8 @@ import {
   uuidv4,
   Feed,
   FetchAppData,
+  config,
+  isDev,
 } from '@webrcade/app-common'
 
 import * as Util from './Util';
@@ -351,6 +353,10 @@ const newFeed = () => {
   return assignIds(feed);
 }
 
+const getDefaultFeedUrl = () => {
+  return (isDev() ? config.getLocalUrl() : "../..") + "/default-feed.json";
+}
+
 export {
   addCategoryToFeed,
   addId,
@@ -360,6 +366,7 @@ export {
   deleteItemsFromCategory,
   exportFeed,
   getCategory,
+  getDefaultFeedUrl,
   getItem,
   moveCategoriesUp,
   moveCategoriesDown,

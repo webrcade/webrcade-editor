@@ -40,7 +40,7 @@ export default function NewMenu(props) {
       </MenuItem>
       <MenuItem onClick={() => {
         Global.openBusyScreen(true, "Cloning feed...");
-        Feed.loadFeedFromUrl('https://play.webrcade.com/default-feed.json')
+        Feed.loadFeedFromUrl(Feed.getDefaultFeedUrl())
           .then((feed) => {
             Global.setFeed(feed);
           })

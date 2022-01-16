@@ -13,7 +13,6 @@ import SaveIcon from '@mui/icons-material/Save';
 import Toolbar from '@mui/material/Toolbar';
 import UploadIcon from '@mui/icons-material/Upload';
 
-
 import * as WrcCommon from '@webrcade/app-common'
 
 import { Global, GlobalHolder } from '../Global';
@@ -52,7 +51,13 @@ function EditorDrawer(props) {
       <Toolbar />
       <List>
         <ListItem button key="new" onClick={(e) => {
-          setNewMenuAnchor(e.target);
+          if (WrcCommon.config.isPublicServer()) {
+            setNewMenuAnchor(e.target);
+          } else {
+            const feed = Feed.newFeed();
+            Global.setFeed({ ...feed });
+            setOpen(false);
+          }
         }}>
           <ListItemIcon><NoteAddIcon /></ListItemIcon>
           <ListItemText primary="New" />

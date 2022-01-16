@@ -9,13 +9,16 @@ import { usePrevious } from '../../Util';
 
 export default function CommonImage(props) {
   const {
-    imageSrc,
     defaultImageSrc,
     requiredSize,
     errorCallback,
     onDropText,
     sx
   } = props;
+
+  let imageSrc = props.imageSrc;
+  if (imageSrc) imageSrc = WrcCommon.remapUrl(imageSrc);
+
   const [img, setImg] = React.useState(null);
   const prevValues = usePrevious({
     imageSrc, defaultImageSrc, requiredSize
