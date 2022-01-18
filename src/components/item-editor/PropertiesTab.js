@@ -27,23 +27,25 @@ const PROP_GB_HW_TYPE = "PROP_GB_HW_TYPE";
 const PROP_GB_COLORS = "PROP_GB_COLORS";
 const PROP_GB_PALETTE = "PROP_GB_PALETTE";
 const PROP_GB_BORDER = "PROP_GB_BORDER";
+const PROP_SNES_MULTITAP = "PROP_SNES_MULTITAP";
 
 const ALL_PROPS = [
   PROP_3BUTTON,
   PROP_DOOM_GAME,
   PROP_FLASH_SIZE,
   PROP_FORCE_PAL,
-  PROP_SMS_HW_TYPE,  
-  PROP_GB_HW_TYPE,
-  PROP_GB_COLORS,
-  PROP_GB_PALETTE,
-  PROP_GB_BORDER,
   PROP_FORCE_YM2413,
+  PROP_GB_BORDER,
+  PROP_GB_COLORS,
+  PROP_GB_HW_TYPE,
+  PROP_GB_PALETTE,
   PROP_MIRRORING,
   PROP_ROM,
   PROP_ROTATION,
   PROP_RTC,
   PROP_SAVE_TYPE,
+  PROP_SMS_HW_TYPE,  
+  PROP_SNES_MULTITAP,
   PROP_SWAP_CONTROLLERS
 ];
 
@@ -67,10 +69,10 @@ const FIELD_MAP = {
     PROP_ROM, PROP_FORCE_PAL
   },
   [APP_TYPE_KEYS.SNES]: {
-    PROP_ROM, PROP_FORCE_PAL
+    PROP_ROM, PROP_FORCE_PAL, PROP_SNES_MULTITAP
   },
   [APP_TYPE_KEYS.SNES9X]: {
-    PROP_ROM, PROP_FORCE_PAL
+    PROP_ROM, PROP_FORCE_PAL, PROP_SNES_MULTITAP
   },
   [APP_TYPE_KEYS.GENESIS]: {
     PROP_ROM, PROP_FORCE_PAL, PROP_3BUTTON
@@ -303,6 +305,19 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.pal)}
+          />
+        </div>
+      ) : null}      
+      {hasProp(object, PROP_SNES_MULTITAP) ? (
+        <div>
+          <EditorSwitch
+            label="Multitap (Port #2)"
+            tooltip="Whether to use a Multitap adapter in controller port #2."
+            onChange={(e) => {
+              const props = { ...object.props, port2: (e.target.checked ? 1 : 0) }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.port2 === 1)}
           />
         </div>
       ) : null}
