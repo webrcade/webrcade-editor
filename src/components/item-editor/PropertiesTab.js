@@ -122,6 +122,12 @@ const FIELD_MAP = {
   [APP_TYPE_KEYS.VBA_M_GBC]: {
     PROP_ROM
   },  
+  [APP_TYPE_KEYS.N64]: {
+    PROP_ROM
+  },
+  [APP_TYPE_KEYS.PARALLEL_N64]: {
+    PROP_ROM
+  },  
 }
 
 const hasProp = (object, prop) => {
