@@ -128,6 +128,18 @@ const FIELD_MAP = {
   [APP_TYPE_KEYS.PARALLEL_N64]: {
     PROP_ROM
   },  
+  [APP_TYPE_KEYS.PCE]: {
+    PROP_ROM
+  },
+  [APP_TYPE_KEYS.MEDNAFEN_PCE]: {
+    PROP_ROM
+  },  
+  [APP_TYPE_KEYS.SGX]: {
+    PROP_ROM
+  },
+  [APP_TYPE_KEYS.MEDNAFEN_SGX]: {
+    PROP_ROM
+  },  
 }
 
 const hasProp = (object, prop) => {
