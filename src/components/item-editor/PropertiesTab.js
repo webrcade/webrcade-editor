@@ -12,6 +12,7 @@ import EditorTextField from '../common/editor/EditorTextField';
 import SelectPalette from './gb/SelectPalette';
 
 const PROP_3BUTTON = "PROP_3BUTTON";
+const PROP_6BUTTON = "PROP_6BUTTON";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
 const PROP_FORCE_PAL = "PROP_FORCE_PAL";
@@ -31,6 +32,7 @@ const PROP_SNES_MULTITAP = "PROP_SNES_MULTITAP";
 
 const ALL_PROPS = [
   PROP_3BUTTON,
+  PROP_6BUTTON,
   PROP_DOOM_GAME,
   PROP_FLASH_SIZE,
   PROP_FORCE_PAL,
@@ -129,16 +131,16 @@ const FIELD_MAP = {
     PROP_ROM
   },  
   [APP_TYPE_KEYS.PCE]: {
-    PROP_ROM
+    PROP_ROM, PROP_6BUTTON
   },
   [APP_TYPE_KEYS.MEDNAFEN_PCE]: {
-    PROP_ROM
+    PROP_ROM, PROP_6BUTTON
   },  
   [APP_TYPE_KEYS.SGX]: {
-    PROP_ROM
+    PROP_ROM, PROP_6BUTTON
   },
   [APP_TYPE_KEYS.MEDNAFEN_SGX]: {
-    PROP_ROM
+    PROP_ROM, PROP_6BUTTON
   },  
 }
 
@@ -349,6 +351,19 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.pad3button)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_6BUTTON) ? (
+        <div>
+          <EditorSwitch
+            label="6-Button Control Pads"
+            tooltip="Whether to use 6-button control pads (2 button is the default)."
+            onChange={(e) => {
+              const props = { ...object.props, pad6button: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.pad6button)}
           />
         </div>
       ) : null}
