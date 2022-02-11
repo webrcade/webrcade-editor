@@ -148,6 +148,12 @@ const FIELD_MAP = {
   [APP_TYPE_KEYS.MEDNAFEN_VB]: {
     PROP_ROM
   },  
+  [APP_TYPE_KEYS.NGC]: {
+    PROP_ROM
+  },
+  [APP_TYPE_KEYS.MEDNAFEN_NGC]: {
+    PROP_ROM
+  },  
 }
 
 const hasProp = (object, prop) => {
