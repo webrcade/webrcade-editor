@@ -142,6 +142,12 @@ const FIELD_MAP = {
   [APP_TYPE_KEYS.MEDNAFEN_SGX]: {
     PROP_ROM, PROP_6BUTTON
   },  
+  [APP_TYPE_KEYS.VB]: {
+    PROP_ROM
+  },
+  [APP_TYPE_KEYS.MEDNAFEN_VB]: {
+    PROP_ROM
+  },  
 }
 
 const hasProp = (object, prop) => {
