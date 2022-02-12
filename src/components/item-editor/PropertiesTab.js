@@ -19,6 +19,7 @@ const PROP_FORCE_PAL = "PROP_FORCE_PAL";
 const PROP_FORCE_YM2413 = "PROP_FORCE_YM2413";
 const PROP_MIRRORING = "PROP_MIRRORING";
 const PROP_ROM = "PROP_ROM";
+const PROP_ROTATED = "PROP_ROTATED";
 const PROP_ROTATION = "PROP_ROTATION";
 const PROP_RTC = "PROP_RTC";
 const PROP_SAVE_TYPE = "PROP_SAVE_TYPE";
@@ -43,6 +44,7 @@ const ALL_PROPS = [
   PROP_GB_PALETTE,
   PROP_MIRRORING,
   PROP_ROM,
+  PROP_ROTATED,
   PROP_ROTATION,
   PROP_RTC,
   PROP_SAVE_TYPE,
@@ -153,6 +155,24 @@ const FIELD_MAP = {
   },
   [APP_TYPE_KEYS.MEDNAFEN_NGC]: {
     PROP_ROM
+  },  
+  [APP_TYPE_KEYS.NGP]: {
+    PROP_ROM
+  },
+  [APP_TYPE_KEYS.MEDNAFEN_NGP]: {
+    PROP_ROM
+  },  
+  [APP_TYPE_KEYS.WSC]: {
+    PROP_ROM, PROP_ROTATED
+  },
+  [APP_TYPE_KEYS.MEDNAFEN_WSC]: {
+    PROP_ROM, PROP_ROTATED
+  },  
+  [APP_TYPE_KEYS.WS]: {
+    PROP_ROM, PROP_ROTATED
+  },
+  [APP_TYPE_KEYS.MEDNAFEN_WS]: {
+    PROP_ROM, PROP_ROTATED
   },  
 }
 
@@ -407,6 +427,19 @@ export default function PropertiesTab(props) {
               const props = { ...object.props, game: e.target.value }
               setObject({ ...object, props })
             }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_ROTATED) ? (
+        <div>
+        <EditorSwitch
+            label="Rotated"
+            tooltip="Whether to rotate the screen."
+            onChange={(e) => {
+              const props = { ...object.props, rotated: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.rotated)}
           />
         </div>
       ) : null}
