@@ -17,6 +17,7 @@ const PROP_DOOM_GAME = "PROP_DOOM_GAME";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
 const PROP_FORCE_PAL = "PROP_FORCE_PAL";
 const PROP_FORCE_YM2413 = "PROP_FORCE_YM2413";
+const PROP_LANGUAGE = "PROP_LANGUAGE";
 const PROP_MIRRORING = "PROP_MIRRORING";
 const PROP_ROM = "PROP_ROM";
 const PROP_ROTATED = "PROP_ROTATED";
@@ -42,6 +43,7 @@ const ALL_PROPS = [
   PROP_GB_COLORS,
   PROP_GB_HW_TYPE,
   PROP_GB_PALETTE,
+  PROP_LANGUAGE,
   PROP_MIRRORING,
   PROP_ROM,
   PROP_ROTATED,
@@ -151,28 +153,28 @@ const FIELD_MAP = {
     PROP_ROM
   },  
   [APP_TYPE_KEYS.NGC]: {
-    PROP_ROM
+    PROP_ROM, PROP_LANGUAGE
   },
   [APP_TYPE_KEYS.MEDNAFEN_NGC]: {
-    PROP_ROM
+    PROP_ROM, PROP_LANGUAGE
   },  
   [APP_TYPE_KEYS.NGP]: {
-    PROP_ROM
+    PROP_ROM, PROP_LANGUAGE
   },
   [APP_TYPE_KEYS.MEDNAFEN_NGP]: {
-    PROP_ROM
+    PROP_ROM, PROP_LANGUAGE
   },  
   [APP_TYPE_KEYS.WSC]: {
-    PROP_ROM, PROP_ROTATED
+    PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
   },
   [APP_TYPE_KEYS.MEDNAFEN_WSC]: {
-    PROP_ROM, PROP_ROTATED
+    PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
   },  
   [APP_TYPE_KEYS.WS]: {
-    PROP_ROM, PROP_ROTATED
+    PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
   },
   [APP_TYPE_KEYS.MEDNAFEN_WS]: {
-    PROP_ROM, PROP_ROTATED
+    PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
   },  
 }
 
@@ -247,6 +249,23 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_LANGUAGE) ? (
+        <div>
+          <EditorSelect
+            label="Language"
+            tooltip="The language to use for displaying game text (if applicable)."
+            value={object.props.language ? object.props.language : 0}
+            menuItems={[
+              { value: 0, name: "English" },
+              { value: 1, name: "Japanese" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, language: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}      
       {hasProp(object, PROP_SWAP_CONTROLLERS) ? (
         <div>
           <EditorSwitch
@@ -434,7 +453,7 @@ export default function PropertiesTab(props) {
         <div>
         <EditorSwitch
             label="Rotated"
-            tooltip="Whether to rotate the screen."
+            tooltip="Whether to rotate the screen and controls."
             onChange={(e) => {
               const props = { ...object.props, rotated: e.target.checked }
               setObject({ ...object, props })
