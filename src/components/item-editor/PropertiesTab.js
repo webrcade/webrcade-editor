@@ -12,12 +12,15 @@ import EditorTextField from '../common/editor/EditorTextField';
 import SelectPalette from './gb/SelectPalette';
 
 const PROP_3BUTTON = "PROP_3BUTTON";
+const PROP_6BUTTON = "PROP_6BUTTON";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
 const PROP_FORCE_PAL = "PROP_FORCE_PAL";
 const PROP_FORCE_YM2413 = "PROP_FORCE_YM2413";
+const PROP_LANGUAGE = "PROP_LANGUAGE";
 const PROP_MIRRORING = "PROP_MIRRORING";
 const PROP_ROM = "PROP_ROM";
+const PROP_ROTATED = "PROP_ROTATED";
 const PROP_ROTATION = "PROP_ROTATION";
 const PROP_RTC = "PROP_RTC";
 const PROP_SAVE_TYPE = "PROP_SAVE_TYPE";
@@ -31,6 +34,7 @@ const PROP_SNES_MULTITAP = "PROP_SNES_MULTITAP";
 
 const ALL_PROPS = [
   PROP_3BUTTON,
+  PROP_6BUTTON,
   PROP_DOOM_GAME,
   PROP_FLASH_SIZE,
   PROP_FORCE_PAL,
@@ -39,8 +43,10 @@ const ALL_PROPS = [
   PROP_GB_COLORS,
   PROP_GB_HW_TYPE,
   PROP_GB_PALETTE,
+  PROP_LANGUAGE,
   PROP_MIRRORING,
   PROP_ROM,
+  PROP_ROTATED,
   PROP_ROTATION,
   PROP_RTC,
   PROP_SAVE_TYPE,
@@ -122,6 +128,54 @@ const FIELD_MAP = {
   [APP_TYPE_KEYS.VBA_M_GBC]: {
     PROP_ROM
   },  
+  [APP_TYPE_KEYS.N64]: {
+    PROP_ROM
+  },
+  [APP_TYPE_KEYS.PARALLEL_N64]: {
+    PROP_ROM
+  },  
+  [APP_TYPE_KEYS.PCE]: {
+    PROP_ROM, PROP_6BUTTON
+  },
+  [APP_TYPE_KEYS.MEDNAFEN_PCE]: {
+    PROP_ROM, PROP_6BUTTON
+  },  
+  [APP_TYPE_KEYS.SGX]: {
+    PROP_ROM, PROP_6BUTTON
+  },
+  [APP_TYPE_KEYS.MEDNAFEN_SGX]: {
+    PROP_ROM, PROP_6BUTTON
+  },  
+  [APP_TYPE_KEYS.VB]: {
+    PROP_ROM
+  },
+  [APP_TYPE_KEYS.MEDNAFEN_VB]: {
+    PROP_ROM
+  },  
+  [APP_TYPE_KEYS.NGC]: {
+    PROP_ROM, PROP_LANGUAGE
+  },
+  [APP_TYPE_KEYS.MEDNAFEN_NGC]: {
+    PROP_ROM, PROP_LANGUAGE
+  },  
+  [APP_TYPE_KEYS.NGP]: {
+    PROP_ROM, PROP_LANGUAGE
+  },
+  [APP_TYPE_KEYS.MEDNAFEN_NGP]: {
+    PROP_ROM, PROP_LANGUAGE
+  },  
+  [APP_TYPE_KEYS.WSC]: {
+    PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
+  },
+  [APP_TYPE_KEYS.MEDNAFEN_WSC]: {
+    PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
+  },  
+  [APP_TYPE_KEYS.WS]: {
+    PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
+  },
+  [APP_TYPE_KEYS.MEDNAFEN_WS]: {
+    PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
+  },  
 }
 
 const hasProp = (object, prop) => {
@@ -195,6 +249,23 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_LANGUAGE) ? (
+        <div>
+          <EditorSelect
+            label="Language"
+            tooltip="The language to use for displaying game text (if applicable)."
+            value={object.props.language ? object.props.language : 0}
+            menuItems={[
+              { value: 0, name: "English" },
+              { value: 1, name: "Japanese" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, language: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}      
       {hasProp(object, PROP_SWAP_CONTROLLERS) ? (
         <div>
           <EditorSwitch
@@ -334,6 +405,19 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_6BUTTON) ? (
+        <div>
+          <EditorSwitch
+            label="6-Button Control Pads"
+            tooltip="Whether to use 6-button control pads (2 button is the default)."
+            onChange={(e) => {
+              const props = { ...object.props, pad6button: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.pad6button)}
+          />
+        </div>
+      ) : null}
       {hasProp(object, PROP_FORCE_YM2413) ? (
         <div>
           <EditorSwitch
@@ -362,6 +446,19 @@ export default function PropertiesTab(props) {
               const props = { ...object.props, game: e.target.value }
               setObject({ ...object, props })
             }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_ROTATED) ? (
+        <div>
+        <EditorSwitch
+            label="Rotated"
+            tooltip="Whether to rotate the screen and controls."
+            onChange={(e) => {
+              const props = { ...object.props, rotated: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.rotated)}
           />
         </div>
       ) : null}

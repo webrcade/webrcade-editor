@@ -10,6 +10,7 @@ import {
   AppScreen,  
   Feed as CommonFeed,
   config,
+  APP_FRAME_ID,
   LOG
 } from '@webrcade/app-common'
 
@@ -35,12 +36,13 @@ let messageListener = null;
 
 function ignore(event) { event.preventDefault(); }
 
-const createPopstateHandler = (frameRef) => {
+const createPopstateHandler = () => {
   return (e) => {
     if (currentApp) {
-      if (frameRef.current) {
+      const iframe = document.getElementById(APP_FRAME_ID);
+      if (iframe) {
         try {
-          const content = frameRef.current.contentWindow;
+          const content = iframe.contentWindow;
           if (content) {
             content.postMessage("exit", "*");
           }
@@ -63,8 +65,8 @@ const createMessageListener = (setApp) => {
 function App(props) {
   const [feed, setFeed] = React.useState({});
   const [app, setApp] = React.useState(null);
+  const [editorHidden, setEditorHidden] = React.useState(false);
   const [started, setStarted] = React.useState(false);
-  const appScreenFrameRef = React.useRef();
   const previousApp = Util.usePrevious(app);
 
   if (previousApp && !app) {
@@ -89,7 +91,7 @@ function App(props) {
     document.addEventListener("dragenter", ignore);
     document.addEventListener("dragover", ignore);    
     
-    popstateListener = createPopstateHandler(appScreenFrameRef);
+    popstateListener = createPopstateHandler();
     window.addEventListener("popstate", popstateListener, false);
     messageListener = createMessageListener(setApp);
     window.addEventListener("message", messageListener);
@@ -148,6 +150,7 @@ function App(props) {
 
   GlobalHolder.setApp = (app) => {
     window.location.hash = HASH_PLAY;
+    setEditorHidden(true);
     setApp(app);
   }
   GlobalHolder.setFeed = setFeed;
@@ -163,7 +166,7 @@ function App(props) {
         <>
           <Box 
             sx={{ 
-              display: app ? 'none' : 'flex'              
+              display: app || editorHidden ? 'none' : 'flex'              
             }}
           >
             <MainAppBar />
@@ -184,8 +187,10 @@ function App(props) {
           {app ? (
             <AppScreen
               app={app}
-              frameRef={appScreenFrameRef}
               context={AppProps.RV_CONTEXT_EDITOR}
+              exitCallback={() => {
+                setEditorHidden(false);
+              }}        
             />
           ) : null}
         </>
