@@ -22,6 +22,7 @@ const PROP_MIRRORING = "PROP_MIRRORING";
 const PROP_ROM = "PROP_ROM";
 const PROP_ROTATED = "PROP_ROTATED";
 const PROP_ROTATION = "PROP_ROTATION";
+const PROP_ROTATION_LNX = "PROP_ROTATION_LNX";
 const PROP_RTC = "PROP_RTC";
 const PROP_SAVE_TYPE = "PROP_SAVE_TYPE";
 const PROP_SMS_HW_TYPE = "PROP_SMS_HW_TYPE";
@@ -48,6 +49,7 @@ const ALL_PROPS = [
   PROP_ROM,
   PROP_ROTATED,
   PROP_ROTATION,
+  PROP_ROTATION_LNX,
   PROP_RTC,
   PROP_SAVE_TYPE,
   PROP_SMS_HW_TYPE,  
@@ -175,6 +177,12 @@ const FIELD_MAP = {
   },
   [APP_TYPE_KEYS.MEDNAFEN_WS]: {
     PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
+  },  
+  [APP_TYPE_KEYS.LNX]: {
+    PROP_ROM, PROP_ROTATION_LNX
+  },
+  [APP_TYPE_KEYS.MEDNAFEN_LNX]: {
+    PROP_ROM, PROP_ROTATION_LNX
   },  
 }
 
@@ -481,6 +489,24 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_ROTATION_LNX) ? (
+        <div>
+          <EditorSelect
+            label="Rotation"
+            tooltip="How many degrees the screen should be rotated."
+            value={object.props.rotation ? object.props.rotation : 0}
+            menuItems={[
+              { value: 0, name: "0 degrees" },
+              { value: 90, name: "90 degrees" },
+              { value: 270, name: "270 degrees" }
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, rotation: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}      
       {hasProp(object, PROP_SAVE_TYPE) ? (
         <div>
           <EditorSelect

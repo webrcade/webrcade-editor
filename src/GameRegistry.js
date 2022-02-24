@@ -110,6 +110,11 @@ class GameRegistryImpl {
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-vb-images/master/Named_Snaps/output',
       descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Nintendo%20Virtual%20Boy/output'
     },
+    'lnx': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-lnx-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-lnx-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Atari%20Lynx/output'
+    },
   }
 
   CUSTOM_PROPS = {
