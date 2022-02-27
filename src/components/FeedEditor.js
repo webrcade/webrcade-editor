@@ -5,6 +5,8 @@ import * as Util from '../Util';
 import BackgroundTab from './common/editor/BackgroundTab';
 import GeneralTab from './common/editor/GeneralTab';
 import Editor from './common/editor/Editor';
+import EditorTabPanel from './common/editor/EditorTabPanel';
+import EditorTextField from './common/editor/EditorTextField';
 import EditorValidator from './common/editor/EditorValidator'
 import ThumbnailTab from './common/editor/ThumbnailTab';
 import { GlobalHolder, Global } from '../Global';
@@ -13,6 +15,37 @@ import {
   FeedBackgroundImage,
   FeedThumbImage
 } from '@webrcade/app-common'
+
+
+function PropertiesTab(props) {
+  const {
+    tabValue,
+    tabIndex,
+    setObject,
+    object
+  } = props;
+
+  return (
+    <EditorTabPanel value={tabValue} index={tabIndex}>
+      <div>
+        <EditorTextField
+          required
+          sx={{ width: '50ch' }}
+          label="Lynx Boot ROM (URL)"
+          onDropText={(text) => {
+            const props = { ...object.props, lnx_boot: text }
+            setObject({ ...object, props })
+          }}
+          onChange={(e) => {
+            const props = { ...object.props, lnx_boot: e.target.value }
+            setObject({ ...object, props })
+          }}
+          value={Util.asString(object.props.lnx_boot)}
+        />
+      </div>
+    </EditorTabPanel>
+  );
+}
 
 const validator = new EditorValidator();
 
@@ -31,8 +64,9 @@ export default function FeedEditor(props) {
   const forceUpdate = Util.useForceUpdate();
 
   const genTab = 0;
-  const thumbTab = 1;
-  const bgTab = 2;
+  const propsTab = 1;
+  const thumbTab = 2;
+  const bgTab = 3;
 
   return (
     <Editor
@@ -62,6 +96,7 @@ export default function FeedEditor(props) {
       }}
       tabs={[
         <Tab label="General" key={genTab} />,
+        <Tab label="Properties" key={propsTab} />,
         <Tab label="Thumbnail" key={thumbTab} />,
         <Tab label="Background" key={bgTab} />,
       ]}
@@ -74,6 +109,12 @@ export default function FeedEditor(props) {
             setObject={setFeed}
             validator={validator}
             addValidateCallback={addValidatorCallback}
+          />
+          <PropertiesTab
+            tabValue={tabValue}
+            tabIndex={propsTab}
+            object={feed}
+            setObject={setFeed}
           />
           <ThumbnailTab
             tabValue={tabValue}

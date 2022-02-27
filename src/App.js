@@ -187,6 +187,7 @@ function App(props) {
           {app ? (
             <AppScreen
               app={app}
+              feedProps={feed.props ? feed.props : {}}
               context={AppProps.RV_CONTEXT_EDITOR}
               exitCallback={() => {
                 setEditorHidden(false);

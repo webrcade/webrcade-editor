@@ -258,6 +258,7 @@ const exampleFeed = () => {
     description: "A simple example feed that demonstrates the use of optional properties, multiple categories, and multiple games.",
     thumbnail: "https://i.imgur.com/4lT1CSt.jpg",
     background: "https://i.imgur.com/IfP6ZnI.jpg",
+    props: {},
     categories: [
       {
         title: "Shooters",
@@ -346,6 +347,7 @@ const exampleFeed = () => {
 const newFeed = () => {
   const feed = {
     title: "New feed",
+    props: {},
     categories: [{
       title: "New category"
     }]
