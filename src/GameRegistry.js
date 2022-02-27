@@ -244,6 +244,10 @@ class GameRegistryImpl {
     const { METADATA, TITLE_REGEX } = this;
     let ret = {};
     for (let type in this.db) {
+
+// TODO: Remove
+if (type === 'n64') continue;
+
       let shortName = null;
       let name = this.db[type][md5];
 
