@@ -1,5 +1,6 @@
 import {
   resolvePath,
+  AppRegistry,
   FetchAppData,
   Unzip,
   LOG
@@ -223,8 +224,10 @@ class GameRegistryImpl {
   }
 
   async init() {
-    const { DB_FILE } = this;
+    const { DB_FILE } = this;    
     try {
+      this.n64enabled = AppRegistry.instance.getAppTypes().n64 !== undefined;
+
       const fad = new FetchAppData(DB_FILE);
       const res = await fad.fetch();
       if (res.ok) {
@@ -245,8 +248,8 @@ class GameRegistryImpl {
     let ret = {};
     for (let type in this.db) {
 
-// TODO: Remove
-if (type === 'n64') continue;
+      // Skip n64 if not enabled
+      if (type === 'n64' && !this.n64enabled) continue;
 
       let shortName = null;
       let name = this.db[type][md5];
