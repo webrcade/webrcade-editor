@@ -4,7 +4,9 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import CommonTable from './common/CommonTable';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import Button from '@mui/material/Button';
+// import ContentCutIcon from '@mui/icons-material/ContentCut';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
@@ -15,6 +17,7 @@ import Tooltip from '@mui/material/Tooltip';
 import * as WrcCommon from '@webrcade/app-common'
 import { Global } from '../Global';
 import * as Feed from '../Feed';
+import * as Util from '../Util';
 import CategoriesTableMoreMenu from './CategoriesTableMoreMenu';
 import ImageLabel from './common/ImageLabel';
 import ToolbarVerticalDivider from './common/ToolbarVerticalDivider';
@@ -26,8 +29,52 @@ function createData(id, title, thumbSrc, itemCount) {
   };
 }
 
+function cloneSelectedCategories(feed, selection) {
+  const cloned = [];
+  selection.forEach((id) => {
+    const cat = Feed.getCategory(feed, id);
+    if (cat) {
+      const clone = Util.cloneObject(cat);
+      clone.sourceId = id;
+      if (cat) {
+        Feed.addId(clone);
+        cloned.push(clone);
+      }
+    }
+  });
+  return cloned;
+}
+
+function pasteCategories(feed, pCats) {
+  if (!feed.categories) {
+    feed.categories = [];
+  }
+  const cats = feed.categories;
+  for (let i = 0; i <  pCats.length; i++) {    
+    const pCat = pCats[i];  
+
+    // The clone to add
+    const clone = Util.cloneObject(pCat);    
+    clone.id = WrcCommon.uuidv4();
+    delete clone.sourceId;
+
+    let found = false;
+    for (let j = cats.length - 1; j >= 0; j--) {
+      if (cats[j].id === pCat.sourceId) {
+        cats.splice(j + 1, 0, clone);
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      cats.push(clone)
+    }
+  }
+}
+
 export default function CategoriesTable(props) {
   const { feed, showCategoryItems } = props;
+  const [clipboard, setClipboard] = React.useState([]);
   const [moreMenuAnchor, setMoreMenuAnchor] = React.useState(false);
 
   const rows = [];
@@ -158,16 +205,28 @@ export default function CategoriesTable(props) {
               </div>
             </Tooltip>
             <ToolbarVerticalDivider />
-            <Tooltip title="Duplicate">
+            <Tooltip title="Copy">
               <div>
                 <IconButton
                   disabled={!selection}
                   onClick={() => {
-                    Feed.cloneCategories(feed, selected);
-                    Global.setFeed({ ...feed });
+                    setClipboard(cloneSelectedCategories(feed, selected));
                   }}
                 >
                   <ContentCopyIcon />
+                </IconButton>
+              </div>
+            </Tooltip>
+            <Tooltip title="Paste">
+              <div>
+                <IconButton
+                  disabled={clipboard.length === 0}
+                  onClick={() => {
+                    pasteCategories(feed, clipboard);
+                    Global.setFeed({ ...feed });
+                  }}
+                >
+                  <ContentPasteIcon />
                 </IconButton>
               </div>
             </Tooltip>

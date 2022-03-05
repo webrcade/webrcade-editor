@@ -84,7 +84,8 @@ const addItemsToCategory = (feed, categoryId, items) => {
   }
 }
 
-const addCategoryToFeed = (feed, cat) => {
+const addCategoryToFeed = (feed, cat) => {  
+  // TODO: Should this clone and add id?
   feed.categories.push(cat);
 }
 
