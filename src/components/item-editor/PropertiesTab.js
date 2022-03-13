@@ -184,6 +184,12 @@ const FIELD_MAP = {
   [APP_TYPE_KEYS.MEDNAFEN_LNX]: {
     PROP_ROM, PROP_ROTATION_LNX
   },  
+  [APP_TYPE_KEYS.NEOGEO]: {
+    PROP_ROM
+  },
+  [APP_TYPE_KEYS.FBNEO_NEOGEO]: {
+    PROP_ROM
+  },  
 }
 
 const hasProp = (object, prop) => {

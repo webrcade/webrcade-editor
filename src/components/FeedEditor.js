@@ -29,7 +29,6 @@ function PropertiesTab(props) {
     <EditorTabPanel value={tabValue} index={tabIndex}>
       <div>
         <EditorTextField
-          required
           sx={{ width: '50ch' }}
           label="Lynx Boot ROM (URL)"
           onDropText={(text) => {
@@ -41,6 +40,21 @@ function PropertiesTab(props) {
             setObject({ ...object, props })
           }}
           value={Util.asString(object.props.lnx_boot)}
+        />
+      </div>
+      <div>
+        <EditorTextField
+          sx={{ width: '50ch' }}
+          label="Neo Geo BIOS (URL)"
+          onDropText={(text) => {
+            const props = { ...object.props, neogeo_bios: text }
+            setObject({ ...object, props })
+          }}
+          onChange={(e) => {
+            const props = { ...object.props, neogeo_bios: e.target.value }
+            setObject({ ...object, props })
+          }}
+          value={Util.asString(object.props.neogeo_bios)}
         />
       </div>
     </EditorTabPanel>
