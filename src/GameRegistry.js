@@ -1,5 +1,6 @@
-import {
+import {  
   resolvePath,
+  strReplaceAll,
   AppRegistry,
   FetchAppData,
   Unzip,
@@ -116,6 +117,11 @@ class GameRegistryImpl {
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-lnx-images/master/Named_Snaps/output',
       descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Atari%20Lynx/output'
     },
+    'neogeo': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-neogeo-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-neogeo-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/SNK%20Neo%20Geo/output'
+    },
   }
 
   CUSTOM_PROPS = {
@@ -177,7 +183,7 @@ class GameRegistryImpl {
     // Freedoom Phase 2
     "88e0c5180391f5b4eedea0f06df24c4c": { game: "freedoom2" },
     // Doom 1 (Shareware)
-    "9c69ed31b99047073cbe9a5aaf616b5b": { game: "doom1" },    
+    "9c69ed31b99047073cbe9a5aaf616b5b": { game: "doom1" },
   }
 
   METADATA_OVERRIDE = {
@@ -224,7 +230,7 @@ class GameRegistryImpl {
   }
 
   async init() {
-    const { DB_FILE } = this;    
+    const { DB_FILE } = this;
     try {
       this.n64enabled = AppRegistry.instance.getAppTypes().n64 !== undefined;
 
@@ -243,73 +249,130 @@ class GameRegistryImpl {
     }
   }
 
-  async find(md5) {
+  async isFileInZip(filename, blob) {
+    // Collect filenames from zip
+    let filenames = {};
+    const uz = new Unzip()
+      .setFailIfNotFound(false)
+      .setEntriesCallback((e) => {
+        for (let i = 0; i < e.length; i++) {
+          const name = e[i].filename;
+          filenames[name] = name;
+        }
+      });
+    await uz.unzip(blob, [], []);
+    console.log(filenames);
+    return filenames[filename] !== undefined;
+  }
+
+  async findByName(name, ext, blob) {
+    let ret = null;
+    const fullName = name + "." + ext;
+    for (let type in this.db._by_name) {
+      const result = this.db._by_name[type][fullName];
+      if (result) {
+        const file = result[0];
+        const name = result[1];
+        const fileFound = await this.isFileInZip(file, blob);
+        if (fileFound) {
+          ret = {}
+          // Set type
+          ret.type = type;
+          // Add titles
+          this.addTitles(ret, name);
+          // Add metadata
+          await this.addMetaData(ret, type, name);
+          break;
+        }
+      }
+    }
+    return ret;
+  }
+
+  addTitles(info, name) {
     const { METADATA, TITLE_REGEX } = this;
+
+    let shortName = null;
+    const matches = name.match(TITLE_REGEX);
+    if (matches.length > 1) {
+      shortName = matches[1].trim();
+    }
+
+    const hasShortName = shortName && shortName.length > 0;
+
+    info.title = hasShortName ? shortName : name;
+    if (hasShortName) {
+      info.longTitle = name;
+    }
+  }
+
+  async addMetaData(info, type, name) {
+    const { METADATA } = this;
+
+    const md = METADATA[type];
+    let file = strReplaceAll(name, '?', '_');
+    file = strReplaceAll(file, '/', '_');
+    file = encodeURIComponent(file);
+    if (md) {
+      if (md.backPrefix) {
+        const url = `${md.backPrefix}/${file}.png`;
+        if (await this.checkExists(url)) {
+          info.background = url;
+        }
+      }
+      if (md.thumbPrefix) {
+        const url = `${md.thumbPrefix}/${file}.png`;
+        if (await this.checkExists(url)) {
+          info.thumbnail = url;
+        }
+      }
+      if (md.descriptionPrefix) {
+        const url = `${md.descriptionPrefix}/${file}.txt`;
+        const description = await this.getText(url);
+        if (description) {
+          // const lines = description.split("\n");
+          // let trimmed = "";
+          // for (let i = 0; i < lines.length; i++) {
+          //   const line = lines[i].trim();                
+          //   if (line.length > 0) {
+          //     trimmed += (i > 0) ? (" " + line) : line;
+          //   } else {
+          //     break;
+          //   }
+          // }
+          info.description = description; //trimmed;
+        }
+      }
+
+      if (info.thumbnail && !info.background) {
+        info.background = info.thumbnail;
+      }
+      if (info.background && !info.thumbnail) {
+        info.thumbnail = info.background;
+      }
+      if (info.background) {
+        info.backgroundPixelated = true;
+      }
+    }
+  }
+
+  async find(md5) {
     let ret = {};
     for (let type in this.db) {
 
       // Skip n64 if not enabled
       if (type === 'n64' && !this.n64enabled) continue;
-
-      let shortName = null;
+      
       let name = this.db[type][md5];
-
       if (name) {
-        const matches = name.match(TITLE_REGEX);
-        if (matches.length > 1) {
-          shortName = matches[1].trim();
-        }
+        // Add titles
+        this.addTitles(ret, name);
 
-        const hasShortName = shortName && shortName.length > 0;
-
-        ret.title = hasShortName ? shortName : name;
-        if (hasShortName) {
-          ret.longTitle = name;
-        }
+        // Set type
         ret.type = type;
-        const md = METADATA[type];
-        const file = encodeURIComponent(name);
-        if (md) {
-          if (md.backPrefix) {
-            const url = `${md.backPrefix}/${file}.png`;
-            if (await this.checkExists(url)) {
-              ret.background = url;
-            }
-          }
-          if (md.thumbPrefix) {
-            const url = `${md.thumbPrefix}/${file}.png`;
-            if (await this.checkExists(url)) {
-              ret.thumbnail = url;
-            }
-          }
-          if (md.descriptionPrefix) {
-            const url = `${md.descriptionPrefix}/${file}.txt`;
-            const description = await this.getText(url);
-            if (description) {
-              // const lines = description.split("\n");
-              // let trimmed = "";
-              // for (let i = 0; i < lines.length; i++) {
-              //   const line = lines[i].trim();                
-              //   if (line.length > 0) {
-              //     trimmed += (i > 0) ? (" " + line) : line;
-              //   } else {
-              //     break;
-              //   }
-              // }
-              ret.description = description; //trimmed;
-            }
-          }
 
-          if (ret.thumbnail && !ret.background) {
-            ret.background = ret.thumbnail;
-          }
-          if (ret.background && !ret.thumbnail) {
-            ret.thumbnail = ret.background;
-          }
-          if (ret.background) {
-            ret.backgroundPixelated = true;
-          }
-        }
+        // Add metadata
+        await this.addMetaData(ret, type, name);
 
         // Lookup metadata override
         const mdOverride = this.METADATA_OVERRIDE[md5];

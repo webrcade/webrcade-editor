@@ -19,6 +19,7 @@ const PROP_FORCE_PAL = "PROP_FORCE_PAL";
 const PROP_FORCE_YM2413 = "PROP_FORCE_YM2413";
 const PROP_LANGUAGE = "PROP_LANGUAGE";
 const PROP_MIRRORING = "PROP_MIRRORING";
+const PROP_PARENT_ROM = "PROP_PARENT_ROM";
 const PROP_ROM = "PROP_ROM";
 const PROP_ROTATED = "PROP_ROTATED";
 const PROP_ROTATION = "PROP_ROTATION";
@@ -46,6 +47,7 @@ const ALL_PROPS = [
   PROP_GB_PALETTE,
   PROP_LANGUAGE,
   PROP_MIRRORING,
+  PROP_PARENT_ROM,
   PROP_ROM,
   PROP_ROTATED,
   PROP_ROTATION,
@@ -185,10 +187,10 @@ const FIELD_MAP = {
     PROP_ROM, PROP_ROTATION_LNX
   },  
   [APP_TYPE_KEYS.NEOGEO]: {
-    PROP_ROM
+    PROP_ROM, PROP_PARENT_ROM
   },
   [APP_TYPE_KEYS.FBNEO_NEOGEO]: {
-    PROP_ROM
+    PROP_ROM, PROP_PARENT_ROM
   },  
 }
 
@@ -260,6 +262,23 @@ export default function PropertiesTab(props) {
             }}
             value={Util.asString(object.props.rom)}
             error={!validator.isValid(tabIndex, PROP_ROM)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_PARENT_ROM) ? (
+        <div>
+          <EditorTextField
+            sx={{ width: '50ch' }}
+            label="Parent ROM (URL)"
+            onDropText={(text) => {
+              const props = { ...object.props, parentRom: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, parentRom: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.parentRom)}
           />
         </div>
       ) : null}

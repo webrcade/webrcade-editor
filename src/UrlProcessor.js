@@ -107,37 +107,42 @@ class Processor {
           return null;
         }
 
-        // Check for zip, no-op if it is non-zip
-        const zipRes = await this.processZip(blob);
-        blob = zipRes[0];
-        if (zipRes[1] && zipRes[2]) {
-          // Update name based on file found in zip
-          title = zipRes[1];
-          ext = zipRes[2];
+        const gameByName = await GameRegistry.findByName(title, ext, blob);
+        if (gameByName) {
+          registryGame = gameByName;
+        } else { 
+          // Check for zip, no-op if it is non-zip
+          const zipRes = await this.processZip(blob);
+          blob = zipRes[0];
+          if (zipRes[1] && zipRes[2]) {
+            // Update name based on file found in zip
+            title = zipRes[1];
+            ext = zipRes[2];
 
-          // Check for type from zip (if not already resolved)
-          if (!type) {
-            type = AppRegistry.instance.getTypeForExtension(ext);
-            if (type && isDebug) {
-              LOG.info("Found type in zip.");
+            // Check for type from zip (if not already resolved)
+            if (!type) {
+              type = AppRegistry.instance.getTypeForExtension(ext);
+              if (type && isDebug) {
+                LOG.info("Found type in zip.");
+              }
             }
           }
-        }
 
-        // Check for type in magic (if not already resolved)      
-        if (!type) {
-          const abuffer = await new Response(blob).arrayBuffer();
-          type = AppRegistry.instance.testMagic(new Uint8Array(abuffer));
-          if (type && isDebug) {
-            LOG.info("Found type in magic.")
+          // Check for type in magic (if not already resolved)      
+          if (!type) {
+            const abuffer = await new Response(blob).arrayBuffer();
+            type = AppRegistry.instance.testMagic(new Uint8Array(abuffer));
+            if (type && isDebug) {
+              LOG.info("Found type in magic.")
+            }
           }
-        }
 
-        const iMd5 = await AppRegistry.instance.getMd5(blob, type);
-        if (isDebug) {
-          LOG.info(iMd5);
+          const iMd5 = await AppRegistry.instance.getMd5(blob, type);
+          if (isDebug) {
+            LOG.info(iMd5);
+          }
+          registryGame = await GameRegistry.find(iMd5);
         }
-        registryGame = await GameRegistry.find(iMd5);
         if (isDebug) {
           LOG.info(registryGame);
         }
