@@ -1,6 +1,6 @@
 import {  
+  normalizeFileName,
   resolvePath,
-  strReplaceAll,
   AppRegistry,
   FetchAppData,
   Unzip,
@@ -290,7 +290,7 @@ class GameRegistryImpl {
   }
 
   addTitles(info, name) {
-    const { METADATA, TITLE_REGEX } = this;
+    const { TITLE_REGEX } = this;
 
     let shortName = null;
     const matches = name.match(TITLE_REGEX);
@@ -310,8 +310,7 @@ class GameRegistryImpl {
     const { METADATA } = this;
 
     const md = METADATA[type];
-    let file = strReplaceAll(name, '?', '_');
-    file = strReplaceAll(file, '/', '_');
+    let file = normalizeFileName(name);
     file = encodeURIComponent(file);
     if (md) {
       if (md.backPrefix) {
