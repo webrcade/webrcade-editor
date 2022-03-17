@@ -29,7 +29,6 @@ function PropertiesTab(props) {
     <EditorTabPanel value={tabValue} index={tabIndex}>
       <div>
         <EditorTextField
-          required
           sx={{ width: '50ch' }}
           label="Lynx Boot ROM (URL)"
           onDropText={(text) => {
