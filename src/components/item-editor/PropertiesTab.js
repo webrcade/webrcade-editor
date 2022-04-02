@@ -1,10 +1,17 @@
 import * as React from 'react';
 
+import Slider from '@mui/material/Slider';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import VolumeDown from '@mui/icons-material/VolumeDown';
+import VolumeUp from '@mui/icons-material/VolumeUp';
+
 import {
   APP_TYPE_KEYS
 } from '@webrcade/app-common'
 
 import * as Util from '../../Util';
+import EditorMultiUrlField from '../common/editor/EditorMultiUrlField';
 import EditorSelect from '../common/editor/EditorSelect';
 import EditorSwitch from '../common/editor/EditorSwitch';
 import EditorTabPanel from '../common/editor/EditorTabPanel';
@@ -13,6 +20,7 @@ import SelectPalette from './gb/SelectPalette';
 
 const PROP_3BUTTON = "PROP_3BUTTON";
 const PROP_6BUTTON = "PROP_6BUTTON";
+const PROP_ADDITIONAL_ROMS = "PROP_ADDITIONAL_ROMS";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
 const PROP_FORCE_PAL = "PROP_FORCE_PAL";
@@ -25,6 +33,7 @@ const PROP_ROTATED = "PROP_ROTATED";
 const PROP_ROTATION = "PROP_ROTATION";
 const PROP_ROTATION_LNX = "PROP_ROTATION_LNX";
 const PROP_RTC = "PROP_RTC";
+const PROP_SAMPLES = "PROP_SAMPLES";
 const PROP_SAVE_TYPE = "PROP_SAVE_TYPE";
 const PROP_SMS_HW_TYPE = "PROP_SMS_HW_TYPE";
 const PROP_SWAP_CONTROLLERS = "PROP_SWAP_CONTROLLERS";
@@ -33,10 +42,12 @@ const PROP_GB_COLORS = "PROP_GB_COLORS";
 const PROP_GB_PALETTE = "PROP_GB_PALETTE";
 const PROP_GB_BORDER = "PROP_GB_BORDER";
 const PROP_SNES_MULTITAP = "PROP_SNES_MULTITAP";
+const PROP_VOL_ADJUST = "PROP_VOL_ADJUST";
 
 const ALL_PROPS = [
   PROP_3BUTTON,
   PROP_6BUTTON,
+  PROP_ADDITIONAL_ROMS,
   PROP_DOOM_GAME,
   PROP_FLASH_SIZE,
   PROP_FORCE_PAL,
@@ -46,17 +57,19 @@ const ALL_PROPS = [
   PROP_GB_HW_TYPE,
   PROP_GB_PALETTE,
   PROP_LANGUAGE,
-  PROP_MIRRORING,
+  PROP_MIRRORING,  
   PROP_PARENT_ROM,
   PROP_ROM,
   PROP_ROTATED,
   PROP_ROTATION,
   PROP_ROTATION_LNX,
   PROP_RTC,
+  PROP_SAMPLES,
   PROP_SAVE_TYPE,
   PROP_SMS_HW_TYPE,  
   PROP_SNES_MULTITAP,
-  PROP_SWAP_CONTROLLERS
+  PROP_SWAP_CONTROLLERS,
+  PROP_VOL_ADJUST
 ];
 
 const FIELD_MAP = {
@@ -187,10 +200,28 @@ const FIELD_MAP = {
     PROP_ROM, PROP_ROTATION_LNX
   },  
   [APP_TYPE_KEYS.NEOGEO]: {
-    PROP_ROM, PROP_PARENT_ROM
+    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_VOL_ADJUST
   },
   [APP_TYPE_KEYS.FBNEO_NEOGEO]: {
-    PROP_ROM, PROP_PARENT_ROM
+    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_VOL_ADJUST
+  },  
+  [APP_TYPE_KEYS.ARCADE_KONAMI]: {
+    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST
+  },
+  [APP_TYPE_KEYS.FBNEO_KONAMI]: {
+    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST
+  },  
+  [APP_TYPE_KEYS.ARCADE]: {
+    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST
+  },
+  [APP_TYPE_KEYS.FBNEO_ARCADE]: {
+    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST
+  },  
+  [APP_TYPE_KEYS.ARCADE_CAPCOM]: {
+    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST
+  },
+  [APP_TYPE_KEYS.FBNEO_CAPCOM]: {
+    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST
   },  
 }
 
@@ -217,6 +248,8 @@ const clearValidatorProps = (validator, object, tabIndex) => {
 }
 
 export default function PropertiesTab(props) {
+  const [refresh, setRefresh] = React.useState(0);  
+
   const {
     tabValue,
     tabIndex,
@@ -225,6 +258,10 @@ export default function PropertiesTab(props) {
     validator,
     addValidateCallback
   } = props;
+
+  const forceRefresh = () => {
+    setRefresh(refresh + 1);
+  }
 
   React.useEffect(() => {
     clearValidatorProps(validator, object, tabIndex);
@@ -279,6 +316,43 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             value={Util.asString(object.props.parentRom)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_ADDITIONAL_ROMS) ? (
+        <div>
+            <EditorMultiUrlField
+              label="Additional ROMs (URLs)"
+              rows={3}
+              onDropText={(text) => { 
+                const urls = object.props.additionalRoms ? object.props.additionalRoms : [];
+                urls.push(text);
+                const props = { ...object.props, additionalRoms: urls }
+                setObject({ ...object, props })
+              }}
+              onChange={(e) => { 
+                const val = e.target.value;
+                const props = { ...object.props, additionalRoms: val.split("\n") }
+                setObject({ ...object, props })                
+              }}
+              value={object.props.additionalRoms ? object.props.additionalRoms.join("\n") : ""}
+            />        
+        </div>
+      ) : null}
+      {hasProp(object, PROP_SAMPLES) ? (
+        <div>
+          <EditorTextField
+            sx={{ width: '50ch' }}
+            label="Samples (URL)"
+            onDropText={(text) => {
+              const props = { ...object.props, samples: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, samples: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.samples)}
           />
         </div>
       ) : null}
@@ -596,6 +670,35 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_VOL_ADJUST) ? (
+        <div>
+          <Typography sx={{ ml: 1.5, mt: 1.5 }} id="input-slider" gutterBottom>
+            Volume adjustment
+          </Typography>
+          <Stack 
+            spacing={2} 
+            direction="row" 
+            sx={{ width: '50ch', ml: 1.5, mb: 1.5 }} 
+            alignItems="center">
+            <VolumeDown />
+            <Slider 
+              valueLabelDisplay="auto" 
+              min={-99} max={99} step={1}              
+              marks={[{value: 0, label: '100%'}]}
+              value={object.props.volAdjust ? object.props.volAdjust : 0} 
+              onChange={(e, val) => {  
+                // Allows for smoother updated prior to change being committed
+                object.props.volAdjust = parseInt(val);
+                forceRefresh();
+              }}
+              onChangeCommitted={(e, val) => {  
+                const props = { ...object.props, volAdjust: parseInt(val) }
+                setObject({ ...object, props })
+              }} />
+            <VolumeUp />
+          </Stack>
+        </div>   
+      ) : null}   
     </EditorTabPanel>
   );
 }
