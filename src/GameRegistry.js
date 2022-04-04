@@ -125,17 +125,17 @@ class GameRegistryImpl {
     'arcade': {
       thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-fbneo-images/master/Named_Titles/resized',
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-fbneo-images/master/Named_Snaps/output',
-      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-fbneo-metadata/master/descriptions/SNK%20Neo%20Geo/output'
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Arcade/output'
     },
     'arcade-capcom': {
       thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-fbneo-images/master/Named_Titles/resized',
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-fbneo-images/master/Named_Snaps/output',
-      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-fbneo-metadata/master/descriptions/SNK%20Neo%20Geo/output'
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Arcade/output'
     },
     'arcade-konami': {
       thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-fbneo-images/master/Named_Titles/resized',
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-fbneo-images/master/Named_Snaps/output',
-      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-fbneo-metadata/master/descriptions/SNK%20Neo%20Geo/output'
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Arcade/output'
     },
   }
 
