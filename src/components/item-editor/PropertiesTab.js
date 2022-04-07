@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -27,6 +28,8 @@ const PROP_FORCE_PAL = "PROP_FORCE_PAL";
 const PROP_FORCE_YM2413 = "PROP_FORCE_YM2413";
 const PROP_LANGUAGE = "PROP_LANGUAGE";
 const PROP_MIRRORING = "PROP_MIRRORING";
+const PROP_NEOGEO_BIOS = "PROP_NEOGEO_BIOS";
+const PROP_NEOGEO_FORCE_AES = "PROP_NEOGEO_FORCE_AES";
 const PROP_PARENT_ROM = "PROP_PARENT_ROM";
 const PROP_ROM = "PROP_ROM";
 const PROP_ROTATED = "PROP_ROTATED";
@@ -58,6 +61,7 @@ const ALL_PROPS = [
   PROP_GB_PALETTE,
   PROP_LANGUAGE,
   PROP_MIRRORING,  
+  PROP_NEOGEO_BIOS,  
   PROP_PARENT_ROM,
   PROP_ROM,
   PROP_ROTATED,
@@ -200,10 +204,10 @@ const FIELD_MAP = {
     PROP_ROM, PROP_ROTATION_LNX
   },  
   [APP_TYPE_KEYS.NEOGEO]: {
-    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_VOL_ADJUST
+    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_VOL_ADJUST, PROP_NEOGEO_BIOS, PROP_NEOGEO_FORCE_AES
   },
   [APP_TYPE_KEYS.FBNEO_NEOGEO]: {
-    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_VOL_ADJUST
+    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_VOL_ADJUST, PROP_NEOGEO_BIOS, PROP_NEOGEO_FORCE_AES
   },  
   [APP_TYPE_KEYS.ARCADE_KONAMI]: {
     PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST
@@ -323,7 +327,7 @@ export default function PropertiesTab(props) {
         <div>
             <EditorMultiUrlField
               label="Additional ROMs (URLs)"
-              rows={3}
+              rows={2}
               onDropText={(text) => { 
                 const urls = object.props.additionalRoms ? object.props.additionalRoms : [];
                 urls.push(text);
@@ -675,30 +679,97 @@ export default function PropertiesTab(props) {
           <Typography sx={{ ml: 1.5, mt: 1.5 }} id="input-slider" gutterBottom>
             Volume adjustment
           </Typography>
-          <Stack 
-            spacing={2} 
-            direction="row" 
-            sx={{ width: '50ch', ml: 1.5, mb: 1.5 }} 
-            alignItems="center">
+          <Stack
+            spacing={2}
+            direction="row"
+            sx={{ width: '50ch', ml: 1.5, mb: .5 }}
+          >
             <VolumeDown />
-            <Slider 
-              valueLabelDisplay="auto" 
-              min={-99} max={99} step={1}              
-              marks={[{value: 0, label: '100%'}]}
-              value={object.props.volAdjust ? object.props.volAdjust : 0} 
-              onChange={(e, val) => {  
-                // Allows for smoother updated prior to change being committed
-                object.props.volAdjust = parseInt(val);
-                forceRefresh();
-              }}
-              onChangeCommitted={(e, val) => {  
-                const props = { ...object.props, volAdjust: parseInt(val) }
-                setObject({ ...object, props })
-              }} />
+            <Box sx={{ width: '100%' }}>
+              <Slider
+                valueLabelDisplay="auto"
+                min={-99} max={99} step={1}
+                marks={[{ value: 0, label: '100%' }]}
+                value={object.props.volAdjust ? object.props.volAdjust : 0}
+                onChange={(e, val) => {
+                  // Allows for smoother updated prior to change being committed
+                  object.props.volAdjust = parseInt(val);
+                  forceRefresh();
+                }}
+                onChangeCommitted={(e, val) => {
+                  const props = { ...object.props, volAdjust: parseInt(val) }
+                  setObject({ ...object, props })
+                }} />
+            </Box>
             <VolumeUp />
           </Stack>
         </div>   
       ) : null}   
+      {hasProp(object, PROP_NEOGEO_BIOS) ? (
+        <div>
+          <EditorSelect
+            label="Neo Geo BIOS"
+            tooltip="The BIOS to use (must be available)."
+            value={object.props.bios ? object.props.bios : 0}
+            menuItems={[
+              { value: 0x00, name: "(default)" },
+              { value: 0x00+1, name: "MVS Asia/Europe ver. 6 (1 slot)" },
+              { value: 0x01+1, name: "MVS Asia/Europe ver. 5 (1 slot)" },
+              { value: 0x02+1, name: "MVS Asia/Europe ver. 3 (4 slot)" },
+              { value: 0x03+1, name: "MVS USA ver. 5 (2 slot)" },
+              { value: 0x04+1, name: "MVS USA ver. 5 (4 slot)" },
+              { value: 0x05+1, name: "MVS USA ver. 5 (6 slot)" },
+              { value: 0x06+1, name: "MVS USA (U4)" },
+              { value: 0x07+1, name: "MVS USA (U3)" },
+              { value: 0x08+1, name: "MVS Japan ver. 6 (? slot)" },
+              { value: 0x09+1, name: "MVS Japan ver. 5 (? slot)" },
+              { value: 0x0a+1, name: "MVS Japan ver. 3 (4 slot)" },
+              { value: 0x0b+1, name: "NEO-MVH MV1C (Asia)" },
+              { value: 0x0c+1, name: "NEO-MVH MV1C (Japan)" },
+              { value: 0x0d+1, name: "MVS Japan (J3)" },
+              { value: 0x0e+1, name: "MVS Japan (J3, alt)" },
+              { value: 0x0f+1, name: "AES Japan" },
+              { value: 0x10+1, name: "AES Asia" },
+              { value: 0x11+1, name: "Development Kit" },
+              { value: 0x12+1, name: "Deck ver. 6 (Git Ver 1.3)" },
+              { value: 0x13+1, name: "Universe BIOS ver. 4.0" },
+              { value: 0x14+1, name: "Universe BIOS ver. 3.3" },
+              { value: 0x15+1, name: "Universe BIOS ver. 3.2" },
+              { value: 0x16+1, name: "Universe BIOS ver. 3.1" },
+              { value: 0x17+1, name: "Universe BIOS ver. 3.0" },
+              { value: 0x18+1, name: "Universe BIOS ver. 2.3" },
+              { value: 0x19+1, name: "Universe BIOS ver. 2.3 (alt)" },
+              { value: 0x1a+1, name: "Universe BIOS ver. 2.2" },
+              { value: 0x1b+1, name: "Universe BIOS ver. 2.1" },
+              { value: 0x1c+1, name: "Universe BIOS ver. 2.0" },
+              { value: 0x1d+1, name: "Universe BIOS ver. 1.3" },
+              { value: 0x1e+1, name: "Universe BIOS ver. 1.2" },
+              { value: 0x1f+1, name: "Universe BIOS ver. 1.2 (alt)" },
+              { value: 0x20+1, name: "Universe BIOS ver. 1.1" },
+              { value: 0x21+1, name: "Universe BIOS ver. 1.0" },
+              { value: 0x22+1, name: "NeoOpen BIOS v0.1 beta" },              
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, bios: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}      
+      {hasProp(object, PROP_NEOGEO_FORCE_AES) ? (
+        <div>
+          <EditorSwitch
+            sx={{ mt: 1 }}          
+            label="Force AES (console) mode"
+            tooltip="Whether to force AES (console) mode (must be supported by selected BIOS)."
+            onChange={(e) => {
+              const props = { ...object.props, forceAesMode: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.forceAesMode)}
+          />
+        </div>
+      ) : null}
     </EditorTabPanel>
   );
 }

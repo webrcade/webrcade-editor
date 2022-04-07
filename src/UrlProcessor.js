@@ -376,6 +376,7 @@ const _analyze = (urls, urlToItems) => {
           const updateItems = urlToItems.get(currentUrl);
           for (let j = 0; j < updateItems.length; j++) {
             try {
+              let newType = false;
               const updateItem = updateItems[j];
               const props = [
                 'title', 'longTitle', 'description', 'background',
@@ -393,30 +394,33 @@ const _analyze = (urls, urlToItems) => {
 
                 // Copy properties if applicable
                 if (prop === 'props') {
-                  if (!item.props) {
-                    item.props = {};
-                  }
-                  if (!updateItem.props) {
-                    updateItem.props = {};
+                  if (newType) {
+                    updateItem.props = {...item.props}
+                    LOG.info("Copying props (new type).");
                   }
 
-                  if (Object.keys(item.props).length ===
-                    Object.keys(updateItem.props).length) {
-                    let diff = false;
-                    for (let p in item.props) {
-                      if (item.props[p] !== updateItem.props[p]) {                        
-                        diff = true;
-                        break;                        
-                      }
-                    }
-                    if (diff) {
-                      updated = true;
-                      updateItem.props = {...item.props}  
-                    }
-                  } else {
-                    updated = true;
-                    updateItem.props = {...item.props}
-                  }
+                  // if (!item.props) {
+                  //   item.props = {};
+                  // }
+                  // if (!updateItem.props) {
+                  //   updateItem.props = {};
+                  // }
+                  // if (Object.keys(item.props).length === Object.keys(updateItem.props).length) {
+                  //   let diff = false;
+                  //   for (let p in item.props) {
+                  //     if (item.props[p] !== updateItem.props[p]) {                        
+                  //       diff = true;
+                  //       break;                        
+                  //     }
+                  //   }
+                  //   if (diff) {
+                  //     updated = true;
+                  //     updateItem.props = {...item.props}  
+                  //   }
+                  // } else {
+                  //   updated = true;
+                  //   updateItem.props = {...item.props}
+                  // }
                   // Move to the next property
                   continue;
                 }
@@ -426,6 +430,7 @@ const _analyze = (urls, urlToItems) => {
                   if (prop === 'type' && (updateItem[prop] !== item[prop])) {
                     // Reset props for item if type has changed
                     LOG.info('Type has changed.');
+                    newType = true;
                     updateItem.props = { rom: currentUrl };
                   } else if (prop === 'background') {
                     // If background was found, force pixelated
