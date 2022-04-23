@@ -1,4 +1,5 @@
-import EditorTextField from './EditorTextField';
+import EditorUrlField from './EditorUrlField';
+
 
 export default function EditorMultiUrlField(props) {
   const {
@@ -8,7 +9,8 @@ export default function EditorMultiUrlField(props) {
   } = props;
 
   return (
-    <EditorTextField
+    <EditorUrlField
+      multiselect={true}
       multiline
       rows={rows ? rows : 5}
       sx={{

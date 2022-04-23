@@ -2,7 +2,7 @@ import TextField from '@mui/material/TextField';
 
 import { dropHandler } from '../../../Drop';
 
-export default function ItemTextField(props) {
+export default function EditorTextField(props) {
   const {
     sx,
     onDropText,

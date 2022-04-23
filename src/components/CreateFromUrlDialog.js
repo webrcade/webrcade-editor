@@ -77,7 +77,12 @@ export default function CreateFromUrlDialog(props) {
             <EditorMultiUrlField
               required
               label="URLs (one per line)"
-              onDropText={(text) => { setUrl(url + (url.trim().length > 0 ? "\n" : "") + text); }}
+              onDropText={(text) => { 
+                if (Array.isArray(text)) {
+                  text = text.join("\n");
+                }
+                setUrl(url + (url.trim().length > 0 ? "\n" : "") + text); 
+              }}
               onChange={(e) => { setUrl(e.target.value); }}
               value={url}
               error={!validator.isValid(urlTab, "url")}

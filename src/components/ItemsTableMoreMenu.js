@@ -8,6 +8,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 
 import * as UrlProcessor from '../UrlProcessor';
 import { Global } from '../Global';
+import { dropboxPicker } from '../Dropbox';
 
 export default function ItemsTableMoreMenu(props) {
   const {
@@ -40,23 +41,9 @@ export default function ItemsTableMoreMenu(props) {
       </MenuItem>
       <MenuItem onClick={() => {
         handleClose();
-        const options = {
-          linkType: "preview",
-          multiselect: true,
-          folderselect: false,
-          success: function (files) {
-            const res = [];
-            for (let i = 0; i < files.length; i++) {
-              const f = files[i];
-              res.push(f.link);
-            }
-            if (res.length > 0) {
-              UrlProcessor.process(res);
-            }
-          },
-          sizeLimit: 65 * 1024 * 1024 // 65mb
-        };
-        window.Dropbox.choose(options);
+        dropboxPicker((res) => {
+          UrlProcessor.process(res);
+        });
       }}>
         <ListItemIcon>
           <span className="iconify"
