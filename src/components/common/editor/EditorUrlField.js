@@ -34,7 +34,7 @@ function AddMenu(props) {
         handleClose();
         dropboxPicker((res) => {
           if (onDropText) {
-            onDropText(res);
+            onDropText(res.length > 1 ? res : res[0]);
           }
         }, multiselect ? true : false);
       }}>

@@ -4,7 +4,7 @@ import * as Util from '../../../Util';
 import EditorImage from '../../common/editor/EditorImage';
 import EditorSwitch from '../../common/editor/EditorSwitch';
 import EditorTabPanel from '../../common/editor/EditorTabPanel';
-import EditorTextField from '../../common/editor/EditorTextField';
+import EditorUrlField from '../../common/editor/EditorUrlField';
 
 export default function BackgroundTab(props) {
   const {
@@ -20,7 +20,7 @@ export default function BackgroundTab(props) {
   return (
     <EditorTabPanel value={tabValue} index={tabIndex}>
       <div>
-        <EditorTextField
+        <EditorUrlField
           sx={{ width: '50ch' }}
           label="Background location (URL)"
           value={Util.asString(thumbSrc)}
