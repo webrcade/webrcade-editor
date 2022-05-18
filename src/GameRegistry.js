@@ -354,7 +354,7 @@ class GameRegistryImpl {
           //     break;
           //   }
           // }
-          info.description = description; //trimmed;
+          info.description = description.trim(); //trimmed;
         }
       }
 
