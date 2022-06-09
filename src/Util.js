@@ -16,6 +16,16 @@ export function asBoolean(obj) {
   return obj === true;
 }
 
+export function removeEmptyItems(arr) {
+  const ret = [];
+  for (let i = 0; i < arr.length; i++) {
+    const item = arr[i].trim();
+    if (item.length > 0) {
+      ret.push(item);
+    }  
+  }
+  return ret;
+}
 export function useForceUpdate(){
   const [, setValue] = useState(0); // integer state
   return () => setValue(value => value + 1); // update the state to force render

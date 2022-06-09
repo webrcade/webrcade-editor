@@ -6,7 +6,7 @@ import { Global, GlobalHolder } from '../Global';
 import Editor from './common/editor/Editor';
 import EditorFileChooser from './common/editor/EditorFileChooser';
 import EditorTabPanel from './common/editor/EditorTabPanel';
-import EditorTextField from './common/editor/EditorTextField';
+import EditorUrlField from './common/editor/EditorUrlField';
 import EditorValidator from './common/editor/EditorValidator';
 import Prefs from '../Prefs';
 import * as Feed from '../Feed';
@@ -79,7 +79,7 @@ export default function ImportDialog(props) {
       tabPanels={(
         <>
           <EditorTabPanel value={tabValue} index={urlTab}>
-            <EditorTextField
+            <EditorUrlField
               required
               sx={{ width: '50ch' }}
               label="Feed location (URL)"

@@ -6,7 +6,7 @@ import BackgroundTab from './common/editor/BackgroundTab';
 import GeneralTab from './common/editor/GeneralTab';
 import Editor from './common/editor/Editor';
 import EditorTabPanel from './common/editor/EditorTabPanel';
-import EditorTextField from './common/editor/EditorTextField';
+import EditorUrlField from './common/editor/EditorUrlField';
 import EditorValidator from './common/editor/EditorValidator'
 import ThumbnailTab from './common/editor/ThumbnailTab';
 import { GlobalHolder, Global } from '../Global';
@@ -28,7 +28,7 @@ function PropertiesTab(props) {
   return (
     <EditorTabPanel value={tabValue} index={tabIndex}>
       <div>
-        <EditorTextField
+        <EditorUrlField
           sx={{ width: '50ch' }}
           label="Lynx Boot ROM (URL)"
           onDropText={(text) => {
@@ -40,6 +40,21 @@ function PropertiesTab(props) {
             setObject({ ...object, props })
           }}
           value={Util.asString(object.props.lnx_boot)}
+        />
+      </div>
+      <div>
+        <EditorUrlField
+          sx={{ width: '50ch' }}
+          label="Neo Geo BIOS (URL)"
+          onDropText={(text) => {
+            const props = { ...object.props, neogeo_bios: text }
+            setObject({ ...object, props })
+          }}
+          onChange={(e) => {
+            const props = { ...object.props, neogeo_bios: e.target.value }
+            setObject({ ...object, props })
+          }}
+          value={Util.asString(object.props.neogeo_bios)}
         />
       </div>
     </EditorTabPanel>

@@ -107,37 +107,42 @@ class Processor {
           return null;
         }
 
-        // Check for zip, no-op if it is non-zip
-        const zipRes = await this.processZip(blob);
-        blob = zipRes[0];
-        if (zipRes[1] && zipRes[2]) {
-          // Update name based on file found in zip
-          title = zipRes[1];
-          ext = zipRes[2];
+        const gameByName = await GameRegistry.findByName(title, ext, blob);
+        if (gameByName) {
+          registryGame = gameByName;
+        } else { 
+          // Check for zip, no-op if it is non-zip
+          const zipRes = await this.processZip(blob);
+          blob = zipRes[0];
+          if (zipRes[1] && zipRes[2]) {
+            // Update name based on file found in zip
+            title = zipRes[1];
+            ext = zipRes[2];
 
-          // Check for type from zip (if not already resolved)
-          if (!type) {
-            type = AppRegistry.instance.getTypeForExtension(ext);
-            if (type && isDebug) {
-              LOG.info("Found type in zip.");
+            // Check for type from zip (if not already resolved)
+            if (!type) {
+              type = AppRegistry.instance.getTypeForExtension(ext);
+              if (type && isDebug) {
+                LOG.info("Found type in zip.");
+              }
             }
           }
-        }
 
-        // Check for type in magic (if not already resolved)      
-        if (!type) {
-          const abuffer = await new Response(blob).arrayBuffer();
-          type = AppRegistry.instance.testMagic(new Uint8Array(abuffer));
-          if (type && isDebug) {
-            LOG.info("Found type in magic.")
+          // Check for type in magic (if not already resolved)      
+          if (!type) {
+            const abuffer = await new Response(blob).arrayBuffer();
+            type = AppRegistry.instance.testMagic(new Uint8Array(abuffer));
+            if (type && isDebug) {
+              LOG.info("Found type in magic.")
+            }
           }
-        }
 
-        const iMd5 = await AppRegistry.instance.getMd5(blob, type);
-        if (isDebug) {
-          LOG.info(iMd5);
+          const iMd5 = await AppRegistry.instance.getMd5(blob, type);
+          if (isDebug) {
+            LOG.info(iMd5);
+          }
+          registryGame = await GameRegistry.find(iMd5);
         }
-        registryGame = await GameRegistry.find(iMd5);
         if (isDebug) {
           LOG.info(registryGame);
         }
@@ -371,6 +376,7 @@ const _analyze = (urls, urlToItems) => {
           const updateItems = urlToItems.get(currentUrl);
           for (let j = 0; j < updateItems.length; j++) {
             try {
+              let newType = false;
               const updateItem = updateItems[j];
               const props = [
                 'title', 'longTitle', 'description', 'background',
@@ -388,30 +394,33 @@ const _analyze = (urls, urlToItems) => {
 
                 // Copy properties if applicable
                 if (prop === 'props') {
-                  if (!item.props) {
-                    item.props = {};
-                  }
-                  if (!updateItem.props) {
-                    updateItem.props = {};
+                  if (newType) {
+                    updateItem.props = {...item.props}
+                    LOG.info("Copying props (new type).");
                   }
 
-                  if (Object.keys(item.props).length ===
-                    Object.keys(updateItem.props).length) {
-                    let diff = false;
-                    for (let p in item.props) {
-                      if (item.props[p] !== updateItem.props[p]) {                        
-                        diff = true;
-                        break;                        
-                      }
-                    }
-                    if (diff) {
-                      updated = true;
-                      updateItem.props = {...item.props}  
-                    }
-                  } else {
-                    updated = true;
-                    updateItem.props = {...item.props}
-                  }
+                  // if (!item.props) {
+                  //   item.props = {};
+                  // }
+                  // if (!updateItem.props) {
+                  //   updateItem.props = {};
+                  // }
+                  // if (Object.keys(item.props).length === Object.keys(updateItem.props).length) {
+                  //   let diff = false;
+                  //   for (let p in item.props) {
+                  //     if (item.props[p] !== updateItem.props[p]) {                        
+                  //       diff = true;
+                  //       break;                        
+                  //     }
+                  //   }
+                  //   if (diff) {
+                  //     updated = true;
+                  //     updateItem.props = {...item.props}  
+                  //   }
+                  // } else {
+                  //   updated = true;
+                  //   updateItem.props = {...item.props}
+                  // }
                   // Move to the next property
                   continue;
                 }
@@ -421,6 +430,7 @@ const _analyze = (urls, urlToItems) => {
                   if (prop === 'type' && (updateItem[prop] !== item[prop])) {
                     // Reset props for item if type has changed
                     LOG.info('Type has changed.');
+                    newType = true;
                     updateItem.props = { rom: currentUrl };
                   } else if (prop === 'background') {
                     // If background was found, force pixelated

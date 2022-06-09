@@ -4,7 +4,7 @@ import { Global } from '../../../Global';
 import * as Util from '../../../Util';
 import EditorImage from '../../common/editor/EditorImage';
 import EditorTabPanel from '../../common/editor/EditorTabPanel';
-import EditorTextField from '../../common/editor/EditorTextField';
+import EditorUrlField from '../../common/editor/EditorUrlField';
 
 export default function ThumbnailTab(props) {
   const {
@@ -20,7 +20,7 @@ export default function ThumbnailTab(props) {
   return (
     <EditorTabPanel value={tabValue} index={tabIndex}>
       <div>
-        <EditorTextField
+        <EditorUrlField
           sx={{ width: '50ch' }}
           label="Thumbnail location (URL)"
           value={Util.asString(thumbSrc)}

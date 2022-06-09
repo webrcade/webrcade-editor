@@ -5,25 +5,35 @@ import {
 } from '@webrcade/app-common'
 
 import * as Util from '../../Util';
+import EditorMultiUrlField from '../common/editor/EditorMultiUrlField';
 import EditorSelect from '../common/editor/EditorSelect';
 import EditorSwitch from '../common/editor/EditorSwitch';
 import EditorTabPanel from '../common/editor/EditorTabPanel';
 import EditorTextField from '../common/editor/EditorTextField';
+import EditorUrlField from '../common/editor/EditorUrlField';
 import SelectPalette from './gb/SelectPalette';
+import SelectPlayerOrder from './SelectPlayerOrder';
+import VolumeAdjust from './VolumeAdjust';
 
 const PROP_3BUTTON = "PROP_3BUTTON";
 const PROP_6BUTTON = "PROP_6BUTTON";
+const PROP_ADDITIONAL_ROMS = "PROP_ADDITIONAL_ROMS";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
 const PROP_FORCE_PAL = "PROP_FORCE_PAL";
 const PROP_FORCE_YM2413 = "PROP_FORCE_YM2413";
 const PROP_LANGUAGE = "PROP_LANGUAGE";
 const PROP_MIRRORING = "PROP_MIRRORING";
+const PROP_NEOGEO_BIOS = "PROP_NEOGEO_BIOS";
+const PROP_NEOGEO_FORCE_AES = "PROP_NEOGEO_FORCE_AES";
+const PROP_PARENT_ROM = "PROP_PARENT_ROM";
+const PROP_PLAYER_ORDER = "PROP_PLAYER_ORDER";
 const PROP_ROM = "PROP_ROM";
 const PROP_ROTATED = "PROP_ROTATED";
 const PROP_ROTATION = "PROP_ROTATION";
 const PROP_ROTATION_LNX = "PROP_ROTATION_LNX";
 const PROP_RTC = "PROP_RTC";
+const PROP_SAMPLES = "PROP_SAMPLES";
 const PROP_SAVE_TYPE = "PROP_SAVE_TYPE";
 const PROP_SMS_HW_TYPE = "PROP_SMS_HW_TYPE";
 const PROP_SWAP_CONTROLLERS = "PROP_SWAP_CONTROLLERS";
@@ -32,10 +42,12 @@ const PROP_GB_COLORS = "PROP_GB_COLORS";
 const PROP_GB_PALETTE = "PROP_GB_PALETTE";
 const PROP_GB_BORDER = "PROP_GB_BORDER";
 const PROP_SNES_MULTITAP = "PROP_SNES_MULTITAP";
+const PROP_VOL_ADJUST = "PROP_VOL_ADJUST";
 
 const ALL_PROPS = [
   PROP_3BUTTON,
   PROP_6BUTTON,
+  PROP_ADDITIONAL_ROMS,
   PROP_DOOM_GAME,
   PROP_FLASH_SIZE,
   PROP_FORCE_PAL,
@@ -46,15 +58,20 @@ const ALL_PROPS = [
   PROP_GB_PALETTE,
   PROP_LANGUAGE,
   PROP_MIRRORING,
+  PROP_NEOGEO_BIOS,
+  PROP_PARENT_ROM,
+  PROP_PLAYER_ORDER,
   PROP_ROM,
   PROP_ROTATED,
   PROP_ROTATION,
   PROP_ROTATION_LNX,
   PROP_RTC,
+  PROP_SAMPLES,
   PROP_SAVE_TYPE,
-  PROP_SMS_HW_TYPE,  
+  PROP_SMS_HW_TYPE,
   PROP_SNES_MULTITAP,
-  PROP_SWAP_CONTROLLERS
+  PROP_SWAP_CONTROLLERS,
+  PROP_VOL_ADJUST
 ];
 
 const FIELD_MAP = {
@@ -129,61 +146,85 @@ const FIELD_MAP = {
   },
   [APP_TYPE_KEYS.VBA_M_GBC]: {
     PROP_ROM
-  },  
+  },
   [APP_TYPE_KEYS.N64]: {
     PROP_ROM
   },
   [APP_TYPE_KEYS.PARALLEL_N64]: {
     PROP_ROM
-  },  
+  },
   [APP_TYPE_KEYS.PCE]: {
     PROP_ROM, PROP_6BUTTON
   },
   [APP_TYPE_KEYS.MEDNAFEN_PCE]: {
     PROP_ROM, PROP_6BUTTON
-  },  
+  },
   [APP_TYPE_KEYS.SGX]: {
     PROP_ROM, PROP_6BUTTON
   },
   [APP_TYPE_KEYS.MEDNAFEN_SGX]: {
     PROP_ROM, PROP_6BUTTON
-  },  
+  },
   [APP_TYPE_KEYS.VB]: {
     PROP_ROM
   },
   [APP_TYPE_KEYS.MEDNAFEN_VB]: {
     PROP_ROM
-  },  
+  },
   [APP_TYPE_KEYS.NGC]: {
     PROP_ROM, PROP_LANGUAGE
   },
   [APP_TYPE_KEYS.MEDNAFEN_NGC]: {
     PROP_ROM, PROP_LANGUAGE
-  },  
+  },
   [APP_TYPE_KEYS.NGP]: {
     PROP_ROM, PROP_LANGUAGE
   },
   [APP_TYPE_KEYS.MEDNAFEN_NGP]: {
     PROP_ROM, PROP_LANGUAGE
-  },  
+  },
   [APP_TYPE_KEYS.WSC]: {
     PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
   },
   [APP_TYPE_KEYS.MEDNAFEN_WSC]: {
     PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
-  },  
+  },
   [APP_TYPE_KEYS.WS]: {
     PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
   },
   [APP_TYPE_KEYS.MEDNAFEN_WS]: {
     PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
-  },  
+  },
   [APP_TYPE_KEYS.LNX]: {
     PROP_ROM, PROP_ROTATION_LNX
   },
   [APP_TYPE_KEYS.MEDNAFEN_LNX]: {
     PROP_ROM, PROP_ROTATION_LNX
-  },  
+  },
+  [APP_TYPE_KEYS.NEOGEO]: {
+    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_VOL_ADJUST, PROP_NEOGEO_BIOS, PROP_NEOGEO_FORCE_AES
+  },
+  [APP_TYPE_KEYS.FBNEO_NEOGEO]: {
+    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_VOL_ADJUST, PROP_NEOGEO_BIOS, PROP_NEOGEO_FORCE_AES
+  },
+  [APP_TYPE_KEYS.ARCADE_KONAMI]: {
+    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
+  },
+  [APP_TYPE_KEYS.FBNEO_KONAMI]: {
+    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
+  },
+  [APP_TYPE_KEYS.ARCADE]: {
+    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
+  },
+  [APP_TYPE_KEYS.FBNEO_ARCADE]: {
+    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
+  },
+  [APP_TYPE_KEYS.ARCADE_CAPCOM]: {
+    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
+  },
+  [APP_TYPE_KEYS.FBNEO_CAPCOM]: {
+    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
+  },
 }
 
 const hasProp = (object, prop) => {
@@ -240,7 +281,7 @@ export default function PropertiesTab(props) {
     <EditorTabPanel value={tabValue} index={tabIndex}>
       {hasProp(object, PROP_ROM) ? (
         <div>
-          <EditorTextField
+          <EditorUrlField
             required
             sx={{ width: '50ch' }}
             label="ROM (URL)"
@@ -254,6 +295,74 @@ export default function PropertiesTab(props) {
             }}
             value={Util.asString(object.props.rom)}
             error={!validator.isValid(tabIndex, PROP_ROM)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_PARENT_ROM) ? (
+        <div>
+          <EditorTextField
+            sx={{ width: '50ch' }}
+            label="Parent ROM (URL)"
+            onDropText={(text) => {
+              const props = { ...object.props, parentRom: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, parentRom: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.parentRom)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_ADDITIONAL_ROMS) ? (
+        <div>
+          <EditorMultiUrlField
+            label="Additional ROMs (URLs)"
+            rows={2}
+            onDropText={(text) => {
+              let urls = object.props.additionalRoms ? object.props.additionalRoms : [];
+              if (Array.isArray(text)) {
+                urls.push(...text);
+              } else {
+                urls.push(text);
+              }
+              urls = Util.removeEmptyItems(urls);              
+              const props = { ...object.props, additionalRoms: urls }
+              if (urls.length === 0) {
+                delete props.additionalRoms;
+              }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const val = e.target.value;
+              let urls = val.split("\n");
+              urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, additionalRoms: urls }
+              if (urls.length === 0) {
+                delete props.additionalRoms;
+              }
+              setObject({ ...object, props })
+            }}
+            value={object.props.additionalRoms && object.props.additionalRoms.length > 0 ? 
+              object.props.additionalRoms.join("\n") : ""}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_SAMPLES) ? (
+        <div>
+          <EditorUrlField
+            sx={{ width: '50ch' }}
+            label="Samples (URL)"
+            onDropText={(text) => {
+              const props = { ...object.props, samples: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, samples: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.samples)}
           />
         </div>
       ) : null}
@@ -273,7 +382,7 @@ export default function PropertiesTab(props) {
             }}
           />
         </div>
-      ) : null}      
+      ) : null}
       {hasProp(object, PROP_SWAP_CONTROLLERS) ? (
         <div>
           <EditorSwitch
@@ -315,8 +424,8 @@ export default function PropertiesTab(props) {
               { value: 0, name: "Automatic" },
               { value: 3, name: "Game Boy" },
               { value: 1, name: "Game Boy Color" },
-              { value: 4, name: "Game Boy Advance" },                            
-              { value: 2, name: "Super Game Boy" },              
+              { value: 4, name: "Game Boy Advance" },
+              { value: 2, name: "Super Game Boy" },
               { value: 5, name: "Super Game Boy 2" },
             ]}
             onChange={(e) => {
@@ -346,7 +455,7 @@ export default function PropertiesTab(props) {
       ) : null}
       {hasProp(object, PROP_GB_PALETTE) && showGbColors ? (
         <div>
-          <SelectPalette 
+          <SelectPalette
             colorsValue={object.props.colors}
             value={object.props.palette ? object.props.palette : 0}
             onChange={(e) => {
@@ -373,7 +482,7 @@ export default function PropertiesTab(props) {
             }}
           />
         </div>
-      ) : null}      
+      ) : null}
       {hasProp(object, PROP_FORCE_PAL) ? (
         <div>
           <EditorSwitch
@@ -386,7 +495,7 @@ export default function PropertiesTab(props) {
             checked={Util.asBoolean(object.props.pal)}
           />
         </div>
-      ) : null}      
+      ) : null}
       {hasProp(object, PROP_SNES_MULTITAP) ? (
         <div>
           <EditorSwitch
@@ -459,7 +568,7 @@ export default function PropertiesTab(props) {
       ) : null}
       {hasProp(object, PROP_ROTATED) ? (
         <div>
-        <EditorSwitch
+          <EditorSwitch
             label="Rotated"
             tooltip="Whether to rotate the screen and controls."
             onChange={(e) => {
@@ -506,7 +615,7 @@ export default function PropertiesTab(props) {
             }}
           />
         </div>
-      ) : null}      
+      ) : null}
       {hasProp(object, PROP_SAVE_TYPE) ? (
         <div>
           <EditorSelect
@@ -568,6 +677,96 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.mirroring)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_VOL_ADJUST) ? (
+        <div>
+          <VolumeAdjust
+            value={object.props.volAdjust ? object.props.volAdjust : 0}
+            onChange={(e, val) => {
+              // Allows for smoother updated prior to change being committed
+              object.props.volAdjust = parseInt(val);
+            }}
+            onChangeCommitted={(e, val) => {
+              const props = { ...object.props, volAdjust: parseInt(val) }
+              setObject({ ...object, props })
+            }} />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_NEOGEO_BIOS) ? (
+        <div>
+          <EditorSelect
+            label="Neo Geo BIOS"
+            tooltip="The BIOS to use (must be available)."
+            value={object.props.bios ? object.props.bios : 0}
+            menuItems={[
+              { value: 0x00, name: "(default)" },
+              { value: 0x00 + 1, name: "MVS Asia/Europe ver. 6 (1 slot)" },
+              { value: 0x01 + 1, name: "MVS Asia/Europe ver. 5 (1 slot)" },
+              { value: 0x02 + 1, name: "MVS Asia/Europe ver. 3 (4 slot)" },
+              { value: 0x03 + 1, name: "MVS USA ver. 5 (2 slot)" },
+              { value: 0x04 + 1, name: "MVS USA ver. 5 (4 slot)" },
+              { value: 0x05 + 1, name: "MVS USA ver. 5 (6 slot)" },
+              { value: 0x06 + 1, name: "MVS USA (U4)" },
+              { value: 0x07 + 1, name: "MVS USA (U3)" },
+              { value: 0x08 + 1, name: "MVS Japan ver. 6 (? slot)" },
+              { value: 0x09 + 1, name: "MVS Japan ver. 5 (? slot)" },
+              { value: 0x0a + 1, name: "MVS Japan ver. 3 (4 slot)" },
+              { value: 0x0b + 1, name: "NEO-MVH MV1C (Asia)" },
+              { value: 0x0c + 1, name: "NEO-MVH MV1C (Japan)" },
+              { value: 0x0d + 1, name: "MVS Japan (J3)" },
+              { value: 0x0e + 1, name: "MVS Japan (J3, alt)" },
+              { value: 0x0f + 1, name: "AES Japan" },
+              { value: 0x10 + 1, name: "AES Asia" },
+              { value: 0x11 + 1, name: "Development Kit" },
+              { value: 0x12 + 1, name: "Deck ver. 6 (Git Ver 1.3)" },
+              { value: 0x13 + 1, name: "Universe BIOS ver. 4.0" },
+              { value: 0x14 + 1, name: "Universe BIOS ver. 3.3" },
+              { value: 0x15 + 1, name: "Universe BIOS ver. 3.2" },
+              { value: 0x16 + 1, name: "Universe BIOS ver. 3.1" },
+              { value: 0x17 + 1, name: "Universe BIOS ver. 3.0" },
+              { value: 0x18 + 1, name: "Universe BIOS ver. 2.3" },
+              { value: 0x19 + 1, name: "Universe BIOS ver. 2.3 (alt)" },
+              { value: 0x1a + 1, name: "Universe BIOS ver. 2.2" },
+              { value: 0x1b + 1, name: "Universe BIOS ver. 2.1" },
+              { value: 0x1c + 1, name: "Universe BIOS ver. 2.0" },
+              { value: 0x1d + 1, name: "Universe BIOS ver. 1.3" },
+              { value: 0x1e + 1, name: "Universe BIOS ver. 1.2" },
+              { value: 0x1f + 1, name: "Universe BIOS ver. 1.2 (alt)" },
+              { value: 0x20 + 1, name: "Universe BIOS ver. 1.1" },
+              { value: 0x21 + 1, name: "Universe BIOS ver. 1.0" },
+              { value: 0x22 + 1, name: "NeoOpen BIOS v0.1 beta" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, bios: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_NEOGEO_FORCE_AES) ? (
+        <div>
+          <EditorSwitch
+            sx={{ mt: 1 }}
+            label="Force AES (console) mode"
+            tooltip="Whether to force AES (console) mode (must be supported by selected BIOS)."
+            onChange={(e) => {
+              const props = { ...object.props, forceAesMode: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.forceAesMode)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_PLAYER_ORDER) ? (
+        <div>
+          <SelectPlayerOrder
+            value={object.props.playerOrder}
+            onChange={(value) => {
+              const props = { ...object.props, playerOrder: value }
+              setObject({ ...object, props })
+            }}
           />
         </div>
       ) : null}

@@ -5,8 +5,8 @@ import * as UrlProcessor from '../UrlProcessor';
 import * as Util from '../Util';
 import { Global, GlobalHolder } from '../Global';
 import Editor from './common/editor/Editor';
+import EditorMultiUrlField from './common/editor/EditorMultiUrlField';
 import EditorTabPanel from './common/editor/EditorTabPanel';
-import EditorTextField from './common/editor/EditorTextField';
 import EditorValidator from './common/editor/EditorValidator';
 
 const validator = new EditorValidator();
@@ -72,19 +72,20 @@ export default function CreateFromUrlDialog(props) {
         <Tab label="URL" key={urlTab} />,
       ]}
       tabPanels={(
-        <>
+        <> 
           <EditorTabPanel value={urlTab} index={urlTab}>
-            <EditorTextField
+            <EditorMultiUrlField
               required
-              multiline
-              rows={5}
-              sx={{ width: '50ch'}}
               label="URLs (one per line)"
-              onDropText={(text) => { setUrl(url + (url.trim().length > 0 ? "\n" : "") + text); }}
+              onDropText={(text) => { 
+                if (Array.isArray(text)) {
+                  text = text.join("\n");
+                }
+                setUrl(url + (url.trim().length > 0 ? "\n" : "") + text); 
+              }}
               onChange={(e) => { setUrl(e.target.value); }}
               value={url}
               error={!validator.isValid(urlTab, "url")}
-              inputProps={{ref: input => {if (input) {input.style['white-space']='nowrap'}}}}
               helperText={
                 urlCount === 0 ? "" :
                   urlCount === 1 ? "1 URL entered." : `${urlCount} URLs entered.`
