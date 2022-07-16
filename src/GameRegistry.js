@@ -1,6 +1,7 @@
-import {  
+import {
   normalizeFileName,
   resolvePath,
+  settings,
   AppRegistry,
   FetchAppData,
   Unzip,
@@ -158,9 +159,9 @@ class GameRegistryImpl {
 
     /* NES */
 
-    // Driar 
+    // Driar
     "ac6adbbc2f43faa64a86463c1a594aee": { pal: true },
-    // Elite 
+    // Elite
     "ada42a2576d85b29da663bbf35b69288": { pal: true },
     "2c832d9fac3229cb7c32a5fe1dd65ad7": { pal: true },
 
@@ -184,7 +185,7 @@ class GameRegistryImpl {
 
     /* SMS */
 
-    // DARC 
+    // DARC
     "466f43446d151b9e6793212d5ce8c373": { ym2413: true },
     // Flight of Pigarus
     "42b79384a1352b47b9ea32d6d3ec6849": { pal: true },
@@ -247,7 +248,7 @@ class GameRegistryImpl {
   async init() {
     const { DB_FILE } = this;
     try {
-      this.n64enabled = AppRegistry.instance.getAppTypes().n64 !== undefined;
+      this.n64enabled = settings.isExpAppsEnabled();
 
       const fad = new FetchAppData(DB_FILE);
       const res = await fad.fetch();
@@ -347,7 +348,7 @@ class GameRegistryImpl {
           // const lines = description.split("\n");
           // let trimmed = "";
           // for (let i = 0; i < lines.length; i++) {
-          //   const line = lines[i].trim();                
+          //   const line = lines[i].trim();
           //   if (line.length > 0) {
           //     trimmed += (i > 0) ? (" " + line) : line;
           //   } else {
@@ -376,7 +377,7 @@ class GameRegistryImpl {
 
       // Skip n64 if not enabled
       if (type === 'n64' && !this.n64enabled) continue;
-      
+
       let name = this.db[type][md5];
       if (name) {
         // Add titles

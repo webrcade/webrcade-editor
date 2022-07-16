@@ -27,6 +27,7 @@ import GameRegistry from './GameRegistry';
 import MainAppBar from './components/MainAppBar';
 import Prefs from './Prefs';
 import SelectedFeed from './components/SelectedFeed';
+import { buildFieldMap } from './components/item-editor/PropertiesTab';
 
 const HASH_PLAY = "play";
 const drawerWidth = 190;
@@ -106,6 +107,11 @@ function App(props) {
 
     // Load settings
     settings.load().finally(() => {
+      // TODO: Hack for now. We need to build the field map after settings are
+      // loaded. Maybe better to have an event sent when settings change, etc.
+      // so that various components can react without direct bindings.
+      buildFieldMap();
+
       // Load prefs
       Prefs.load()
         .then(() => GameRegistry.init()) // Init the game registry
