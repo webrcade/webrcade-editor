@@ -3,6 +3,7 @@ import Avatar from '@mui/material/Avatar';
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import SettingsIcon from '@mui/icons-material/Settings';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
@@ -35,12 +36,22 @@ function MainAppBar(props) {
         <Typography variant="h6" noWrap sx={{ flexGrow: 1 }}>
           webЯcade Feed Editor
         </Typography>
+        <Tooltip title="Settings">
+          <IconButton
+            color="inherit"
+            edge="start"
+            onClick={() => { Global.openSettingsEditor(true); }}
+            sx={{ ml: 2 }}
+          >
+            <SettingsIcon />
+          </IconButton>
+        </Tooltip>
         <Tooltip title="Help">
           <IconButton
             color="inherit"
             edge="start"
             onClick={() => { window.open('https://docs.webrcade.com/editor/'); }}
-            sx={{ ml: 2 }}
+            sx={{ ml: .5 }}
           >
             <HelpCenterIcon />
           </IconButton>

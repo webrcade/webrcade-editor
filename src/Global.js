@@ -31,7 +31,8 @@ class Holder {
   setConfirmDialogOpen = null;
   setConfirmDialogProps = null;
   setLoadFeedDialogOpen = null;
-  isDebug = UrlUtil.getBoolParam(window.location.search, AppProps.RP_DEBUG); 
+  setSettingsEditorOpen = null;
+  isDebug = UrlUtil.getBoolParam(window.location.search, AppProps.RP_DEBUG);
 }
 
 const GlobalHolder = Holder.instance;
@@ -56,7 +57,7 @@ const Global = {
   openLoadFeedDialog: (open) => {
     GlobalHolder.setLoadFeedDialogOpen(true);
   },
-  openConfirmDialog: (open, title, message, callback) => {    
+  openConfirmDialog: (open, title, message, callback) => {
     if (title && message && callback) {
       GlobalHolder.setConfirmDialogProps({
         title: title,
@@ -71,6 +72,9 @@ const Global = {
   },
   openCreateFromUrlDialog: (open) => {
     GlobalHolder.setCreateFromUrlDialogOpen(open);
+  },
+  openSettingsEditor: (open) => {
+    GlobalHolder.setSettingsEditorOpen(open);
   },
   editItem: (item) => {
     Global.openItemEditor(true);

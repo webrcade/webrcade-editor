@@ -6,8 +6,9 @@ import Toolbar from '@mui/material/Toolbar';
 import {
   applyIosNavBarHack,
   removeIosNavBarHack,
+  settings,
   AppProps,
-  AppScreen,  
+  AppScreen,
   Feed as CommonFeed,
   config,
   APP_FRAME_ID,
@@ -89,8 +90,8 @@ function App(props) {
 
     document.addEventListener("drop", dropHandler);
     document.addEventListener("dragenter", ignore);
-    document.addEventListener("dragover", ignore);    
-    
+    document.addEventListener("dragover", ignore);
+
     popstateListener = createPopstateHandler();
     window.addEventListener("popstate", popstateListener, false);
     messageListener = createMessageListener(setApp);
@@ -103,48 +104,51 @@ function App(props) {
       window.history.pushState(null, "", window.location.href.substring(0, hash));
     }
 
-    // Load prefs
-    Prefs.load()
-      .then(() => GameRegistry.init()) // Init the game registry
-      .then(() => {
-        const feed = Prefs.getFeed() 
-        if (feed) {
-          // return feed from prefs
-          const feedObj = new CommonFeed(feed, 0, false);
-          const result = feedObj.getClonedFeed();
-          // Add ids?
-          return result;
-        } else {
-          // load default feed (if applicable)
-          return config.isPublicServer() ?                    
-            Feed.loadFeedFromUrl(Feed.getDefaultFeedUrl()) :
-            Feed.newFeed();
-        }        
-      })
-      .then((feed) => {
-        setFeed(feed);
-      })
-      .catch(e => {
-        LOG.error("Error during startup: " + e);
-      })
-      .finally(() => {
-        // Mark as started
-        setStarted(true);
+    // Load settings
+    settings.load().finally(() => {
+      // Load prefs
+      Prefs.load()
+        .then(() => GameRegistry.init()) // Init the game registry
+        .then(() => {
+          const feed = Prefs.getFeed()
+          if (feed) {
+            // return feed from prefs
+            const feedObj = new CommonFeed(feed, 0, false);
+            const result = feedObj.getClonedFeed();
+            // Add ids?
+            return result;
+          } else {
+            // load default feed (if applicable)
+            return config.isPublicServer() ?
+              Feed.loadFeedFromUrl(Feed.getDefaultFeedUrl()) :
+              Feed.newFeed();
+          }
+        })
+        .then((feed) => {
+          setFeed(feed);
+        })
+        .catch(e => {
+          LOG.error("Error during startup: " + e);
+        })
+        .finally(() => {
+          // Mark as started
+          setStarted(true);
 
-        Global.openBusyScreen(false);
-      })    
-    
+          Global.openBusyScreen(false);
+        })
+    });
+
     return () => {
       console.log("Application was unloaded");
 
       document.removeEventListener("drop", dropHandler);
       document.removeEventListener("dragenter", ignore);
-      document.removeEventListener("dragover", ignore);       
+      document.removeEventListener("dragover", ignore);
 
-      window.removeEventListener("popstate", popstateListener, false);    
-      window.removeEventListener("message", messageListener);  
+      window.removeEventListener("popstate", popstateListener, false);
+      window.removeEventListener("message", messageListener);
     }
-    // eslint-disable-next-line    
+    // eslint-disable-next-line
   }, []);
 
 
@@ -164,9 +168,9 @@ function App(props) {
       <BusyScreen />
       {started ? (
         <>
-          <Box 
-            sx={{ 
-              display: app || editorHidden ? 'none' : 'flex'              
+          <Box
+            sx={{
+              display: app || editorHidden ? 'none' : 'flex'
             }}
           >
             <MainAppBar />
@@ -191,7 +195,7 @@ function App(props) {
               context={AppProps.RV_CONTEXT_EDITOR}
               exitCallback={() => {
                 setEditorHidden(false);
-              }}        
+              }}
             />
           ) : null}
         </>

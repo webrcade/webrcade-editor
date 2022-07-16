@@ -22,11 +22,11 @@ export function removeEmptyItems(arr) {
     const item = arr[i].trim();
     if (item.length > 0) {
       ret.push(item);
-    }  
+    }
   }
   return ret;
 }
-export function useForceUpdate(){
+export function useForceUpdate() {
   const [, setValue] = useState(0); // integer state
   return () => setValue(value => value + 1); // update the state to force render
 }
