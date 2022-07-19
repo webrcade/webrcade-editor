@@ -2,7 +2,6 @@ import {
   normalizeFileName,
   resolvePath,
   settings,
-  AppRegistry,
   FetchAppData,
   Unzip,
   LOG
