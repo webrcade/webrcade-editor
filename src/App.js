@@ -5,6 +5,7 @@ import Toolbar from '@mui/material/Toolbar';
 
 import {
   applyIosNavBarHack,
+  dropbox,
   removeIosNavBarHack,
   settings,
   AppProps,
@@ -107,40 +108,44 @@ function App(props) {
 
     // Load settings
     settings.load().finally(() => {
-      // TODO: Hack for now. We need to build the field map after settings are
-      // loaded. Maybe better to have an event sent when settings change, etc.
-      // so that various components can react without direct bindings.
-      buildFieldMap();
-
-      // Load prefs
-      Prefs.load()
-        .then(() => GameRegistry.init()) // Init the game registry
-        .then(() => {
-          const feed = Prefs.getFeed()
-          if (feed) {
-            // return feed from prefs
-            const feedObj = new CommonFeed(feed, 0, false);
-            const result = feedObj.getClonedFeed();
-            // Add ids?
-            return result;
-          } else {
-            // load default feed (if applicable)
-            return config.isPublicServer() ?
-              Feed.loadFeedFromUrl(Feed.getDefaultFeedUrl()) :
-              Feed.newFeed();
-          }
-        })
-        .then((feed) => {
-          setFeed(feed);
-        })
-        .catch(e => {
-          LOG.error("Error during startup: " + e);
-        })
+      dropbox.checkLinkResult()
+        .catch(e => { Global.displayMessage(e, "error") })
         .finally(() => {
-          // Mark as started
-          setStarted(true);
+          // TODO: Hack for now. We need to build the field map after settings are
+          // loaded. Maybe better to have an event sent when settings change, etc.
+          // so that various components can react without direct bindings.
+          buildFieldMap();
 
-          Global.openBusyScreen(false);
+          // Load prefs
+          Prefs.load()
+            .then(() => GameRegistry.init()) // Init the game registry
+            .then(() => {
+              const feed = Prefs.getFeed()
+              if (feed) {
+                // return feed from prefs
+                const feedObj = new CommonFeed(feed, 0, false);
+                const result = feedObj.getClonedFeed();
+                // Add ids?
+                return result;
+              } else {
+                // load default feed (if applicable)
+                return config.isPublicServer() ?
+                  Feed.loadFeedFromUrl(Feed.getDefaultFeedUrl()) :
+                  Feed.newFeed();
+              }
+            })
+            .then((feed) => {
+              setFeed(feed);
+            })
+            .catch(e => {
+              LOG.error("Error during startup: " + e);
+            })
+            .finally(() => {
+              // Mark as started
+              setStarted(true);
+
+              Global.openBusyScreen(false);
+            })
         })
     });
 

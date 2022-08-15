@@ -1,13 +1,65 @@
 import * as React from 'react';
+import Button from '@mui/material/Button';
 import Tab from '@mui/material/Tab';
+import LinkIcon from '@mui/icons-material/Link';
+import LinkOffIcon from '@mui/icons-material/LinkOff';
 
 import * as Util from '../Util';
 import Editor from './common/editor/Editor';
 import EditorSwitch from './common/editor/EditorSwitch';
 import EditorTabPanel from './common/editor/EditorTabPanel';
-import { GlobalHolder } from '../Global';
+import { Global, GlobalHolder } from '../Global';
 
-import { settings } from '@webrcade/app-common'
+import { dropbox, settings } from '@webrcade/app-common'
+
+
+function CloudStorageTab(props) {
+  const {
+    tabValue,
+    tabIndex,
+    values,
+    setValues
+  } = props;
+
+  return (
+    <EditorTabPanel value={tabValue} index={tabIndex}>
+      <div>
+        <EditorSwitch
+          label="Enabled"
+          tooltip="Whether to enable cloud-based storage of game saves."
+          onChange={(e) => {
+            const vals = { ...values, cloudStorage: e.target.checked };
+            setValues(vals);
+          }}
+          checked={Util.asBoolean(values.cloudStorage)}
+        />
+      </div>
+      {values.cloudStorage && (
+        <div>
+          <Button variant="outlined" startIcon={values.dbLinked ? <LinkOffIcon /> : <LinkIcon />}
+            onClick={() => {
+              if (!values.dbLinked) {
+                // Force cloud storage to be enabled
+                settings.setCloudStorageEnabled(true);
+                settings.save().finally(() => {
+                  dropbox.link()
+                    .catch((e) => Global.displayMessage(e, "error"));
+                });
+              } else {
+                settings.setDbToken(null);
+                settings.save().finally(() => {
+                  setValues({ ...values, ...{ dbLinked: false } });
+                });
+              }
+            }}
+          >
+            {values.dbLinked ? "Unlink from Dropbox" : "Link to Dropbox"}
+          </Button>
+        </div>
+      )}
+    </EditorTabPanel>
+  );
+}
 
 function DisplayTab(props) {
   const {
@@ -82,7 +134,8 @@ export default function SettingsEditor(props) {
   const forceUpdate = Util.useForceUpdate();
 
   const displayTab = 0;
-  const advancedTab = 1;
+  const cloudStorageTab = 1;
+  const advancedTab = 2;
 
   return (
     <Editor
@@ -98,19 +151,21 @@ export default function SettingsEditor(props) {
         const vals = {
           expApps: settings.isExpAppsEnabled(),
           vsync: settings.isVsyncEnabled(),
-          bilinear: settings.isBilinearFilterEnabled()
+          bilinear: settings.isBilinearFilterEnabled(),
+          cloudStorage: settings.isCloudStorageEnabled(),
+          dbLinked: settings.getDbToken() !== null
         }
         setValues({
           ...vals,
-          originalValues : vals
+          originalValues: vals
         })
         forceUpdate();
       }}
       onOk={() => {
-
         settings.setExpAppsEnabled(values.expApps);
         settings.setVsyncEnabled(values.vsync);
         settings.setBilinearFilterEnabled(values.bilinear);
+        settings.setCloudStorageEnabled(values.cloudStorage);
         settings.save().finally(() => {
           if (values.originalValues.expApps !== values.expApps) {
             window.location.reload();
@@ -122,6 +177,7 @@ export default function SettingsEditor(props) {
       }}
       tabs={[
         <Tab label="Display" key={displayTab} />,
+        <Tab label="Cloud Storage" key={cloudStorageTab} />,
         <Tab label="Advanced" key={advancedTab} />,
       ]}
       tabPanels={(
@@ -129,6 +185,12 @@ export default function SettingsEditor(props) {
           <DisplayTab
             tabValue={tabValue}
             tabIndex={displayTab}
+            setValues={setValues}
+            values={values}
+          />
+          <CloudStorageTab
+            tabValue={tabValue}
+            tabIndex={cloudStorageTab}
             setValues={setValues}
             values={values}
           />
