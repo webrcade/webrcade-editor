@@ -23,6 +23,7 @@ class Holder {
   toggleDrawer = null;
   setItemEditorOpen = null;
   setImportDialogOpen = null;
+  setExportDialogOpen = null;
   setCategoryEditorOpen = null;
   setEditCategory = null;
   setFeedEditorOpen = null;
@@ -69,6 +70,9 @@ const Global = {
   },
   openImportDialog: (open) => {
     GlobalHolder.setImportDialogOpen(open);
+  },
+  openExportDialog: (open) => {
+    GlobalHolder.setExportDialogOpen(open);
   },
   openCreateFromUrlDialog: (open) => {
     GlobalHolder.setCreateFromUrlDialogOpen(open);

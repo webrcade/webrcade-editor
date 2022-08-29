@@ -4,6 +4,7 @@ import CategoryEditor from './CategoryEditor';
 import ConfirmDialog from './ConfirmDialog';
 import CreateFromUrlDialog from './CreateFromUrlDialog';
 import DisplayMessage from './DisplayMessage';
+import ExportDialog from './ExportDialog';
 import FeedEditor from './FeedEditor';
 import ImportDialog from './ImportDialog';
 import ItemEditor from './item-editor/ItemEditor';
@@ -18,6 +19,7 @@ export default function Screens() {
       <CreateFromUrlDialog />
       <FeedEditor />
       <DisplayMessage />
+      <ExportDialog />
       <ImportDialog/>
       <ItemEditor />
       <ConfirmDialog />

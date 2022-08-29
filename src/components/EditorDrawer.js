@@ -21,19 +21,6 @@ import * as Feed from '../Feed';
 import NewMenu from './NewMenu';
 import Prefs from '../Prefs';
 
-function downloadFeed() {
-  const feed = Feed.exportFeed(Global.getFeed());
-  var element = document.createElement('a');
-  element.setAttribute('href',
-    'data:text/json;charset=utf-8,' +
-    encodeURIComponent(JSON.stringify(feed, null, 2)));
-  element.setAttribute('download', feed.title + '.json');
-  element.style.display = 'none';
-  document.body.appendChild(element);
-  element.click();
-  document.body.removeChild(element);
-}
-
 function EditorDrawer(props) {
   const { drawerWidth } = props;
 
@@ -81,7 +68,7 @@ function EditorDrawer(props) {
         >
           <ListItem button key="export" onClick={() => {
             setOpen(false);
-            downloadFeed();
+            Global.openExportDialog(true);
           }}>
             <ListItemIcon><DownloadIcon /></ListItemIcon>
             <ListItemText primary="Export" />
@@ -94,7 +81,7 @@ function EditorDrawer(props) {
           title="Test the feed in the webЯcade font-end."
         >
           <ListItem button key="test" onClick={() => {
-            // The window is opened outside async to support iOS 
+            // The window is opened outside async to support iOS
             const newWindow = window.open();
             newWindow.document.write("<html><body style=\"background-color:black;\"></body></html>");
             (async () => {
@@ -136,7 +123,7 @@ function EditorDrawer(props) {
             const feeds = await WrcCommon.loadFeeds(0);
             const feed = Global.getFeed();
             const existing = feeds.isExistingLocalFeed(feed.title);
-            const f = async () => {              
+            const f = async () => {
               let succeeded = false;
               Global.openBusyScreen(true, "Saving feed...");
               try {
@@ -146,7 +133,7 @@ function EditorDrawer(props) {
               } catch (e) {
                 WrcCommon.LOG.error('Error saving feed: ' + e);
               } finally {
-                Global.openBusyScreen(false);              
+                Global.openBusyScreen(false);
               }
               if (succeeded) {
                 Global.displayMessage("Succesfully saved feed.", "success");
