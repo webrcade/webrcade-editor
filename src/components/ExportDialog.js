@@ -117,7 +117,7 @@ export default function ImportDialog(props) {
               checked={isZipped}
             />
             <EditorSwitch
-              label="Base64 encoding"
+              label="Base64 encoding (text)"
               tooltip="Whether to Base64 encode the feed."
               onChange={(e) => {
                 setBase64Encoded(e.target.checked);
