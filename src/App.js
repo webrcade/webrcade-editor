@@ -88,7 +88,7 @@ function App(props) {
 
   React.useEffect(() => {
     console.log("Application was loaded");
-    Global.openBusyScreen(true, "Preparing editor...");
+    Global.openBusyScreen(true, "Preparing editor...", true);
 
     document.addEventListener("drop", dropHandler);
     document.addEventListener("dragenter", ignore);
@@ -185,12 +185,12 @@ function App(props) {
             }}
           >
             <MainAppBar />
-            <Box sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}>
+            <Box sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}>
               <EditorDrawer drawerWidth={drawerWidth} />
             </Box>
             <Box sx={{
               flexGrow: 1, p: 3,
-              width: { xs: '100%', sm: `calc(100% - ${drawerWidth}px)` }
+              width: { sm: '100%', md: `calc(100% - ${drawerWidth}px)` }
             }}
             >
               <Toolbar />

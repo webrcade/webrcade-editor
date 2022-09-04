@@ -24,7 +24,7 @@ function MainAppBar(props) {
           color="inherit"
           edge="start"
           onClick={Global.toggleDrawer}
-          sx={{ mr: 2, display: { sm: 'none' } }}
+          sx={{ mr: 2, display: { md: 'none' } }}
         >
           <MenuIcon />
         </IconButton>

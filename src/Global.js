@@ -12,6 +12,7 @@ class Holder {
 
   setBusyScreenOpen = null;
   setBusyScreenMessage = null;
+  setBusyScreenDisableAutoFocus = null;
   setEditItem = null;
   setFeed = null;
   setApp = null;
@@ -44,8 +45,9 @@ const Global = {
   isDebug: () => {
     return GlobalHolder.isDebug
   },
-  openBusyScreen: (open, message = null) => {
+  openBusyScreen: (open, message = null, disableAutoFocus) => {
     GlobalHolder.setBusyScreenOpen(open);
+    GlobalHolder.setBusyScreenDisableAutoFocus(disableAutoFocus ? true : false);
     if (open && message) {
       GlobalHolder.setBusyScreenMessage(message);
     } else {
