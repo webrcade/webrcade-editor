@@ -99,8 +99,13 @@ export default function ItemsTableMoreMenu(props) {
               const index = path.toLowerCase().indexOf('app/editor');
               location = path.substring(0, index);
             }
-            location += "app.html?app=" + WrcCommon.AppRegistry.instance.getLocation(
-              app, WrcCommon.AppProps.RV_CONTEXT_STANDALONE, feedProps);
+            const reg = WrcCommon.AppRegistry.instance;
+            const icon = reg.getThumbnail(app);
+
+            location += "app.html?app=" + reg.getLocation(
+              app, WrcCommon.AppProps.RV_CONTEXT_STANDALONE, feedProps,
+              {icon: icon});
+
             copyToClipboard('copyField', location);
             Global.displayMessage("Successfully copied direct link (URL) to clipboard.", "success");
           }}>
