@@ -107,7 +107,7 @@ export default function ItemsTableMoreMenu(props) {
           <ListItemIcon>
             <LinkIcon fontSize="small" />
           </ListItemIcon>
-          Copy Direct Link (URL)
+          Copy direct link (URL)
         </MenuItem>
         <Divider />
         <MenuItem
