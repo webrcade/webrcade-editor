@@ -43,7 +43,8 @@ export default function ItemsTableMoreMenu(props) {
     setAnchorEl,
     feed,
     category,
-    selected
+    selected,
+    lastSelected,
   } = props;
   const open = Boolean(anchorEl);
   const handleClose = () => {
@@ -86,10 +87,16 @@ export default function ItemsTableMoreMenu(props) {
         <Divider />
         <input type="text" id="copyField" value="" style={{ opacity: '0', top: '0', position: 'absolute', zIndex: '-100' }} />
         <MenuItem
-          disabled={selected.length !== 1}
+          disabled={!lastSelected}
           onClick={() => {
             handleClose();
-            const app = Feed.getItem(feed, category, selected[0]);
+
+            const app = Feed.getItem(feed, category, lastSelected);
+            if (!app) {
+              return;
+            }
+            console.log(app)
+
             const feedProps = feed.props ? feed.props : {};
             let location = WrcCommon.getStandaloneLocation();
 
@@ -110,12 +117,12 @@ export default function ItemsTableMoreMenu(props) {
             location += "?app=" + encodeURIComponent(appLocation.substring(0, qIndex)) + "&" + appLocation.substring(qIndex + 1);
 
             copyToClipboard('copyField', location);
-            Global.displayMessage("Successfully copied direct link (URL) to clipboard.", "success");
+            Global.displayMessage("Successfully copied stand-alone link (URL) to clipboard.", "success");
           }}>
           <ListItemIcon>
             <LinkIcon fontSize="small" />
           </ListItemIcon>
-          Copy direct link (URL)
+          Copy stand-alone link (URL)
         </MenuItem>
         <Divider />
         <MenuItem

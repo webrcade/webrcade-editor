@@ -100,7 +100,7 @@ function EnhancedTableHead(props) {
 }
 
 const EnhancedTableToolbar = (props) => {
-  const { selected, renderToolbarItems } = props;
+  const { lastSelected, selected, renderToolbarItems } = props;
   const numSelected = selected.length;
   const selection = numSelected > 0;
 
@@ -116,14 +116,14 @@ const EnhancedTableToolbar = (props) => {
         }),
       }}
     >
-      {renderToolbarItems(selection, selected)}
+      {renderToolbarItems(selection, selected, lastSelected)}
       {selection ? (
         <Typography
           sx={{ flex: '1 1 100%', whiteSpace: 'noWrap'}}
           color="inherit"
           variant="subtitle1"
           component="div"
-          align="right"          
+          align="right"
         >
           {numSelected} selected
         </Typography>
@@ -133,7 +133,7 @@ const EnhancedTableToolbar = (props) => {
           variant="h6"
           id="tableTitle"
           component="div"
-          align="right"          
+          align="right"
         >
         </Typography>
       )}
@@ -171,12 +171,21 @@ export default function CommonTable(props) {
   const [orderBy, setOrderBy] = React.useState(
     Prefs.getPreference(PREF_SORT_COLUMN, defaultSortColumn));
   const [selected, setSelected] = React.useState([]);
+  const [lastSelected, setLastSelected] = React.useState(null);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(
     Prefs.getPreference(PREF_PAGE_SIZE, 5));
 
   const prevRows = Util.usePrevious(rows);
   const prevResetKey = Util.usePrevious(resetKey);
+
+  const updateLastSelected = (sels) => {
+    if (sels.length > 0) {
+      setLastSelected(sels[0]);
+    } else {
+      setLastSelected(null);
+    }
+  }
 
   // Reset page (if applicable)
   React.useEffect(() => {
@@ -211,18 +220,22 @@ export default function CommonTable(props) {
           }
         });
         setSelected(newSel);
+        // Handle case where we have last selected and nothing is left
+        if (lastSelected && newSel.length === 0) {
+          setLastSelected(null);
+        }
       }
     }
-  }, [rows, selected, prevRows, setPage]);
+  }, [lastSelected, rows, selected, prevRows, setPage]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     const newOrder = isAsc ? 'desc' : 'asc';
-    setOrder(newOrder);    
+    setOrder(newOrder);
     setOrderBy(property);
     // Reset to page 0 when sort has changed
     setPage(0);
-    Prefs.setPreference(PREF_SORT_COLUMN, property);    
+    Prefs.setPreference(PREF_SORT_COLUMN, property);
     Prefs.setPreference(PREF_SORT_DIR, newOrder);
   };
 
@@ -230,9 +243,11 @@ export default function CommonTable(props) {
     if (event.target.checked) {
       const newSelecteds = rows.map((n) => n.id);
       setSelected(newSelecteds);
+      updateLastSelected(newSelecteds)
       return;
     }
     setSelected([]);
+    setLastSelected(null);
   };
 
   const handleClick = (event, name) => {
@@ -253,6 +268,11 @@ export default function CommonTable(props) {
     }
 
     setSelected(newSelected);
+    if (selectedIndex === -1) {
+      setLastSelected(name);
+    } else {
+      updateLastSelected(newSelected)
+    }
   };
 
   const handleChangePage = (event, newPage) => {
@@ -273,6 +293,7 @@ export default function CommonTable(props) {
       <Paper sx={{ width: '100%', mb: 2 }}>
         <EnhancedTableToolbar
           selected={selected}
+          lastSelected={lastSelected}
           renderToolbarItems={renderToolbarItems}
         />
         <TableContainer>
@@ -320,7 +341,7 @@ export default function CommonTable(props) {
           </Table>
         </TableContainer>
         <TablePagination
-          // style={{ display:"flex" }} 
+          // style={{ display:"flex" }}
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={rows.length}

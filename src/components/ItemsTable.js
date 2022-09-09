@@ -202,7 +202,7 @@ export default function ItemsTable(props) {
             </>
           );
         }}
-        renderToolbarItems={(selection, selected) => {
+        renderToolbarItems={(selection, selected, lastSelected) => {
           const hasFeed = feed && feed.categories && feed.categories.length > 0;
           return (
             <>
@@ -212,6 +212,7 @@ export default function ItemsTable(props) {
                 feed={feed}
                 category={category}
                 selected={selected}
+                lastSelected={lastSelected}
               />
               <Tooltip title="Create Item">
                 <div>
