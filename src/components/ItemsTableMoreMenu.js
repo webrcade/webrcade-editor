@@ -91,20 +91,23 @@ export default function ItemsTableMoreMenu(props) {
             handleClose();
             const app = Feed.getItem(feed, category, selected[0]);
             const feedProps = feed.props ? feed.props : {};
-            let location = "";
+            let location = WrcCommon.getStandaloneLocation();
+
             if (WrcCommon.isDev()) {
-              location = WrcCommon.config.getLocalUrl() + "/";
+              location += "/";
             } else {
               let path = window.location.href;
               const index = path.toLowerCase().indexOf('app/editor');
-              location = path.substring(0, index);
+              location = path.substring(0, index) + location;
             }
             const reg = WrcCommon.AppRegistry.instance;
             const icon = reg.getThumbnail(app);
 
-            location += "app.html?app=" + reg.getLocation(
+            const appLocation = reg.getLocation(
               app, WrcCommon.AppProps.RV_CONTEXT_STANDALONE, feedProps,
               {icon: icon});
+            const qIndex = appLocation.indexOf("?")
+            location += "?app=" + encodeURIComponent(appLocation.substring(0, qIndex)) + "&" + appLocation.substring(qIndex + 1);
 
             copyToClipboard('copyField', location);
             Global.displayMessage("Successfully copied direct link (URL) to clipboard.", "success");

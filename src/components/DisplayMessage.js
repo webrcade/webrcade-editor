@@ -23,6 +23,18 @@ export default function DisplayMessage(props) {
   GlobalHolder.setMessage = setMessage;
   GlobalHolder.setMessageSeverity = setMessageSeverity;
 
+  // Display and clear the queued message
+  if (GlobalHolder.queuedMessage) {
+    const queuedMessage = GlobalHolder.queuedMessage;
+    const queuedMessageSeverity = GlobalHolder.queuedMessageSeverity;
+    GlobalHolder.queuedMessage = null;
+    GlobalHolder.queuedMessageSeverity = null;
+    setTimeout(() => {
+      GlobalHolder.setMessage(queuedMessage);
+      GlobalHolder.setMessageSeverity(queuedMessageSeverity);
+    }, 50);
+  }
+
   const previousMessage = usePrevious(message);
 
   React.useEffect(() => {
@@ -37,14 +49,14 @@ export default function DisplayMessage(props) {
   };
 
   return (
-    <Snackbar 
-      open={open} 
-      autoHideDuration={6000} 
+    <Snackbar
+      open={open}
+      autoHideDuration={6000}
       onClose={handleClose}
       TransitionComponent={SlideTransition}
       TransitionProps={{
         exit: false
-      }}      
+      }}
     >
       <Alert onClose={handleClose} severity={severity ? severity : "error"} sx={{ width: '100%' }}>
         {message}

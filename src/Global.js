@@ -21,6 +21,8 @@ class Holder {
   getFeedCategoryId = null;
   setMessage = null;
   setMessageSeverity = null;
+  queuedMessage = null;
+  queuedMessageSeverity = null;
   toggleDrawer = null;
   setItemEditorOpen = null;
   setImportDialogOpen = null;
@@ -118,8 +120,13 @@ const Global = {
     GlobalHolder.toggleDrawer();
   },
   displayMessage(message, severity) {
-    GlobalHolder.setMessage(message);
-    GlobalHolder.setMessageSeverity(severity);
+    if (GlobalHolder.setMessage && GlobalHolder.setMessageSeverity) {
+      GlobalHolder.setMessage(message);
+      GlobalHolder.setMessageSeverity(severity);
+    } else {
+      GlobalHolder.queuedMessage = message;
+      GlobalHolder.queuedMessageSeverity = severity;
+    }
   },
   setFeed: (feed) => {
     GlobalHolder.setFeed(feed);

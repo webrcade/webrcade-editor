@@ -14,6 +14,7 @@ import EditorUrlField from '../common/editor/EditorUrlField';
 import SelectPalette from './gb/SelectPalette';
 import SelectPlayerOrder from './SelectPlayerOrder';
 import VolumeAdjust from './VolumeAdjust';
+import ZoomLevel from './ZoolLevel';
 
 const PROP_3BUTTON = "PROP_3BUTTON";
 const PROP_6BUTTON = "PROP_6BUTTON";
@@ -43,6 +44,7 @@ const PROP_GB_PALETTE = "PROP_GB_PALETTE";
 const PROP_GB_BORDER = "PROP_GB_BORDER";
 const PROP_SNES_MULTITAP = "PROP_SNES_MULTITAP";
 const PROP_VOL_ADJUST = "PROP_VOL_ADJUST";
+const PROP_ZOOM_LEVEL = "PROP_ZOOM_LEVEL";
 
 const ALL_PROPS = [
   PROP_3BUTTON,
@@ -71,7 +73,8 @@ const ALL_PROPS = [
   PROP_SMS_HW_TYPE,
   PROP_SNES_MULTITAP,
   PROP_SWAP_CONTROLLERS,
-  PROP_VOL_ADJUST
+  PROP_VOL_ADJUST,
+  PROP_ZOOM_LEVEL
 ];
 
 let FIELD_MAP = {}
@@ -151,10 +154,10 @@ export const buildFieldMap = () => {
       PROP_ROM
     },
     [APP_TYPE_KEYS.N64]: {
-      PROP_ROM
+      PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.PARALLEL_N64]: {
-      PROP_ROM
+      PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.PCE]: {
       PROP_ROM, PROP_6BUTTON
@@ -694,6 +697,20 @@ export default function PropertiesTab(props) {
             }}
             onChangeCommitted={(e, val) => {
               const props = { ...object.props, volAdjust: parseInt(val) }
+              setObject({ ...object, props })
+            }} />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_ZOOM_LEVEL) ? (
+        <div>
+          <ZoomLevel
+            value={object.props.zoomLevel ? object.props.zoomLevel : 0}
+            onChange={(e, val) => {
+              // Allows for smoother updated prior to change being committed
+              object.props.zoomLevel = parseInt(val);
+            }}
+            onChangeCommitted={(e, val) => {
+              const props = { ...object.props, zoomLevel: parseInt(val) }
               setObject({ ...object, props })
             }} />
         </div>
