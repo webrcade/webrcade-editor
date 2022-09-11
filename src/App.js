@@ -190,7 +190,7 @@ function App(props) {
             </Box>
             <Box sx={{
               flexGrow: 1, p: 3,
-              width: { sm: '100%', md: `calc(100% - ${drawerWidth}px)` }
+              width: { xs: '100%', sm: '100%', md: `calc(100% - ${drawerWidth}px)` }
             }}
             >
               <Toolbar />
