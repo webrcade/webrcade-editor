@@ -13,26 +13,28 @@ import { GlobalHolder } from '../Global';
 export default function BusyScreen(props) {
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState(false);
+  const [disableAutoFocus, setDisableAutoFocus] = React.useState(false);
   const prevOpen = usePrevious(open);
 
   GlobalHolder.setBusyScreenOpen = setOpen;
   GlobalHolder.setBusyScreenMessage = setMessage;
+  GlobalHolder.setBusyScreenDisableAutoFocus = setDisableAutoFocus;
 
   // Enable/disable the drop handler
   if (prevOpen && !open) {
     enableDropHandler(true);
     //console.log('enable drop');
   } else if (!prevOpen && open) {
-    //console.log('disable drop');    
+    //console.log('disable drop');
     enableDropHandler(false);
   }
 
   return (
-    <Modal open={open}>
-      <Backdrop 
+    <Modal open={open} disableAutoFocus={disableAutoFocus}>
+      <Backdrop
         open={open}
-        sx={{ 
-          backgroundColor: 'rgba(0,0,0,0.7)' 
+        sx={{
+          backgroundColor: 'rgba(0,0,0,0.7)'
         }}
       >
         <Box>

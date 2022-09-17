@@ -66,21 +66,21 @@ class Processor {
     if (type && isDebug) {
       LOG.info("Found type based on extension.");
     }
-    
+
     if (url.indexOf(MD5_PREFIX) !== -1) {
       const md5 = url.substring(MD5_PREFIX.length);
       registryGame = await GameRegistry.find(md5);
-    } else {    
+    } else {
       // Fetch the file
       const fad = new FetchAppData(url);
       const res = await fad.fetch();
 
       if (res.ok) {
-        // Capture content disposition 
+        // Capture content disposition
         const headers = fad.getHeaders(res);
         const disposition = headers['content-disposition'];
         if (disposition) {
-          const matches = /.*filename="(.*)".*/gmi.exec(disposition);
+          const matches = /filename\*?=['"]?(?:UTF-\d['"]*)?([^;\r\n"']*)['"]?;?/gim.exec(disposition);
           if (matches.length > 1) {
             let match = matches[1];
             match = match.trim();
@@ -110,7 +110,7 @@ class Processor {
         const gameByName = await GameRegistry.findByName(title, ext, blob);
         if (gameByName) {
           registryGame = gameByName;
-        } else { 
+        } else {
           // Check for zip, no-op if it is non-zip
           const zipRes = await this.processZip(blob);
           blob = zipRes[0];
@@ -128,7 +128,7 @@ class Processor {
             }
           }
 
-          // Check for type in magic (if not already resolved)      
+          // Check for type in magic (if not already resolved)
           if (!type) {
             const abuffer = await new Response(blob).arrayBuffer();
             type = AppRegistry.instance.testMagic(new Uint8Array(abuffer));
@@ -331,9 +331,11 @@ const _updateAnalyzeUrls = (categoryId, itemIds, urls, urlToItems) => {
       let romUrl = "";
       if (item.props.rom) {
         romUrl = item.props.rom.trim();
+        // Remap URL (fix bug when adding already remapped urls.)
+        romUrl = remapUrl(romUrl);
       } else if (item.props.game) {
         romUrl = MD5_PREFIX + md5(item.props.game.trim());
-      }      
+      }
       if (romUrl.length > 0) {
         // Track unique URLs
         urls.add(romUrl);
@@ -371,7 +373,7 @@ const _analyze = (urls, urlToItems) => {
             // Remove rom for MD5 hacks (doom, etc.)
             delete item.props.rom;
           }
- 
+
           // Get the items to update
           const updateItems = urlToItems.get(currentUrl);
           for (let j = 0; j < updateItems.length; j++) {
@@ -390,7 +392,7 @@ const _analyze = (urls, urlToItems) => {
 
                 if (prop === 'title' && !titleFromReg) {
                   continue;
-                }                
+                }
 
                 // Copy properties if applicable
                 if (prop === 'props') {
@@ -408,14 +410,14 @@ const _analyze = (urls, urlToItems) => {
                   // if (Object.keys(item.props).length === Object.keys(updateItem.props).length) {
                   //   let diff = false;
                   //   for (let p in item.props) {
-                  //     if (item.props[p] !== updateItem.props[p]) {                        
+                  //     if (item.props[p] !== updateItem.props[p]) {
                   //       diff = true;
-                  //       break;                        
+                  //       break;
                   //     }
                   //   }
                   //   if (diff) {
                   //     updated = true;
-                  //     updateItem.props = {...item.props}  
+                  //     updateItem.props = {...item.props}
                   //   }
                   // } else {
                   //   updated = true;
@@ -457,14 +459,14 @@ const analyzeCategories = (categoryIds) => {
   const urls = new Set();
   const urlToItems = new Map();
 
-  for (let i = 0; i < categoryIds.length; i++) {    
+  for (let i = 0; i < categoryIds.length; i++) {
     const catId = categoryIds[i];
     const cat = Feed.getCategory(feed, catId);
     const itemIds = [];
     if (cat.items) {
       for (let j = 0; j < cat.items.length; j++) {
         itemIds.push(cat.items[j].id);
-      }    
+      }
       if (itemIds.length > 0) {
         _updateAnalyzeUrls(catId, itemIds, urls, urlToItems);
       }

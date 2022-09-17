@@ -7,6 +7,7 @@ import ContentCutIcon from '@mui/icons-material/ContentCut';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import IconButton from '@mui/material/IconButton';
+// import LinkIcon from '@mui/icons-material/Link';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import TableCell from '@mui/material/TableCell';
@@ -113,6 +114,13 @@ export default function ItemsTable(props) {
               label: 'Play',
               width: '1%'
             },
+            // {
+            //   id: 'link',
+            //   numeric: false,
+            //   disablePadding: false,
+            //   label: 'Link',
+            //   width: '1%'
+            // },
             {
               id: 'typeName',
               numeric: false,
@@ -174,6 +182,16 @@ export default function ItemsTable(props) {
                   </IconButton>
                 </Tooltip>
               </TableCell>
+              {/* <TableCell style={{ width: '0%', whiteSpace: 'noWrap' }}>
+                <Tooltip title="Link">
+                  <IconButton onClick={(e) => {
+                    e.stopPropagation();
+                    Global.setApp(row.item);
+                  }}>
+                    <LinkIcon />
+                  </IconButton>
+                </Tooltip>
+              </TableCell> */}
               <TableCell style={{ width: '0%', whiteSpace: 'noWrap' }}>
                 {row.typeName}
               </TableCell>
@@ -184,7 +202,7 @@ export default function ItemsTable(props) {
             </>
           );
         }}
-        renderToolbarItems={(selection, selected) => {
+        renderToolbarItems={(selection, selected, lastSelected) => {
           const hasFeed = feed && feed.categories && feed.categories.length > 0;
           return (
             <>
@@ -192,8 +210,9 @@ export default function ItemsTable(props) {
                 anchorEl={moreMenuAnchor}
                 setAnchorEl={setMoreMenuAnchor}
                 feed={feed}
-                category={category}                                    
+                category={category}
                 selected={selected}
+                lastSelected={lastSelected}
               />
               <Tooltip title="Create Item">
                 <div>

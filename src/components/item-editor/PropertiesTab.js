@@ -14,6 +14,7 @@ import EditorUrlField from '../common/editor/EditorUrlField';
 import SelectPalette from './gb/SelectPalette';
 import SelectPlayerOrder from './SelectPlayerOrder';
 import VolumeAdjust from './VolumeAdjust';
+import ZoomLevel from './ZoolLevel';
 
 const PROP_3BUTTON = "PROP_3BUTTON";
 const PROP_6BUTTON = "PROP_6BUTTON";
@@ -43,6 +44,7 @@ const PROP_GB_PALETTE = "PROP_GB_PALETTE";
 const PROP_GB_BORDER = "PROP_GB_BORDER";
 const PROP_SNES_MULTITAP = "PROP_SNES_MULTITAP";
 const PROP_VOL_ADJUST = "PROP_VOL_ADJUST";
+const PROP_ZOOM_LEVEL = "PROP_ZOOM_LEVEL";
 
 const ALL_PROPS = [
   PROP_3BUTTON,
@@ -71,161 +73,166 @@ const ALL_PROPS = [
   PROP_SMS_HW_TYPE,
   PROP_SNES_MULTITAP,
   PROP_SWAP_CONTROLLERS,
-  PROP_VOL_ADJUST
+  PROP_VOL_ADJUST,
+  PROP_ZOOM_LEVEL
 ];
 
-const FIELD_MAP = {
-  [APP_TYPE_KEYS.A2600]: {
-    PROP_ROM, PROP_SWAP_CONTROLLERS
-  },
-  [APP_TYPE_KEYS.JAVATARI]: {
-    PROP_ROM, PROP_SWAP_CONTROLLERS
-  },
-  [APP_TYPE_KEYS.A7800]: {
-    PROP_ROM
-  },
-  [APP_TYPE_KEYS.JS7800]: {
-    PROP_ROM
-  },
-  [APP_TYPE_KEYS.NES]: {
-    PROP_ROM, PROP_FORCE_PAL
-  },
-  [APP_TYPE_KEYS.FCEUX]: {
-    PROP_ROM, PROP_FORCE_PAL
-  },
-  [APP_TYPE_KEYS.SNES]: {
-    PROP_ROM, PROP_FORCE_PAL, PROP_SNES_MULTITAP
-  },
-  [APP_TYPE_KEYS.SNES9X]: {
-    PROP_ROM, PROP_FORCE_PAL, PROP_SNES_MULTITAP
-  },
-  [APP_TYPE_KEYS.GENESIS]: {
-    PROP_ROM, PROP_FORCE_PAL, PROP_3BUTTON
-  },
-  [APP_TYPE_KEYS.GENPLUSGX_MD]: {
-    PROP_ROM, PROP_FORCE_PAL
-  },
-  [APP_TYPE_KEYS.GG]: {
-    PROP_ROM
-  },
-  [APP_TYPE_KEYS.GENPLUSGX_GG]: {
-    PROP_ROM
-  },
-  [APP_TYPE_KEYS.SMS]: {
-    PROP_ROM, PROP_FORCE_PAL, PROP_SMS_HW_TYPE, PROP_FORCE_YM2413
-  },
-  [APP_TYPE_KEYS.GENPLUSGX_SMS]: {
-    PROP_ROM, PROP_FORCE_PAL, PROP_SMS_HW_TYPE, PROP_FORCE_YM2413
-  },
-  [APP_TYPE_KEYS.SG1000]: {
-    PROP_ROM, PROP_FORCE_PAL
-  },
-  [APP_TYPE_KEYS.GENPLUSGX_SG]: {
-    PROP_ROM, PROP_FORCE_PAL
-  },
-  [APP_TYPE_KEYS.DOOM]: {
-    PROP_DOOM_GAME
-  },
-  [APP_TYPE_KEYS.PRBOOM]: {
-    PROP_DOOM_GAME
-  },
-  [APP_TYPE_KEYS.GBA]: {
-    PROP_ROM, PROP_ROTATION, PROP_RTC, PROP_MIRRORING, PROP_SAVE_TYPE, PROP_FLASH_SIZE
-  },
-  [APP_TYPE_KEYS.VBA_M_GBA]: {
-    PROP_ROM, PROP_ROTATION, PROP_RTC, PROP_MIRRORING, PROP_SAVE_TYPE, PROP_FLASH_SIZE
-  },
-  [APP_TYPE_KEYS.GB]: {
-    PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_PALETTE, PROP_GB_BORDER
-  },
-  [APP_TYPE_KEYS.VBA_M_GB]: {
-    PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_PALETTE, PROP_GB_BORDER
-  },
-  [APP_TYPE_KEYS.GBC]: {
-    PROP_ROM
-  },
-  [APP_TYPE_KEYS.VBA_M_GBC]: {
-    PROP_ROM
-  },
-  [APP_TYPE_KEYS.N64]: {
-    PROP_ROM
-  },
-  [APP_TYPE_KEYS.PARALLEL_N64]: {
-    PROP_ROM
-  },
-  [APP_TYPE_KEYS.PCE]: {
-    PROP_ROM, PROP_6BUTTON
-  },
-  [APP_TYPE_KEYS.MEDNAFEN_PCE]: {
-    PROP_ROM, PROP_6BUTTON
-  },
-  [APP_TYPE_KEYS.SGX]: {
-    PROP_ROM, PROP_6BUTTON
-  },
-  [APP_TYPE_KEYS.MEDNAFEN_SGX]: {
-    PROP_ROM, PROP_6BUTTON
-  },
-  [APP_TYPE_KEYS.VB]: {
-    PROP_ROM
-  },
-  [APP_TYPE_KEYS.MEDNAFEN_VB]: {
-    PROP_ROM
-  },
-  [APP_TYPE_KEYS.NGC]: {
-    PROP_ROM, PROP_LANGUAGE
-  },
-  [APP_TYPE_KEYS.MEDNAFEN_NGC]: {
-    PROP_ROM, PROP_LANGUAGE
-  },
-  [APP_TYPE_KEYS.NGP]: {
-    PROP_ROM, PROP_LANGUAGE
-  },
-  [APP_TYPE_KEYS.MEDNAFEN_NGP]: {
-    PROP_ROM, PROP_LANGUAGE
-  },
-  [APP_TYPE_KEYS.WSC]: {
-    PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
-  },
-  [APP_TYPE_KEYS.MEDNAFEN_WSC]: {
-    PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
-  },
-  [APP_TYPE_KEYS.WS]: {
-    PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
-  },
-  [APP_TYPE_KEYS.MEDNAFEN_WS]: {
-    PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
-  },
-  [APP_TYPE_KEYS.LNX]: {
-    PROP_ROM, PROP_ROTATION_LNX
-  },
-  [APP_TYPE_KEYS.MEDNAFEN_LNX]: {
-    PROP_ROM, PROP_ROTATION_LNX
-  },
-  [APP_TYPE_KEYS.NEOGEO]: {
-    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_VOL_ADJUST, PROP_NEOGEO_BIOS, PROP_NEOGEO_FORCE_AES
-  },
-  [APP_TYPE_KEYS.FBNEO_NEOGEO]: {
-    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_VOL_ADJUST, PROP_NEOGEO_BIOS, PROP_NEOGEO_FORCE_AES
-  },
-  [APP_TYPE_KEYS.ARCADE_KONAMI]: {
-    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
-  },
-  [APP_TYPE_KEYS.FBNEO_KONAMI]: {
-    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
-  },
-  [APP_TYPE_KEYS.ARCADE]: {
-    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
-  },
-  [APP_TYPE_KEYS.FBNEO_ARCADE]: {
-    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
-  },
-  [APP_TYPE_KEYS.ARCADE_CAPCOM]: {
-    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
-  },
-  [APP_TYPE_KEYS.FBNEO_CAPCOM]: {
-    PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
-  },
-}
+let FIELD_MAP = {}
+
+export const buildFieldMap = () => {
+  FIELD_MAP = {
+    [APP_TYPE_KEYS.A2600]: {
+      PROP_ROM, PROP_SWAP_CONTROLLERS
+    },
+    [APP_TYPE_KEYS.JAVATARI]: {
+      PROP_ROM, PROP_SWAP_CONTROLLERS
+    },
+    [APP_TYPE_KEYS.A7800]: {
+      PROP_ROM
+    },
+    [APP_TYPE_KEYS.JS7800]: {
+      PROP_ROM
+    },
+    [APP_TYPE_KEYS.NES]: {
+      PROP_ROM, PROP_FORCE_PAL
+    },
+    [APP_TYPE_KEYS.FCEUX]: {
+      PROP_ROM, PROP_FORCE_PAL
+    },
+    [APP_TYPE_KEYS.SNES]: {
+      PROP_ROM, PROP_FORCE_PAL, PROP_SNES_MULTITAP
+    },
+    [APP_TYPE_KEYS.SNES9X]: {
+      PROP_ROM, PROP_FORCE_PAL, PROP_SNES_MULTITAP
+    },
+    [APP_TYPE_KEYS.GENESIS]: {
+      PROP_ROM, PROP_FORCE_PAL, PROP_3BUTTON
+    },
+    [APP_TYPE_KEYS.GENPLUSGX_MD]: {
+      PROP_ROM, PROP_FORCE_PAL
+    },
+    [APP_TYPE_KEYS.GG]: {
+      PROP_ROM
+    },
+    [APP_TYPE_KEYS.GENPLUSGX_GG]: {
+      PROP_ROM
+    },
+    [APP_TYPE_KEYS.SMS]: {
+      PROP_ROM, PROP_FORCE_PAL, PROP_SMS_HW_TYPE, PROP_FORCE_YM2413
+    },
+    [APP_TYPE_KEYS.GENPLUSGX_SMS]: {
+      PROP_ROM, PROP_FORCE_PAL, PROP_SMS_HW_TYPE, PROP_FORCE_YM2413
+    },
+    [APP_TYPE_KEYS.SG1000]: {
+      PROP_ROM, PROP_FORCE_PAL
+    },
+    [APP_TYPE_KEYS.GENPLUSGX_SG]: {
+      PROP_ROM, PROP_FORCE_PAL
+    },
+    [APP_TYPE_KEYS.DOOM]: {
+      PROP_DOOM_GAME
+    },
+    [APP_TYPE_KEYS.PRBOOM]: {
+      PROP_DOOM_GAME
+    },
+    [APP_TYPE_KEYS.GBA]: {
+      PROP_ROM, PROP_ROTATION, PROP_RTC, PROP_MIRRORING, PROP_SAVE_TYPE, PROP_FLASH_SIZE
+    },
+    [APP_TYPE_KEYS.VBA_M_GBA]: {
+      PROP_ROM, PROP_ROTATION, PROP_RTC, PROP_MIRRORING, PROP_SAVE_TYPE, PROP_FLASH_SIZE
+    },
+    [APP_TYPE_KEYS.GB]: {
+      PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_PALETTE, PROP_GB_BORDER
+    },
+    [APP_TYPE_KEYS.VBA_M_GB]: {
+      PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_PALETTE, PROP_GB_BORDER
+    },
+    [APP_TYPE_KEYS.GBC]: {
+      PROP_ROM
+    },
+    [APP_TYPE_KEYS.VBA_M_GBC]: {
+      PROP_ROM
+    },
+    [APP_TYPE_KEYS.N64]: {
+      PROP_ROM, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.PARALLEL_N64]: {
+      PROP_ROM, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.PCE]: {
+      PROP_ROM, PROP_6BUTTON
+    },
+    [APP_TYPE_KEYS.MEDNAFEN_PCE]: {
+      PROP_ROM, PROP_6BUTTON
+    },
+    [APP_TYPE_KEYS.SGX]: {
+      PROP_ROM, PROP_6BUTTON
+    },
+    [APP_TYPE_KEYS.MEDNAFEN_SGX]: {
+      PROP_ROM, PROP_6BUTTON
+    },
+    [APP_TYPE_KEYS.VB]: {
+      PROP_ROM
+    },
+    [APP_TYPE_KEYS.MEDNAFEN_VB]: {
+      PROP_ROM
+    },
+    [APP_TYPE_KEYS.NGC]: {
+      PROP_ROM, PROP_LANGUAGE
+    },
+    [APP_TYPE_KEYS.MEDNAFEN_NGC]: {
+      PROP_ROM, PROP_LANGUAGE
+    },
+    [APP_TYPE_KEYS.NGP]: {
+      PROP_ROM, PROP_LANGUAGE
+    },
+    [APP_TYPE_KEYS.MEDNAFEN_NGP]: {
+      PROP_ROM, PROP_LANGUAGE
+    },
+    [APP_TYPE_KEYS.WSC]: {
+      PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
+    },
+    [APP_TYPE_KEYS.MEDNAFEN_WSC]: {
+      PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
+    },
+    [APP_TYPE_KEYS.WS]: {
+      PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
+    },
+    [APP_TYPE_KEYS.MEDNAFEN_WS]: {
+      PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
+    },
+    [APP_TYPE_KEYS.LNX]: {
+      PROP_ROM, PROP_ROTATION_LNX
+    },
+    [APP_TYPE_KEYS.MEDNAFEN_LNX]: {
+      PROP_ROM, PROP_ROTATION_LNX
+    },
+    [APP_TYPE_KEYS.NEOGEO]: {
+      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_VOL_ADJUST, PROP_NEOGEO_BIOS, PROP_NEOGEO_FORCE_AES
+    },
+    [APP_TYPE_KEYS.FBNEO_NEOGEO]: {
+      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_VOL_ADJUST, PROP_NEOGEO_BIOS, PROP_NEOGEO_FORCE_AES
+    },
+    [APP_TYPE_KEYS.ARCADE_KONAMI]: {
+      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
+    },
+    [APP_TYPE_KEYS.FBNEO_KONAMI]: {
+      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
+    },
+    [APP_TYPE_KEYS.ARCADE]: {
+      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
+    },
+    [APP_TYPE_KEYS.FBNEO_ARCADE]: {
+      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
+    },
+    [APP_TYPE_KEYS.ARCADE_CAPCOM]: {
+      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
+    },
+    [APP_TYPE_KEYS.FBNEO_CAPCOM]: {
+      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
+    },
+  }
+};
 
 const hasProp = (object, prop) => {
   const fields = FIELD_MAP[object.type];
@@ -327,7 +334,7 @@ export default function PropertiesTab(props) {
               } else {
                 urls.push(text);
               }
-              urls = Util.removeEmptyItems(urls);              
+              urls = Util.removeEmptyItems(urls);
               const props = { ...object.props, additionalRoms: urls }
               if (urls.length === 0) {
                 delete props.additionalRoms;
@@ -344,7 +351,7 @@ export default function PropertiesTab(props) {
               }
               setObject({ ...object, props })
             }}
-            value={object.props.additionalRoms && object.props.additionalRoms.length > 0 ? 
+            value={object.props.additionalRoms && object.props.additionalRoms.length > 0 ?
               object.props.additionalRoms.join("\n") : ""}
           />
         </div>
@@ -690,6 +697,20 @@ export default function PropertiesTab(props) {
             }}
             onChangeCommitted={(e, val) => {
               const props = { ...object.props, volAdjust: parseInt(val) }
+              setObject({ ...object, props })
+            }} />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_ZOOM_LEVEL) ? (
+        <div>
+          <ZoomLevel
+            value={object.props.zoomLevel ? object.props.zoomLevel : 0}
+            onChange={(e, val) => {
+              // Allows for smoother updated prior to change being committed
+              object.props.zoomLevel = parseInt(val);
+            }}
+            onChangeCommitted={(e, val) => {
+              const props = { ...object.props, zoomLevel: parseInt(val) }
               setObject({ ...object, props })
             }} />
         </div>

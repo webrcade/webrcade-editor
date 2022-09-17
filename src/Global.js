@@ -12,6 +12,7 @@ class Holder {
 
   setBusyScreenOpen = null;
   setBusyScreenMessage = null;
+  setBusyScreenDisableAutoFocus = null;
   setEditItem = null;
   setFeed = null;
   setApp = null;
@@ -20,9 +21,12 @@ class Holder {
   getFeedCategoryId = null;
   setMessage = null;
   setMessageSeverity = null;
+  queuedMessage = null;
+  queuedMessageSeverity = null;
   toggleDrawer = null;
   setItemEditorOpen = null;
   setImportDialogOpen = null;
+  setExportDialogOpen = null;
   setCategoryEditorOpen = null;
   setEditCategory = null;
   setFeedEditorOpen = null;
@@ -31,7 +35,8 @@ class Holder {
   setConfirmDialogOpen = null;
   setConfirmDialogProps = null;
   setLoadFeedDialogOpen = null;
-  isDebug = UrlUtil.getBoolParam(window.location.search, AppProps.RP_DEBUG); 
+  setSettingsEditorOpen = null;
+  isDebug = UrlUtil.getBoolParam(window.location.search, AppProps.RP_DEBUG);
 }
 
 const GlobalHolder = Holder.instance;
@@ -42,8 +47,9 @@ const Global = {
   isDebug: () => {
     return GlobalHolder.isDebug
   },
-  openBusyScreen: (open, message = null) => {
+  openBusyScreen: (open, message = null, disableAutoFocus) => {
     GlobalHolder.setBusyScreenOpen(open);
+    GlobalHolder.setBusyScreenDisableAutoFocus(disableAutoFocus ? true : false);
     if (open && message) {
       GlobalHolder.setBusyScreenMessage(message);
     } else {
@@ -56,7 +62,7 @@ const Global = {
   openLoadFeedDialog: (open) => {
     GlobalHolder.setLoadFeedDialogOpen(true);
   },
-  openConfirmDialog: (open, title, message, callback) => {    
+  openConfirmDialog: (open, title, message, callback) => {
     if (title && message && callback) {
       GlobalHolder.setConfirmDialogProps({
         title: title,
@@ -69,8 +75,14 @@ const Global = {
   openImportDialog: (open) => {
     GlobalHolder.setImportDialogOpen(open);
   },
+  openExportDialog: (open) => {
+    GlobalHolder.setExportDialogOpen(open);
+  },
   openCreateFromUrlDialog: (open) => {
     GlobalHolder.setCreateFromUrlDialogOpen(open);
+  },
+  openSettingsEditor: (open) => {
+    GlobalHolder.setSettingsEditorOpen(open);
   },
   editItem: (item) => {
     Global.openItemEditor(true);
@@ -108,8 +120,13 @@ const Global = {
     GlobalHolder.toggleDrawer();
   },
   displayMessage(message, severity) {
-    GlobalHolder.setMessage(message);
-    GlobalHolder.setMessageSeverity(severity);
+    if (GlobalHolder.setMessage && GlobalHolder.setMessageSeverity) {
+      GlobalHolder.setMessage(message);
+      GlobalHolder.setMessageSeverity(severity);
+    } else {
+      GlobalHolder.queuedMessage = message;
+      GlobalHolder.queuedMessageSeverity = severity;
+    }
   },
   setFeed: (feed) => {
     GlobalHolder.setFeed(feed);

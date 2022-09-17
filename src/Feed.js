@@ -3,6 +3,7 @@ import {
   Feed,
   FetchAppData,
   config,
+  getFeedAsJson,
   isDev,
 } from '@webrcade/app-common'
 
@@ -84,7 +85,7 @@ const addItemsToCategory = (feed, categoryId, items) => {
   }
 }
 
-const addCategoryToFeed = (feed, cat) => {  
+const addCategoryToFeed = (feed, cat) => {
   // TODO: Should this clone and add id?
   feed.categories.push(cat);
 }
@@ -207,7 +208,8 @@ const loadFeed = (feedJson) => {
 const loadFeedFromUrl = (url) => {
   return new Promise((resolve, reject) => {
     new FetchAppData(url).fetch()
-      .then(response => response.json())
+      .then(response => response.blob())
+      .then(blob => getFeedAsJson(blob))
       .then(json => {
         resolve(loadFeed(json))
       })
@@ -219,19 +221,11 @@ const loadFeedFromUrl = (url) => {
 
 const loadFeedFromFile = (file) => {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = (e) => {
-      reject('Error reading feed: ' + e);
-    }
-    reader.onload = (e) => {
-      try {
-        const json = JSON.parse(e.target.result);
-        resolve(loadFeed(json))
-      } catch (e) {
-        reject('Error reading feed: ' + e);
-      }
-    }
-    reader.readAsText(file)
+    getFeedAsJson(file)
+      .then(json => resolve(loadFeed(json)))
+      .catch(msg => {
+        reject(msg);
+      })
   });
 }
 
