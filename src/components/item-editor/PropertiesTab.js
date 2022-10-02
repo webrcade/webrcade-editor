@@ -19,12 +19,14 @@ import ZoomLevel from './ZoolLevel';
 const PROP_3BUTTON = "PROP_3BUTTON";
 const PROP_6BUTTON = "PROP_6BUTTON";
 const PROP_ADDITIONAL_ROMS = "PROP_ADDITIONAL_ROMS";
+const PROP_ANALOG = "PROP_ANALOG";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
 const PROP_FORCE_PAL = "PROP_FORCE_PAL";
 const PROP_FORCE_YM2413 = "PROP_FORCE_YM2413";
 const PROP_LANGUAGE = "PROP_LANGUAGE";
 const PROP_MIRRORING = "PROP_MIRRORING";
+const PROP_MULTITAP = "PROP_MULTITAP";
 const PROP_NEOGEO_BIOS = "PROP_NEOGEO_BIOS";
 const PROP_NEOGEO_FORCE_AES = "PROP_NEOGEO_FORCE_AES";
 const PROP_PARENT_ROM = "PROP_PARENT_ROM";
@@ -50,6 +52,7 @@ const ALL_PROPS = [
   PROP_3BUTTON,
   PROP_6BUTTON,
   PROP_ADDITIONAL_ROMS,
+  PROP_ANALOG,
   PROP_DOOM_GAME,
   PROP_FLASH_SIZE,
   PROP_FORCE_PAL,
@@ -61,6 +64,7 @@ const ALL_PROPS = [
   PROP_LANGUAGE,
   PROP_MIRRORING,
   PROP_NEOGEO_BIOS,
+  PROP_MULTITAP,
   PROP_PARENT_ROM,
   PROP_PLAYER_ORDER,
   PROP_ROM,
@@ -231,6 +235,12 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.FBNEO_CAPCOM]: {
       PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
     },
+    [APP_TYPE_KEYS.PSX]: {
+      PROP_ROM, PROP_ANALOG, PROP_MULTITAP
+    },
+    [APP_TYPE_KEYS.BEETLE_PSX]: {
+      PROP_ROM, PROP_ANALOG, PROP_MULTITAP
+    },
   }
 };
 
@@ -344,7 +354,7 @@ export default function PropertiesTab(props) {
             onChange={(e) => {
               const val = e.target.value;
               let urls = val.split("\n");
-              urls = Util.removeEmptyItems(urls);
+              //urls = Util.removeEmptyItems(urls);
               const props = { ...object.props, additionalRoms: urls }
               if (urls.length === 0) {
                 delete props.additionalRoms;
@@ -513,6 +523,32 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.port2 === 1)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_ANALOG) ? (
+        <div>
+          <EditorSwitch
+            label="Analog mode"
+            tooltip="Whether to enable analog mode on the controllers."
+            onChange={(e) => {
+              const props = { ...object.props, analog: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.analog)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_MULTITAP) ? (
+        <div>
+          <EditorSwitch
+            label="Multitap"
+            tooltip="Whether to use a Multitap adapter."
+            onChange={(e) => {
+              const props = { ...object.props, multitap: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.multitap)}
           />
         </div>
       ) : null}

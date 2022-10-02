@@ -13,7 +13,7 @@ import ThumbnailTab from '../common/editor/ThumbnailTab';
 import { GlobalHolder, Global } from '../../Global';
 
 import {
-  AppRegistry, APP_TYPE_KEYS, LOG, isEmptyString
+  AppRegistry, APP_TYPE_KEYS, LOG, isEmptyString, uuidv4
 } from '@webrcade/app-common'
 import Prefs from '../../Prefs';
 
@@ -58,6 +58,15 @@ const setDefaultForDoom = (type, item) => {
   }
 }
 
+const setDefaultForPsx = (type, item) => {
+  if (type === APP_TYPE_KEYS.BEETLE_PSX ||
+    type === APP_TYPE_KEYS.PSX) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
+
 export default function ItemEditor(props) {
   const [tabValue, setTabValue] = React.useState(0);
   const [item, setItem] = React.useState({});
@@ -67,7 +76,7 @@ export default function ItemEditor(props) {
   GlobalHolder.setItemEditorOpen = (open, isCreate = false) => {
     setCreate(isCreate);
     setOpen(open);
-  }  
+  }
 
   GlobalHolder.setEditItem = setItem;
 
@@ -101,9 +110,11 @@ export default function ItemEditor(props) {
           const type = Prefs.getLastNewType();
           if (!isEmptyString(type)) {
             clone.type = type;
-            // Set default for doom type
+            // Set defaults
+            // TODO: Move to common location, hide specific types
             setDefaultForDoom(type, clone);
-          }          
+            setDefaultForPsx(type, clone);
+          }
         }
         setItem(clone)
 
@@ -115,7 +126,7 @@ export default function ItemEditor(props) {
         if (minTab >= 0) {
           setTabValue(minTab);
           forceUpdate();
-          return false;          
+          return false;
         }
 
 //  console.log(AppRegistry.instance.getDefaultsForType(item.type));
@@ -123,8 +134,10 @@ export default function ItemEditor(props) {
 
         // Remove the default values
         removeDefaults(item, AppRegistry.instance.getDefaultsForType(item.type));
+        // PSX
+        setDefaultForPsx(item.type, item); // TODO: Find a better way, maybe required id? on the type
 
-        if (isDebug) {          
+        if (isDebug) {
           LOG.info(item);
         }
 
