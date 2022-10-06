@@ -36,6 +36,7 @@ class Holder {
   setConfirmDialogProps = null;
   setLoadFeedDialogOpen = null;
   setSettingsEditorOpen = null;
+  setBusyScreenDisableDrop = null;
   isDebug = UrlUtil.getBoolParam(window.location.search, AppProps.RP_DEBUG);
 }
 
@@ -47,8 +48,9 @@ const Global = {
   isDebug: () => {
     return GlobalHolder.isDebug
   },
-  openBusyScreen: (open, message = null, disableAutoFocus) => {
+  openBusyScreen: (open, message = null, disableAutoFocus, disableDrop = true) => {
     GlobalHolder.setBusyScreenOpen(open);
+    GlobalHolder.setBusyScreenDisableDrop(disableDrop);
     GlobalHolder.setBusyScreenDisableAutoFocus(disableAutoFocus ? true : false);
     if (open && message) {
       GlobalHolder.setBusyScreenMessage(message);

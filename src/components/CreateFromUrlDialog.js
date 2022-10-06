@@ -27,7 +27,7 @@ export default function CreateFromUrlDialog(props) {
       forceUpdate();
       return false;
     }
-    const urls = url.split("\n");
+    const urls = Util.splitLines(url);
     const validatedUrls = [];
     for (let i = 0; i < urls.length; i++) {
       const curUrl = urls[i].trim();
@@ -40,7 +40,7 @@ export default function CreateFromUrlDialog(props) {
   }
 
   let urlCount = 0;
-  const urls = url.split("\n");
+  const urls = Util.splitLines(url);
   for (let i = 0; i < urls.length; i++) {
     const curUrl = urls[i].trim();
     if (curUrl.length > 0) {
@@ -59,7 +59,7 @@ export default function CreateFromUrlDialog(props) {
       setTabValue={setTabValue}
       onShow={() => {
         setUrl('');
-        validator.reset();        
+        validator.reset();
         forceUpdate();
       }}
       onOk={onOk}
@@ -72,16 +72,16 @@ export default function CreateFromUrlDialog(props) {
         <Tab label="URL" key={urlTab} />,
       ]}
       tabPanels={(
-        <> 
+        <>
           <EditorTabPanel value={urlTab} index={urlTab}>
             <EditorMultiUrlField
               required
               label="URLs (one per line)"
-              onDropText={(text) => { 
+              onDropText={(text) => {
                 if (Array.isArray(text)) {
                   text = text.join("\n");
                 }
-                setUrl(url + (url.trim().length > 0 ? "\n" : "") + text); 
+                setUrl(url + (url.trim().length > 0 ? "\n" : "") + text);
               }}
               onChange={(e) => { setUrl(e.target.value); }}
               value={url}

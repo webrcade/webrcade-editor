@@ -20,6 +20,7 @@ const PROP_3BUTTON = "PROP_3BUTTON";
 const PROP_6BUTTON = "PROP_6BUTTON";
 const PROP_ADDITIONAL_ROMS = "PROP_ADDITIONAL_ROMS";
 const PROP_ANALOG = "PROP_ANALOG";
+const PROP_DISCS = "PROP_DISCS";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
 const PROP_FORCE_PAL = "PROP_FORCE_PAL";
@@ -53,6 +54,7 @@ const ALL_PROPS = [
   PROP_6BUTTON,
   PROP_ADDITIONAL_ROMS,
   PROP_ANALOG,
+  PROP_DISCS,
   PROP_DOOM_GAME,
   PROP_FLASH_SIZE,
   PROP_FORCE_PAL,
@@ -236,10 +238,10 @@ export const buildFieldMap = () => {
       PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
     },
     [APP_TYPE_KEYS.PSX]: {
-      PROP_ROM, PROP_ANALOG, PROP_MULTITAP
+      PROP_DISCS, PROP_ANALOG, PROP_MULTITAP
     },
     [APP_TYPE_KEYS.BEETLE_PSX]: {
-      PROP_ROM, PROP_ANALOG, PROP_MULTITAP
+      PROP_DISCS, PROP_ANALOG, PROP_MULTITAP
     },
   }
 };
@@ -353,7 +355,7 @@ export default function PropertiesTab(props) {
             }}
             onChange={(e) => {
               const val = e.target.value;
-              let urls = val.split("\n");
+              let urls = Util.splitLines(val);
               //urls = Util.removeEmptyItems(urls);
               const props = { ...object.props, additionalRoms: urls }
               if (urls.length === 0) {
@@ -363,6 +365,40 @@ export default function PropertiesTab(props) {
             }}
             value={object.props.additionalRoms && object.props.additionalRoms.length > 0 ?
               object.props.additionalRoms.join("\n") : ""}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_DISCS) ? (
+        <div>
+          <EditorMultiUrlField
+            label="Discs (URLs)"
+            rows={3}
+            onDropText={(text) => {
+              let urls = object.props.discs ? object.props.discs : [];
+              if (Array.isArray(text)) {
+                urls.push(...text);
+              } else {
+                urls.push(text);
+              }
+              urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, discs: urls }
+              if (urls.length === 0) {
+                delete props.discs;
+              }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const val = e.target.value;
+              let urls = Util.splitLines(val);
+              //urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, discs: urls }
+              if (urls.length === 0) {
+                delete props.discs;
+              }
+              setObject({ ...object, props })
+            }}
+            value={object.props.discs && object.props.discs.length > 0 ?
+              object.props.discs.join("\n") : ""}
           />
         </div>
       ) : null}

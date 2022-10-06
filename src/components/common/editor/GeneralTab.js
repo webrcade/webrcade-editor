@@ -12,7 +12,8 @@ export default function GeneralTab(props) {
     setObject,
     validator,
     addValidateCallback,
-    otherFields
+    otherFields,
+    nameField
   } = props;
 
   React.useEffect(() => {
@@ -26,16 +27,18 @@ export default function GeneralTab(props) {
 
   return (
     <EditorTabPanel value={tabValue} index={tabIndex}>
-      <div>
-        <EditorTextField
-          required
-          label="Title"
-          onDropText={(text) => { setObject({ ...object, title: text }) }}
-          onChange={(e) => { setObject({ ...object, title: e.target.value }) }}
-          value={Util.asString(object.title)}
-          error={!validator.isValid(tabIndex, "title")}
-        />
-      </div>
+      {nameField ? nameField : (
+        <div>
+          <EditorTextField
+            required
+            label="Title"
+            onDropText={(text) => { setObject({ ...object, title: text }) }}
+            onChange={(e) => { setObject({ ...object, title: e.target.value }) }}
+            value={Util.asString(object.title)}
+            error={!validator.isValid(tabIndex, "title")}
+          />
+      </div>)
+      }
       <div>
         <EditorTextField
           sx={{ width: '50ch' }}
