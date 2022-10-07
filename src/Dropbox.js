@@ -14,7 +14,7 @@ export function dropboxPicker(cb, multi=true) {
         cb(res);
       }
     },
-    sizeLimit: 65 * 1024 * 1024 // 65mb
+    sizeLimit: 600 * 1024 * 1024 // 65mb
   };
   window.Dropbox.choose(options);
 }

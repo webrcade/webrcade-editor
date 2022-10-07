@@ -224,6 +224,7 @@ export default function ItemEditor(props) {
                           }
                           if (info.background) {
                             update.background = info.background;
+                            update.backgroundPixelated = true;
                           }
                           setItem({...item, ...update})
                         } finally {
