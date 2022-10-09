@@ -45,6 +45,7 @@ const PROP_GB_HW_TYPE = "PROP_GB_HW_TYPE";
 const PROP_GB_COLORS = "PROP_GB_COLORS";
 const PROP_GB_PALETTE = "PROP_GB_PALETTE";
 const PROP_GB_BORDER = "PROP_GB_BORDER";
+const PROP_SKIP_BIOS = "PROP_SKIP_BIOS";
 const PROP_SNES_MULTITAP = "PROP_SNES_MULTITAP";
 const PROP_VOL_ADJUST = "PROP_VOL_ADJUST";
 const PROP_ZOOM_LEVEL = "PROP_ZOOM_LEVEL";
@@ -76,6 +77,7 @@ const ALL_PROPS = [
   PROP_RTC,
   PROP_SAMPLES,
   PROP_SAVE_TYPE,
+  PROP_SKIP_BIOS,
   PROP_SMS_HW_TYPE,
   PROP_SNES_MULTITAP,
   PROP_SWAP_CONTROLLERS,
@@ -238,10 +240,10 @@ export const buildFieldMap = () => {
       PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
     },
     [APP_TYPE_KEYS.PSX]: {
-      PROP_DISCS, PROP_ANALOG, PROP_MULTITAP
+      PROP_DISCS, PROP_ANALOG, PROP_MULTITAP, PROP_ZOOM_LEVEL, PROP_SKIP_BIOS
     },
     [APP_TYPE_KEYS.BEETLE_PSX]: {
-      PROP_DISCS, PROP_ANALOG, PROP_MULTITAP
+      PROP_DISCS, PROP_ANALOG, PROP_MULTITAP, PROP_ZOOM_LEVEL, PROP_SKIP_BIOS
     },
   }
 };
@@ -562,32 +564,6 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
-      {hasProp(object, PROP_ANALOG) ? (
-        <div>
-          <EditorSwitch
-            label="Analog mode"
-            tooltip="Whether to enable analog mode on the controllers."
-            onChange={(e) => {
-              const props = { ...object.props, analog: e.target.checked }
-              setObject({ ...object, props })
-            }}
-            checked={Util.asBoolean(object.props.analog)}
-          />
-        </div>
-      ) : null}
-      {hasProp(object, PROP_MULTITAP) ? (
-        <div>
-          <EditorSwitch
-            label="Multitap"
-            tooltip="Whether to use a Multitap adapter."
-            onChange={(e) => {
-              const props = { ...object.props, multitap: e.target.checked }
-              setObject({ ...object, props })
-            }}
-            checked={Util.asBoolean(object.props.multitap)}
-          />
-        </div>
-      ) : null}
       {hasProp(object, PROP_3BUTTON) ? (
         <div>
           <EditorSwitch
@@ -860,6 +836,45 @@ export default function PropertiesTab(props) {
               const props = { ...object.props, playerOrder: value }
               setObject({ ...object, props })
             }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_ANALOG) ? (
+        <div>
+          <EditorSwitch
+            label="Analog mode"
+            tooltip="Whether to enable analog mode on the controllers."
+            onChange={(e) => {
+              const props = { ...object.props, analog: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.analog)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_MULTITAP) ? (
+        <div>
+          <EditorSwitch
+            label="Multitap"
+            tooltip="Whether to use a Multitap adapter."
+            onChange={(e) => {
+              const props = { ...object.props, multitap: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.multitap)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_SKIP_BIOS) ? (
+        <div>
+          <EditorSwitch
+            label="Skip BIOS"
+            tooltip="Whether to skip the BIOS animation normally displayed with starting a game."
+            onChange={(e) => {
+              const props = { ...object.props, skipBios: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.skipBios)}
           />
         </div>
       ) : null}

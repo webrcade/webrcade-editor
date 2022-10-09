@@ -13,6 +13,7 @@ import ThumbnailTab from './common/editor/ThumbnailTab';
 import { GlobalHolder, Global } from '../Global';
 
 import {
+  settings,
   FeedBackgroundImage,
   FeedThumbImage
 } from '@webrcade/app-common'
@@ -58,38 +59,40 @@ function PropertiesTab(props) {
           value={Util.asString(object.props.neogeo_bios)}
         />
       </div>
-      <div>
-        <EditorMultiUrlField
-          label="PlayStation BIOS (URLs)"
-          rows={3}
-          onDropText={(text) => {
-            let urls = object.props.psx_bios ? object.props.psx_bios : [];
-            if (Array.isArray(text)) {
-              urls.push(...text);
-            } else {
-              urls.push(text);
-            }
-            urls = Util.removeEmptyItems(urls);
-            const props = { ...object.props, psx_bios: urls }
-            if (urls.length === 0) {
-              delete props.psx_bios;
-            }
-            setObject({ ...object, props })
-          }}
-          onChange={(e) => {
-            const val = e.target.value;
-            let urls = Util.splitLines(val);
-            //urls = Util.removeEmptyItems(urls);
-            const props = { ...object.props, psx_bios: urls }
-            if (urls.length === 0) {
-              delete props.psx_bios;
-            }
-            setObject({ ...object, props })
-          }}
-          value={object.props.psx_bios && object.props.psx_bios.length > 0 ?
-            object.props.psx_bios.join("\n") : ""}
-        />
-      </div>
+      {settings.isExpAppsEnabled() && (
+        <div>
+          <EditorMultiUrlField
+            label="PlayStation BIOS (URLs)"
+            rows={3}
+            onDropText={(text) => {
+              let urls = object.props.psx_bios ? object.props.psx_bios : [];
+              if (Array.isArray(text)) {
+                urls.push(...text);
+              } else {
+                urls.push(text);
+              }
+              urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, psx_bios: urls }
+              if (urls.length === 0) {
+                delete props.psx_bios;
+              }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const val = e.target.value;
+              let urls = Util.splitLines(val);
+              //urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, psx_bios: urls }
+              if (urls.length === 0) {
+                delete props.psx_bios;
+              }
+              setObject({ ...object, props })
+            }}
+            value={object.props.psx_bios && object.props.psx_bios.length > 0 ?
+              object.props.psx_bios.join("\n") : ""}
+          />
+        </div>
+      )}
     </EditorTabPanel>
   );
 }
