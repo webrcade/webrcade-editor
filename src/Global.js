@@ -34,6 +34,8 @@ class Holder {
   setCreateFromUrlDialogOpen = null;
   setConfirmDialogOpen = null;
   setConfirmDialogProps = null;
+  setCopyLinkDialogOpen = null;
+  setCopyLinkDialogProps = null;
   setLoadFeedDialogOpen = null;
   setSettingsEditorOpen = null;
   setBusyScreenDisableDrop = null;
@@ -73,6 +75,12 @@ const Global = {
       });
     }
     GlobalHolder.setConfirmDialogOpen(open);
+  },
+  openCopyLinkDialog: (open, link) => {
+    if (link) {
+      GlobalHolder.setCopyLinkDialogProps({link: link});
+    }
+    GlobalHolder.setCopyLinkDialogOpen(open);
   },
   openImportDialog: (open) => {
     GlobalHolder.setImportDialogOpen(open);

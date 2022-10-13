@@ -20,6 +20,7 @@ const PROP_3BUTTON = "PROP_3BUTTON";
 const PROP_6BUTTON = "PROP_6BUTTON";
 const PROP_ADDITIONAL_ROMS = "PROP_ADDITIONAL_ROMS";
 const PROP_ANALOG = "PROP_ANALOG";
+const PROP_DISABLE_LOOKUP = "PROP_DISABLE_LOOKUP";
 const PROP_DISCS = "PROP_DISCS";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
@@ -55,6 +56,7 @@ const ALL_PROPS = [
   PROP_6BUTTON,
   PROP_ADDITIONAL_ROMS,
   PROP_ANALOG,
+  PROP_DISABLE_LOOKUP,
   PROP_DISCS,
   PROP_DOOM_GAME,
   PROP_FLASH_SIZE,
@@ -144,10 +146,10 @@ export const buildFieldMap = () => {
       PROP_DOOM_GAME
     },
     [APP_TYPE_KEYS.GBA]: {
-      PROP_ROM, PROP_ROTATION, PROP_RTC, PROP_MIRRORING, PROP_SAVE_TYPE, PROP_FLASH_SIZE
+      PROP_ROM, PROP_ROTATION, PROP_RTC, PROP_MIRRORING, PROP_SAVE_TYPE, PROP_FLASH_SIZE, PROP_DISABLE_LOOKUP
     },
     [APP_TYPE_KEYS.VBA_M_GBA]: {
-      PROP_ROM, PROP_ROTATION, PROP_RTC, PROP_MIRRORING, PROP_SAVE_TYPE, PROP_FLASH_SIZE
+      PROP_ROM, PROP_ROTATION, PROP_RTC, PROP_MIRRORING, PROP_SAVE_TYPE, PROP_FLASH_SIZE, PROP_DISABLE_LOOKUP
     },
     [APP_TYPE_KEYS.GB]: {
       PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_PALETTE, PROP_GB_BORDER
@@ -732,6 +734,19 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.mirroring)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_DISABLE_LOOKUP) ? (
+        <div>
+          <EditorSwitch
+            label="Disable Game Lookup"
+            tooltip="Whether to lookup the game and use the settings (if found)."
+            onChange={(e) => {
+              const props = { ...object.props, disableLookup: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.disableLookup)}
           />
         </div>
       ) : null}
