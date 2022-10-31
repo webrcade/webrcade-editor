@@ -83,7 +83,12 @@ export default function ItemsTableMoreMenu(props) {
               location = path.substring(0, index) + location;
             }
             const reg = WrcCommon.AppRegistry.instance;
-            const icon = reg.getThumbnail(app);
+            let icon = reg.getThumbnail(app);
+
+            // Hack for default icons
+            if (icon.startsWith("images/app/")) {
+              icon = "../../" + icon;
+            }
 
             const appLocation = reg.getLocation(
               app, WrcCommon.AppProps.RV_CONTEXT_STANDALONE, feedProps,
