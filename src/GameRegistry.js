@@ -16,6 +16,8 @@ class GameRegistryImpl {
   // eslint-disable-next-line
   TITLE_REGEX = /^([^\(]*).*$/i
 
+  AUTOCOMPLETE = {}
+
   METADATA = {
     '2600': {
       thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-2600-images/master/Named_Titles/resized',
@@ -137,6 +139,11 @@ class GameRegistryImpl {
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-fbneo-images/master/Named_Snaps/output',
       descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Arcade/output'
     },
+    'psx': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-psx-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-psx-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sony%20PlayStation%201/output'
+    },
   }
 
   CUSTOM_PROPS = {
@@ -247,7 +254,9 @@ class GameRegistryImpl {
   async init() {
     const { DB_FILE } = this;
     try {
-      this.n64enabled = settings.isExpAppsEnabled();
+      const expAppsEnabled = settings.isExpAppsEnabled();
+      this.n64enabled = expAppsEnabled;
+      this.psxEnabled = expAppsEnabled;
 
       const fad = new FetchAppData(DB_FILE);
       const res = await fad.fetch();
@@ -280,15 +289,15 @@ class GameRegistryImpl {
     return filenames[filename] !== undefined;
   }
 
-  async findByName(name, ext, blob) {
+  async findByName(name, ext, blob, isFullName = false, verifyBlob = true) {
     let ret = null;
-    const fullName = name + "." + ext;
+    const fullName = isFullName ? name : name + "." + ext;
     for (let type in this.db._by_name) {
       const result = this.db._by_name[type][fullName];
       if (result) {
         const file = result[0];
         const name = result[1];
-        const fileFound = await this.isFileInZip(file, blob);
+        const fileFound = verifyBlob ? await this.isFileInZip(file, blob) : true;
         if (fileFound) {
           ret = {}
           // Set type
@@ -302,6 +311,66 @@ class GameRegistryImpl {
       }
     }
     return ret;
+  }
+
+  getAutoCompleteOptions(type) {
+    const { AUTOCOMPLETE } = this;
+
+    if (type in AUTOCOMPLETE) {
+      return AUTOCOMPLETE[type];
+    }
+
+    const titleSet = new Set();
+    let entries = this.getTypeEntries(type);
+
+    if (entries) {
+      const opts = [];
+      for (let h in entries) {
+        const title = this.getShortName(entries[h]);
+        if (!titleSet.has(title)) {
+          titleSet.add(title);
+          opts.push({
+            title: title,
+            key: h,
+            byName: false
+          })
+        }
+      }
+      AUTOCOMPLETE[type] = opts;
+      return opts;
+    } else {
+      if (type in this.db._by_name) {
+        const opts = [];
+        entries = this.db._by_name[type];
+        for (let f in entries) {
+          const title = this.getShortName(entries[f][1]);
+          if (!titleSet.has(title)) {
+            titleSet.add(title);
+            opts.push({
+              title: title,
+              key: f,
+              byName: true
+            })
+          }
+        }
+        AUTOCOMPLETE[type] = opts;
+        return opts;
+      }
+    }
+
+    return [];
+  }
+
+  getShortName(name) {
+    const { TITLE_REGEX } = this;
+
+    let shortName = null;
+    const matches = name.match(TITLE_REGEX);
+    if (matches.length > 1) {
+      shortName = matches[1].trim();
+    }
+
+    return shortName ? shortName : name;
   }
 
   addTitles(info, name) {
@@ -370,12 +439,17 @@ class GameRegistryImpl {
     }
   }
 
+  getTypeEntries(type) {
+    return type in this.db ? this.db[type] : null;
+  }
+
   async find(md5) {
     let ret = {};
     for (let type in this.db) {
 
       // Skip n64 if not enabled
       if (type === 'n64' && !this.n64enabled) continue;
+      if (type === 'psx' && !this.psxEnabled) continue;
 
       let name = this.db[type][md5];
       if (name) {

@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import CategoryEditor from './CategoryEditor';
 import ConfirmDialog from './ConfirmDialog';
+import CopyLinkDialog from './CopyLinkDialog';
 import CreateFromUrlDialog from './CreateFromUrlDialog';
 import DisplayMessage from './DisplayMessage';
 import ExportDialog from './ExportDialog';
@@ -16,6 +17,7 @@ export default function Screens() {
   return (
     <>
       <CategoryEditor />
+      <CopyLinkDialog />
       <CreateFromUrlDialog />
       <FeedEditor />
       <DisplayMessage />

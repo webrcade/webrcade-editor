@@ -8,24 +8,24 @@ import Select from '@mui/material/Select';
 import CommonTooltip from '../CommonTooltip';
 
 export default function EditorSelect(props) {
-  const { 
-    label, 
-    menuItems, 
+  const {
+    label,
+    menuItems,
     value,
-    sx, 
-    onChange, 
-    tooltip, 
+    sx,
+    onChange,
+    tooltip,
     children,
-    ...other 
+    ...other
   } = props;
 
   const selectControl = (
-    <FormControl sx={{ m: 1.5, minWidth: 200 }}>
+    <FormControl variant="standard" sx={{ m: 1.5, minWidth: 200 }}>
       <InputLabel>{label}</InputLabel>
       <Select
         autoWidth
         value={value}
-        onChange={onChange}        
+        onChange={onChange}
         label={label}
       >
         {menuItems ?
@@ -42,7 +42,7 @@ export default function EditorSelect(props) {
 
   return (
     <Box
-      sx={{        
+      sx={{
         ...sx
       }}
       {...other}

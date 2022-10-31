@@ -14,29 +14,6 @@ import { dropboxPicker } from '../Dropbox';
 
 import * as WrcCommon from '@webrcade/app-common';
 
-var copyToClipboard = function (elementId, value) {
-  var input = document.getElementById(elementId);
-  input.value = value;
-  var isiOSDevice = navigator.userAgent.match(/ipad|iphone/i);
-  if (isiOSDevice) {
-    var editable = input.contentEditable;
-    var readOnly = input.readOnly;
-    input.contentEditable = true;
-    input.readOnly = false;
-    var range = document.createRange();
-    range.selectNodeContents(input);
-    var selection = window.getSelection();
-    selection.removeAllRanges();
-    selection.addRange(range);
-    input.setSelectionRange(0, 999999);
-    input.contentEditable = editable;
-    input.readOnly = readOnly;
-  } else {
-    input.select();
-  }
-  document.execCommand('copy');
-}
-
 export default function ItemsTableMoreMenu(props) {
   const {
     anchorEl,
@@ -85,7 +62,6 @@ export default function ItemsTableMoreMenu(props) {
           Add from Dropbox...
         </MenuItem>
         <Divider />
-        <input type="text" id="copyField" value="" style={{ opacity: '0', top: '0', position: 'absolute', zIndex: '-100' }} />
         <MenuItem
           disabled={!lastSelected}
           onClick={() => {
@@ -95,7 +71,6 @@ export default function ItemsTableMoreMenu(props) {
             if (!app) {
               return;
             }
-            console.log(app)
 
             const feedProps = feed.props ? feed.props : {};
             let location = WrcCommon.getStandaloneLocation();
@@ -108,7 +83,12 @@ export default function ItemsTableMoreMenu(props) {
               location = path.substring(0, index) + location;
             }
             const reg = WrcCommon.AppRegistry.instance;
-            const icon = reg.getThumbnail(app);
+            let icon = reg.getThumbnail(app);
+
+            // Hack for default icons
+            if (icon.startsWith("images/app/")) {
+              icon = "../../" + icon;
+            }
 
             const appLocation = reg.getLocation(
               app, WrcCommon.AppProps.RV_CONTEXT_STANDALONE, feedProps,
@@ -116,13 +96,12 @@ export default function ItemsTableMoreMenu(props) {
             const qIndex = appLocation.indexOf("?")
             location += "?app=" + encodeURIComponent(appLocation.substring(0, qIndex)) + "&" + appLocation.substring(qIndex + 1);
 
-            copyToClipboard('copyField', location);
-            Global.displayMessage("Successfully copied stand-alone link (URL) to clipboard.", "success");
+            Global.openCopyLinkDialog(true, location);
           }}>
           <ListItemIcon>
             <LinkIcon fontSize="small" />
           </ListItemIcon>
-          Copy stand-alone link (URL)
+          Copy stand-alone link...
         </MenuItem>
         <Divider />
         <MenuItem

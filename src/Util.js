@@ -26,6 +26,11 @@ export function removeEmptyItems(arr) {
   }
   return ret;
 }
+
+export function splitLines(str) {
+  return str.split(/\r?\n|\r|\n/g);
+}
+
 export function useForceUpdate() {
   const [, setValue] = useState(0); // integer state
   return () => setValue(value => value + 1); // update the state to force render

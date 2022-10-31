@@ -14,19 +14,23 @@ export default function BusyScreen(props) {
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState(false);
   const [disableAutoFocus, setDisableAutoFocus] = React.useState(false);
+  const [disableDrop, setDisableDrop] = React.useState(true);
   const prevOpen = usePrevious(open);
 
   GlobalHolder.setBusyScreenOpen = setOpen;
   GlobalHolder.setBusyScreenMessage = setMessage;
   GlobalHolder.setBusyScreenDisableAutoFocus = setDisableAutoFocus;
+  GlobalHolder.setBusyScreenDisableDrop = setDisableDrop;
 
-  // Enable/disable the drop handler
-  if (prevOpen && !open) {
-    enableDropHandler(true);
-    //console.log('enable drop');
-  } else if (!prevOpen && open) {
-    //console.log('disable drop');
-    enableDropHandler(false);
+  if (disableDrop) {
+    // Enable/disable the drop handler
+    if (prevOpen && !open) {
+      enableDropHandler(true);
+      //console.log('enable drop');
+    } else if (!prevOpen && open) {
+      //console.log('disable drop');
+      enableDropHandler(false);
+    }
   }
 
   return (

@@ -1,19 +1,25 @@
 import * as React from 'react';
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import Tab from '@mui/material/Tab';
+
+import parse from 'autosuggest-highlight/parse';
+import match from 'autosuggest-highlight/match';
 
 import * as Feed from '../../Feed';
 import * as Util from '../../Util';
 import BackgroundTab from '../common/editor/BackgroundTab';
 import GeneralTab from '../common/editor/GeneralTab';
 import Editor from '../common/editor/Editor';
+import EditorTextField from '../common/editor/EditorTextField';
 import EditorValidator from '../common/editor/EditorValidator'
+import GameRegistry from '../../GameRegistry';
 import PropertiesTab from './PropertiesTab';
 import SelectType from './SelectType';
 import ThumbnailTab from '../common/editor/ThumbnailTab';
 import { GlobalHolder, Global } from '../../Global';
 
 import {
-  AppRegistry, APP_TYPE_KEYS, LOG, isEmptyString
+  AppRegistry, APP_TYPE_KEYS, LOG, isEmptyString, uuidv4
 } from '@webrcade/app-common'
 import Prefs from '../../Prefs';
 
@@ -21,6 +27,19 @@ import Prefs from '../../Prefs';
 // const a = {a: 'a', b: { b1: 'b1', b2: 'b2'}}
 // const b = {a: 'ba', b: { b1: 'bb1', b4: 'bb2'}}
 // console.log(deepmerge(a,b));
+
+const filterOptions = createFilterOptions({
+  matchFrom: 'any',
+  limit: 50,
+});
+
+const getAutoCompleteOptions = (type) => {
+  if (!type) return [];
+  const alias = AppRegistry.instance.getAlias(type);
+  if (!alias) return [];
+  return GameRegistry.getAutoCompleteOptions(alias);
+}
+
 
 const isDebug = Global.isDebug();
 const validator = new EditorValidator();
@@ -33,7 +52,7 @@ const removeDefaults = (item, defaults) => {
   const clonedProps = Util.cloneObject(item.props);
   for (const p in clonedProps) {
     if (defaults[p] === undefined ||
-        defaults[p] === clonedProps[p]) {
+      defaults[p] === clonedProps[p]) {
       delete item.props[p];
     }
   }
@@ -58,6 +77,15 @@ const setDefaultForDoom = (type, item) => {
   }
 }
 
+const setDefaultForPsx = (type, item) => {
+  if (type === APP_TYPE_KEYS.BEETLE_PSX ||
+    type === APP_TYPE_KEYS.PSX) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
+
 export default function ItemEditor(props) {
   const [tabValue, setTabValue] = React.useState(0);
   const [item, setItem] = React.useState({});
@@ -67,7 +95,7 @@ export default function ItemEditor(props) {
   GlobalHolder.setItemEditorOpen = (open, isCreate = false) => {
     setCreate(isCreate);
     setOpen(open);
-  }  
+  }
 
   GlobalHolder.setEditItem = setItem;
 
@@ -101,11 +129,13 @@ export default function ItemEditor(props) {
           const type = Prefs.getLastNewType();
           if (!isEmptyString(type)) {
             clone.type = type;
-            // Set default for doom type
+            // Set defaults
+            // TODO: Move to common location, hide specific types
             setDefaultForDoom(type, clone);
-          }          
+            setDefaultForPsx(type, clone);
+          }
         }
-        setItem(clone)
+        setItem(clone);
 
         forceUpdate();
       }}
@@ -115,16 +145,18 @@ export default function ItemEditor(props) {
         if (minTab >= 0) {
           setTabValue(minTab);
           forceUpdate();
-          return false;          
+          return false;
         }
 
-//  console.log(AppRegistry.instance.getDefaultsForType(item.type));
-//  console.log(item);
+        //  console.log(AppRegistry.instance.getDefaultsForType(item.type));
+        //  console.log(item);
 
         // Remove the default values
         removeDefaults(item, AppRegistry.instance.getDefaultsForType(item.type));
+        // PSX
+        setDefaultForPsx(item.type, item); // TODO: Find a better way, maybe required id? on the type
 
-        if (isDebug) {          
+        if (isDebug) {
           LOG.info(item);
         }
 
@@ -157,6 +189,92 @@ export default function ItemEditor(props) {
             setObject={setItem}
             validator={validator}
             addValidateCallback={addValidatorCallback}
+            nameField={
+              <div>
+                <Autocomplete
+                  id="title autocomplete"
+                  // sx={{ width: 300 }}
+                  options={getAutoCompleteOptions(item.type)}
+                  getOptionLabel={(option) => {return option && option.title ? option.title : option}}
+                  filterOptions={filterOptions}
+                  freeSolo
+                  inputValue={Util.asString(item.title)}
+                  disableClearable
+                  onChange={(e, v, r) => {
+                    let title = "";
+                    if (r === 'selectOption') {
+                      title = v.title;
+                      Global.openBusyScreen(true, "Loading...", true, false);
+                      setTimeout(async () => {
+                        try {
+                          const info = v.byName ?
+                            await GameRegistry.findByName(v.key, null, null, true, false) :
+                            await GameRegistry.find(v.key);
+                          const update = {
+                            title: title,
+                            description: "",
+                            thumbnail: "",
+                            background: ""
+                          }
+                          if (info.description) {
+                            update.description = info.description;
+                          }
+                          if (info.thumbnail) {
+                            update.thumbnail = info.thumbnail;
+                          }
+                          if (info.background) {
+                            update.background = info.background;
+                            update.backgroundPixelated = true;
+                          }
+                          setItem({...item, ...update})
+                        } finally {
+                          Global.openBusyScreen(false);
+                        }
+                      }, 0);
+                    }
+                    if (r === 'createOption') {
+                      title = v;
+                    }
+                    if (r === 'clear') {
+                      title = "";
+                    }
+
+                    setItem({ ...item, title: title })
+                  }}
+                  renderInput={(params) => (
+                    <EditorTextField
+                      {...params}
+                      required
+                      label="Title"
+                      onDropText={(text) => { setItem({ ...item, title: text }) }}
+                      onChange={(e) => { setItem({ ...item, title: e.target.value }) }}
+                      // value={Util.asString(item.title)}
+                      error={!validator.isValid(genTab, "title")}
+                    />
+                  )}
+                  renderOption={(props, option, { inputValue }) => {
+                    const matches = match(option.title, inputValue);
+                    const parts = parse(option.title, matches);
+                    return (
+                      <li {...props}>
+                        <div>
+                          {parts.map((part, index) => (
+                            <span
+                              key={index}
+                              style={{
+                                fontWeight: part.highlight ? 700 : 400,
+                              }}
+                            >
+                              {part.text}
+                            </span>
+                          ))}
+                        </div>
+                      </li>
+                    );
+                  }}
+                />
+              </div>
+            }
             otherFields={
               <div>
                 <SelectType

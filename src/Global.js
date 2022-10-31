@@ -34,8 +34,11 @@ class Holder {
   setCreateFromUrlDialogOpen = null;
   setConfirmDialogOpen = null;
   setConfirmDialogProps = null;
+  setCopyLinkDialogOpen = null;
+  setCopyLinkDialogProps = null;
   setLoadFeedDialogOpen = null;
   setSettingsEditorOpen = null;
+  setBusyScreenDisableDrop = null;
   isDebug = UrlUtil.getBoolParam(window.location.search, AppProps.RP_DEBUG);
 }
 
@@ -47,8 +50,9 @@ const Global = {
   isDebug: () => {
     return GlobalHolder.isDebug
   },
-  openBusyScreen: (open, message = null, disableAutoFocus) => {
+  openBusyScreen: (open, message = null, disableAutoFocus, disableDrop = true) => {
     GlobalHolder.setBusyScreenOpen(open);
+    GlobalHolder.setBusyScreenDisableDrop(disableDrop);
     GlobalHolder.setBusyScreenDisableAutoFocus(disableAutoFocus ? true : false);
     if (open && message) {
       GlobalHolder.setBusyScreenMessage(message);
@@ -71,6 +75,12 @@ const Global = {
       });
     }
     GlobalHolder.setConfirmDialogOpen(open);
+  },
+  openCopyLinkDialog: (open, link) => {
+    if (link) {
+      GlobalHolder.setCopyLinkDialogProps({link: link});
+    }
+    GlobalHolder.setCopyLinkDialogOpen(open);
   },
   openImportDialog: (open) => {
     GlobalHolder.setImportDialogOpen(open);

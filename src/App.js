@@ -139,6 +139,7 @@ function App(props) {
             })
             .catch(e => {
               LOG.error("Error during startup: " + e);
+              setFeed(Feed.newFeed()); // Set a new feed 
             })
             .finally(() => {
               // Mark as started
