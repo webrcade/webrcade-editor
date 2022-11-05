@@ -247,6 +247,12 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.BEETLE_PSX]: {
       PROP_DISCS, PROP_ANALOG, PROP_MULTITAP, PROP_ZOOM_LEVEL, PROP_SKIP_BIOS
     },
+    [APP_TYPE_KEYS.SEGACD]: {
+      PROP_DISCS
+    },
+    [APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD]: {
+      PROP_DISCS
+    },
   }
 };
 

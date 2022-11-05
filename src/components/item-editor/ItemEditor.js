@@ -86,6 +86,15 @@ const setDefaultForPsx = (type, item) => {
   }
 }
 
+const setDefaultForSegaCd = (type, item) => {
+  if (type === APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD ||
+    type === APP_TYPE_KEYS.SEGACD) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
+
 export default function ItemEditor(props) {
   const [tabValue, setTabValue] = React.useState(0);
   const [item, setItem] = React.useState({});
@@ -127,12 +136,13 @@ export default function ItemEditor(props) {
         const clone = Util.cloneObject(item);
         if (isCreate) {
           const type = Prefs.getLastNewType();
-          if (!isEmptyString(type)) {
+          if (!isEmptyString(type) && AppRegistry.instance.getAppTypes()[type]) {
             clone.type = type;
             // Set defaults
             // TODO: Move to common location, hide specific types
             setDefaultForDoom(type, clone);
             setDefaultForPsx(type, clone);
+            setDefaultForSegaCd(type, clone);
           }
         }
         setItem(clone);
@@ -155,6 +165,8 @@ export default function ItemEditor(props) {
         removeDefaults(item, AppRegistry.instance.getDefaultsForType(item.type));
         // PSX
         setDefaultForPsx(item.type, item); // TODO: Find a better way, maybe required id? on the type
+        // Sega CD
+        setDefaultForSegaCd(item.type, item); // TODO: Find a better way, maybe required id? on the type
 
         if (isDebug) {
           LOG.info(item);
