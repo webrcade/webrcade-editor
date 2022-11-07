@@ -127,7 +127,7 @@ export default function ItemEditor(props) {
         const clone = Util.cloneObject(item);
         if (isCreate) {
           const type = Prefs.getLastNewType();
-          if (!isEmptyString(type)) {
+          if (!isEmptyString(type) && AppRegistry.instance.getAppTypes()[type]) {
             clone.type = type;
             // Set defaults
             // TODO: Move to common location, hide specific types
