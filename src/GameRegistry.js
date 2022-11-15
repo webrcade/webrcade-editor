@@ -455,8 +455,8 @@ class GameRegistryImpl {
 
       // Skip n64 if not enabled
       if (type === 'n64' && !this.n64enabled) continue;
-      if (type === 'psx' && !this.psxEnabled) continue;
-      if (type === 'segacd' && !this.segacdEnabled) continue;
+      // if (type === 'psx' && !this.psxEnabled) continue;
+      // if (type === 'segacd' && !this.segacdEnabled) continue;
 
       let name = this.db[type][md5];
       if (name) {
