@@ -144,6 +144,11 @@ class GameRegistryImpl {
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-psx-images/master/Named_Snaps/output',
       descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sony%20PlayStation%201/output'
     },
+    'segacd': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-segacd-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-segacd-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sega%20CD/output'
+    },
   }
 
   CUSTOM_PROPS = {
@@ -256,7 +261,6 @@ class GameRegistryImpl {
     try {
       const expAppsEnabled = settings.isExpAppsEnabled();
       this.n64enabled = expAppsEnabled;
-      this.psxEnabled = expAppsEnabled;
 
       const fad = new FetchAppData(DB_FILE);
       const res = await fad.fetch();
@@ -449,7 +453,6 @@ class GameRegistryImpl {
 
       // Skip n64 if not enabled
       if (type === 'n64' && !this.n64enabled) continue;
-      if (type === 'psx' && !this.psxEnabled) continue;
 
       let name = this.db[type][md5];
       if (name) {
