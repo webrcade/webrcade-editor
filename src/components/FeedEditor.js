@@ -13,7 +13,6 @@ import ThumbnailTab from './common/editor/ThumbnailTab';
 import { GlobalHolder, Global } from '../Global';
 
 import {
-  settings,
   FeedBackgroundImage,
   FeedThumbImage
 } from '@webrcade/app-common'
