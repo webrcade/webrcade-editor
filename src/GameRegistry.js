@@ -261,8 +261,6 @@ class GameRegistryImpl {
     try {
       const expAppsEnabled = settings.isExpAppsEnabled();
       this.n64enabled = expAppsEnabled;
-      this.psxEnabled = expAppsEnabled;
-      this.segacdEnabled = expAppsEnabled;
 
       const fad = new FetchAppData(DB_FILE);
       const res = await fad.fetch();
@@ -455,8 +453,6 @@ class GameRegistryImpl {
 
       // Skip n64 if not enabled
       if (type === 'n64' && !this.n64enabled) continue;
-      // if (type === 'psx' && !this.psxEnabled) continue;
-      // if (type === 'segacd' && !this.segacdEnabled) continue;
 
       let name = this.db[type][md5];
       if (name) {
