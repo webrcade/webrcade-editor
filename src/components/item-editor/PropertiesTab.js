@@ -253,6 +253,12 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD]: {
       PROP_DISCS, PROP_ZOOM_LEVEL
     },
+    [APP_TYPE_KEYS.PCECD]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_6BUTTON
+    },
+    [APP_TYPE_KEYS.RETRO_PCE_FAST]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_6BUTTON
+    },
   }
 };
 
@@ -585,6 +591,20 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_ZOOM_LEVEL) ? (
+        <div>
+          <ZoomLevel
+            value={object.props.zoomLevel ? object.props.zoomLevel : 0}
+            onChange={(e, val) => {
+              // Allows for smoother updated prior to change being committed
+              object.props.zoomLevel = parseInt(val);
+            }}
+            onChangeCommitted={(e, val) => {
+              const props = { ...object.props, zoomLevel: parseInt(val) }
+              setObject({ ...object, props })
+            }} />
+        </div>
+      ) : null}
       {hasProp(object, PROP_6BUTTON) ? (
         <div>
           <EditorSwitch
@@ -766,20 +786,6 @@ export default function PropertiesTab(props) {
             }}
             onChangeCommitted={(e, val) => {
               const props = { ...object.props, volAdjust: parseInt(val) }
-              setObject({ ...object, props })
-            }} />
-        </div>
-      ) : null}
-      {hasProp(object, PROP_ZOOM_LEVEL) ? (
-        <div>
-          <ZoomLevel
-            value={object.props.zoomLevel ? object.props.zoomLevel : 0}
-            onChange={(e, val) => {
-              // Allows for smoother updated prior to change being committed
-              object.props.zoomLevel = parseInt(val);
-            }}
-            onChangeCommitted={(e, val) => {
-              const props = { ...object.props, zoomLevel: parseInt(val) }
               setObject({ ...object, props })
             }} />
         </div>

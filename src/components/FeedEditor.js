@@ -59,6 +59,21 @@ function PropertiesTab(props) {
         />
       </div>
       <div>
+        <EditorUrlField
+          sx={{ width: '50ch' }}
+          label="PC Engine CD BIOS (URL)"
+          onDropText={(text) => {
+            const props = { ...object.props, pcecd_bios: text }
+            setObject({ ...object, props })
+          }}
+          onChange={(e) => {
+            const props = { ...object.props, pcecd_bios: e.target.value }
+            setObject({ ...object, props })
+          }}
+          value={Util.asString(object.props.pcecd_bios)}
+        />
+      </div>
+      <div>
         <EditorMultiUrlField
           label="PlayStation BIOS (URLs)"
           rows={3}
@@ -122,6 +137,7 @@ function PropertiesTab(props) {
             object.props.segacd_bios.join("\n") : ""}
         />
       </div>
+
     </EditorTabPanel>
   );
 }
