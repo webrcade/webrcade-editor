@@ -27,6 +27,7 @@ const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
 const PROP_FORCE_PAL = "PROP_FORCE_PAL";
 const PROP_FORCE_YM2413 = "PROP_FORCE_YM2413";
 const PROP_LANGUAGE = "PROP_LANGUAGE";
+const PROP_MAP_RUN_SELECT = "PROP_MAP_RUN_SELECT";
 const PROP_MIRRORING = "PROP_MIRRORING";
 const PROP_MULTITAP = "PROP_MULTITAP";
 const PROP_NEOGEO_BIOS = "PROP_NEOGEO_BIOS";
@@ -254,10 +255,10 @@ export const buildFieldMap = () => {
       PROP_DISCS, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.PCECD]: {
-      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_6BUTTON
+      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_6BUTTON, PROP_MAP_RUN_SELECT
     },
     [APP_TYPE_KEYS.RETRO_PCE_FAST]: {
-      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_6BUTTON
+      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_6BUTTON, PROP_MAP_RUN_SELECT
     },
   }
 };
@@ -615,6 +616,19 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.pad6button)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_MAP_RUN_SELECT) && !object.props.pad6button ? (
+        <div>
+          <EditorSwitch
+            label="Map RUN/SELECT to Buttons"
+            tooltip="Whether to map RUN and SELECT to standard buttons."
+            onChange={(e) => {
+              const props = { ...object.props, mapRunSelect: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.mapRunSelect)}
           />
         </div>
       ) : null}
