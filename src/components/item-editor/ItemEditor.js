@@ -37,9 +37,12 @@ const getAutoCompleteOptions = (type) => {
   if (!type) return [];
   const alias = AppRegistry.instance.getAlias(type);
   if (!alias) return [];
-  return GameRegistry.getAutoCompleteOptions(alias);
+  const options = GameRegistry.getAutoCompleteOptions(alias);
+  if (options) {
+    options.sort();
+  }
+  return options;
 }
-
 
 const isDebug = Global.isDebug();
 const validator = new EditorValidator();
