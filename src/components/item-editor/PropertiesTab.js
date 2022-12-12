@@ -21,6 +21,7 @@ const PROP_6BUTTON = "PROP_6BUTTON";
 const PROP_ADDITIONAL_ROMS = "PROP_ADDITIONAL_ROMS";
 const PROP_ANALOG = "PROP_ANALOG";
 const PROP_DISABLE_LOOKUP = "PROP_DISABLE_LOOKUP";
+const PROP_DISABLE_MEMCARD1 = "PROP_DISABLE_MEMCARD1";
 const PROP_DISCS = "PROP_DISCS";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
@@ -58,6 +59,7 @@ const ALL_PROPS = [
   PROP_ADDITIONAL_ROMS,
   PROP_ANALOG,
   PROP_DISABLE_LOOKUP,
+  PROP_DISABLE_MEMCARD1,
   PROP_DISCS,
   PROP_DOOM_GAME,
   PROP_FLASH_SIZE,
@@ -243,10 +245,10 @@ export const buildFieldMap = () => {
       PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
     },
     [APP_TYPE_KEYS.PSX]: {
-      PROP_DISCS, PROP_ANALOG, PROP_MULTITAP, PROP_ZOOM_LEVEL, PROP_SKIP_BIOS
+      PROP_DISCS, PROP_ANALOG, PROP_MULTITAP, PROP_ZOOM_LEVEL, PROP_SKIP_BIOS, PROP_DISABLE_MEMCARD1
     },
     [APP_TYPE_KEYS.BEETLE_PSX]: {
-      PROP_DISCS, PROP_ANALOG, PROP_MULTITAP, PROP_ZOOM_LEVEL, PROP_SKIP_BIOS
+      PROP_DISCS, PROP_ANALOG, PROP_MULTITAP, PROP_ZOOM_LEVEL, PROP_SKIP_BIOS, PROP_DISABLE_MEMCARD1
     },
     [APP_TYPE_KEYS.SEGACD]: {
       PROP_DISCS, PROP_ZOOM_LEVEL
@@ -916,6 +918,19 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.skipBios)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_DISABLE_MEMCARD1) ? (
+        <div>
+          <EditorSwitch
+            label="Disable memory card 1"
+            tooltip="Whether to disable the use of memory card 1 (memory card 0 will still be available)."
+            onChange={(e) => {
+              const props = { ...object.props, disableMemCard1: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.disableMemCard1)}
           />
         </div>
       ) : null}
