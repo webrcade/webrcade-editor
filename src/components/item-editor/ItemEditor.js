@@ -37,9 +37,12 @@ const getAutoCompleteOptions = (type) => {
   if (!type) return [];
   const alias = AppRegistry.instance.getAlias(type);
   if (!alias) return [];
-  return GameRegistry.getAutoCompleteOptions(alias);
+  const options = GameRegistry.getAutoCompleteOptions(alias);
+  if (options) {
+    options.sort();
+  }
+  return options;
 }
-
 
 const isDebug = Global.isDebug();
 const validator = new EditorValidator();
@@ -95,6 +98,15 @@ const setDefaultForSegaCd = (type, item) => {
   }
 }
 
+const setDefaultForPcEngineCd = (type, item) => {
+  if (type === APP_TYPE_KEYS.RETRO_PCE_FAST ||
+    type === APP_TYPE_KEYS.PCECD) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
+
 export default function ItemEditor(props) {
   const [tabValue, setTabValue] = React.useState(0);
   const [item, setItem] = React.useState({});
@@ -143,6 +155,7 @@ export default function ItemEditor(props) {
             setDefaultForDoom(type, clone);
             setDefaultForPsx(type, clone);
             setDefaultForSegaCd(type, clone);
+            setDefaultForPcEngineCd(type, clone);
           }
         }
         setItem(clone);
@@ -167,6 +180,8 @@ export default function ItemEditor(props) {
         setDefaultForPsx(item.type, item); // TODO: Find a better way, maybe required id? on the type
         // Sega CD
         setDefaultForSegaCd(item.type, item); // TODO: Find a better way, maybe required id? on the type
+        // PC Engine CD
+        setDefaultForPcEngineCd(item.type, item); // TODO: Find a better way, maybe required id? on the type
 
         if (isDebug) {
           LOG.info(item);

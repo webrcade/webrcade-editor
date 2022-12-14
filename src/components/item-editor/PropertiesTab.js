@@ -21,12 +21,14 @@ const PROP_6BUTTON = "PROP_6BUTTON";
 const PROP_ADDITIONAL_ROMS = "PROP_ADDITIONAL_ROMS";
 const PROP_ANALOG = "PROP_ANALOG";
 const PROP_DISABLE_LOOKUP = "PROP_DISABLE_LOOKUP";
+const PROP_DISABLE_MEMCARD1 = "PROP_DISABLE_MEMCARD1";
 const PROP_DISCS = "PROP_DISCS";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
 const PROP_FORCE_PAL = "PROP_FORCE_PAL";
 const PROP_FORCE_YM2413 = "PROP_FORCE_YM2413";
 const PROP_LANGUAGE = "PROP_LANGUAGE";
+const PROP_MAP_RUN_SELECT = "PROP_MAP_RUN_SELECT";
 const PROP_MIRRORING = "PROP_MIRRORING";
 const PROP_MULTITAP = "PROP_MULTITAP";
 const PROP_NEOGEO_BIOS = "PROP_NEOGEO_BIOS";
@@ -57,6 +59,7 @@ const ALL_PROPS = [
   PROP_ADDITIONAL_ROMS,
   PROP_ANALOG,
   PROP_DISABLE_LOOKUP,
+  PROP_DISABLE_MEMCARD1,
   PROP_DISCS,
   PROP_DOOM_GAME,
   PROP_FLASH_SIZE,
@@ -170,10 +173,10 @@ export const buildFieldMap = () => {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.PCE]: {
-      PROP_ROM, PROP_6BUTTON
+      PROP_ROM, PROP_6BUTTON, PROP_MAP_RUN_SELECT
     },
     [APP_TYPE_KEYS.MEDNAFEN_PCE]: {
-      PROP_ROM, PROP_6BUTTON
+      PROP_ROM, PROP_6BUTTON, PROP_MAP_RUN_SELECT
     },
     [APP_TYPE_KEYS.SGX]: {
       PROP_ROM, PROP_6BUTTON
@@ -242,16 +245,22 @@ export const buildFieldMap = () => {
       PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
     },
     [APP_TYPE_KEYS.PSX]: {
-      PROP_DISCS, PROP_ANALOG, PROP_MULTITAP, PROP_ZOOM_LEVEL, PROP_SKIP_BIOS
+      PROP_DISCS, PROP_ANALOG, PROP_MULTITAP, PROP_ZOOM_LEVEL, PROP_SKIP_BIOS, PROP_DISABLE_MEMCARD1
     },
     [APP_TYPE_KEYS.BEETLE_PSX]: {
-      PROP_DISCS, PROP_ANALOG, PROP_MULTITAP, PROP_ZOOM_LEVEL, PROP_SKIP_BIOS
+      PROP_DISCS, PROP_ANALOG, PROP_MULTITAP, PROP_ZOOM_LEVEL, PROP_SKIP_BIOS, PROP_DISABLE_MEMCARD1
     },
     [APP_TYPE_KEYS.SEGACD]: {
       PROP_DISCS, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD]: {
       PROP_DISCS, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.PCECD]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_6BUTTON, PROP_MAP_RUN_SELECT
+    },
+    [APP_TYPE_KEYS.RETRO_PCE_FAST]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_6BUTTON, PROP_MAP_RUN_SELECT
     },
   }
 };
@@ -585,6 +594,20 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_ZOOM_LEVEL) ? (
+        <div>
+          <ZoomLevel
+            value={object.props.zoomLevel ? object.props.zoomLevel : 0}
+            onChange={(e, val) => {
+              // Allows for smoother updated prior to change being committed
+              object.props.zoomLevel = parseInt(val);
+            }}
+            onChangeCommitted={(e, val) => {
+              const props = { ...object.props, zoomLevel: parseInt(val) }
+              setObject({ ...object, props })
+            }} />
+        </div>
+      ) : null}
       {hasProp(object, PROP_6BUTTON) ? (
         <div>
           <EditorSwitch
@@ -595,6 +618,19 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.pad6button)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_MAP_RUN_SELECT) && !object.props.pad6button ? (
+        <div>
+          <EditorSwitch
+            label="Map RUN/SELECT to Buttons"
+            tooltip="Whether to map RUN and SELECT to standard buttons."
+            onChange={(e) => {
+              const props = { ...object.props, mapRunSelect: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.mapRunSelect)}
           />
         </div>
       ) : null}
@@ -770,20 +806,6 @@ export default function PropertiesTab(props) {
             }} />
         </div>
       ) : null}
-      {hasProp(object, PROP_ZOOM_LEVEL) ? (
-        <div>
-          <ZoomLevel
-            value={object.props.zoomLevel ? object.props.zoomLevel : 0}
-            onChange={(e, val) => {
-              // Allows for smoother updated prior to change being committed
-              object.props.zoomLevel = parseInt(val);
-            }}
-            onChangeCommitted={(e, val) => {
-              const props = { ...object.props, zoomLevel: parseInt(val) }
-              setObject({ ...object, props })
-            }} />
-        </div>
-      ) : null}
       {hasProp(object, PROP_NEOGEO_BIOS) ? (
         <div>
           <EditorSelect
@@ -896,6 +918,19 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.skipBios)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_DISABLE_MEMCARD1) ? (
+        <div>
+          <EditorSwitch
+            label="Disable memory card 1"
+            tooltip="Whether to disable the use of memory card 1 (memory card 0 will still be available)."
+            onChange={(e) => {
+              const props = { ...object.props, disableMemCard1: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.disableMemCard1)}
           />
         </div>
       ) : null}

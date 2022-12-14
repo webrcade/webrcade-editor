@@ -6,6 +6,7 @@ import BackgroundTab from './common/editor/BackgroundTab';
 import GeneralTab from './common/editor/GeneralTab';
 import Editor from './common/editor/Editor';
 import EditorMultiUrlField from './common/editor/EditorMultiUrlField';
+import EditorSelect from './common/editor/EditorSelect';
 import EditorTabPanel from './common/editor/EditorTabPanel';
 import EditorUrlField from './common/editor/EditorUrlField';
 import EditorValidator from './common/editor/EditorValidator'
@@ -26,101 +27,146 @@ function PropertiesTab(props) {
     object
   } = props;
 
+  const [app, setApp] = React.useState("lynx");
+
   return (
     <EditorTabPanel value={tabValue} index={tabIndex}>
       <div>
-        <EditorUrlField
-          sx={{ width: '50ch' }}
-          label="Lynx Boot ROM (URL)"
-          onDropText={(text) => {
-            const props = { ...object.props, lnx_boot: text }
-            setObject({ ...object, props })
-          }}
+        <EditorSelect
+          label="Application"
+          tooltip="The application (emulator, etc.) to edit feed settings for."
+          value={app}
+          menuItems={[
+            { value: "lynx", name: "Atari Lynx" },
+            { value: "pcecd", name: "NEC PC Engine CD"},
+            { value: "segacd", name: "Sega CD" },
+            { value: "neogeo", name: "SNK Neo Geo" },
+            { value: "psx", name: "Sony PlayStation" },
+          ]}
           onChange={(e) => {
-            const props = { ...object.props, lnx_boot: e.target.value }
-            setObject({ ...object, props })
+            setApp(e.target.value);
           }}
-          value={Util.asString(object.props.lnx_boot)}
+          sx={{ mb: 1.5 }}
         />
       </div>
       <div>
-        <EditorUrlField
-          sx={{ width: '50ch' }}
-          label="Neo Geo BIOS (URL)"
-          onDropText={(text) => {
-            const props = { ...object.props, neogeo_bios: text }
-            setObject({ ...object, props })
-          }}
-          onChange={(e) => {
-            const props = { ...object.props, neogeo_bios: e.target.value }
-            setObject({ ...object, props })
-          }}
-          value={Util.asString(object.props.neogeo_bios)}
-        />
+        {app === "lynx" && (
+          <EditorUrlField
+            sx={{ width: '50ch' }}
+            label="Lynx Boot ROM (URL)"
+            onDropText={(text) => {
+              const props = { ...object.props, lnx_boot: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, lnx_boot: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.lnx_boot)}
+          />
+        )}
       </div>
       <div>
-        <EditorMultiUrlField
-          label="PlayStation BIOS (URLs)"
-          rows={3}
-          onDropText={(text) => {
-            let urls = object.props.psx_bios ? object.props.psx_bios : [];
-            if (Array.isArray(text)) {
-              urls.push(...text);
-            } else {
-              urls.push(text);
-            }
-            urls = Util.removeEmptyItems(urls);
-            const props = { ...object.props, psx_bios: urls }
-            if (urls.length === 0) {
-              delete props.psx_bios;
-            }
-            setObject({ ...object, props })
-          }}
-          onChange={(e) => {
-            const val = e.target.value;
-            let urls = Util.splitLines(val);
-            //urls = Util.removeEmptyItems(urls);
-            const props = { ...object.props, psx_bios: urls }
-            if (urls.length === 0) {
-              delete props.psx_bios;
-            }
-            setObject({ ...object, props })
-          }}
-          value={object.props.psx_bios && object.props.psx_bios.length > 0 ?
-            object.props.psx_bios.join("\n") : ""}
-        />
+        {app === "neogeo" && (
+          <EditorUrlField
+            sx={{ width: '50ch' }}
+            label="Neo Geo BIOS (URL)"
+            onDropText={(text) => {
+              const props = { ...object.props, neogeo_bios: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, neogeo_bios: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.neogeo_bios)}
+          />
+        )}
       </div>
       <div>
-        <EditorMultiUrlField
-          label="Sega CD BIOS (URLs)"
-          rows={3}
-          onDropText={(text) => {
-            let urls = object.props.segacd_bios ? object.props.segacd_bios : [];
-            if (Array.isArray(text)) {
-              urls.push(...text);
-            } else {
-              urls.push(text);
-            }
-            urls = Util.removeEmptyItems(urls);
-            const props = { ...object.props, segacd_bios: urls }
-            if (urls.length === 0) {
-              delete props.segacd_bios;
-            }
-            setObject({ ...object, props })
-          }}
-          onChange={(e) => {
-            const val = e.target.value;
-            let urls = Util.splitLines(val);
-            //urls = Util.removeEmptyItems(urls);
-            const props = { ...object.props, segacd_bios: urls }
-            if (urls.length === 0) {
-              delete props.segacd_bios;
-            }
-            setObject({ ...object, props })
-          }}
-          value={object.props.segacd_bios && object.props.segacd_bios.length > 0 ?
-            object.props.segacd_bios.join("\n") : ""}
-        />
+        {app === "pcecd" && (
+          <EditorUrlField
+            sx={{ width: '50ch' }}
+            label="PC Engine CD BIOS (URL)"
+            onDropText={(text) => {
+              const props = { ...object.props, pcecd_bios: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, pcecd_bios: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.pcecd_bios)}
+          />
+        )}
+      </div>
+      <div>
+        {app === "psx" && (
+          <EditorMultiUrlField
+            label="PlayStation BIOS (URLs)"
+            rows={5}
+            onDropText={(text) => {
+              let urls = object.props.psx_bios ? object.props.psx_bios : [];
+              if (Array.isArray(text)) {
+                urls.push(...text);
+              } else {
+                urls.push(text);
+              }
+              urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, psx_bios: urls }
+              if (urls.length === 0) {
+                delete props.psx_bios;
+              }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const val = e.target.value;
+              let urls = Util.splitLines(val);
+              //urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, psx_bios: urls }
+              if (urls.length === 0) {
+                delete props.psx_bios;
+              }
+              setObject({ ...object, props })
+            }}
+            value={object.props.psx_bios && object.props.psx_bios.length > 0 ?
+              object.props.psx_bios.join("\n") : ""}
+          />
+        )}
+      </div>
+      <div>
+        {app === "segacd" && (
+          <EditorMultiUrlField
+            label="Sega CD BIOS (URLs)"
+            rows={5}
+            onDropText={(text) => {
+              let urls = object.props.segacd_bios ? object.props.segacd_bios : [];
+              if (Array.isArray(text)) {
+                urls.push(...text);
+              } else {
+                urls.push(text);
+              }
+              urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, segacd_bios: urls }
+              if (urls.length === 0) {
+                delete props.segacd_bios;
+              }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const val = e.target.value;
+              let urls = Util.splitLines(val);
+              //urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, segacd_bios: urls }
+              if (urls.length === 0) {
+                delete props.segacd_bios;
+              }
+              setObject({ ...object, props })
+            }}
+            value={object.props.segacd_bios && object.props.segacd_bios.length > 0 ?
+              object.props.segacd_bios.join("\n") : ""}
+          />
+        )}
       </div>
     </EditorTabPanel>
   );
