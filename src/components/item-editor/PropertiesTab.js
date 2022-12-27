@@ -262,6 +262,12 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.RETRO_PCE_FAST]: {
       PROP_DISCS, PROP_ZOOM_LEVEL, PROP_6BUTTON, PROP_MAP_RUN_SELECT
     },
+    [APP_TYPE_KEYS.COLECO]: {
+      PROP_ROM
+    },
+    [APP_TYPE_KEYS.COLEM]: {
+      PROP_ROM
+    },
   }
 };
 

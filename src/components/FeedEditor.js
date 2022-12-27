@@ -38,6 +38,7 @@ function PropertiesTab(props) {
           value={app}
           menuItems={[
             { value: "lynx", name: "Atari Lynx" },
+            { value: "coleco", name: "ColecoVision"},
             { value: "pcecd", name: "NEC PC Engine CD"},
             { value: "segacd", name: "Sega CD" },
             { value: "neogeo", name: "SNK Neo Geo" },
@@ -48,6 +49,23 @@ function PropertiesTab(props) {
           }}
           sx={{ mb: 1.5 }}
         />
+      </div>
+      <div>
+        {app === "coleco" && (
+          <EditorUrlField
+            sx={{ width: '50ch' }}
+            label="Coleco ROM (URL)"
+            onDropText={(text) => {
+              const props = { ...object.props, coleco_rom: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, coleco_rom: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.coleco_rom)}
+          />
+        )}
       </div>
       <div>
         {app === "lynx" && (
