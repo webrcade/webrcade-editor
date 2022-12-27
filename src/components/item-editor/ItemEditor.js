@@ -8,6 +8,7 @@ import match from 'autosuggest-highlight/match';
 import * as Feed from '../../Feed';
 import * as Util from '../../Util';
 import BackgroundTab from '../common/editor/BackgroundTab';
+import DescriptionsTab from './coleco/DescriptionsTab';
 import GeneralTab from '../common/editor/GeneralTab';
 import Editor from '../common/editor/Editor';
 import EditorTextField from '../common/editor/EditorTextField';
@@ -113,6 +114,8 @@ export default function ItemEditor(props) {
   const [isOpen, setOpen] = React.useState(false);
   const [isCreate, setCreate] = React.useState(false);
 
+  const isColeco = (item.type === APP_TYPE_KEYS.COLEM || item.type === APP_TYPE_KEYS.COLECO);
+
   GlobalHolder.setItemEditorOpen = (open, isCreate = false) => {
     setCreate(isCreate);
     setOpen(open);
@@ -131,10 +134,25 @@ export default function ItemEditor(props) {
       AppRegistry.instance.getDefaultBackgroundForType(item.type);
   }
 
-  const genTab = 0;
-  const propsTab = 1;
-  const thumbTab = 2;
-  const bgTab = 3;
+  let index = 0;
+  let genTab = index++;
+  let propsTab = index++;
+  let colecoDescriptionsTab = 0;
+  if (isColeco) {
+    colecoDescriptionsTab = index++;
+  }
+  let thumbTab = index++;
+  let bgTab = index++;
+
+  const tabs = [
+    <Tab label="General" key={genTab} />,
+    <Tab label="Properties" key={propsTab} />
+  ];
+  if (isColeco) {
+    tabs.push(<Tab label="Descriptions" key={colecoDescriptionsTab} />);
+  }
+  tabs.push(<Tab label="Thumbnail" key={thumbTab} />);
+  tabs.push(<Tab label="Background" key={bgTab} />);
 
   return (
     <Editor
@@ -201,12 +219,7 @@ export default function ItemEditor(props) {
 
         return true;
       }}
-      tabs={[
-        <Tab label="General" key={genTab} />,
-        <Tab label="Properties" key={propsTab} />,
-        <Tab label="Thumbnail" key={thumbTab} />,
-        <Tab label="Background" key={bgTab} />,
-      ]}
+      tabs={tabs}
       tabPanels={(
         <>
           <GeneralTab
@@ -330,6 +343,14 @@ export default function ItemEditor(props) {
             validator={validator}
             addValidateCallback={addValidatorCallback}
           />
+          {isColeco && <DescriptionsTab
+            tabValue={tabValue}
+            tabIndex={colecoDescriptionsTab}
+            thumbSrc={item.thumbnail}
+            defaultThumbSrc={defaultThumbnail}
+            object={item}
+            setObject={setItem}
+          />}
           <ThumbnailTab
             tabValue={tabValue}
             tabIndex={thumbTab}

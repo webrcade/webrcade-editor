@@ -9,6 +9,10 @@ export function asString(str) {
   return str ? str : '';
 }
 
+export function isEmptyString(str) {
+  return str.trim().length === 0;
+}
+
 export function asBoolean(obj) {
   if (obj === undefined) {
     return false;
