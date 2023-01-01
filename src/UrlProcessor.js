@@ -260,12 +260,17 @@ const getMessage = (succeeded, failed, isAdd = true) => {
   const opName = isAdd ? 'add' : 'update';
   const opedName = isAdd ? 'added' : 'updated';
 
-
   const failureMessage = (fcount) => {
+    let addManually = "";
+    if (isAdd) {
+      const themName = (fcount === 1 ? 'it' : 'them');
+      addManually = ` Possibly try adding ${themName} manually.`;
+    }
+
     if (fcount === 1) {
-      return `A failure occurred attempting to ${opName} 1 item.`;
+      return `Unable to ${opName} 1 item.${addManually}`;
     } else {
-      return `Failures occurred attempting to ${opName} ${fcount} items.`;
+      return `Unable to ${opName} ${fcount} items.${addManually}`;
     }
   }
 
