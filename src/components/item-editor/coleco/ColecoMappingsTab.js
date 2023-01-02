@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Box from '@mui/material/Box';
 
 import EditorTabPanel from '../../common/editor/EditorTabPanel';
 import EditorSelect from '../../common/editor/EditorSelect';
@@ -59,8 +60,24 @@ function MappingField(props) {
   }
 
   // Buttons
-  menuItems.push({value: "firel", name: getName("firel", "Left fire")});
-  menuItems.push({value: "firer", name: getName("fireR", "Right fire")});
+  const isRoller = object.props.controlsMode === 3;
+  const isSuper = object.props.controlsMode === 1;
+
+
+  menuItems.push({value: "firel", name: getName("firel",
+    object.props.controlsMode === 2 ? "Gas" :
+      object.props.controlsMode === 1 ? "Yellow button" : "Left fire")});
+  menuItems.push({value: "firer", name: getName("fireR",
+    object.props.controlsMode === 2 ? "Brake" :
+      object.props.controlsMode === 1 ? "Orange button" :"Right fire")});
+
+  if (isRoller) {
+    menuItems.push({value: "firel2", name: getName("firel2", "Left fire (2p)")});
+    menuItems.push({value: "firer2", name: getName("fireR2", "Right fire (2p)")});
+  } else if (isSuper) {
+    menuItems.push({value: "blue", name: getName("blue", "Blue button")});
+    menuItems.push({value: "purple", name: getName("purple", "Purple button")});
+  }
 
   // Ensure value is in values
   let found = false;
@@ -98,16 +115,17 @@ export default function ColecoMappingsTab(props) {
 
   return (
     <EditorTabPanel value={tabValue} index={tabIndex}>
-      <div>
-        <MappingField label="A button" buttonName="a" object={object} setObject={setObject} />
-        <MappingField label="B button" buttonName="b" object={object} setObject={setObject} />
-        <MappingField label="X button" buttonName="x" object={object} setObject={setObject} />
-        <MappingField label="Y button" buttonName="y" object={object} setObject={setObject} />
-        <MappingField label="Left bumper" buttonName="lb" object={object} setObject={setObject} />
-        <MappingField label="Right bumper" buttonName="rb" object={object} setObject={setObject} />
-        <MappingField label="Left trigger" buttonName="lt" object={object} setObject={setObject} />
-        <MappingField label="Right trigger" buttonName="rt" object={object} setObject={setObject} />
-      </div>
+      <Box sx={{m: 1.5}}>
+        Create game-specific mappings from the ColecoVision keys and buttons to the gamepad.
+      </Box>
+      <MappingField label="A button" buttonName="a" object={object} setObject={setObject} />
+      <MappingField label="B button" buttonName="b" object={object} setObject={setObject} />
+      <MappingField label="X button" buttonName="x" object={object} setObject={setObject} />
+      <MappingField label="Y button" buttonName="y" object={object} setObject={setObject} />
+      <MappingField label="Left bumper" buttonName="lb" object={object} setObject={setObject} />
+      <MappingField label="Right bumper" buttonName="rb" object={object} setObject={setObject} />
+      <MappingField label="Left trigger" buttonName="lt" object={object} setObject={setObject} />
+      <MappingField label="Right trigger" buttonName="rt" object={object} setObject={setObject} />
     </EditorTabPanel>
   );
 }

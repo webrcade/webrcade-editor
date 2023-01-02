@@ -20,6 +20,7 @@ const PROP_3BUTTON = "PROP_3BUTTON";
 const PROP_6BUTTON = "PROP_6BUTTON";
 const PROP_ADDITIONAL_ROMS = "PROP_ADDITIONAL_ROMS";
 const PROP_ANALOG = "PROP_ANALOG";
+const PROP_COLECO_CONTROLS_MODE = "PROP_COLECO_CONTROLS_MODE";
 const PROP_DISABLE_LOOKUP = "PROP_DISABLE_LOOKUP";
 const PROP_DISABLE_MEMCARD1 = "PROP_DISABLE_MEMCARD1";
 const PROP_DISCS = "PROP_DISCS";
@@ -58,6 +59,7 @@ const ALL_PROPS = [
   PROP_6BUTTON,
   PROP_ADDITIONAL_ROMS,
   PROP_ANALOG,
+  PROP_COLECO_CONTROLS_MODE,
   PROP_DISABLE_LOOKUP,
   PROP_DISABLE_MEMCARD1,
   PROP_DISCS,
@@ -263,10 +265,10 @@ export const buildFieldMap = () => {
       PROP_DISCS, PROP_ZOOM_LEVEL, PROP_6BUTTON, PROP_MAP_RUN_SELECT
     },
     [APP_TYPE_KEYS.COLECO]: {
-      PROP_ROM
+      PROP_ROM, PROP_COLECO_CONTROLS_MODE
     },
     [APP_TYPE_KEYS.COLEM]: {
-      PROP_ROM
+      PROP_ROM, PROP_COLECO_CONTROLS_MODE
     },
   }
 };
@@ -456,6 +458,45 @@ export default function PropertiesTab(props) {
             ]}
             onChange={(e) => {
               const props = { ...object.props, language: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_COLECO_CONTROLS_MODE) ? (
+        <div>
+          <EditorSelect
+            label="Controller"
+            tooltip="The controller type to use for the game"
+            value={object.props.controlsMode ? object.props.controlsMode : 0}
+            menuItems={[
+              { value: 0, name: "Standard" },
+              { value: 1, name: "Super Action" },
+              { value: 2, name: "Driving" },
+              { value: 3, name: "Roller" },
+            ]}
+            onChange={(e) => {
+              const value = e.target.value;
+              const props = { ...object.props, controlsMode: value }
+              props.mappings = {
+                "a": "firel",
+                "b": "firer",
+              };
+              if (value === 3 /* Roller */) {
+                props.mappings = {
+                  "a": "firel2",
+                  "b": "firer2",
+                  "x": "firel",
+                  "y": "firer"
+                }
+              } else if (value === 1 /* Super Action*/) {
+                props.mappings =  {
+                  "a": "firel",
+                  "b": "firer",
+                  "x": "blue",
+                  "y": "purple"
+                }
+              }
               setObject({ ...object, props })
             }}
           />

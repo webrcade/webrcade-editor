@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Box from '@mui/material/Box';
 
 import * as Util from '../../../Util';
 import EditorTabPanel from '../../common/editor/EditorTabPanel';
@@ -57,8 +58,28 @@ export default function ColecoDescriptionsTab(props) {
     object
   } = props;
 
+  const isRoller = object.props.controlsMode === 3;
+  const isSuper = object.props.controlsMode === 1;
+  const isDriving = object.props.controlsMode === 2;
+
+  let firelLabel = "Left fire";
+  if (isDriving) {
+    firelLabel = "Gas button";
+  } else if (isSuper) {
+    firelLabel = "Yellow button";
+  }
+  let firerLabel = "Right fire";
+  if (isDriving) {
+    firerLabel = "Brake button";
+  } else if (isSuper) {
+    firerLabel = "Orange button";
+  }
+
   return (
     <EditorTabPanel value={tabValue} index={tabIndex}>
+        <Box sx={{m: 1.5}}>
+          Provide game-specific descriptions for the ColecoVision controller keys and buttons.
+        </Box>
         <KeypadField label="Keypad 1" keyName="1" object={object} setObject={setObject} />
         <KeypadField label="Keypad 2" keyName="2" object={object} setObject={setObject} />
         <KeypadField label="Keypad 3" keyName="3" object={object} setObject={setObject} />
@@ -71,8 +92,12 @@ export default function ColecoDescriptionsTab(props) {
         <KeypadField label="Keypad *" keyName="*" object={object} setObject={setObject} />
         <KeypadField label="Keypad 0" keyName="0" object={object} setObject={setObject} />
         <KeypadField label="Keypad #" keyName="#" object={object} setObject={setObject} />
-        <KeypadField label="Left Fire" keyName="firel" object={object} setObject={setObject} />
-        <KeypadField label="Right Fire" keyName="firer" object={object} setObject={setObject} />
+        <KeypadField label={firelLabel} keyName="firel" object={object} setObject={setObject} />
+        <KeypadField label={firerLabel} keyName="firer" object={object} setObject={setObject} />
+        {isRoller && <KeypadField label="Left fire (2p)" keyName="firel2" object={object} setObject={setObject} />}
+        {isRoller && <KeypadField label="Right fire (2p)" keyName="firer2" object={object} setObject={setObject} />}
+        {isSuper && <KeypadField label="Purple button" keyName="purple" object={object} setObject={setObject} />}
+        {isSuper && <KeypadField label="Blue button" keyName="blue" object={object} setObject={setObject} />}
     </EditorTabPanel>
   );
 }
