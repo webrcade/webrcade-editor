@@ -8,7 +8,6 @@ import match from 'autosuggest-highlight/match';
 import * as Feed from '../../Feed';
 import * as Util from '../../Util';
 import BackgroundTab from '../common/editor/BackgroundTab';
-import DescriptionsTab from './coleco/DescriptionsTab';
 import GeneralTab from '../common/editor/GeneralTab';
 import Editor from '../common/editor/Editor';
 import EditorTextField from '../common/editor/EditorTextField';
@@ -18,6 +17,9 @@ import PropertiesTab from './PropertiesTab';
 import SelectType from './SelectType';
 import ThumbnailTab from '../common/editor/ThumbnailTab';
 import { GlobalHolder, Global } from '../../Global';
+
+import ColecoDescriptionsTab from './coleco/ColecoDescriptionsTab';
+import ColecoMappingsTab from './coleco/ColecoMappingsTab';
 
 import {
   AppRegistry, APP_TYPE_KEYS, LOG, isEmptyString, uuidv4
@@ -108,6 +110,18 @@ const setDefaultForPcEngineCd = (type, item) => {
   }
 }
 
+const setDefaultForColeco = (type, item) => {
+  if (type === APP_TYPE_KEYS.COLECO ||
+    type === APP_TYPE_KEYS.COLEM) {
+    if (!item.props.mappings || Object.keys(item.props.mappings).length === 0) {
+      item.props.mappings = {
+        "a": "firel",
+        "b": "firer",
+      };
+    }
+  }
+}
+
 export default function ItemEditor(props) {
   const [tabValue, setTabValue] = React.useState(0);
   const [item, setItem] = React.useState({});
@@ -137,8 +151,10 @@ export default function ItemEditor(props) {
   let index = 0;
   let genTab = index++;
   let propsTab = index++;
+  let colecoMappingsTab = 0;
   let colecoDescriptionsTab = 0;
   if (isColeco) {
+    colecoMappingsTab = index++;
     colecoDescriptionsTab = index++;
   }
   let thumbTab = index++;
@@ -149,6 +165,7 @@ export default function ItemEditor(props) {
     <Tab label="Properties" key={propsTab} />
   ];
   if (isColeco) {
+    tabs.push(<Tab label="Mappings" key={colecoMappingsTab} />);
     tabs.push(<Tab label="Descriptions" key={colecoDescriptionsTab} />);
   }
   tabs.push(<Tab label="Thumbnail" key={thumbTab} />);
@@ -176,6 +193,7 @@ export default function ItemEditor(props) {
             setDefaultForPcEngineCd(type, clone);
           }
         }
+        setDefaultForColeco(clone.type, clone);
         setItem(clone);
 
         forceUpdate();
@@ -189,17 +207,13 @@ export default function ItemEditor(props) {
           return false;
         }
 
-        //  console.log(AppRegistry.instance.getDefaultsForType(item.type));
-        //  console.log(item);
-
         // Remove the default values
         removeDefaults(item, AppRegistry.instance.getDefaultsForType(item.type));
-        // PSX
+
         setDefaultForPsx(item.type, item); // TODO: Find a better way, maybe required id? on the type
-        // Sega CD
         setDefaultForSegaCd(item.type, item); // TODO: Find a better way, maybe required id? on the type
-        // PC Engine CD
         setDefaultForPcEngineCd(item.type, item); // TODO: Find a better way, maybe required id? on the type
+        setDefaultForColeco(item.type, item);
 
         if (isDebug) {
           LOG.info(item);
@@ -343,11 +357,15 @@ export default function ItemEditor(props) {
             validator={validator}
             addValidateCallback={addValidatorCallback}
           />
-          {isColeco && <DescriptionsTab
+          {isColeco && <ColecoMappingsTab
+            tabValue={tabValue}
+            tabIndex={colecoMappingsTab}
+            object={item}
+            setObject={setItem}
+          />}
+          {isColeco && <ColecoDescriptionsTab
             tabValue={tabValue}
             tabIndex={colecoDescriptionsTab}
-            thumbSrc={item.thumbnail}
-            defaultThumbSrc={defaultThumbnail}
             object={item}
             setObject={setItem}
           />}

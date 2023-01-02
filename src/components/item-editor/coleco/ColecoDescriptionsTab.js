@@ -13,15 +13,15 @@ function KeypadField(props) {
   } = props;
 
   let val = "";
-  if (object.props.keyDescriptions) {
-    val = object.props.keyDescriptions[keyName];
+  if (object.props.descriptions) {
+    val = object.props.descriptions[keyName];
     if (!val) {
       val = "";
     }
   }
 
   const setValue = (str) => {
-    let descs = object.props.keyDescriptions;
+    let descs = object.props.descriptions;
     if (!descs) {
       descs = {}
     }
@@ -32,22 +32,24 @@ function KeypadField(props) {
       descs[keyName] = str;
     }
 
-    const props = { ...object.props, keyDescriptions: descs }
+    const props = { ...object.props, descriptions: descs }
     setObject({ ...object, props })
   };
 
   return (
-    <EditorTextField
-      sx={{ width: '30ch' }}
-      label={label}
-      onDropText={(text) => { setValue(text); }}
-      onChange={(e) => { setValue(e.target.value); }}
-      value={Util.asString(val)}
-    />
+    <div>
+      <EditorTextField
+        sx={{ width: '30ch' }}
+        label={label}
+        onDropText={(text) => { setValue(text); }}
+        onChange={(e) => { setValue(e.target.value); }}
+        value={Util.asString(val)}
+      />
+    </div>
   );
 }
 
-export default function DescriptionsTab(props) {
+export default function ColecoDescriptionsTab(props) {
   const {
     tabValue,
     tabIndex,
@@ -57,7 +59,6 @@ export default function DescriptionsTab(props) {
 
   return (
     <EditorTabPanel value={tabValue} index={tabIndex}>
-      <div>
         <KeypadField label="Keypad 1" keyName="1" object={object} setObject={setObject} />
         <KeypadField label="Keypad 2" keyName="2" object={object} setObject={setObject} />
         <KeypadField label="Keypad 3" keyName="3" object={object} setObject={setObject} />
@@ -70,7 +71,8 @@ export default function DescriptionsTab(props) {
         <KeypadField label="Keypad *" keyName="*" object={object} setObject={setObject} />
         <KeypadField label="Keypad 0" keyName="0" object={object} setObject={setObject} />
         <KeypadField label="Keypad #" keyName="#" object={object} setObject={setObject} />
-      </div>
+        <KeypadField label="Left Fire" keyName="firel" object={object} setObject={setObject} />
+        <KeypadField label="Right Fire" keyName="firer" object={object} setObject={setObject} />
     </EditorTabPanel>
   );
 }
