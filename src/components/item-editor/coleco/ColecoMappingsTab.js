@@ -67,13 +67,13 @@ function MappingField(props) {
   menuItems.push({value: "firel", name: getName("firel",
     object.props.controlsMode === 2 ? "Gas" :
       object.props.controlsMode === 1 ? "Yellow button" : "Left fire")});
-  menuItems.push({value: "firer", name: getName("fireR",
+  menuItems.push({value: "firer", name: getName("firer",
     object.props.controlsMode === 2 ? "Brake" :
       object.props.controlsMode === 1 ? "Orange button" :"Right fire")});
 
   if (isRoller) {
     menuItems.push({value: "firel2", name: getName("firel2", "Left fire (2p)")});
-    menuItems.push({value: "firer2", name: getName("fireR2", "Right fire (2p)")});
+    menuItems.push({value: "firer2", name: getName("firer2", "Right fire (2p)")});
   } else if (isSuper) {
     menuItems.push({value: "blue", name: getName("blue", "Blue button")});
     menuItems.push({value: "purple", name: getName("purple", "Purple button")});

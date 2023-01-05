@@ -1,0 +1,3061 @@
+{
+  "0dfb83c1353481d297dfcc6123978533": {
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "y": "5",
+      "x": "1",
+      "rb": "0",
+      "lb": "0"
+    },
+    "descriptions": {
+      "0": "Start engines",
+      "1": "Ship display",
+      "3": "Ship display",
+      "5": "HAL",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "5a19ede183558b22bba0d3dd3e7b3122": {
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "y": "5",
+      "x": "1",
+      "rb": "0",
+      "lb": "0"
+    },
+    "descriptions": {
+      "0": "Start engines",
+      "1": "Ship display",
+      "3": "Ship display",
+      "5": "HAL",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "2aa54fb66f8764841be2e59d41fecb2d": {
+    "descriptions": {
+      "firel": "Jump",
+      "firer": "Jump"
+    }
+  },
+  "1ea45edc04bc4df444a38e50f8a75d5d": {
+    "descriptions": {
+      "firel": "Jump",
+      "firer": "Jump"
+    }
+  },
+  "c152cd482635307598c465dfc3c97c54": {
+    "mappings": {
+      "a": "8",
+      "b": "6",
+      "y": "2",
+      "x": "4",
+      "rb": "3",
+      "lb": "1",
+      "rt": "9",
+      "lt": "7"
+    },
+    "descriptions": {
+      "0": "Fire left",
+      "1": "Fire top-left",
+      "2": "Fire top",
+      "3": "Fire top-right",
+      "4": "Fire left",
+      "6": "Fire right",
+      "7": "Fire bottom-left",
+      "8": "Fire bottom",
+      "9": "Fire bottom-right",
+      "#": "Pause",
+      "firel": "Fire bottom",
+      "firer": "Fire top"
+    }
+  },
+  "28f9a15d22e302ef1e293f8d9f65c7dd": {
+    "mappings": {
+      "a": "8",
+      "b": "6",
+      "y": "2",
+      "x": "4",
+      "rb": "3",
+      "lb": "1",
+      "rt": "9",
+      "lt": "7"
+    },
+    "descriptions": {
+      "0": "Fire left",
+      "1": "Fire top-left",
+      "2": "Fire top",
+      "3": "Fire top-right",
+      "4": "Fire left",
+      "6": "Fire right",
+      "7": "Fire bottom-left",
+      "8": "Fire bottom",
+      "9": "Fire bottom-right",
+      "#": "Pause",
+      "firel": "Fire bottom",
+      "firer": "Fire top"
+    }
+  },
+  "e5972d0a096b60d0c3e827e17a70b89b": {
+    "descriptions": {
+      "1": "1 player",
+      "2": "2 players",
+      "4": "Pause",
+      "5": "Insert coin"
+    }
+  },
+  "b5f00edf8e8f58f9e2f607e013fb4396": {
+    "descriptions": {
+      "firel": "Slower",
+      "firer": "Faster",
+      "*": "Restart",
+      "#": "Options"
+    }
+  },
+  "737c5247b06a7af4f9c59f46791f3bc2": {
+    "descriptions": {
+      "firel": "Slower",
+      "firer": "Faster",
+      "*": "Restart",
+      "#": "Options"
+    }
+  },
+  "a1fa161de97e6084691f3bc6f5f46f55": {
+    "descriptions": {
+      "firel": "Slower",
+      "firer": "Faster",
+      "*": "Restart",
+      "#": "Options"
+    }
+  },
+  "1451f43a27b7776dbfe7b43516ac6670": {
+    "descriptions": {
+      "firel": "Faster"
+    }
+  },
+  "735a95a53777cb2f83a4986feda78d69": {
+    "descriptions": {
+      "firel": "Faster"
+    }
+  },
+  "dcc316df4898d4836c1e430692fd9fd5": {
+    "descriptions": {
+      "firel": "Faster"
+    }
+  },
+  "a67908b20a85451a47154bdbcf0cd4fd": {
+    "descriptions": {
+      "firel": "Faster"
+    }
+  },
+  "511c6eea2b633f03641ba506dd81a732": {
+    "descriptions": {
+      "firel": "Faster"
+    }
+  },
+  "05784ff95d122cb28eb8c37ec81a52a1": {
+    "descriptions": {
+      "firel": "Laser lariats",
+      "firer": "Torpedoes"
+    }
+  },
+  "b3949ef4ab2b65224d5011c49b755d96": {
+    "descriptions": {
+      "firel": "Laser lariats",
+      "firer": "Torpedoes"
+    }
+  },
+  "108318eb89a2f11531086270970a5039": {
+    "descriptions": {
+      "0": "Resume",
+      "#": "Pause"
+    }
+  },
+  "93d5326c54f1a92a18e843838aee441f": {
+    "descriptions": {
+      "0": "Resume",
+      "#": "Pause"
+    }
+  },
+  "ceff12f5d453cc60b6f4441b9042eac0": {
+    "descriptions": {
+      "0": "Pause",
+      "8": "Continue",
+      "#": "Options"
+    }
+  },
+  "42ea621b2b56f99c25b17e2e6adb00af": {
+    "descriptions": {
+      "0": "Pause",
+      "8": "Continue",
+      "#": "Options"
+    }
+  },
+  "30c06059438828a2a33034f9e110a9cc": {
+    "descriptions": {
+      "0": "Pause",
+      "8": "Continue",
+      "#": "Options"
+    }
+  },
+  "ff055f329760980900bbe2f973a9ece6": {
+    "descriptions": {
+      "0": "Pause",
+      "8": "Continue",
+      "#": "Options"
+    }
+  },
+  "302846579767d876883d8a560738daae": {
+    "descriptions": {
+      "*": "Options",
+      "#": "Options"
+    }
+  },
+  "51148599610f40d9db2c534a72571696": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "f2065decc9dabc889c6c59d4cc536143": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "d032d6e0a34d427f7885e88d308f8d92": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "45548d960e081445560fa492a675e457": {
+    "descriptions": {
+      "firel": "Jump",
+      "firer": "Jump",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "19098349768ea68a2c9f3d711369970a": {
+    "descriptions": {
+      "firel": "Jump",
+      "firer": "Jump",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "d365cf7b774679842a9f99953b97ab0a": {
+    "descriptions": {
+      "firel": "Jump",
+      "firer": "Jump",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "45295e9ba099c8cae1dd893a1d5a380b": {
+    "descriptions": {
+      "firel": "Pepper",
+      "firer": "Pepper",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "927ce5ba5bf3e0f6c8c5a115db51f264": {
+    "descriptions": {
+      "firel": "Pepper",
+      "firer": "Pepper",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "ade704f01e694fb539bd805d9e276c99": {
+    "descriptions": {
+      "1": "One player",
+      "5": "Two player",
+      "firel": "Jump",
+      "firer": "Jump"
+    }
+  },
+  "6d9fd51559988d77421f7fbfa0b692b7": {
+    "descriptions": {
+      "1": "One player",
+      "5": "Two player",
+      "firel": "Jump",
+      "firer": "Jump"
+    }
+  },
+  "6f612e24b83a98096b67aaf6bb9083a3": {
+    "descriptions": {
+      "1": "One player",
+      "5": "Two player",
+      "firel": "Jump",
+      "firer": "Jump"
+    }
+  },
+  "4bf6a6143d8c0596ba4549c66eea9d67": {
+    "descriptions": {
+      "1": "One player",
+      "5": "Two player",
+      "firel": "Jump",
+      "firer": "Jump"
+    }
+  },
+  "08dceead2bc9908148d4e1c53be7101d": {
+    "mappings": {
+      "a": "2",
+      "b": "5",
+      "y": "firer",
+      "x": "firel"
+    },
+    "descriptions": {
+      "0": "Blank",
+      "1": "Front yard",
+      "2": "Do",
+      "3": "Props",
+      "4": "Kitchen",
+      "5": "Undo",
+      "6": "Color",
+      "7": "Living room",
+      "8": "Option",
+      "9": "Pause",
+      "firer": "Fall",
+      "firel": "Jump",
+      "*": "Backyard",
+      "#": "Character"
+    }
+  },
+  "43b04118ccbaf221e829e1b75870cbd6": {
+    "mappings": {
+      "a": "2",
+      "b": "5",
+      "y": "firer",
+      "x": "firel"
+    },
+    "descriptions": {
+      "0": "Blank",
+      "1": "Front yard",
+      "2": "Do",
+      "3": "Props",
+      "4": "Kitchen",
+      "5": "Undo",
+      "6": "Color",
+      "7": "Living room",
+      "8": "Option",
+      "9": "Pause",
+      "firer": "Fall",
+      "firel": "Jump",
+      "*": "Backyard",
+      "#": "Character"
+    }
+  },
+  "debd9b275689e9e537e916673a9cd2d2": {
+    "descriptions": {
+      "*": "Pause"
+    }
+  },
+  "a7f6a6bd45c7ebfc7f8fc0f11eeea000": {
+    "descriptions": {
+      "*": "Pause"
+    }
+  },
+  "b12e3324df5fd0ecedb79cff3f177183": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "27cd8d5ffa2259baf007b8b91f15c43d": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "a24d3521b0a7ea1ae49223c45efd70c4": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "f44e87fd71785824ac2ffb9927337886": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "25ef922aa95b246d6894f5c4c5b29c97": {
+    "descriptions": {
+      "firel": "Fire",
+      "*": "Reset",
+      "#": "Pause"
+    }
+  },
+  "b3719118e9cfcc1234cd01c1e3fb84cf": {
+    "descriptions": {
+      "firel": "Rotate",
+      "firer": "Fire",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "d915cb85f6df341f9bcde693d42d7a52": {
+    "descriptions": {
+      "firel": "Rotate",
+      "firer": "Fire",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "782ddbf40366269591205506f73906a1": {
+    "descriptions": {
+      "firel": "Rotate",
+      "firer": "Fire",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "270a08c7708426722a6469e4bc39473b": {
+    "descriptions": {
+      "firel": "Jump/shake",
+      "firer": "Jump/shake",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "1e5dc0f3a8b974b20340bdf8593b309b": {
+    "descriptions": {
+      "firel": "Jump/shake",
+      "firer": "Jump/shake",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "cfbd4a478e7019422c306837444d2e46": {
+    "descriptions": {
+      "firel": "Bomb",
+      "firer": "Missile",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "e2f58bbbe80a1c86a79e3aafabdcbb60": {
+    "descriptions": {
+      "firel": "Bomb",
+      "firer": "Missile",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "dd01108c4b4a62d64b2da39424896b6a": {
+    "descriptions": {
+      "1": "Pilot",
+      "2": "Front gunner",
+      "3": "Tail gunner",
+      "4": "Bomb aimer",
+      "5": "Navigator",
+      "6": "First engineer",
+      "7": "Second engineer",
+      "*": "Options",
+      "#": "Replay"
+    }
+  },
+  "d6e826d832e13c13073dfba3b26d899e": {
+    "descriptions": {
+      "1": "Pilot",
+      "2": "Front gunner",
+      "3": "Tail gunner",
+      "4": "Bomb aimer",
+      "5": "Navigator",
+      "6": "First engineer",
+      "7": "Second engineer",
+      "*": "Options",
+      "#": "Replay"
+    }
+  },
+  "22e8c9e71474f2715f20250f7921d2c1": {
+    "descriptions": {
+      "1": "Stage",
+      "2": "Choose couple"
+    }
+  },
+  "f1fa565352f9bfb760b1d80929955548": {
+    "descriptions": {
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "db88c443599a57c1f436f146b632caa7": {
+    "descriptions": {
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "a3362bbdfec2858f9a49c898a5003b7f": {
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "x": "0"
+    },
+    "descriptions": {
+      "0": "Hyperspace",
+      "firel": "Missile",
+      "firer": "Smart bomb",
+      "#": "Pause",
+      "*": "Reset"
+    }
+  },
+  "00123e08f138b7094601ea8d13d5336d": {
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "x": "0"
+    },
+    "descriptions": {
+      "0": "Hyperspace",
+      "firel": "Missile",
+      "firer": "Smart bomb",
+      "#": "Pause",
+      "*": "Reset"
+    }
+  },
+  "ad5000952034853819769ce22b9cf788": {
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "x": "0"
+    },
+    "descriptions": {
+      "0": "Hyperspace",
+      "firel": "Missile",
+      "firer": "Smart bomb",
+      "#": "Pause",
+      "*": "Reset"
+    }
+  },
+  "ec72a0e3bebe07ba631a8dcb750c1591": {
+    "controlsMode": 2,
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "y": "1",
+      "x": "1",
+      "rb": "1",
+      "lb": "1"
+    },
+    "descriptions": {
+      "0": "Fire crystal",
+      "1": "Fire crystal",
+      "2": "Fire crystal",
+      "3": "Fire crystal",
+      "4": "Fire crystal",
+      "5": "Fire crystal",
+      "6": "Fire crystal",
+      "7": "Fire crystal",
+      "8": "Fire crystal",
+      "9": "Fire crystal",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "613a3e457758e274a0e0819ff6aa2d43": {
+    "descriptions": {
+      "firel": "Jump",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "8c61804e1ad57ef3d415d1ba11395507": {
+    "descriptions": {
+      "firel": "Jump",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "1eb2b9c2d1d113f3860f345a07baeb42": {
+    "descriptions": {
+      "firel": "Jump",
+      "firer": "Jump",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "ae08d5ca51c1e623ad92511d5c5babb5": {
+    "descriptions": {
+      "0": "Skill level 5",
+      "1": "Skill level 1",
+      "2": "Up",
+      "3": "Skill level 2",
+      "4": "Left",
+      "5": "Rotate",
+      "6": "Right",
+      "7": "Skill level 3",
+      "8": "Down",
+      "9": "Skill level 4",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "37c56fabd85c91f365bf2f1152f59081": {
+    "descriptions": {
+      "firel": "Jump",
+      "firer": "Jump"
+    }
+  },
+  "dbd4f21702be17775e84b2fb6c534c94": {
+    "controlsMode": 2,
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "x": "1"
+    },
+    "descriptions": {
+      "1": "Hand brake",
+      "2": "Hand brake",
+      "3": "Hand brake",
+      "4": "Hand brake",
+      "5": "Hand brake",
+      "6": "Hand brake",
+      "7": "Hand brake",
+      "8": "Hand brake",
+      "9": "Hand brake",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "74b7a74c714c1be14d58124e6f9797ab": {
+    "descriptions": {
+      "0": "Pause",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "627d22dce35311aae18b0c085f1a3b21": {
+    "descriptions": {
+      "0": "Pause",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "e0d1ff37974fa017a6c78c174925643a": {
+    "descriptions": {
+      "0": "Pause",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "d370ffe83d7cb483664bd9921c25a4f5": {
+    "descriptions": {
+      "0": "-",
+      "1": "1",
+      "2": "2",
+      "3": "3",
+      "4": "S",
+      "5": "F",
+      "6": "C",
+      "7": "W",
+      "8": "T",
+      "9": "E"
+    }
+  },
+  "1ce3ca4f3d8c2a51535f32f40b3f3ef2": {
+    "descriptions": {
+      "0": "-",
+      "1": "1",
+      "2": "2",
+      "3": "3",
+      "4": "S",
+      "5": "F",
+      "6": "C",
+      "7": "W",
+      "8": "T",
+      "9": "E"
+    }
+  },
+  "1431444f24d188c87e16e307ee56a5d9": {
+    "descriptions": {
+      "firel": "Ram",
+      "firer": "Ram"
+    }
+  },
+  "43d37801db445b5411488ac399bbc20c": {
+    "descriptions": {
+      "firel": "Ram",
+      "firer": "Ram"
+    }
+  },
+  "677dc48bdaf746d48068d8ad0dff19de": {
+    "descriptions": {
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "92771526eeb3814178c5c36d7babb934": {
+    "descriptions": {
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "9cd9153748b24d0b5fd877686a3e5c67": {
+    "descriptions": {
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "b6e01df73b83911cadb4840e5fd920f1": {
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "x": "#"
+    },
+    "descriptions": {
+      "1": "Map screen",
+      "2": "Build screen",
+      "3": "Finance screen",
+      "5": "Entire map",
+      "*": "Pause",
+      "#": "Enter"
+    }
+  },
+  "244d9c613525390b0129a57aa05c0437": {
+    "descriptions": {
+      "firel": "Eliminate/elevator",
+      "firer": "Eliminate/elevator"
+    }
+  },
+  "721b56f46c0b5714aebef48049c6ae80": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "a0462d9a0a2c99eea1f50a15086bb3ea": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "8d5c95b98cdf917ca561b469b791d7d1": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "ec8f7fea2f00df94ded932d49bd8a7f9": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "4f463889b5379e75b970f3cdf0a8d435": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "677b04037ded07b222d908e82f2ffa3d": {
+    "descriptions": {
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "ade03210d571409ecb18d5bfaefdad03": {
+    "descriptions": {
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "6542a61237d7f2cb4364e0068c47fae7": {
+    "descriptions": {
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "8aeba65de11578746f07234cb96cfd34": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firel",
+      "b": "blue",
+      "x": "purple",
+      "y": "firer",
+      "rb": "firer",
+      "lb": "purple"
+    },
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Rotate right",
+      "purple": "Rotate left",
+      "blue": "Grenade/jump",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "7debc2bb5b735e659fcc479c42d0c923": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firel",
+      "b": "blue",
+      "x": "purple",
+      "y": "firer",
+      "rb": "firer",
+      "lb": "purple"
+    },
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Rotate right",
+      "purple": "Rotate left",
+      "blue": "Grenade/jump",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "4520ee5d8d0fcf151a3332966f7ebda0": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firel",
+      "b": "blue",
+      "x": "purple",
+      "y": "firer",
+      "rb": "firer",
+      "lb": "purple"
+    },
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Rotate right",
+      "purple": "Rotate left",
+      "blue": "Grenade/jump",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "d145de191e3f694c7f0920787ccbda48": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firel",
+      "b": "blue",
+      "x": "purple",
+      "y": "firer",
+      "rb": "firer",
+      "lb": "purple"
+    },
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Rotate right",
+      "purple": "Rotate left",
+      "blue": "Grenade/jump",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "83cd20c0aaa5cfc1993b63f6cca0cc6f": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Reset",
+      "#": "Pause"
+    }
+  },
+  "26dff388cd543b79a4d35662064ddaf7": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Reset",
+      "#": "Pause"
+    }
+  },
+  "d603ca63c6fa84385a93d285a0da4a52": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Reset",
+      "#": "Pause"
+    }
+  },
+  "bf1ceac191875d28ca5b0f319ce9e852": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Reset",
+      "#": "Pause"
+    }
+  },
+  "15ce8221f4abdf721698b7575625c55d": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Reset",
+      "#": "Pause"
+    }
+  },
+  "d3772dcffd6a355330c221f7780035c0": {
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "x": "1"
+    },
+    "descriptions": {
+      "0": "Next level",
+      "1": "Fight",
+      "2": "Select item",
+      "3": "Drop item",
+      "4": "Keys",
+      "5": "Search spell",
+      "6": "Locate trap",
+      "7": "Check status",
+      "8": "Check supplies",
+      "9": "Check weapons"
+    }
+  },
+  "7262176bb5917af526243438f6c8d9e4": {
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "x": "1"
+    },
+    "descriptions": {
+      "0": "Next level",
+      "1": "Fight",
+      "2": "Select item",
+      "3": "Drop item",
+      "4": "Keys",
+      "5": "Search spell",
+      "6": "Locate trap",
+      "7": "Check status",
+      "8": "Check supplies",
+      "9": "Check weapons"
+    }
+  },
+  "3de2007c806a26c4c62cdb47bb3d6a6b": {
+    "descriptions": {
+      "*": "Pause/resume"
+    }
+  },
+  "1a6e5ae28ae7d835a7f3b1ed7f3c4d32": {
+    "descriptions": {
+      "firel": "Jump",
+      "firer": "Fire"
+    }
+  },
+  "e751e5d60a2259334b80ce63d2b69c3a": {
+    "descriptions": {
+      "firel": "Laser",
+      "firer": "Laser",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "9fd1130745753933f3481f465dd2dfad": {
+    "descriptions": {
+      "firel": "Laser",
+      "firer": "Laser",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "05c76213b0cabc7a2b6ded94bed25ccc": {
+    "mappings": {
+      "a": "firer",
+      "b": "firel",
+      "y": "3",
+      "x": "1",
+      "rb": "9",
+      "lb": "7",
+      "rt": "3",
+      "lt": "1"
+    },
+    "descriptions": {
+      "1": "Red balloon",
+      "3": "Yellow balloon",
+      "7": "Blue balloon",
+      "9": "Green balloon",
+      "firel": "Release air",
+      "firer": "Pump air",
+      "*": "New game",
+      "#": "New game"
+    }
+  },
+  "c1c390a00802e041fbee750a33ac9030": {
+    "mappings": {
+      "a": "firer",
+      "b": "firel",
+      "y": "3",
+      "x": "1",
+      "rb": "9",
+      "lb": "7",
+      "rt": "3",
+      "lt": "1"
+    },
+    "descriptions": {
+      "1": "Red balloon",
+      "3": "Yellow balloon",
+      "7": "Blue balloon",
+      "9": "Green balloon",
+      "firel": "Release air",
+      "firer": "Pump air",
+      "*": "New game",
+      "#": "New game"
+    }
+  },
+  "e39e7552b8681346aa107c1279911750": {
+    "descriptions": {
+      "firel": "Microlaser",
+      "firer": "Dynamite",
+      "*": "Pause",
+      "#": "Resume"
+    }
+  },
+  "bb3b0d6ba95493de01797f2daada1de7": {
+    "mappings": {
+      "a": "firel",
+      "b": "1",
+      "y": "3",
+      "x": "2",
+      "rb": "3",
+      "lb": "1",
+      "rt": "2",
+      "lt": "2"
+    },
+    "descriptions": {
+      "0": "Start/restart",
+      "1": "Elevator 1",
+      "2": "Elevator 2",
+      "3": "Elevator 3",
+      "8": "Music toggle",
+      "firel": "Jump",
+      "firer": "Jump",
+      "*": "Sound toggle",
+      "#": "Pause"
+    }
+  },
+  "e7a2eb12c4a4ff78361a7551eb52dbf3": {
+    "mappings": {
+      "a": "firel",
+      "b": "1",
+      "y": "3",
+      "x": "2",
+      "rb": "3",
+      "lb": "1",
+      "rt": "2",
+      "lt": "2"
+    },
+    "descriptions": {
+      "0": "Start/restart",
+      "1": "Elevator 1",
+      "2": "Elevator 2",
+      "3": "Elevator 3",
+      "8": "Music toggle",
+      "firel": "Jump",
+      "firer": "Jump",
+      "*": "Sound toggle",
+      "#": "Pause"
+    }
+  },
+  "ab7320b4eefe5abb3b599425e4897fa7": {
+    "mappings": {
+      "a": "firel",
+      "b": "1",
+      "y": "3",
+      "x": "2",
+      "rb": "3",
+      "lb": "1",
+      "rt": "2",
+      "lt": "2"
+    },
+    "descriptions": {
+      "0": "Start/restart",
+      "1": "Elevator 1",
+      "2": "Elevator 2",
+      "3": "Elevator 3",
+      "8": "Music toggle",
+      "firel": "Jump",
+      "firer": "Jump",
+      "*": "Sound toggle",
+      "#": "Pause"
+    }
+  },
+  "06e96d4b3f9e2e1cfbc006eead39d0b9": {
+    "mappings": {
+      "a": "firel",
+      "b": "1",
+      "y": "3",
+      "x": "2",
+      "rb": "3",
+      "lb": "1",
+      "rt": "2",
+      "lt": "2"
+    },
+    "descriptions": {
+      "0": "Start/restart",
+      "1": "Elevator 1",
+      "2": "Elevator 2",
+      "3": "Elevator 3",
+      "8": "Music toggle",
+      "firel": "Jump",
+      "firer": "Jump",
+      "*": "Sound toggle",
+      "#": "Pause"
+    }
+  },
+  "ad7d739299287f4dd72efb1f000b3352": {
+    "mappings": {
+      "a": "firel",
+      "b": "1",
+      "y": "3",
+      "x": "2",
+      "rb": "3",
+      "lb": "1",
+      "rt": "2",
+      "lt": "2"
+    },
+    "descriptions": {
+      "0": "Start/restart",
+      "1": "Elevator 1",
+      "2": "Elevator 2",
+      "3": "Elevator 3",
+      "8": "Music toggle",
+      "firel": "Jump",
+      "firer": "Jump",
+      "*": "Sound toggle",
+      "#": "Pause"
+    }
+  },
+  "c65f3db2efde3b0a33744909a297b1a6": {
+    "mappings": {
+      "a": "firel",
+      "b": "1",
+      "y": "3",
+      "x": "2",
+      "rb": "3",
+      "lb": "1",
+      "rt": "2",
+      "lt": "2"
+    },
+    "descriptions": {
+      "0": "Start/restart",
+      "1": "Elevator 1",
+      "2": "Elevator 2",
+      "3": "Elevator 3",
+      "8": "Music toggle",
+      "firel": "Jump",
+      "firer": "Jump",
+      "*": "Sound toggle",
+      "#": "Pause"
+    }
+  },
+  "369d9eccc683aaf56afec83a16d32ae3": {
+    "descriptions": {
+      "firel": "Jump up/split",
+      "firer": "Jump down/split",
+      "*": "Pause/replay",
+      "#": "Music toggle/options"
+    }
+  },
+  "fc0230f61994bb21630ffef1df922d11": {
+    "descriptions": {
+      "firel": "Jump up/split",
+      "firer": "Jump down/split",
+      "*": "Pause/replay",
+      "#": "Music toggle/options"
+    }
+  },
+  "5540feb1d30a22901f881849188d85a4": {
+    "descriptions": {
+      "firel": "Shot/top",
+      "firer": "Bomb/bottom",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "c7ea91d9ac4d4a104d8e7832f8db3962": {
+    "descriptions": {
+      "firel": "Shot/top",
+      "firer": "Bomb/bottom",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "cb032c267c8d4a488aebda7de335d5a8": {
+    "descriptions": {
+      "firel": "Next square",
+      "firer": "Next square",
+      "*": "Replay"
+    }
+  },
+  "cdb9c9b887068ddb4a0f9698bca2a79c": {
+    "descriptions": {
+      "firel": "Next square",
+      "firer": "Next square",
+      "*": "Replay"
+    }
+  },
+  "3e8b00c91098dc96664ba43c8904d34d": {
+    "descriptions": {
+      "firel": "Jump",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "5454538f617f2ccf56cb7e0f5a45d11b": {
+    "descriptions": {
+      "firel": "Jump",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "b36dbdf6ba3eeda601580f4b696958e0": {
+    "descriptions": {
+      "firel": "Jump",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "e6b4bc4610bd159c4d5ba682d5bf4119": {
+    "descriptions": {
+      "firel": "Jump",
+      "firer": "Jump",
+      "*": "Reset",
+      "#": "Pause"
+    }
+  },
+  "d6f4df2726159c5aedae9efd21307f09": {
+    "descriptions": {
+      "firel": "Jump",
+      "firer": "Jump",
+      "*": "Reset",
+      "#": "Pause"
+    }
+  },
+  "9266e9fac663332ed330b19a87841f0b": {
+    "descriptions": {
+      "0": "Hole",
+      "1": "Yes",
+      "3": "No",
+      "4": "Hit",
+      "5": "Total",
+      "6": "Stand",
+      "7": "Double",
+      "8": "Help",
+      "9": "Split",
+      "*": "Enter/replay",
+      "#": "Clear/options"
+    }
+  },
+  "18580bd730f4a38f695d2d83a08fc1a9": {
+    "descriptions": {
+      "0": "Hole",
+      "1": "Yes",
+      "3": "No",
+      "4": "Hit",
+      "5": "Total",
+      "6": "Stand",
+      "7": "Double",
+      "8": "Help",
+      "9": "Split",
+      "*": "Enter/replay",
+      "#": "Clear/options"
+    }
+  },
+  "3baeb48a8c0c2ff82b7222f3f88c1659": {
+    "descriptions": {
+      "0": "Pause",
+      "firel": "Jump",
+      "firer": "Jump"
+    }
+  },
+  "7fc266ca1e05305c7d0244f663495f7d": {
+    "descriptions": {
+      "0": "Pause",
+      "firel": "Jump",
+      "firer": "Jump"
+    }
+  },
+  "4e1bc38c1cdb7cd26757c993b28cb290": {
+    "descriptions": {
+      "*": "Pause/resume"
+    }
+  },
+  "013cc5515769b0a099dd38506983f1ab": {
+    "descriptions": {
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "118a7ebc86bb949c32edfb662abf6d0d": {
+    "descriptions": {
+      "3": "Change picture",
+      "firel": "Select",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "483168cf007461f3cdece072691d7547": {
+    "descriptions": {
+      "firel": "Pick up",
+      "firer": "Pick up",
+      "*": "Buddy/betty"
+    }
+  },
+  "c4b08b67aec8b8835e8f0e6aeb85260c": {
+    "descriptions": {
+      "firel": "Accelerate",
+      "firer": "Fire",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "87e0da2aa0cbd406193d364e52f15b80": {
+    "descriptions": {
+      "firel": "Accelerate",
+      "firer": "Fire",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "d5964ac4e7b1fd3ae91a8008ef57a3cc": {
+    "descriptions": {
+      "0": "Kill companion",
+      "1": "Drinking depot",
+      "2": "Join guild",
+      "3": "Armory",
+      "4": "Rest",
+      "5": "Cast spell",
+      "6": "Enter dungeon",
+      "7": "Positions",
+      "8": "Use item",
+      "9": "Burials",
+      "*": "View character",
+      "#": "Give item"
+    }
+  },
+  "806e634477f80ec3e02d418556223385": {
+    "descriptions": {
+      "0": "Kill companion",
+      "1": "Drinking depot",
+      "2": "Join guild",
+      "3": "Armory",
+      "4": "Rest",
+      "5": "Cast spell",
+      "6": "Enter dungeon",
+      "7": "Positions",
+      "8": "Use item",
+      "9": "Burials",
+      "*": "View character",
+      "#": "Give item"
+    }
+  },
+  "e9562740b5df84f6e149c9f070e3b65b": {
+    "descriptions": {
+      "1": "1 player",
+      "2": "2 players",
+      "5": "Insert coin",
+      "*": "Pause"
+    }
+  },
+  "c80fcc8d4951b534c330dc8c7ebc8666": {
+    "descriptions": {
+      "1": "1 player",
+      "2": "2 players",
+      "5": "Insert coin",
+      "*": "Pause"
+    }
+  },
+  "8ba775f121f2108890c57f374ffc90d9": {
+    "descriptions": {
+      "1": "1 player",
+      "2": "2 players",
+      "5": "Insert coin",
+      "*": "Pause"
+    }
+  },
+  "3a1ef8e754016c87ead2335d7641f27a": {
+    "mappings": {
+      "a": "firel",
+      "b": "5",
+      "y": "2",
+      "x": "1",
+      "rb": "4",
+      "lb": "3"
+    },
+    "descriptions": {
+      "0": "Restart",
+      "1": "Floor 1",
+      "2": "Floor 2",
+      "3": "Floor 3",
+      "4": "Floor 4",
+      "5": "Retrieve elevator/turn on lift",
+      "firer": "Jump",
+      "firel": "Jump",
+      "*": "Sound toggle",
+      "#": "Pause"
+    }
+  },
+  "27de111eea8975982476727412cc7db2": {
+    "mappings": {
+      "a": "firel",
+      "b": "5",
+      "y": "2",
+      "x": "1",
+      "rb": "4",
+      "lb": "3"
+    },
+    "descriptions": {
+      "0": "Restart",
+      "1": "Floor 1",
+      "2": "Floor 2",
+      "3": "Floor 3",
+      "4": "Floor 4",
+      "5": "Retrieve elevator/turn on lift",
+      "firer": "Jump",
+      "firel": "Jump",
+      "*": "Sound toggle",
+      "#": "Pause"
+    }
+  },
+  "b922232a6e94f4ea6f01b98c8620b554": {
+    "mappings": {
+      "a": "firel",
+      "b": "5",
+      "y": "2",
+      "x": "1",
+      "rb": "4",
+      "lb": "3"
+    },
+    "descriptions": {
+      "0": "Restart",
+      "1": "Floor 1",
+      "2": "Floor 2",
+      "3": "Floor 3",
+      "4": "Floor 4",
+      "5": "Retrieve elevator/turn on lift",
+      "firer": "Jump",
+      "firel": "Jump",
+      "*": "Sound toggle",
+      "#": "Pause"
+    }
+  },
+  "135582f9d1dd0c8a1691be7abb051033": {
+    "mappings": {
+      "a": "firel",
+      "b": "5",
+      "y": "2",
+      "x": "1",
+      "rb": "4",
+      "lb": "3"
+    },
+    "descriptions": {
+      "0": "Restart",
+      "1": "Floor 1",
+      "2": "Floor 2",
+      "3": "Floor 3",
+      "4": "Floor 4",
+      "5": "Retrieve elevator/turn on lift",
+      "firer": "Jump",
+      "firel": "Jump",
+      "*": "Sound toggle",
+      "#": "Pause"
+    }
+  },
+  "124d464a25dbe7d94a95ffa96b24d7db": {
+    "mappings": {
+      "a": "firel",
+      "b": "5",
+      "y": "2",
+      "x": "1",
+      "rb": "4",
+      "lb": "3"
+    },
+    "descriptions": {
+      "0": "Restart",
+      "1": "Floor 1",
+      "2": "Floor 2",
+      "3": "Floor 3",
+      "4": "Floor 4",
+      "5": "Retrieve elevator/turn on lift",
+      "firer": "Jump",
+      "firel": "Jump",
+      "*": "Sound toggle",
+      "#": "Pause"
+    }
+  },
+  "73acd858c434721f4551d3a2777d6756": {
+    "descriptions": {
+      "firel": "Jump",
+      "firer": "Solve",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "10b7c43fab1c78a5183d67af27848b8b": {
+    "descriptions": {
+      "firel": "Jump",
+      "firer": "Solve",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "ac9a94b1e8fdb54d529b818d0e904ef0": {
+    "descriptions": {
+      "firel": "Jump",
+      "firer": "Solve",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "6cd6a23e951c0ec6da23d1335812bff2": {
+    "descriptions": {
+      "firel": "Jump",
+      "firer": "Solve",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "fa0b387a588834dd121b3a34da303838": {
+    "descriptions": {
+      "firer": "Jump",
+      "firel": "Jump"
+    }
+  },
+  "f7f5da82e247df6f5097755deffde0ed": {
+    "descriptions": {
+      "firer": "Jump",
+      "firel": "Jump"
+    }
+  },
+  "e12d59dcb2f90e0a1392ef2e42c67064": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire"
+    }
+  },
+  "42447cf41e7afb267c262e578f0f24b1": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire"
+    }
+  },
+  "08dbf281e89c73802da5b508960c08f4": {
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "y": "2",
+      "x": "1",
+      "rb": "3",
+      "lb": "3"
+    },
+    "descriptions": {
+      "1": "Gear 1",
+      "2": "Gear 2",
+      "3": "Gear 3",
+      "firel": "Accelerate",
+      "firer": "Brake"
+    }
+  },
+  "ffc377dd896c93a87c472ae9a594bb56": {
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "y": "2",
+      "x": "1",
+      "rb": "3",
+      "lb": "3"
+    },
+    "descriptions": {
+      "1": "Gear 1",
+      "2": "Gear 2",
+      "3": "Gear 3",
+      "firel": "Accelerate",
+      "firer": "Brake"
+    }
+  },
+  "7817973f7c27c850ba27837c109b4e42": {
+    "descriptions": {
+      "firel": "Flashlight",
+      "firer": "Flashlight"
+    }
+  },
+  "bb79207c51e772fd26276712cc4e6927": {
+    "descriptions": {
+      "firel": "Flashlight",
+      "firer": "Flashlight"
+    }
+  },
+  "12cd8d4268a87d0c94137f596e79b171": {
+    "mappings": {
+      "a": "5",
+      "b": "1",
+      "y": "2",
+      "x": "3"
+    },
+    "descriptions": {
+      "1": "Red",
+      "2": "Yellow",
+      "3": "Blue",
+      "5": "Dog",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "c8f0d1ee5494dab146c82a4ebecaff4a": {
+    "mappings": {
+      "a": "5",
+      "b": "1",
+      "y": "2",
+      "x": "3"
+    },
+    "descriptions": {
+      "1": "Red",
+      "2": "Yellow",
+      "3": "Blue",
+      "5": "Dog",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "975d4a1c4ade7c9348e89559661b81a1": {
+    "mappings": {
+      "a": "5",
+      "b": "1",
+      "y": "2",
+      "x": "3"
+    },
+    "descriptions": {
+      "1": "Red",
+      "2": "Yellow",
+      "3": "Blue",
+      "5": "Dog",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "1c03c0990893b7a9d17e270d7ee9c368": {
+    "descriptions": {
+      "firel": "Power ball",
+      "firer": "Power ball",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "de0b1b1ec005bb1765e1ceffdfa3e92e": {
+    "descriptions": {
+      "firel": "Power ball",
+      "firer": "Power ball",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "60603e9b8740156f1250ca6f52ce8c43": {
+    "descriptions": {
+      "firel": "Hammer",
+      "firer": "Hammer"
+    }
+  },
+  "7eaa827c9976e24e47ef49e2b1e2f0f7": {
+    "descriptions": {
+      "firel": "Hammer",
+      "firer": "Hammer"
+    }
+  },
+  "daba4037e3034b0ac3ab2ced264370e9": {
+    "descriptions": {
+      "firer": "Laser",
+      "firel": "Beam/bombs",
+      "*": "Start game"
+    }
+  },
+  "62991e2e81564a310066dd4184bd0401": {
+    "descriptions": {
+      "firer": "Laser",
+      "firel": "Beam/bombs",
+      "*": "Start game"
+    }
+  },
+  "745067096d2dda2c62874b60bab4f625": {
+    "descriptions": {
+      "firer": "Laser",
+      "firel": "Beam/bombs",
+      "*": "Start game"
+    }
+  },
+  "e7d10b763454692ea8a6da95fccdbd87": {
+    "descriptions": {
+      "1": "Pause",
+      "firel": "Retract",
+      "firer": "Retract",
+      "*": "Start/restart",
+      "#": "Options"
+    }
+  },
+  "b382fa6186d21132dcc3552de8082f7a": {
+    "descriptions": {
+      "1": "Pause",
+      "firel": "Retract",
+      "firer": "Retract",
+      "*": "Start/restart",
+      "#": "Options"
+    }
+  },
+  "e7af8dc8712a761c418e91598a5eee1c": {
+    "descriptions": {
+      "firel": "Thrust",
+      "firer": "Laser",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "28ed941c2746d50e62dd3acd29c7675e": {
+    "descriptions": {
+      "firel": "Thrust",
+      "firer": "Laser",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "9cebe6571aa12803eadcefd9cde6b1b6": {
+    "descriptions": {
+      "1": "1 player",
+      "2": "2 players",
+      "*": "Pause",
+      "#": "Insert coin"
+    }
+  },
+  "b9fe20538fc472a4ce2874921444c900": {
+    "descriptions": {
+      "1": "1 player",
+      "2": "2 players",
+      "firel": "Jump",
+      "firer": "Dig",
+      "*": "Pause"
+    }
+  },
+  "679f02b1d1a7d68af42735d67cbccaff": {
+    "descriptions": {
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "9dc247f82da83e03c8d0592825f03d52": {
+    "descriptions": {
+      "0": "Pause",
+      "firel": "Jump",
+      "*": "Reset",
+      "#": "Music toggle"
+    }
+  },
+  "40187a21b1243686c68fa2aa11efba41": {
+    "descriptions": {
+      "2": "Pause",
+      "firel": "Jump",
+      "firer": "Jump",
+      "*": "Reset",
+      "#": "Reset"
+    }
+  },
+  "0cb633e61cc4715f52b6bd1e262687d8": {
+    "descriptions": {
+      "2": "Pause",
+      "firel": "Jump",
+      "firer": "Jump",
+      "*": "Reset",
+      "#": "Reset"
+    }
+  },
+  "04d94acc4ee8639e8ebc619521f75f34": {
+    "descriptions": {
+      "firel": "Punch",
+      "firer": "Punch"
+    }
+  },
+  "a7773e1265e0089bc8f148527256a20e": {
+    "descriptions": {
+      "firel": "Punch",
+      "firer": "Punch"
+    }
+  },
+  "43149d3317eead1592a3a4a4fa524d2e": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "#": "Pause"
+    }
+  },
+  "8c999d87686cb763875ba6e9dff8db5d": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "#": "Pause"
+    }
+  },
+  "45fec4406d06893e42856f0386ab3891": {
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "x": "1"
+    },
+    "descriptions": {
+      "1": "Time out",
+      "firel": "Fire/jump",
+      "firer": "Spin/steal"
+    }
+  },
+  "0b70e3e59f72137a4a017f3761b24ff7": {
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "x": "1"
+    },
+    "descriptions": {
+      "1": "Time out",
+      "firel": "Fire/jump",
+      "firer": "Spin/steal"
+    }
+  },
+  "39e841b8d643dfe9e68f71c3259100fc": {
+    "descriptions": {
+      "0": "Pause"
+    }
+  },
+  "d6ef0832f3ff45b6358c445be645dc11": {
+    "descriptions": {
+      "0": "Pause"
+    }
+  },
+  "53b59a72662fd7ffa6874816ee401fc2": {
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "y": "2",
+      "x": "1",
+      "rb": "3",
+      "lb": "5",
+      "rt": "4",
+      "lt": "6"
+    },
+    "descriptions": {
+      "1": "Draw gun",
+      "2": "Acid",
+      "3": "Chisel",
+      "4": "Geiger counter",
+      "5": "Drop",
+      "6": "Pick up map rock",
+      "firel": "Use",
+      "firer": "Pick up object",
+      "*": "Pause",
+      "#": "Restart"
+    }
+  },
+  "446256285c3b1dcf012d36b26f8fdb6b": {
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "y": "2",
+      "x": "1",
+      "rb": "3",
+      "lb": "5",
+      "rt": "4",
+      "lt": "6"
+    },
+    "descriptions": {
+      "1": "Draw gun",
+      "2": "Acid",
+      "3": "Chisel",
+      "4": "Geiger counter",
+      "5": "Drop",
+      "6": "Pick up map rock",
+      "firel": "Use",
+      "firer": "Pick up object",
+      "*": "Pause",
+      "#": "Restart"
+    }
+  },
+  "aebf917b911086bcf0b818d7b888d87d": {
+    "descriptions": {
+      "firel": "Fire missile",
+      "firer": "Fire missile",
+      "*": "Reset",
+      "#": "Reset"
+    }
+  },
+  "f67172d3725aa0ca0bb92a5717022092": {
+    "descriptions": {
+      "firel": "Gas",
+      "firer": "Gas",
+      "*": "Pause"
+    }
+  },
+  "c9103aea67882b3aec97cacd1ca30418": {
+    "descriptions": {
+      "9": "Pause"
+    }
+  },
+  "a3bb14317c4a3f1788d550859d4bbe9d": {
+    "descriptions": {
+      "9": "Pause"
+    }
+  },
+  "acca6a75781bf687350d207b74804739": {
+    "descriptions": {
+      "firel": "Shoot rope",
+      "firer": "Flashlight",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "e2c60e37df1e7205eecba716dd3d5f84": {
+    "descriptions": {
+      "firel": "Shoot rope",
+      "firer": "Flashlight",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "4c0391786acb7e7e22cf34f757388b6d": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firer",
+      "b": "firel",
+      "x": "blue",
+      "y": "purple",
+      "rb": "firel",
+      "lb": "firer",
+      "rt": "purple",
+      "lt": "blue"
+    },
+    "descriptions": {
+      "0": "Demo",
+      "firel": "Punch head",
+      "firer": "Punch body",
+      "purple": "Block",
+      "blue": "Duck",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "d35fdb81f4a733925b0a33dfb53d9d78": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firer",
+      "b": "firel",
+      "x": "blue",
+      "y": "purple",
+      "rb": "firel",
+      "lb": "firer",
+      "rt": "purple",
+      "lt": "blue"
+    },
+    "descriptions": {
+      "0": "Demo",
+      "firel": "Punch head",
+      "firer": "Punch body",
+      "purple": "Block",
+      "blue": "Duck",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "3cd028c84f0a5ec849d87bef5516d080": {
+    "descriptions": {
+      "firel": "Jump",
+      "firer": "Jump",
+      "*": "Pause",
+      "#": "New game"
+    }
+  },
+  "09b1fbd8e7b09d423894c155a24c569f": {
+    "descriptions": {
+      "firel": "Jump",
+      "firer": "Jump",
+      "*": "Pause",
+      "#": "New game"
+    }
+  },
+  "78f37e95058f08c4995cf95598ee2a4f": {
+    "descriptions": {
+      "1": "Pause",
+      "firel": "Jump/hang/elevator",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "7a70637bbc173a9dcefb2f1db6c7dc44": {
+    "descriptions": {
+      "1": "Pause",
+      "firel": "Jump/hang/elevator",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "ef0d530384330b112d6e43ca615f5167": {
+    "descriptions": {
+      "firel": "Fire missile",
+      "firer": "Fire missile"
+    }
+  },
+  "91068a05030e2eb8a953d983da4d864b": {
+    "descriptions": {
+      "firel": "Fire missile",
+      "firer": "Fire missile"
+    }
+  },
+  "b8d4d493c26d7c61e3851828b4d83746": {
+    "descriptions": {
+      "firel": "Fire missile",
+      "firer": "Fire missile"
+    }
+  },
+  "09bf95c028205bc218bbb67116cdf688": {
+    "descriptions": {
+      "firel": "Fire missile",
+      "firer": "Fire missile"
+    }
+  },
+  "ad1a4547f56b687ffe569f235df40dd9": {
+    "descriptions": {
+      "firel": "Fire missile",
+      "firer": "Fire missile"
+    }
+  },
+  "a7036e86e96835af621d1294cfe253e9": {
+    "descriptions": {
+      "0": "Pause",
+      "firel": "Fire",
+      "firer": "Fire"
+    }
+  },
+  "5de08cbdc916708999328e720ea2e703": {
+    "descriptions": {
+      "0": "Pause",
+      "firel": "Fire",
+      "firer": "Fire"
+    }
+  },
+  "535518cce43a9c0921179b840a704593": {
+    "descriptions": {
+      "firel": "Flap wings",
+      "firer": "Flap wings"
+    }
+  },
+  "ae936b4f13874715d5fbebee379febfb": {
+    "descriptions": {
+      "firel": "Flap wings",
+      "firer": "Flap wings"
+    }
+  },
+  "da3b6f9c609285d5e75d38d54ae27555": {
+    "controlsMode": 3,
+    "mappings": {
+      "a": "firel2",
+      "b": "firer2",
+      "x": "firer2",
+      "y": "firel2"
+    },
+    "descriptions": {
+      "firer2": "Fire up",
+      "firel2": "Fire down"
+    }
+  },
+  "7cdc148dff40389fa1ad012d4734ceed": {
+    "controlsMode": 3,
+    "mappings": {
+      "a": "firel2",
+      "b": "firer2",
+      "x": "firer2",
+      "y": "firel2"
+    },
+    "descriptions": {
+      "firer2": "Fire up",
+      "firel2": "Fire down"
+    }
+  },
+  "1240edfec95508e1e0400cc5a557ab4b": {
+    "descriptions": {
+      "firel": "Split",
+      "firer": "Split"
+    }
+  },
+  "5fac2d8e197b781b65a5a9aa6984d003": {
+    "descriptions": {
+      "firel": "Split",
+      "firer": "Split"
+    }
+  },
+  "21a5eebfd7cd1ce2de04efeb1f4e726b": {
+    "mappings": {
+      "a": "2",
+      "b": "5",
+      "y": "firer",
+      "x": "firel"
+    },
+    "descriptions": {
+      "0": "River and cave",
+      "1": "Objects",
+      "2": "Do",
+      "3": "Color",
+      "4": "Blank",
+      "5": "Undo",
+      "6": "Character",
+      "7": "Living room",
+      "8": "Cottage",
+      "9": "Option",
+      "firel": "Jump",
+      "firer": "Slide",
+      "*": "Gargamel's kitchen",
+      "#": "Pause"
+    }
+  },
+  "c29e282c81ce9b40f39f493f51725d3c": {
+    "descriptions": {
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "b508f1e90544d8da73a09992fc03c973": {
+    "descriptions": {
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "de25f1be4eb1893e8d0eb3d754b0d084": {
+    "descriptions": {
+      "firel": "Thrust",
+      "firer": "Fire",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "f821cf20b7faa5c2cb738cd8aa90dc95": {
+    "descriptions": {
+      "firel": "Thrust",
+      "firer": "Fire",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "d424c8234c9d2df4999aed94ce4d81f6": {
+    "descriptions": {
+      "1": "1 player",
+      "2": "2 players",
+      "#": "Insert coin"
+    }
+  },
+  "ed06f5e11d9558af149ea21286ce4bf0": {
+    "descriptions": {
+      "1": "1 player",
+      "2": "2 players",
+      "#": "Insert coin"
+    }
+  },
+  "b82236d059dff228cb86ccba7cff4e19": {
+    "descriptions": {
+      "1": "1 player",
+      "2": "2 players",
+      "#": "Insert coin"
+    }
+  },
+  "2a1f023ee4798230e59bfa14cf6c497a": {
+    "descriptions": {
+      "firel": "Dig",
+      "firer": "Fill",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "3c019541a005c393e2c949e2dd8de28a": {
+    "descriptions": {
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "cb7b1a5906a00c6b246de20c21aa646b": {
+    "descriptions": {
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "f96a21f920e889d1e21abbf00f4d381d": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "x": "purple",
+      "y": "blue",
+      "rb": "firel",
+      "lb": "firer",
+      "rt": "blue",
+      "lt": "purple"
+    },
+    "descriptions": {
+      "1": "Missile",
+      "3": "Smoke screen",
+      "4": "Missile",
+      "6": "Smoke screen",
+      "7": "Missile",
+      "9": "Smoke screen",
+      "firel": "Machine gun",
+      "firer": "Oil slick",
+      "purple": "Smoke screen",
+      "blue": "Missile",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "f33a4fcc0dc21e89937715309d7fe977": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "x": "purple",
+      "y": "blue",
+      "rb": "firel",
+      "lb": "firer",
+      "rt": "blue",
+      "lt": "purple"
+    },
+    "descriptions": {
+      "1": "Missile",
+      "3": "Smoke screen",
+      "4": "Missile",
+      "6": "Smoke screen",
+      "7": "Missile",
+      "9": "Smoke screen",
+      "firel": "Machine gun",
+      "firer": "Oil slick",
+      "purple": "Smoke screen",
+      "blue": "Missile",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "7da9f2fda17e1e34a41b180d1ceb0c37": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "x": "purple",
+      "y": "blue",
+      "rb": "firel",
+      "lb": "firer",
+      "rt": "blue",
+      "lt": "purple"
+    },
+    "descriptions": {
+      "1": "Missile",
+      "3": "Smoke screen",
+      "4": "Missile",
+      "6": "Smoke screen",
+      "7": "Missile",
+      "9": "Smoke screen",
+      "firel": "Machine gun",
+      "firer": "Oil slick",
+      "purple": "Smoke screen",
+      "blue": "Missile",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "6db4f3854bccfe59dd628bbdd862420d": {
+    "descriptions": {
+      "0": "Pause",
+      "firel": "Jump/squish",
+      "firer": "Jump/squish"
+    }
+  },
+  "90e1b27110a1b89cb1ad3e225db20832": {
+    "descriptions": {
+      "0": "Pause",
+      "firel": "Jump/squish",
+      "firer": "Jump/squish"
+    }
+  },
+  "01358dd7ad8e8dd6fa46f4dd3af67246": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Thrust",
+      "#": "Pause"
+    }
+  },
+  "4aa070ceb9c6a42571d2aa8a969855fd": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firer",
+      "b": "firel",
+      "x": "blue",
+      "y": "purple"
+    },
+    "descriptions": {
+      "firel": "Phaser",
+      "firer": "Impulse",
+      "purple": "Warp",
+      "blue": "Photon",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "45006eaf52ee16ddcadd1dca68b265c8": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firer",
+      "b": "firel",
+      "x": "blue",
+      "y": "purple"
+    },
+    "descriptions": {
+      "firel": "Phaser",
+      "firer": "Impulse",
+      "purple": "Warp",
+      "blue": "Photon",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "6769e9f77e3585d90409aaa2a0caa84e": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firer",
+      "b": "firel",
+      "x": "blue",
+      "y": "purple"
+    },
+    "descriptions": {
+      "firel": "Phaser",
+      "firer": "Impulse",
+      "purple": "Warp",
+      "blue": "Photon",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "3addc2a93bcb803ac136801ab1b8695a": {
+    "descriptions": {
+      "firel": "Photon",
+      "firer": "Photon"
+    }
+  },
+  "bd7978d59d97c3aa19c04779b7c4667f": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "d2680483097cbda37e53a61a256bee56": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "b86bcbbd27f9574d3f0c8dd3cdfba45d": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "a5ef28ac2f79e95647a4bc5db7e502b2": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firel",
+      "b": "blue",
+      "x": "firer",
+      "y": "purple",
+      "rb": "7",
+      "lb": "9",
+      "rt": "#",
+      "lt": "#"
+    },
+    "descriptions": {
+      "1": "Slow",
+      "2": "Medium slow",
+      "3": "Medium fast",
+      "4": "Fast",
+      "7": "Steal",
+      "9": "Pick off",
+      "firer": "Curve in",
+      "firel": "Straight",
+      "purple": "Curve away",
+      "blue": "Knuckle ball",
+      "#": "Return"
+    }
+  },
+  "861af62508c73873ca89d3e61f5d04ff": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firel",
+      "b": "blue",
+      "x": "firer",
+      "y": "purple",
+      "rb": "7",
+      "lb": "9",
+      "rt": "#",
+      "lt": "#"
+    },
+    "descriptions": {
+      "1": "Slow",
+      "2": "Medium slow",
+      "3": "Medium fast",
+      "4": "Fast",
+      "7": "Steal",
+      "9": "Pick off",
+      "firer": "Curve in",
+      "firel": "Straight",
+      "purple": "Curve away",
+      "blue": "Knuckle ball",
+      "#": "Return"
+    }
+  },
+  "2e7b67ea29c096191c6645357020d929": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firel",
+      "b": "blue",
+      "x": "firer",
+      "y": "purple",
+      "rb": "7",
+      "lb": "9",
+      "rt": "#",
+      "lt": "#"
+    },
+    "descriptions": {
+      "1": "Slow",
+      "2": "Medium slow",
+      "3": "Medium fast",
+      "4": "Fast",
+      "7": "Steal",
+      "9": "Pick off",
+      "firer": "Curve in",
+      "firel": "Straight",
+      "purple": "Curve away",
+      "blue": "Knuckle ball",
+      "#": "Return"
+    }
+  },
+  "4c4b25a93301e59b86decb0df7a0ee51": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firel",
+      "b": "blue",
+      "x": "firer",
+      "y": "purple",
+      "rb": "7",
+      "lb": "9",
+      "rt": "#",
+      "lt": "#"
+    },
+    "descriptions": {
+      "1": "Slow",
+      "2": "Medium slow",
+      "3": "Medium fast",
+      "4": "Fast",
+      "7": "Steal",
+      "9": "Pick off",
+      "firer": "Curve in",
+      "firel": "Straight",
+      "purple": "Curve away",
+      "blue": "Knuckle ball",
+      "#": "Return"
+    }
+  },
+  "dab9d1dfaa777e73e3c460d0abdae58d": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firer",
+      "b": "firel",
+      "x": "purple",
+      "y": "blue",
+      "rb": "firel",
+      "lb": "firer",
+      "rt": "blue",
+      "lt": "purple"
+    }
+  },
+  "1210396cb9af270285d25c66fa9c6f6a": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firer",
+      "b": "firel",
+      "x": "purple",
+      "y": "blue",
+      "rb": "firel",
+      "lb": "firer",
+      "rt": "blue",
+      "lt": "purple"
+    }
+  },
+  "bee90a110d14b29d2e64f0ff0f303bc6": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "x": "blue",
+      "y": "purple",
+      "rb": "firel",
+      "lb": "firer",
+      "rt": "blue",
+      "lt": "purple"
+    },
+    "descriptions": {
+      "0": "Short",
+      "1": "Left",
+      "2": "Middle",
+      "3": "Right",
+      "4": "Blitz left",
+      "5": "Long",
+      "6": "Blitz right",
+      "7": "Pass route",
+      "8": "Medium",
+      "9": "Kick",
+      "firel": "Quarterback/safety",
+      "firer": "Halfback/linebacker",
+      "purple": "Flankerback/linebacker",
+      "blue": "Pass/hand off",
+      "*": "Set/replay",
+      "#": "Options"
+    }
+  },
+  "8aabed060476fde3cc706c6463f02980": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "x": "blue",
+      "y": "purple",
+      "rb": "firel",
+      "lb": "firer",
+      "rt": "blue",
+      "lt": "purple"
+    },
+    "descriptions": {
+      "0": "Short",
+      "1": "Left",
+      "2": "Middle",
+      "3": "Right",
+      "4": "Blitz left",
+      "5": "Long",
+      "6": "Blitz right",
+      "7": "Pass route",
+      "8": "Medium",
+      "9": "Kick",
+      "firel": "Quarterback/safety",
+      "firer": "Halfback/linebacker",
+      "purple": "Flankerback/linebacker",
+      "blue": "Pass/hand off",
+      "*": "Set/replay",
+      "#": "Options"
+    }
+  },
+  "9e794af1e39cf12145ec355940aec684": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "x": "blue",
+      "y": "purple",
+      "rb": "firel",
+      "lb": "firer",
+      "rt": "blue",
+      "lt": "purple"
+    },
+    "descriptions": {
+      "0": "Short",
+      "1": "Left",
+      "2": "Middle",
+      "3": "Right",
+      "4": "Blitz left",
+      "5": "Long",
+      "6": "Blitz right",
+      "7": "Pass route",
+      "8": "Medium",
+      "9": "Kick",
+      "firel": "Quarterback/safety",
+      "firer": "Halfback/linebacker",
+      "purple": "Flankerback/linebacker",
+      "blue": "Pass/hand off",
+      "*": "Set/replay",
+      "#": "Options"
+    }
+  },
+  "3f79a5be2f84d9856a99b9ae31f36ba1": {
+    "descriptions": {
+      "firel": "Bullets",
+      "firer": "Bombs"
+    }
+  },
+  "536a20f7a88b6bfd296e6542b79a2762": {
+    "descriptions": {
+      "firel": "Bullets",
+      "firer": "Bombs"
+    }
+  },
+  "5c58aa003e92e65195ebfd8043392684": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "b929679a7e8a098bd7a2b63e1fd658f6": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "633d8d532b8c2435ec6635be1fff1391": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "c7743e456f5c042ee8aefd4488254ac9": {
+    "descriptions": {
+      "firel": "Jump",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "7a736286fe72eb60e00b1ba28867cd16": {
+    "descriptions": {
+      "firel": "Jump",
+      "firer": "Jump",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "6cdb3a03f8d66bedbd29899895d83f94": {
+    "descriptions": {
+      "firel": "Fill mug",
+      "firer": "Fill mug",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "a4cc73b0eb8d9c1d310796466ba9c4f2": {
+    "descriptions": {
+      "firel": "Fill mug",
+      "firer": "Fill mug",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "4517b544c0f645e2083079327a64af47": {
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "x": "1"
+    },
+    "descriptions": {
+      "1": "Ape-roar",
+      "2": "Ape-roar",
+      "3": "Ape-roar",
+      "4": "Ape-roar",
+      "5": "Ape-roar",
+      "6": "Ape-roar",
+      "7": "Ape-roar",
+      "8": "Ape-roar",
+      "9": "Ape-roar",
+      "firel": "Punch",
+      "firer": "Jump",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "61a2cb023a393446d8e8b8b1147bec48": {
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "x": "1"
+    },
+    "descriptions": {
+      "1": "Ape-roar",
+      "2": "Ape-roar",
+      "3": "Ape-roar",
+      "4": "Ape-roar",
+      "5": "Ape-roar",
+      "6": "Ape-roar",
+      "7": "Ape-roar",
+      "8": "Ape-roar",
+      "9": "Ape-roar",
+      "firel": "Punch",
+      "firer": "Jump",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "344a7b1983cf6ee9483de57029cada0b": {
+    "descriptions": {
+      "firel": "Perform",
+      "firer": "Perform",
+      "*": "Options",
+      "#": "Options"
+    }
+  },
+  "764baa392af1bbfd2637f5e2003f2236": {
+    "mappings": {
+      "a": "firel",
+      "b": "firer",
+      "y": "2",
+      "x": "2",
+      "rb": "3",
+      "lb": "1"
+    },
+    "descriptions": {
+      "1": "Base 1 shield",
+      "2": "Base 2 shield",
+      "3": "Base 3 shield",
+      "firel": "Fire"
+    }
+  },
+  "e932f6f176f98f5fe85ced5401c51750": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Hyperdrive",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "91c7b5d4ea94092f6e18da4775656d4b": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Pause/replay",
+      "#": "Options"
+    }
+  },
+  "05bb27ab721b0cfd8ce5157102f73e39": {
+    "descriptions": {
+      "*": "Reset"
+    }
+  },
+  "2e323730e31229c45412a1a81a734f09": {
+    "descriptions": {
+      "*": "Reset"
+    }
+  },
+  "b85e0c632b351c3d42a2be4198cfa663": {
+    "descriptions": {
+      "firel": "Swing",
+      "firer": "Swing",
+      "*": "Restart",
+      "#": "Pause"
+    }
+  },
+  "a02d39cbca4e6ca89e0da21b14f63629": {
+    "descriptions": {
+      "firel": "Swing",
+      "firer": "Swing",
+      "*": "Restart",
+      "#": "Pause"
+    }
+  },
+  "f042ba432716b58d2f5858abcce81b9f": {
+    "controlsMode": 2,
+    "mappings": {
+      "a": "firel",
+      "b": "firer"
+    },
+    "descriptions": {
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "6f146d9bd3f64bbc006a761f59e2a1cf": {
+    "controlsMode": 2,
+    "mappings": {
+      "a": "firel",
+      "b": "firer"
+    },
+    "descriptions": {
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "480e7829ebbcb55e4aea0abfe5782a08": {
+    "descriptions": {
+      "firel": "Fire left",
+      "firer": "Fire right",
+      "*": "Replay"
+    }
+  },
+  "79db029b4e77bc2752ab97bd4df03428": {
+    "descriptions": {
+      "firel": "Fire left",
+      "firer": "Fire right",
+      "*": "Replay"
+    }
+  },
+  "9a66cd7c393517799864a3c36e7d03f2": {
+    "descriptions": {
+      "firel": "Fire left",
+      "firer": "Fire right",
+      "*": "Replay"
+    }
+  },
+  "90e261510765deecaeac8283aa88d815": {
+    "descriptions": {
+      "0": "Pause",
+      "firel": "Jump",
+      "firer": "Jump",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "ad22023a11a3bcb107610d2af5a6be77": {
+    "descriptions": {
+      "firel": "Fire arrow",
+      "firer": "Fire arrow",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "bff9ad330f06bb9f4a6dfd6f70d5873c": {
+    "descriptions": {
+      "firel": "Fire arrow",
+      "firer": "Fire arrow",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "f3ca3882d846f4bc31e6026e510343f0": {
+    "descriptions": {
+      "firel": "Fire arrow",
+      "firer": "Fire arrow",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "e1522f2701f5f55580866d35e1794e5e": {
+    "controlsMode": 3,
+    "mappings": {
+      "a": "firer2",
+      "b": "firel2",
+      "x": "firel",
+      "y": "firer"
+    },
+    "descriptions": {
+      "firer2": "Thrust",
+      "firel2": "Fire",
+      "firel": "Shields",
+      "firer": "Doomsday",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "a31facd8adc1134942d9f4102dd3fa9f": {
+    "controlsMode": 3,
+    "mappings": {
+      "a": "firer2",
+      "b": "firel2",
+      "x": "firel",
+      "y": "firer"
+    },
+    "descriptions": {
+      "firer2": "Thrust",
+      "firel2": "Fire",
+      "firel": "Shields",
+      "firer": "Doomsday",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "200aa603996bfd2734e353098ebe8dd5": {
+    "controlsMode": 3,
+    "mappings": {
+      "a": "firer2",
+      "b": "firel2",
+      "x": "firel",
+      "y": "firer"
+    },
+    "descriptions": {
+      "firer2": "Thrust",
+      "firel2": "Fire",
+      "firel": "Shields",
+      "firer": "Doomsday",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "a2b0ccd7ea648c3e5f3f750e9254f972": {
+    "descriptions": {
+      "0": "ABMS",
+      "1": "A",
+      "2": "B",
+      "3": "C",
+      "4": "D",
+      "5": "E",
+      "6": "F",
+      "8": "U.S. Map",
+      "firel": "Activation",
+      "firer": "Selection",
+      "*": "Satellite/sub",
+      "#": "Jets"
+    }
+  },
+  "000c7331d4598b0fa414be5fb2a603b5": {
+    "descriptions": {
+      "0": "ABMS",
+      "1": "A",
+      "2": "B",
+      "3": "C",
+      "4": "D",
+      "5": "E",
+      "6": "F",
+      "8": "U.S. Map",
+      "firel": "Activation",
+      "firer": "Selection",
+      "*": "Satellite/sub",
+      "#": "Jets"
+    }
+  },
+  "0d59da8c315d22f58909c73b851299ee": {
+    "descriptions": {
+      "1": "Satellite view",
+      "2": "City status",
+      "3": "Enter city",
+      "4": "Producing cities",
+      "5": "Food cities",
+      "6": "Raw materials",
+      "7": "Target cities",
+      "8": "Machinery cities",
+      "9": "Laser fuel cities",
+      "*": "Destruct",
+      "#": "Pause"
+    }
+  },
+  "2916b15f23f910056cf75142f220a5af": {
+    "descriptions": {
+      "1": "Satellite view",
+      "2": "City status",
+      "3": "Enter city",
+      "4": "Producing cities",
+      "5": "Food cities",
+      "6": "Raw materials",
+      "7": "Target cities",
+      "8": "Machinery cities",
+      "9": "Laser fuel cities",
+      "*": "Destruct",
+      "#": "Pause"
+    }
+  },
+  "87b0df17528e35b68fe0d839701132c3": {
+    "descriptions": {
+      "1": "Satellite view",
+      "2": "City status",
+      "3": "Enter city",
+      "4": "Producing cities",
+      "5": "Food cities",
+      "6": "Raw materials",
+      "7": "Target cities",
+      "8": "Machinery cities",
+      "9": "Laser fuel cities",
+      "*": "Destruct",
+      "#": "Pause"
+    }
+  },
+  "de1782f1a2ab91adb5e85b8e015431da": {
+    "mappings": {
+      "a": "1",
+      "b": "5",
+      "y": "2",
+      "x": "3"
+    },
+    "descriptions": {
+      "1": "Red",
+      "2": "Yellow",
+      "3": "Blue",
+      "5": "Dog",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "3b22824d1910226582a5d8dddc0b2feb": {
+    "descriptions": {
+      "firel": "Grab block",
+      "firer": "Grab block"
+    }
+  },
+  "7c677f80c4ee957559d7abebd8ee1be1": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "1eeb86935d9b3d2cab58bd98df04ec71": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "1206093901f2cfb36ac5442db264c9f9": {
+    "descriptions": {
+      "firel": "Fire",
+      "firer": "Fire",
+      "*": "Replay",
+      "#": "Options"
+    }
+  },
+  "5595dc8acc25f51aaed0d72bbb96e68b": {
+    "descriptions": {
+      "*": "Begin",
+      "#": "Title screen"
+    }
+  },
+  "175948d25c41d5239eb46cec89df1044": {
+    "controlsMode": 3,
+    "mappings": {
+      "a": "firer2",
+      "b": "firel2",
+      "x": "firer",
+      "y": "firel"
+    }
+  },
+  "6ded2b98aad9b15c975e85d722a069d4": {
+    "controlsMode": 1,
+    "mappings": {
+      "a": "firer",
+      "b": "firel",
+      "x": "purple",
+      "y": "blue",
+      "rb": "firel",
+      "lb": "firer",
+      "rt": "blue",
+      "lt": "purple"
+    }
+  }
+}

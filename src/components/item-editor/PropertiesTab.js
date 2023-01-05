@@ -493,8 +493,8 @@ export default function PropertiesTab(props) {
                 props.mappings =  {
                   "a": "firel",
                   "b": "firer",
-                  "x": "blue",
-                  "y": "purple"
+                  "x": "purple",
+                  "y": "blue"
                 }
               }
               setObject({ ...object, props })

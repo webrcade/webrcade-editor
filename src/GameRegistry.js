@@ -7,9 +7,14 @@ import {
   LOG
 } from '@webrcade/app-common'
 
+import COLECO_PROPS from './coleco/ColecoProps.json';
+
 class GameRegistryImpl {
   constructor() {
     this.db = {};
+
+    this.CUSTOM_PROPS = {...this.CUSTOM_PROPS, ...COLECO_PROPS};
+    // console.log(this.CUSTOM_PROPS)
   }
 
   DB_FILE = resolvePath("roms.json.zip");
@@ -353,7 +358,7 @@ class GameRegistryImpl {
       AUTOCOMPLETE[type] = opts;
       return opts;
     } else {
-      if (type in this.db._by_name) {
+      if (this.db && type in this.db._by_name) {
         const opts = [];
         entries = this.db._by_name[type];
         for (let f in entries) {
