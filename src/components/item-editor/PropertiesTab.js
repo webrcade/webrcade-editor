@@ -270,6 +270,12 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.COLEM]: {
       PROP_ROM, PROP_COLECO_CONTROLS_MODE
     },
+    [APP_TYPE_KEYS.A5200]: {
+      PROP_ROM
+    },
+    [APP_TYPE_KEYS.AT5200]: {
+      PROP_ROM
+    },
   }
 };
 

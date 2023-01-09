@@ -14,6 +14,7 @@ import ThumbnailTab from './common/editor/ThumbnailTab';
 import { GlobalHolder, Global } from '../Global';
 
 import {
+  AppRegistry,
   FeedBackgroundImage,
   FeedThumbImage
 } from '@webrcade/app-common'
@@ -27,7 +28,21 @@ function PropertiesTab(props) {
     object
   } = props;
 
-  const [app, setApp] = React.useState("lynx");
+  const is5200Enabled = AppRegistry.instance.getAppTypes()["5200"];
+
+  const [app, setApp] = React.useState(is5200Enabled ? "5200" : "lynx");
+
+  const items = [
+    { value: "lynx", name: "Atari Lynx" },
+    { value: "coleco", name: "ColecoVision"},
+    { value: "pcecd", name: "NEC PC Engine CD"},
+    { value: "segacd", name: "Sega CD" },
+    { value: "neogeo", name: "SNK Neo Geo" },
+    { value: "psx", name: "Sony PlayStation" },
+  ]
+  if (is5200Enabled) {
+    items.splice(0, 0, { value: "5200", name: "Atari 5200" });
+  }
 
   return (
     <EditorTabPanel value={tabValue} index={tabIndex}>
@@ -36,19 +51,29 @@ function PropertiesTab(props) {
           label="Application"
           tooltip="The application (emulator, etc.) to edit feed settings for."
           value={app}
-          menuItems={[
-            { value: "lynx", name: "Atari Lynx" },
-            { value: "coleco", name: "ColecoVision"},
-            { value: "pcecd", name: "NEC PC Engine CD"},
-            { value: "segacd", name: "Sega CD" },
-            { value: "neogeo", name: "SNK Neo Geo" },
-            { value: "psx", name: "Sony PlayStation" },
-          ]}
+          menuItems={items}
           onChange={(e) => {
             setApp(e.target.value);
           }}
           sx={{ mb: 1.5 }}
         />
+      </div>
+      <div>
+        {is5200Enabled && app === "5200" && (
+          <EditorUrlField
+            sx={{ width: '50ch' }}
+            label="Atari 5200 ROM (URL)"
+            onDropText={(text) => {
+              const props = { ...object.props, atari_rom: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, atari_rom: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.atari_rom)}
+          />
+        )}
       </div>
       <div>
         {app === "coleco" && (
