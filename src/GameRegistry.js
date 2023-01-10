@@ -160,9 +160,14 @@ class GameRegistryImpl {
       descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/NEC%20PC%20Engine-CD/output'
     },
     'coleco': {
-      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-coleco-images/master/Named_Snaps/output',
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-coleco-images/master/Named_Titles/resized',
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-coleco-images/master/Named_Snaps/output',
       descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/ColecoVision/output'
+    },
+    'pcfx': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-pcfx-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-pcfx-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/NEC%20PC-FX/output'
     },
   }
 

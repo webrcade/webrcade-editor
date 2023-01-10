@@ -276,6 +276,12 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.AT5200]: {
       PROP_ROM
     },
+    [APP_TYPE_KEYS.PCFX]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.BEETLE_PCFX]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL
+    },
   }
 };
 

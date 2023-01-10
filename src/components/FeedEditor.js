@@ -36,6 +36,7 @@ function PropertiesTab(props) {
     { value: "lynx", name: "Atari Lynx" },
     { value: "coleco", name: "ColecoVision"},
     { value: "pcecd", name: "NEC PC Engine CD"},
+    { value: "pcfx", name: "NEC PC-FX"},
     { value: "segacd", name: "Sega CD" },
     { value: "neogeo", name: "SNK Neo Geo" },
     { value: "psx", name: "Sony PlayStation" },
@@ -140,6 +141,23 @@ function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             value={Util.asString(object.props.pcecd_bios)}
+          />
+        )}
+      </div>
+      <div>
+        {app === "pcfx" && (
+          <EditorUrlField
+            sx={{ width: '50ch' }}
+            label="PC-FX BIOS (URL)"
+            onDropText={(text) => {
+              const props = { ...object.props, pcfx_bios: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, pcfx_bios: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.pcfx_bios)}
           />
         )}
       </div>

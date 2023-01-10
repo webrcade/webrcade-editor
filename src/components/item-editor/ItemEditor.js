@@ -110,6 +110,15 @@ const setDefaultForPcEngineCd = (type, item) => {
   }
 }
 
+const setDefaultForPcfx = (type, item) => {
+  if (type === APP_TYPE_KEYS.BEETLE_PCFX ||
+    type === APP_TYPE_KEYS.PCFX) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
+
 const setDefaultForColeco = (type, item) => {
   if (type === APP_TYPE_KEYS.COLECO ||
     type === APP_TYPE_KEYS.COLEM) {
@@ -191,6 +200,7 @@ export default function ItemEditor(props) {
             setDefaultForPsx(type, clone);
             setDefaultForSegaCd(type, clone);
             setDefaultForPcEngineCd(type, clone);
+            setDefaultForPcfx(type, clone);
           }
         }
         setDefaultForColeco(clone.type, clone);
@@ -213,6 +223,7 @@ export default function ItemEditor(props) {
         setDefaultForPsx(item.type, item); // TODO: Find a better way, maybe required id? on the type
         setDefaultForSegaCd(item.type, item); // TODO: Find a better way, maybe required id? on the type
         setDefaultForPcEngineCd(item.type, item); // TODO: Find a better way, maybe required id? on the type
+        setDefaultForPcfx(item.type, item); // TODO: Find a better way, maybe required id? on the type
         setDefaultForColeco(item.type, item);
 
         if (isDebug) {
