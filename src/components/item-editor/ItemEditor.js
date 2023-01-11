@@ -42,7 +42,14 @@ const getAutoCompleteOptions = (type) => {
   if (!alias) return [];
   const options = GameRegistry.getAutoCompleteOptions(alias);
   if (options) {
-    options.sort();
+    options.sort(
+      function(a, b) {
+        a = a.title.toLowerCase();
+        b = b.title.toLowerCase();
+        if (a < b) return -1;
+        if (a > b) return 1;
+        return 0;
+    });
   }
   return options;
 }
