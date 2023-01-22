@@ -28,7 +28,7 @@ function PropertiesTab(props) {
     object
   } = props;
 
-  const is5200Enabled = AppRegistry.instance.getAppTypes()["5200"];
+  const is5200Enabled = AppRegistry.instance.getAppTypes()["a5200"];
 
   const [app, setApp] = React.useState(is5200Enabled ? "5200" : "lynx");
 
@@ -65,14 +65,14 @@ function PropertiesTab(props) {
             sx={{ width: '50ch' }}
             label="Atari 5200 ROM (URL)"
             onDropText={(text) => {
-              const props = { ...object.props, atari_rom: text }
+              const props = { ...object.props, atari5200_rom: text }
               setObject({ ...object, props })
             }}
             onChange={(e) => {
-              const props = { ...object.props, atari_rom: e.target.value }
+              const props = { ...object.props, atari5200_rom: e.target.value }
               setObject({ ...object, props })
             }}
-            value={Util.asString(object.props.atari_rom)}
+            value={Util.asString(object.props.atari5200_rom)}
           />
         )}
       </div>
