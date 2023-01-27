@@ -28,7 +28,7 @@ function PropertiesTab(props) {
     object
   } = props;
 
-  const is5200Enabled = AppRegistry.instance.getAppTypes()["a5200"];
+  const is5200Enabled = AppRegistry.instance.getAppTypes()["5200"];
 
   const [app, setApp] = React.useState(is5200Enabled ? "5200" : "lynx");
 

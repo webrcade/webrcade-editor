@@ -7,13 +7,14 @@ import {
   LOG
 } from '@webrcade/app-common'
 
-import COLECO_PROPS from './coleco/ColecoProps.json';
+import A5200_PROPS from './props/A5200Props.json';
+import COLECO_PROPS from './props/ColecoProps.json';
 
 class GameRegistryImpl {
   constructor() {
     this.db = {};
 
-    this.CUSTOM_PROPS = {...this.CUSTOM_PROPS, ...COLECO_PROPS};
+    this.CUSTOM_PROPS = {...this.CUSTOM_PROPS, ...COLECO_PROPS, ...A5200_PROPS};
     // console.log(this.CUSTOM_PROPS)
   }
 
@@ -28,6 +29,11 @@ class GameRegistryImpl {
       thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-2600-images/master/Named_Titles/resized',
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-2600-images/master/Named_Snaps/output',
       descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Atari%202600/output'
+    },
+    '5200': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-5200-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-5200-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Atari%205200/output'
     },
     '7800': {
       thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-7800-images/master/Named_Titles/resized',
@@ -476,7 +482,7 @@ class GameRegistryImpl {
       if (type === 'n64' && !this.n64enabled) continue;
 
       // Skip 5200 if not enabled
-      if (type === 'a5200' && !this.a5200enabled) continue;
+      if (type === '5200' && !this.a5200enabled) continue;
 
       let name = this.db[type][md5];
       if (name) {
@@ -498,7 +504,9 @@ class GameRegistryImpl {
         // Lookup custom props
         const props = this.CUSTOM_PROPS[md5];
         if (props) {
-          ret.props = props;
+          const clone = {...props};
+          delete clone._name;
+          ret.props = clone
         }
       }
     }
