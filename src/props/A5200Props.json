@@ -1,0 +1,326 @@
+{
+  "8123393ae9635f6bc15ddc3380b04328": {
+    "_name": "Blue Print",
+    "descriptions": {
+      "*": "Level",
+      "#": "1-2 Players"
+    }
+  },
+  "261702e8d9acbf45d44bb61fd8fa3e17": {
+    "_name": "Centipede",
+    "analog": true,
+    "descriptions": {
+      "*": "1-2 Players",
+      "#": "Game Select"
+    }
+  },
+  "1a64edff521608f9f4fa9d7bdb355087": {
+    "_name": "Countermeasure",
+    "mappings": {
+      "a": "bottomfire",
+      "b": "topfire",
+      "lb": "3",
+      "x": "1",
+      "y": "2",
+      "rb": "3"
+    },
+    "descriptions": {
+      "0": "Auto-Tank/Stop-Tank",
+      "1": "L",
+      "2": "E",
+      "3": "O",
+      "*": "1-2 Players",
+      "#": "Skill Level"
+    }
+  },
+  "27d5f32b0d46d3d80773a2b505f95046": {
+    "_name": "Defender",
+    "mappings": {
+      "a": "bottomfire",
+      "b": "topfire",
+      "x": "8",
+      "y": "8"
+    },
+    "descriptions": {
+      "0": "Demo",
+      "1": "1/Easy",
+      "2": "1/Normal",
+      "3": "1/Hard",
+      "4": "2/Easy",
+      "5": "2/Normal",
+      "6": "2/Hard",
+      "8": "Hyperspace"
+    }
+  },
+  "2c89c9444f99fd7ac83f88278e6772c6": {
+    "_name": "Frogger",
+    "descriptions": {
+      "0": "Joy/Keypad",
+      "2": "Up",
+      "4": "Left",
+      "6": "Right",
+      "8": "Down",
+      "*": "Fast/Slow",
+      "#": "1-2 Players"
+    }
+  },
+  "3ace7c591a88af22bac0c559bbb08f03": {
+    "_name": "Galaxian",
+    "descriptions": {
+      "0": "Skill 0",
+      "1": "Skill 1",
+      "2": "Skill 2",
+      "3": "Skill 3",
+      "4": "Skill 4",
+      "5": "Skill 5",
+      "6": "Skill 6",
+      "7": "Skill 7",
+      "8": "Skill 8",
+      "9": "Skill 9",
+      "*": "Easy",
+      "#": "1-2 Players"
+    }
+  },
+  "85fe2492e2945015000272a9fefc06e3": {
+    "_name": "Gorf",
+    "descriptions": {
+      "*": "Rank Level",
+      "#": "1-2 Players"
+    },
+    "analog": true
+  },
+  "92fd2f43bc0adf2f704666b5244fadf1": {
+    "_name": "Kaboom!",
+    "descriptions": {
+      "1": "1",
+      "2": "2",
+      "3": "3",
+      "*": "Bucket"
+    },
+    "analog": true
+  },
+  "972b6c0dbf5501cacfdc6665e86a796c": {
+    "_name": "Missile Command",
+    "analog": true,
+    "descriptions": {
+      "0": "Skip Mode",
+      "8": "Practice",
+      "*": "1-2 Players",
+      "#": "Bonus"
+    }
+  },
+  "618e3eb7ae2810768e1aefed1bfdcec4": {
+    "_name": "Mountain King",
+    "descriptions": {
+      "*": "Challenge",
+      "#": "Skill Level"
+    }
+  },
+  "f1a4d62d9ba965335fa13354a6264623": {
+    "_name": "Pac-Man",
+    "descriptions": {
+      "*": "1-2 Player",
+      "#": "Game Level"
+    }
+  },
+  "fd0cbea6ad18194be0538844e3d7fdc9": {
+    "_name": "Pole Position",
+    "mappings": {
+      "a": "bottomfire",
+      "b": "topfire",
+      "x": "1",
+      "y": "7",
+      "lb": "1",
+      "rb": "7"
+    },
+    "analog": true,
+    "descriptions": {
+      "1": "Low Gear",
+      "7": "High Gear"
+    }
+  },
+  "2bb928d7516e451c6b0159ac413407de": {
+    "_name": "Real Sports Baseball",
+    "analog": true,
+    "descriptions": {
+      "0": "Voice",
+      "1": "Curve High",
+      "2": "Change High",
+      "3": "Fastball High",
+      "4": "Curve Med",
+      "5": "Change Med",
+      "6": "Fastball Med",
+      "7": "Curve Low",
+      "8": "Change Low",
+      "9": "Fastball Low",
+      "*": "No Wind-Up",
+      "#": "Wind-Up"
+    }
+  },
+  "022c47b525b058796841134bb5c75a18": {
+    "_name": "Real Sports Football",
+    "analog": true,
+    "descriptions": {
+      "1": "1",
+      "2": "2",
+      "3": "3",
+      "4": "4",
+      "5": "5",
+      "6": "6",
+      "*": "2P/Practice",
+      "#": "Reg/Short"
+    }
+  },
+  "3074fad290298d56c67f82e8588c5a8b": {
+    "_name": "Real Sports Soccer",
+    "mappings": {
+      "a": "bottomfire",
+      "b": "topfire",
+      "x": "4",
+      "y": "3",
+      "lb": "1",
+      "rb": "2",
+      "lt": "0",
+      "rt": "0"
+    },
+    "descriptions": {
+      "0": "Ground Kick",
+      "1": "Low Kick",
+      "2": "Med Kick",
+      "3": "High Kick",
+      "4": "Switch Player",
+      "5": "Switch Player",
+      "6": "Switch Player",
+      "7": "Switch Player",
+      "8": "Switch Player",
+      "9": "Switch Player",
+      "*": "Select Opt",
+      "#": "Change Opt"
+    }
+  },
+  "7e683e571cbe7c77f76a1648f906b932": {
+    "_name": "Real Sports Tennis",
+    "analog": true,
+    "descriptions": {
+      "0": "Players/LOB",
+      "1": "Court 1",
+      "2": "Court 2",
+      "3": "Court 3",
+      "4": "Court 4",
+      "5": "Court 5",
+      "6": "Court 6",
+      "7": "Court 7",
+      "8": "Court 8",
+      "9": "Court 9",
+      "*": "Automated",
+      "#": "Skill Level"
+    }
+  },
+  "01b978c3faf5d516f300f98c00377532": {
+    "_name": "River Raid",
+    "descriptions": {
+      "1": "1",
+      "2": "2",
+      "3": "3",
+      "4": "4",
+      "5": "5",
+      "6": "6",
+      "7": "7",
+      "8": "8"
+    },
+    "analog": true
+  },
+  "9b7d9d874a93332582f34d1420e0f574": {
+    "_name": "Qix",
+    "descriptions": {
+      "*": "Game Level",
+      "#": "1-2 Player"
+    }
+  },
+  "5dba5b478b7da9fd2c617e41fb5ccd31": {
+    "_name": "Robotron",
+    "twinStick": true
+  },
+  "6e24e3519458c5cb95a7fd7711131f8d": {
+    "_name": "Space Dungeon",
+    "twinStick": true
+  },
+  "58430368d2c9190083f95ce923f4c996": {
+    "_name": "Space Invaders",
+    "descriptions": {
+      "*": "Game Select",
+      "#": "1-2 Players"
+    }
+  },
+  "802a11dfcba6229cc2f93f0f3aaeb3aa": {
+    "_name": "Space Shuttle",
+    "descriptions": {
+      "0": "PLBD",
+      "1": "SEL/MET SPD",
+      "2": "FUEL",
+      "3": "ALT/Y",
+      "4": "Z",
+      "5": "X",
+      "6": "PITCH",
+      "7": "YAW",
+      "8": "TRN",
+      "9": "ROT",
+      "*": "SSME",
+      "#": "GEAR/L"
+    },
+    "analog": true
+  },
+  "e2d3a3e52bb4e3f7e489acd9974d68e2": {
+    "_name": "Star Raiders",
+    "mappings": {
+      "a": "bottomfire",
+      "b": "topfire",
+      "lb": "*",
+      "rb": "#",
+      "x": "6",
+      "y": "7",
+      "lt": "4",
+      "rt": "8"
+    },
+    "descriptions": {
+      "0": "Spd 0/Abort",
+      "1": "Spd 1/Fore",
+      "2": "Spd 2/Aft",
+      "3": "Spd 3/Scan",
+      "4": "Spd 4/Chart",
+      "5": "Spd 5/Tracking",
+      "6": "Spd 6/Shields",
+      "7": "Spd 7/Attack",
+      "8": "Spd 8/Hyperspace",
+      "9": "Spd 9/Manual",
+      "*": "Speed Mode",
+      "#": "Control Mode/Game Select"
+    },
+    "analog": true
+  },
+  "00beaa8405c7fb90d86be5bb1b01ea66": {
+    "_name": "Star Wars - The Arcade Game",
+    "analog": true
+  },
+  "865570ff9052c1704f673e6222192336": {
+    "_name": "Super Breakout",
+    "analog": true,
+    "descriptions": {
+      "1": "Extra Games",
+      "*": "1-4 Players",
+      "#": "Game Select"
+    }
+  },
+  "496b6a002bc7d749c02014f7ec6c303c": {
+    "_name": "Tempest (Prototype)",
+    "analog": true
+  },
+  "560b68b7f83077444a57ebe9f932905a": {
+    "_name": "Wizard of War",
+    "swap": true,
+    "descriptions": {
+      "*": "Worriors",
+      "#": "1-2 Players"
+    }
+  }
+}

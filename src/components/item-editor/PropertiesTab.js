@@ -20,10 +20,12 @@ const PROP_3BUTTON = "PROP_3BUTTON";
 const PROP_6BUTTON = "PROP_6BUTTON";
 const PROP_ADDITIONAL_ROMS = "PROP_ADDITIONAL_ROMS";
 const PROP_ANALOG = "PROP_ANALOG";
+const PROP_COLECO_CONTROLS_MODE = "PROP_COLECO_CONTROLS_MODE";
 const PROP_DISABLE_LOOKUP = "PROP_DISABLE_LOOKUP";
 const PROP_DISABLE_MEMCARD1 = "PROP_DISABLE_MEMCARD1";
 const PROP_DISCS = "PROP_DISCS";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
+const PROP_TWIN_STICK = "PROP_TWIN_STICK";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
 const PROP_FORCE_PAL = "PROP_FORCE_PAL";
 const PROP_FORCE_YM2413 = "PROP_FORCE_YM2413";
@@ -58,6 +60,7 @@ const ALL_PROPS = [
   PROP_6BUTTON,
   PROP_ADDITIONAL_ROMS,
   PROP_ANALOG,
+  PROP_COLECO_CONTROLS_MODE,
   PROP_DISABLE_LOOKUP,
   PROP_DISABLE_MEMCARD1,
   PROP_DISCS,
@@ -86,6 +89,7 @@ const ALL_PROPS = [
   PROP_SMS_HW_TYPE,
   PROP_SNES_MULTITAP,
   PROP_SWAP_CONTROLLERS,
+  PROP_TWIN_STICK,
   PROP_VOL_ADJUST,
   PROP_ZOOM_LEVEL
 ];
@@ -261,6 +265,27 @@ export const buildFieldMap = () => {
     },
     [APP_TYPE_KEYS.RETRO_PCE_FAST]: {
       PROP_DISCS, PROP_ZOOM_LEVEL, PROP_6BUTTON, PROP_MAP_RUN_SELECT
+    },
+    [APP_TYPE_KEYS.COLECO]: {
+      PROP_ROM,  PROP_ZOOM_LEVEL, PROP_COLECO_CONTROLS_MODE
+    },
+    [APP_TYPE_KEYS.COLEM]: {
+      PROP_ROM,  PROP_ZOOM_LEVEL, PROP_COLECO_CONTROLS_MODE
+    },
+    [APP_TYPE_KEYS.A5200]: {
+      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SWAP_CONTROLLERS, PROP_ANALOG, PROP_TWIN_STICK
+    },
+    [APP_TYPE_KEYS.AT5200]: {
+      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SWAP_CONTROLLERS, PROP_ANALOG, PROP_TWIN_STICK
+    },
+    [APP_TYPE_KEYS.RETRO_A5200]: {
+      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SWAP_CONTROLLERS, PROP_ANALOG, PROP_TWIN_STICK
+    },
+    [APP_TYPE_KEYS.PCFX]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.BEETLE_PCFX]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL
     },
   }
 };
@@ -455,19 +480,6 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
-      {hasProp(object, PROP_SWAP_CONTROLLERS) ? (
-        <div>
-          <EditorSwitch
-            label="Swap Controllers"
-            tooltip="Whether to swap the controller ports. This is typically enabled when games default to using port 2 (versus port 1)."
-            onChange={(e) => {
-              const props = { ...object.props, swap: e.target.checked }
-              setObject({ ...object, props })
-            }}
-            checked={Util.asBoolean(object.props.swap)}
-          />
-        </div>
-      ) : null}
       {hasProp(object, PROP_SMS_HW_TYPE) ? (
         <div>
           <EditorSelect
@@ -606,6 +618,58 @@ export default function PropertiesTab(props) {
               const props = { ...object.props, zoomLevel: parseInt(val) }
               setObject({ ...object, props })
             }} />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_SWAP_CONTROLLERS) ? (
+        <div>
+          <EditorSwitch
+            label="Swap Controllers"
+            tooltip="Whether to swap the controller ports. This is typically enabled when games default to using port 2 (versus port 1)."
+            onChange={(e) => {
+              const props = { ...object.props, swap: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.swap)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_COLECO_CONTROLS_MODE) ? (
+        <div>
+          <EditorSelect
+            label="Controller"
+            tooltip="The controller type to use for the game"
+            value={object.props.controlsMode ? object.props.controlsMode : 0}
+            menuItems={[
+              { value: 0, name: "Standard" },
+              { value: 1, name: "Super Action" },
+              { value: 2, name: "Driving" },
+              { value: 3, name: "Roller" },
+            ]}
+            onChange={(e) => {
+              const value = e.target.value;
+              const props = { ...object.props, controlsMode: value }
+              props.mappings = {
+                "a": "firel",
+                "b": "firer",
+              };
+              if (value === 3 /* Roller */) {
+                props.mappings = {
+                  "a": "firel2",
+                  "b": "firer2",
+                  "x": "firel",
+                  "y": "firer"
+                }
+              } else if (value === 1 /* Super Action*/) {
+                props.mappings =  {
+                  "a": "firel",
+                  "b": "firer",
+                  "x": "purple",
+                  "y": "blue"
+                }
+              }
+              setObject({ ...object, props })
+            }}
+          />
         </div>
       ) : null}
       {hasProp(object, PROP_6BUTTON) ? (
@@ -892,6 +956,19 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.analog)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_TWIN_STICK) ? (
+        <div>
+          <EditorSwitch
+            label="Twin stick"
+            tooltip="Whether to enable twin stick style controls."
+            onChange={(e) => {
+              const props = { ...object.props, twinStick: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.twinStick)}
           />
         </div>
       ) : null}

@@ -7,9 +7,15 @@ import {
   LOG
 } from '@webrcade/app-common'
 
+import A5200_PROPS from './props/A5200Props.json';
+import COLECO_PROPS from './props/ColecoProps.json';
+
 class GameRegistryImpl {
   constructor() {
     this.db = {};
+
+    this.CUSTOM_PROPS = {...this.CUSTOM_PROPS, ...COLECO_PROPS, ...A5200_PROPS};
+    // console.log(this.CUSTOM_PROPS)
   }
 
   DB_FILE = resolvePath("roms.json.zip");
@@ -23,6 +29,11 @@ class GameRegistryImpl {
       thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-2600-images/master/Named_Titles/resized',
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-2600-images/master/Named_Snaps/output',
       descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Atari%202600/output'
+    },
+    '5200': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-5200-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-5200-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Atari%205200/output'
     },
     '7800': {
       thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-7800-images/master/Named_Titles/resized',
@@ -154,6 +165,16 @@ class GameRegistryImpl {
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-pcecd-images/master/Named_Snaps/output',
       descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/NEC%20PC%20Engine-CD/output'
     },
+    'coleco': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-coleco-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-coleco-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/ColecoVision/output'
+    },
+    'pcfx': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-pcfx-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-pcfx-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/NEC%20PC-FX/output'
+    },
   }
 
   CUSTOM_PROPS = {
@@ -266,6 +287,7 @@ class GameRegistryImpl {
     try {
       const expAppsEnabled = settings.isExpAppsEnabled();
       this.n64enabled = expAppsEnabled;
+      this.a5200enabled = expAppsEnabled;
 
       const fad = new FetchAppData(DB_FILE);
       const res = await fad.fetch();
@@ -348,7 +370,7 @@ class GameRegistryImpl {
       AUTOCOMPLETE[type] = opts;
       return opts;
     } else {
-      if (type in this.db._by_name) {
+      if (this.db && type in this.db._by_name) {
         const opts = [];
         entries = this.db._by_name[type];
         for (let f in entries) {
@@ -459,6 +481,9 @@ class GameRegistryImpl {
       // Skip n64 if not enabled
       if (type === 'n64' && !this.n64enabled) continue;
 
+      // Skip 5200 if not enabled
+      if (type === '5200' && !this.a5200enabled) continue;
+
       let name = this.db[type][md5];
       if (name) {
         // Add titles
@@ -479,7 +504,9 @@ class GameRegistryImpl {
         // Lookup custom props
         const props = this.CUSTOM_PROPS[md5];
         if (props) {
-          ret.props = props;
+          const clone = {...props};
+          delete clone._name;
+          ret.props = clone
         }
       }
     }

@@ -18,6 +18,11 @@ import SelectType from './SelectType';
 import ThumbnailTab from '../common/editor/ThumbnailTab';
 import { GlobalHolder, Global } from '../../Global';
 
+import A5200DescriptionsTab from './a5200/A5200DescriptionsTab';
+import A5200MappingsTab from './a5200/A5200MappingsTab';
+import ColecoDescriptionsTab from './coleco/ColecoDescriptionsTab';
+import ColecoMappingsTab from './coleco/ColecoMappingsTab';
+
 import {
   AppRegistry, APP_TYPE_KEYS, LOG, isEmptyString, uuidv4
 } from '@webrcade/app-common'
@@ -39,7 +44,14 @@ const getAutoCompleteOptions = (type) => {
   if (!alias) return [];
   const options = GameRegistry.getAutoCompleteOptions(alias);
   if (options) {
-    options.sort();
+    options.sort(
+      function(a, b) {
+        a = a.title.toLowerCase();
+        b = b.title.toLowerCase();
+        if (a < b) return -1;
+        if (a > b) return 1;
+        return 0;
+    });
   }
   return options;
 }
@@ -107,11 +119,47 @@ const setDefaultForPcEngineCd = (type, item) => {
   }
 }
 
+const setDefaultForPcfx = (type, item) => {
+  if (type === APP_TYPE_KEYS.BEETLE_PCFX ||
+    type === APP_TYPE_KEYS.PCFX) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
+
+const setDefaultForColeco = (type, item) => {
+  if (type === APP_TYPE_KEYS.COLECO ||
+    type === APP_TYPE_KEYS.COLEM) {
+    if (!item.props.mappings || Object.keys(item.props.mappings).length === 0) {
+      item.props.mappings = {
+        "a": "firel",
+        "b": "firer",
+      };
+    }
+  }
+}
+
+const setDefaultForA5200 = (type, item) => {
+  if (type === APP_TYPE_KEYS.A5200 ||
+    type === APP_TYPE_KEYS.RETRO_A5200) {
+    if (!item.props.mappings || Object.keys(item.props.mappings).length === 0) {
+      item.props.mappings = {
+        "a": "bottomfire",
+        "b": "topfire",
+      };
+    }
+  }
+}
+
 export default function ItemEditor(props) {
   const [tabValue, setTabValue] = React.useState(0);
   const [item, setItem] = React.useState({});
   const [isOpen, setOpen] = React.useState(false);
   const [isCreate, setCreate] = React.useState(false);
+
+  const isColeco = (item.type === APP_TYPE_KEYS.COLEM || item.type === APP_TYPE_KEYS.COLECO);
+  const isA5200 = (item.type === APP_TYPE_KEYS.A5200 || item.type === APP_TYPE_KEYS.RETRO_A5200);
 
   GlobalHolder.setItemEditorOpen = (open, isCreate = false) => {
     setCreate(isCreate);
@@ -131,10 +179,41 @@ export default function ItemEditor(props) {
       AppRegistry.instance.getDefaultBackgroundForType(item.type);
   }
 
-  const genTab = 0;
-  const propsTab = 1;
-  const thumbTab = 2;
-  const bgTab = 3;
+  let index = 0;
+  let genTab = index++;
+  let propsTab = index++;
+
+  let a5200MappingsTab = 0;
+  let a5200DescriptionsTab = 0;
+  if (isA5200) {
+    a5200MappingsTab = index++;
+    a5200DescriptionsTab = index++;
+  }
+
+  let colecoMappingsTab = 0;
+  let colecoDescriptionsTab = 0;
+  if (isColeco) {
+    colecoMappingsTab = index++;
+    colecoDescriptionsTab = index++;
+  }
+
+  let thumbTab = index++;
+  let bgTab = index++;
+
+  const tabs = [
+    <Tab label="General" key={genTab} />,
+    <Tab label="Properties" key={propsTab} />
+  ];
+  if (isA5200) {
+    tabs.push(<Tab label="Mappings" key={a5200MappingsTab} />);
+    tabs.push(<Tab label="Descriptions" key={a5200DescriptionsTab} />);
+  }
+  if (isColeco) {
+    tabs.push(<Tab label="Mappings" key={colecoMappingsTab} />);
+    tabs.push(<Tab label="Descriptions" key={colecoDescriptionsTab} />);
+  }
+  tabs.push(<Tab label="Thumbnail" key={thumbTab} />);
+  tabs.push(<Tab label="Background" key={bgTab} />);
 
   return (
     <Editor
@@ -156,8 +235,11 @@ export default function ItemEditor(props) {
             setDefaultForPsx(type, clone);
             setDefaultForSegaCd(type, clone);
             setDefaultForPcEngineCd(type, clone);
+            setDefaultForPcfx(type, clone);
           }
         }
+        setDefaultForColeco(clone.type, clone);
+        setDefaultForA5200(clone.type, clone);
         setItem(clone);
 
         forceUpdate();
@@ -171,17 +253,15 @@ export default function ItemEditor(props) {
           return false;
         }
 
-        //  console.log(AppRegistry.instance.getDefaultsForType(item.type));
-        //  console.log(item);
-
         // Remove the default values
         removeDefaults(item, AppRegistry.instance.getDefaultsForType(item.type));
-        // PSX
+
         setDefaultForPsx(item.type, item); // TODO: Find a better way, maybe required id? on the type
-        // Sega CD
         setDefaultForSegaCd(item.type, item); // TODO: Find a better way, maybe required id? on the type
-        // PC Engine CD
         setDefaultForPcEngineCd(item.type, item); // TODO: Find a better way, maybe required id? on the type
+        setDefaultForPcfx(item.type, item); // TODO: Find a better way, maybe required id? on the type
+        setDefaultForColeco(item.type, item);
+        setDefaultForA5200(item.type, item);
 
         if (isDebug) {
           LOG.info(item);
@@ -201,12 +281,7 @@ export default function ItemEditor(props) {
 
         return true;
       }}
-      tabs={[
-        <Tab label="General" key={genTab} />,
-        <Tab label="Properties" key={propsTab} />,
-        <Tab label="Thumbnail" key={thumbTab} />,
-        <Tab label="Background" key={bgTab} />,
-      ]}
+      tabs={tabs}
       tabPanels={(
         <>
           <GeneralTab
@@ -330,6 +405,30 @@ export default function ItemEditor(props) {
             validator={validator}
             addValidateCallback={addValidatorCallback}
           />
+          {isA5200 && <A5200MappingsTab
+            tabValue={tabValue}
+            tabIndex={a5200MappingsTab}
+            object={item}
+            setObject={setItem}
+          />}
+          {isA5200 && <A5200DescriptionsTab
+            tabValue={tabValue}
+            tabIndex={a5200DescriptionsTab}
+            object={item}
+            setObject={setItem}
+          />}
+          {isColeco && <ColecoMappingsTab
+            tabValue={tabValue}
+            tabIndex={colecoMappingsTab}
+            object={item}
+            setObject={setItem}
+          />}
+          {isColeco && <ColecoDescriptionsTab
+            tabValue={tabValue}
+            tabIndex={colecoDescriptionsTab}
+            object={item}
+            setObject={setItem}
+          />}
           <ThumbnailTab
             tabValue={tabValue}
             tabIndex={thumbTab}
