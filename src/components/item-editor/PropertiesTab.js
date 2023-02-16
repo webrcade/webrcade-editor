@@ -20,6 +20,7 @@ const PROP_3BUTTON = "PROP_3BUTTON";
 const PROP_6BUTTON = "PROP_6BUTTON";
 const PROP_ADDITIONAL_ROMS = "PROP_ADDITIONAL_ROMS";
 const PROP_ANALOG = "PROP_ANALOG";
+const PROP_CD_SPEED_HACK = "PROP_CD_SPEED_HACK";
 const PROP_COLECO_CONTROLS_MODE = "PROP_COLECO_CONTROLS_MODE";
 const PROP_DISABLE_LOOKUP = "PROP_DISABLE_LOOKUP";
 const PROP_DISABLE_MEMCARD1 = "PROP_DISABLE_MEMCARD1";
@@ -37,6 +38,7 @@ const PROP_NEOGEO_BIOS = "PROP_NEOGEO_BIOS";
 const PROP_NEOGEO_FORCE_AES = "PROP_NEOGEO_FORCE_AES";
 const PROP_PARENT_ROM = "PROP_PARENT_ROM";
 const PROP_PLAYER_ORDER = "PROP_PLAYER_ORDER";
+const PROP_REGION = "PROP_REGION";
 const PROP_ROM = "PROP_ROM";
 const PROP_ROTATED = "PROP_ROTATED";
 const PROP_ROTATION = "PROP_ROTATION";
@@ -51,6 +53,7 @@ const PROP_GB_COLORS = "PROP_GB_COLORS";
 const PROP_GB_PALETTE = "PROP_GB_PALETTE";
 const PROP_GB_BORDER = "PROP_GB_BORDER";
 const PROP_SKIP_BIOS = "PROP_SKIP_BIOS";
+const PROP_SKIP_CD_LOADING = "PROP_SKIP_CD_LOADING";
 const PROP_SNES_MULTITAP = "PROP_SNES_MULTITAP";
 const PROP_VOL_ADJUST = "PROP_VOL_ADJUST";
 const PROP_ZOOM_LEVEL = "PROP_ZOOM_LEVEL";
@@ -60,6 +63,7 @@ const ALL_PROPS = [
   PROP_6BUTTON,
   PROP_ADDITIONAL_ROMS,
   PROP_ANALOG,
+  PROP_CD_SPEED_HACK,
   PROP_COLECO_CONTROLS_MODE,
   PROP_DISABLE_LOOKUP,
   PROP_DISABLE_MEMCARD1,
@@ -78,6 +82,7 @@ const ALL_PROPS = [
   PROP_MULTITAP,
   PROP_PARENT_ROM,
   PROP_PLAYER_ORDER,
+  PROP_REGION,
   PROP_ROM,
   PROP_ROTATED,
   PROP_ROTATION,
@@ -86,6 +91,7 @@ const ALL_PROPS = [
   PROP_SAMPLES,
   PROP_SAVE_TYPE,
   PROP_SKIP_BIOS,
+  PROP_SKIP_CD_LOADING,
   PROP_SMS_HW_TYPE,
   PROP_SNES_MULTITAP,
   PROP_SWAP_CONTROLLERS,
@@ -286,6 +292,12 @@ export const buildFieldMap = () => {
     },
     [APP_TYPE_KEYS.BEETLE_PCFX]: {
       PROP_DISCS, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.NEOGEOCD]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_SKIP_CD_LOADING, PROP_CD_SPEED_HACK, PROP_REGION
+    },
+    [APP_TYPE_KEYS.RETRO_NEOCD]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_SKIP_CD_LOADING, PROP_CD_SPEED_HACK, PROP_REGION
     },
   }
 };
@@ -761,6 +773,24 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_REGION) ? (
+        <div>
+          <EditorSelect
+            label="Region"
+            tooltip="The region of the console."
+            value={object.props.region ? object.props.region : 0}
+            menuItems={[
+              { value: 0, name: "United States" },
+              { value: 1, name: "Japan" },
+              { value: 2, name: "Europe" }
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, region: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
       {hasProp(object, PROP_ROTATION_LNX) ? (
         <div>
           <EditorSelect
@@ -1011,7 +1041,35 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_SKIP_CD_LOADING) ? (
+        <div>
+          <EditorSwitch
+            label="Skip CD loading"
+            tooltip="Auto fast forwards CD loading sequences."
+            onChange={(e) => {
+              const props = { ...object.props, skipCdLoading: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.skipCdLoading)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_CD_SPEED_HACK) ? (
+        <div>
+          <EditorSwitch
+            label="CD speed hack"
+            tooltip="Modifies the CD-ROM BIOS to perform faster (helpful for less powerful devices)."
+            onChange={(e) => {
+              const props = { ...object.props, cdSpeedHack: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.cdSpeedHack)}
+          />
+        </div>
+      ) : null}
     </EditorTabPanel>
   );
 }
+
+
 
