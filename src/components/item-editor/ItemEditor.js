@@ -167,6 +167,15 @@ const setDefaultForA5200 = (type, item) => {
   }
 }
 
+const setDefaultForQuake = (type, item) => {
+  if (type === APP_TYPE_KEYS.QUAKE ||
+    type === APP_TYPE_KEYS.TYRQUAKE) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
+
 export default function ItemEditor(props) {
   const [tabValue, setTabValue] = React.useState(0);
   const [item, setItem] = React.useState({});
@@ -255,6 +264,7 @@ export default function ItemEditor(props) {
         }
         setDefaultForColeco(clone.type, clone);
         setDefaultForA5200(clone.type, clone);
+        setDefaultForQuake(clone.type, clone);
         setDefaultForNeoGeoCd(clone.type, clone);
         setItem(clone);
 
@@ -279,6 +289,7 @@ export default function ItemEditor(props) {
         setDefaultForPcfx(item.type, item); // TODO: Find a better way, maybe required id? on the type
         setDefaultForColeco(item.type, item);
         setDefaultForA5200(item.type, item);
+        setDefaultForQuake(item.type, item);
 
         if (isDebug) {
           LOG.info(item);

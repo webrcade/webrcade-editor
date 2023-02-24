@@ -14,12 +14,14 @@ import EditorUrlField from '../common/editor/EditorUrlField';
 import SelectPalette from './gb/SelectPalette';
 import SelectPlayerOrder from './SelectPlayerOrder';
 import VolumeAdjust from './VolumeAdjust';
+import WadSelector from './quake/WadSelector';
 import ZoomLevel from './ZoolLevel';
 
 const PROP_3BUTTON = "PROP_3BUTTON";
 const PROP_6BUTTON = "PROP_6BUTTON";
 const PROP_ADDITIONAL_ROMS = "PROP_ADDITIONAL_ROMS";
 const PROP_ANALOG = "PROP_ANALOG";
+const PROP_ARCHIVE = "PROP_ARCHIVE";
 const PROP_CD_SPEED_HACK = "PROP_CD_SPEED_HACK";
 const PROP_COLECO_CONTROLS_MODE = "PROP_COLECO_CONTROLS_MODE";
 const PROP_DISABLE_LOOKUP = "PROP_DISABLE_LOOKUP";
@@ -56,6 +58,7 @@ const PROP_SKIP_BIOS = "PROP_SKIP_BIOS";
 const PROP_SKIP_CD_LOADING = "PROP_SKIP_CD_LOADING";
 const PROP_SNES_MULTITAP = "PROP_SNES_MULTITAP";
 const PROP_VOL_ADJUST = "PROP_VOL_ADJUST";
+const PROP_WAD_SELECTOR = "PROP_WAD_SELECTOR";
 const PROP_ZOOM_LEVEL = "PROP_ZOOM_LEVEL";
 
 const ALL_PROPS = [
@@ -63,6 +66,7 @@ const ALL_PROPS = [
   PROP_6BUTTON,
   PROP_ADDITIONAL_ROMS,
   PROP_ANALOG,
+  PROP_ARCHIVE,
   PROP_CD_SPEED_HACK,
   PROP_COLECO_CONTROLS_MODE,
   PROP_DISABLE_LOOKUP,
@@ -97,6 +101,7 @@ const ALL_PROPS = [
   PROP_SWAP_CONTROLLERS,
   PROP_TWIN_STICK,
   PROP_VOL_ADJUST,
+  PROP_WAD_SELECTOR,
   PROP_ZOOM_LEVEL
 ];
 
@@ -299,6 +304,12 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.RETRO_NEOCD]: {
       PROP_DISCS, PROP_ZOOM_LEVEL, PROP_SKIP_CD_LOADING, PROP_CD_SPEED_HACK, PROP_REGION
     },
+    [APP_TYPE_KEYS.QUAKE]: {
+      PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_WAD_SELECTOR
+    },
+    [APP_TYPE_KEYS.TYRQUAKE]: {
+      PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_WAD_SELECTOR
+    },
   }
 };
 
@@ -345,6 +356,10 @@ export default function PropertiesTab(props) {
           if (hasProp(object, PROP_ROM)) {
             validator.checkMinLength(tabIndex, PROP_ROM, object.props.rom);
           }
+          // Archive
+          if (hasProp(object, PROP_ARCHIVE)) {
+            validator.checkMinLength(tabIndex, PROP_ARCHIVE, object.props.archive);
+          }
         }
       );
     }
@@ -371,6 +386,31 @@ export default function PropertiesTab(props) {
             value={Util.asString(object.props.rom)}
             error={!validator.isValid(tabIndex, PROP_ROM)}
           />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_ARCHIVE) ? (
+        <div>
+          <EditorUrlField
+            required
+            sx={{ width: '50ch' }}
+            label="Archive (URL)"
+            // helperText="(.zip file containing the contents)"
+            onDropText={(text) => {
+              const props = { ...object.props, archive: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, archive: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.archive)}
+            error={!validator.isValid(tabIndex, PROP_ARCHIVE)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_WAD_SELECTOR) ? (
+        <div>
+          <WadSelector object={object} setObject={setObject}/>
         </div>
       ) : null}
       {hasProp(object, PROP_PARENT_ROM) ? (
