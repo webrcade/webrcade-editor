@@ -6,6 +6,7 @@ const AUTO = 0;
 const QUAKE = 1;
 const SCOURGE = 2;
 const DISSOLUTION = 3;
+const DOPA = 4;
 const CUSTOM = 100;
 
 const getWadType = (t) => {
@@ -22,6 +23,8 @@ const getWadPath = (t, path) => {
       return "hipnotic/";
     case DISSOLUTION:
       return "rogue/";
+    case DOPA:
+      return "dopa/";
     case CUSTOM:
       return Util.asString(path);
     default:
@@ -42,6 +45,7 @@ export default function WadSelector(props) {
             { value: QUAKE, name: "Quake" },
             { value: SCOURGE, name: "Scourge of Armagon (Pack 1)" },
             { value: DISSOLUTION, name: "Dissolution of Eternity (Pack 2)" },
+            { value: DOPA, name: "Dimension of the Past (Pack 3)" },
             { value: CUSTOM, name: "Custom" },
           ]}
           onChange={(e) => {
