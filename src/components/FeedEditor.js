@@ -39,6 +39,7 @@ function PropertiesTab(props) {
     { value: "pcfx", name: "NEC PC-FX"},
     { value: "segacd", name: "Sega CD" },
     { value: "neogeo", name: "SNK Neo Geo" },
+    { value: "neogeocd", name: "SNK Neo Geo CD" },
     { value: "psx", name: "Sony PlayStation" },
   ]
   if (is5200Enabled) {
@@ -124,6 +125,23 @@ function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             value={Util.asString(object.props.neogeo_bios)}
+          />
+        )}
+      </div>
+      <div>
+        {app === "neogeocd" && (
+          <EditorUrlField
+            sx={{ width: '50ch' }}
+            label="Neo Geo CD BIOS (URL)"
+            onDropText={(text) => {
+              const props = { ...object.props, neogeocd_bios: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, neogeocd_bios: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.neogeocd_bios)}
           />
         )}
       </div>

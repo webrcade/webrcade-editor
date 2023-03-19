@@ -119,6 +119,21 @@ const setDefaultForPcEngineCd = (type, item) => {
   }
 }
 
+const setDefaultForNeoGeoCd = (type, item) => {
+  if (type === APP_TYPE_KEYS.RETRO_NEOCD ||
+    type === APP_TYPE_KEYS.NEOGEOCD) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+    if (item.props.cdSpeedHack === undefined) {
+      item.props.cdSpeedHack = true;
+    }
+    if (item.props.skipCdLoading === undefined) {
+      item.props.skipCdLoading = true;
+    }
+  }
+}
+
 const setDefaultForPcfx = (type, item) => {
   if (type === APP_TYPE_KEYS.BEETLE_PCFX ||
     type === APP_TYPE_KEYS.PCFX) {
@@ -148,6 +163,15 @@ const setDefaultForA5200 = (type, item) => {
         "a": "bottomfire",
         "b": "topfire",
       };
+    }
+  }
+}
+
+const setDefaultForQuake = (type, item) => {
+  if (type === APP_TYPE_KEYS.QUAKE ||
+    type === APP_TYPE_KEYS.TYRQUAKE) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
     }
   }
 }
@@ -240,6 +264,8 @@ export default function ItemEditor(props) {
         }
         setDefaultForColeco(clone.type, clone);
         setDefaultForA5200(clone.type, clone);
+        setDefaultForQuake(clone.type, clone);
+        setDefaultForNeoGeoCd(clone.type, clone);
         setItem(clone);
 
         forceUpdate();
@@ -259,9 +285,11 @@ export default function ItemEditor(props) {
         setDefaultForPsx(item.type, item); // TODO: Find a better way, maybe required id? on the type
         setDefaultForSegaCd(item.type, item); // TODO: Find a better way, maybe required id? on the type
         setDefaultForPcEngineCd(item.type, item); // TODO: Find a better way, maybe required id? on the type
+        setDefaultForNeoGeoCd(item.type, item);
         setDefaultForPcfx(item.type, item); // TODO: Find a better way, maybe required id? on the type
         setDefaultForColeco(item.type, item);
         setDefaultForA5200(item.type, item);
+        setDefaultForQuake(item.type, item);
 
         if (isDebug) {
           LOG.info(item);
