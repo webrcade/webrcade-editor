@@ -11,7 +11,7 @@ import EditorSwitch from './common/editor/EditorSwitch';
 import EditorTabPanel from './common/editor/EditorTabPanel';
 import { Global, GlobalHolder } from '../Global';
 
-import { dropbox, settings } from '@webrcade/app-common'
+import { dropbox, settings, Resources, SCREEN_SIZES, TEXT_IDS } from '@webrcade/app-common'
 
 
 function CloudStorageTab(props) {
@@ -76,11 +76,11 @@ function DisplayTab(props) {
         <EditorSelect
           label="Screen Size"
           tooltip="The screen size to use for displaying the application."
-          value={values.screenSize ? values.screenSize : "native"}
+          value={values.screenSize ? values.screenSize : SCREEN_SIZES.SS_NATIVE}
           menuItems={[
-            { value: "native", name: "Native" },
-            { value: "16:9", name: "16:9" },
-            { value: "fill", name: "Fill" },
+            { value: SCREEN_SIZES.SS_NATIVE, name: Resources.getText(TEXT_IDS.SS_NATIVE)},
+            { value: SCREEN_SIZES.SS_16_9, name: Resources.getText(TEXT_IDS.SS_16_9)},
+            { value: SCREEN_SIZES.SS_FILL, name: Resources.getText(TEXT_IDS.SS_FILL)},
           ]}
           onChange={(e) => {
             const vals = { ...values, screenSize: e.target.value }
