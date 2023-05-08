@@ -110,52 +110,52 @@ let FIELD_MAP = {}
 export const buildFieldMap = () => {
   FIELD_MAP = {
     [APP_TYPE_KEYS.A2600]: {
-      PROP_ROM, PROP_SWAP_CONTROLLERS
+      PROP_ROM, PROP_SWAP_CONTROLLERS, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.JAVATARI]: {
-      PROP_ROM, PROP_SWAP_CONTROLLERS
+      PROP_ROM, PROP_SWAP_CONTROLLERS, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.A7800]: {
-      PROP_ROM
+      PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.JS7800]: {
-      PROP_ROM
+      PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.NES]: {
-      PROP_ROM, PROP_FORCE_PAL
+      PROP_ROM, PROP_FORCE_PAL, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.FCEUX]: {
-      PROP_ROM, PROP_FORCE_PAL
+      PROP_ROM, PROP_FORCE_PAL, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.SNES]: {
-      PROP_ROM, PROP_FORCE_PAL, PROP_SNES_MULTITAP
+      PROP_ROM, PROP_FORCE_PAL, PROP_SNES_MULTITAP, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.SNES9X]: {
-      PROP_ROM, PROP_FORCE_PAL, PROP_SNES_MULTITAP
+      PROP_ROM, PROP_FORCE_PAL, PROP_SNES_MULTITAP, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.GENESIS]: {
-      PROP_ROM, PROP_FORCE_PAL, PROP_3BUTTON
+      PROP_ROM, PROP_FORCE_PAL, PROP_3BUTTON, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.GENPLUSGX_MD]: {
-      PROP_ROM, PROP_FORCE_PAL
+      PROP_ROM, PROP_FORCE_PAL, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.GG]: {
-      PROP_ROM
+      PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.GENPLUSGX_GG]: {
-      PROP_ROM
+      PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.SMS]: {
-      PROP_ROM, PROP_FORCE_PAL, PROP_SMS_HW_TYPE, PROP_FORCE_YM2413
+      PROP_ROM, PROP_FORCE_PAL, PROP_SMS_HW_TYPE, PROP_FORCE_YM2413, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.GENPLUSGX_SMS]: {
-      PROP_ROM, PROP_FORCE_PAL, PROP_SMS_HW_TYPE, PROP_FORCE_YM2413
+      PROP_ROM, PROP_FORCE_PAL, PROP_SMS_HW_TYPE, PROP_FORCE_YM2413, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.SG1000]: {
-      PROP_ROM, PROP_FORCE_PAL
+      PROP_ROM, PROP_FORCE_PAL, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.GENPLUSGX_SG]: {
-      PROP_ROM, PROP_FORCE_PAL
+      PROP_ROM, PROP_FORCE_PAL, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.DOOM]: {
       PROP_DOOM_GAME
@@ -164,22 +164,22 @@ export const buildFieldMap = () => {
       PROP_DOOM_GAME
     },
     [APP_TYPE_KEYS.GBA]: {
-      PROP_ROM, PROP_ROTATION, PROP_RTC, PROP_MIRRORING, PROP_SAVE_TYPE, PROP_FLASH_SIZE, PROP_DISABLE_LOOKUP
+      PROP_ROM, PROP_ROTATION, PROP_RTC, PROP_MIRRORING, PROP_SAVE_TYPE, PROP_FLASH_SIZE, PROP_DISABLE_LOOKUP, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.VBA_M_GBA]: {
-      PROP_ROM, PROP_ROTATION, PROP_RTC, PROP_MIRRORING, PROP_SAVE_TYPE, PROP_FLASH_SIZE, PROP_DISABLE_LOOKUP
+      PROP_ROM, PROP_ROTATION, PROP_RTC, PROP_MIRRORING, PROP_SAVE_TYPE, PROP_FLASH_SIZE, PROP_DISABLE_LOOKUP, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.GB]: {
-      PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_PALETTE, PROP_GB_BORDER
+      PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_PALETTE, PROP_GB_BORDER, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.VBA_M_GB]: {
-      PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_PALETTE, PROP_GB_BORDER
+      PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_PALETTE, PROP_GB_BORDER, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.GBC]: {
-      PROP_ROM
+      PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.VBA_M_GBC]: {
-      PROP_ROM
+      PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.N64]: {
       PROP_ROM, PROP_ZOOM_LEVEL
@@ -188,76 +188,76 @@ export const buildFieldMap = () => {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.PCE]: {
-      PROP_ROM, PROP_6BUTTON, PROP_MAP_RUN_SELECT
+      PROP_ROM, PROP_6BUTTON, PROP_MAP_RUN_SELECT, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.MEDNAFEN_PCE]: {
-      PROP_ROM, PROP_6BUTTON, PROP_MAP_RUN_SELECT
+      PROP_ROM, PROP_6BUTTON, PROP_MAP_RUN_SELECT, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.SGX]: {
-      PROP_ROM, PROP_6BUTTON
+      PROP_ROM, PROP_6BUTTON, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.MEDNAFEN_SGX]: {
-      PROP_ROM, PROP_6BUTTON
+      PROP_ROM, PROP_6BUTTON, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.VB]: {
-      PROP_ROM
+      PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.MEDNAFEN_VB]: {
-      PROP_ROM
+      PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.NGC]: {
-      PROP_ROM, PROP_LANGUAGE
+      PROP_ROM, PROP_LANGUAGE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.MEDNAFEN_NGC]: {
-      PROP_ROM, PROP_LANGUAGE
+      PROP_ROM, PROP_LANGUAGE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.NGP]: {
-      PROP_ROM, PROP_LANGUAGE
+      PROP_ROM, PROP_LANGUAGE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.MEDNAFEN_NGP]: {
-      PROP_ROM, PROP_LANGUAGE
+      PROP_ROM, PROP_LANGUAGE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.WSC]: {
-      PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
+      PROP_ROM, PROP_ROTATED, PROP_LANGUAGE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.MEDNAFEN_WSC]: {
-      PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
+      PROP_ROM, PROP_ROTATED, PROP_LANGUAGE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.WS]: {
-      PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
+      PROP_ROM, PROP_ROTATED, PROP_LANGUAGE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.MEDNAFEN_WS]: {
-      PROP_ROM, PROP_ROTATED, PROP_LANGUAGE
+      PROP_ROM, PROP_ROTATED, PROP_LANGUAGE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.LNX]: {
-      PROP_ROM, PROP_ROTATION_LNX
+      PROP_ROM, PROP_ROTATION_LNX, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.MEDNAFEN_LNX]: {
-      PROP_ROM, PROP_ROTATION_LNX
+      PROP_ROM, PROP_ROTATION_LNX, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.NEOGEO]: {
-      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_VOL_ADJUST, PROP_NEOGEO_BIOS, PROP_NEOGEO_FORCE_AES
+      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_VOL_ADJUST, PROP_NEOGEO_BIOS, PROP_NEOGEO_FORCE_AES, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.FBNEO_NEOGEO]: {
-      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_VOL_ADJUST, PROP_NEOGEO_BIOS, PROP_NEOGEO_FORCE_AES
+      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_VOL_ADJUST, PROP_NEOGEO_BIOS, PROP_NEOGEO_FORCE_AES, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.ARCADE_KONAMI]: {
-      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
+      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.FBNEO_KONAMI]: {
-      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
+      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.ARCADE]: {
-      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
+      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.FBNEO_ARCADE]: {
-      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
+      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.ARCADE_CAPCOM]: {
-      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
+      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.FBNEO_CAPCOM]: {
-      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER
+      PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.PSX]: {
       PROP_DISCS, PROP_ANALOG, PROP_MULTITAP, PROP_ZOOM_LEVEL, PROP_SKIP_BIOS, PROP_DISABLE_MEMCARD1
@@ -309,6 +309,9 @@ export const buildFieldMap = () => {
     },
     [APP_TYPE_KEYS.TYRQUAKE]: {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_WAD_SELECTOR
+    },
+    [APP_TYPE_KEYS.RETRO_PARALLEL_N64]: {
+      PROP_ROM, PROP_ZOOM_LEVEL
     },
   }
 };
@@ -515,6 +518,20 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_ZOOM_LEVEL) ? (
+        <div>
+          <ZoomLevel
+            value={object.props.zoomLevel ? object.props.zoomLevel : 0}
+            onChange={(e, val) => {
+              // Allows for smoother updated prior to change being committed
+              object.props.zoomLevel = parseInt(val);
+            }}
+            onChangeCommitted={(e, val) => {
+              const props = { ...object.props, zoomLevel: parseInt(val) }
+              setObject({ ...object, props })
+            }} />
+        </div>
+      ) : null}
       {hasProp(object, PROP_LANGUAGE) ? (
         <div>
           <EditorSelect
@@ -619,16 +636,16 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
-      {hasProp(object, PROP_FORCE_PAL) ? (
+      {hasProp(object, PROP_3BUTTON) ? (
         <div>
           <EditorSwitch
-            label="Force PAL"
-            tooltip="Whether to force PAL video mode for the specified ROM."
+            label="3-Button Control Pads"
+            tooltip="Whether to use 3-button control pads (6-button is the default)."
             onChange={(e) => {
-              const props = { ...object.props, pal: e.target.checked }
+              const props = { ...object.props, pad3button: e.target.checked }
               setObject({ ...object, props })
             }}
-            checked={Util.asBoolean(object.props.pal)}
+            checked={Util.asBoolean(object.props.pad3button)}
           />
         </div>
       ) : null}
@@ -645,31 +662,17 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
-      {hasProp(object, PROP_3BUTTON) ? (
+      {hasProp(object, PROP_FORCE_PAL) ? (
         <div>
           <EditorSwitch
-            label="3-Button Control Pads"
-            tooltip="Whether to use 3-button control pads (6-button is the default)."
+            label="Force PAL"
+            tooltip="Whether to force PAL video mode for the specified ROM."
             onChange={(e) => {
-              const props = { ...object.props, pad3button: e.target.checked }
+              const props = { ...object.props, pal: e.target.checked }
               setObject({ ...object, props })
             }}
-            checked={Util.asBoolean(object.props.pad3button)}
+            checked={Util.asBoolean(object.props.pal)}
           />
-        </div>
-      ) : null}
-      {hasProp(object, PROP_ZOOM_LEVEL) ? (
-        <div>
-          <ZoomLevel
-            value={object.props.zoomLevel ? object.props.zoomLevel : 0}
-            onChange={(e, val) => {
-              // Allows for smoother updated prior to change being committed
-              object.props.zoomLevel = parseInt(val);
-            }}
-            onChangeCommitted={(e, val) => {
-              const props = { ...object.props, zoomLevel: parseInt(val) }
-              setObject({ ...object, props })
-            }} />
         </div>
       ) : null}
       {hasProp(object, PROP_SWAP_CONTROLLERS) ? (

@@ -6,11 +6,12 @@ import LinkOffIcon from '@mui/icons-material/LinkOff';
 
 import * as Util from '../Util';
 import Editor from './common/editor/Editor';
+import EditorSelect from './common/editor/EditorSelect';
 import EditorSwitch from './common/editor/EditorSwitch';
 import EditorTabPanel from './common/editor/EditorTabPanel';
 import { Global, GlobalHolder } from '../Global';
 
-import { dropbox, settings } from '@webrcade/app-common'
+import { dropbox, settings, Resources, SCREEN_SIZES, TEXT_IDS } from '@webrcade/app-common'
 
 
 function CloudStorageTab(props) {
@@ -71,6 +72,22 @@ function DisplayTab(props) {
 
   return (
     <EditorTabPanel value={tabValue} index={tabIndex}>
+      <div>
+        <EditorSelect
+          label="Screen Size"
+          tooltip="The screen size to use for displaying the application."
+          value={values.screenSize ? values.screenSize : SCREEN_SIZES.SS_NATIVE}
+          menuItems={[
+            { value: SCREEN_SIZES.SS_NATIVE, name: Resources.getText(TEXT_IDS.SS_NATIVE)},
+            { value: SCREEN_SIZES.SS_16_9, name: Resources.getText(TEXT_IDS.SS_16_9)},
+            { value: SCREEN_SIZES.SS_FILL, name: Resources.getText(TEXT_IDS.SS_FILL)},
+          ]}
+          onChange={(e) => {
+            const vals = { ...values, screenSize: e.target.value }
+            setValues(vals);
+          }}
+        />
+      </div>
       <div>
         <EditorSwitch
           label="Vertical sync"
@@ -153,6 +170,7 @@ export default function SettingsEditor(props) {
           vsync: settings.isVsyncEnabled(),
           bilinear: settings.isBilinearFilterEnabled(),
           cloudStorage: settings.isCloudStorageEnabled(),
+          screenSize: settings.getScreenSize(),
           dbLinked: settings.getDbToken() !== null
         }
         setValues({
@@ -165,6 +183,7 @@ export default function SettingsEditor(props) {
         settings.setExpAppsEnabled(values.expApps);
         settings.setVsyncEnabled(values.vsync);
         settings.setBilinearFilterEnabled(values.bilinear);
+        settings.setScreenSize(values.screenSize);
         settings.setCloudStorageEnabled(values.cloudStorage);
         settings.save().finally(() => {
           if (values.originalValues.expApps !== values.expApps) {
