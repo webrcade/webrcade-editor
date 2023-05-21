@@ -134,6 +134,24 @@ const setDefaultForNeoGeoCd = (type, item) => {
   }
 }
 
+const setDefaultFor3do = (type, item) => {
+  if (type === APP_TYPE_KEYS.RETRO_OPERA ||
+    type === APP_TYPE_KEYS.THREEDO) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
+
+// const setDefaultForSaturn = (type, item) => {
+//   if (type === APP_TYPE_KEYS.RETRO_YABAUSE ||
+//     type === APP_TYPE_KEYS.SATURN) {
+//     if (isEmptyString(item.props.uid)) {
+//       item.props.uid = uuidv4();
+//     }
+//   }
+// }
+
 const setDefaultForPcfx = (type, item) => {
   if (type === APP_TYPE_KEYS.BEETLE_PCFX ||
     type === APP_TYPE_KEYS.PCFX) {
@@ -266,6 +284,8 @@ export default function ItemEditor(props) {
         setDefaultForA5200(clone.type, clone);
         setDefaultForQuake(clone.type, clone);
         setDefaultForNeoGeoCd(clone.type, clone);
+        setDefaultFor3do(clone.type, clone);
+        // setDefaultForSaturn(clone.type, clone);
         setItem(clone);
 
         forceUpdate();
@@ -286,6 +306,8 @@ export default function ItemEditor(props) {
         setDefaultForSegaCd(item.type, item); // TODO: Find a better way, maybe required id? on the type
         setDefaultForPcEngineCd(item.type, item); // TODO: Find a better way, maybe required id? on the type
         setDefaultForNeoGeoCd(item.type, item);
+        setDefaultFor3do(item.type, item);
+        // setDefaultForSaturn(item.type, item);
         setDefaultForPcfx(item.type, item); // TODO: Find a better way, maybe required id? on the type
         setDefaultForColeco(item.type, item);
         setDefaultForA5200(item.type, item);

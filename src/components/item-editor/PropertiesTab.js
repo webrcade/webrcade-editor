@@ -18,6 +18,7 @@ import WadSelector from './quake/WadSelector';
 import ZoomLevel from './ZoolLevel';
 
 const PROP_3BUTTON = "PROP_3BUTTON";
+const PROP_3DO_HACK = "PROP_3DO_HACK";
 const PROP_6BUTTON = "PROP_6BUTTON";
 const PROP_ADDITIONAL_ROMS = "PROP_ADDITIONAL_ROMS";
 const PROP_ANALOG = "PROP_ANALOG";
@@ -63,6 +64,7 @@ const PROP_ZOOM_LEVEL = "PROP_ZOOM_LEVEL";
 
 const ALL_PROPS = [
   PROP_3BUTTON,
+  PROP_3DO_HACK,
   PROP_6BUTTON,
   PROP_ADDITIONAL_ROMS,
   PROP_ANALOG,
@@ -304,6 +306,18 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.RETRO_NEOCD]: {
       PROP_DISCS, PROP_ZOOM_LEVEL, PROP_SKIP_CD_LOADING, PROP_CD_SPEED_HACK, PROP_REGION
     },
+    [APP_TYPE_KEYS.THREEDO]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_3DO_HACK
+    },
+    [APP_TYPE_KEYS.RETRO_OPERA]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_3DO_HACK
+    },
+    // [APP_TYPE_KEYS.RETRO_YABAUSE]: {
+    //   PROP_DISCS, PROP_ZOOM_LEVEL
+    // },
+    // [APP_TYPE_KEYS.SATURN]: {
+    //   PROP_DISCS, PROP_ZOOM_LEVEL
+    // },
     [APP_TYPE_KEYS.QUAKE]: {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_WAD_SELECTOR
     },
@@ -1107,6 +1121,27 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.cdSpeedHack)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_3DO_HACK) ? (
+        <div>
+          <EditorSelect
+            label="Hack"
+            tooltip="The hack to apply to the game."
+            value={object.props.hack ? object.props.hack : 0}
+            menuItems={[
+              { value: 0, name: "(None)" },
+              { value: 4, name: "Alone in the Dark" },
+              { value: 1, name: "Crash 'n Burn" },
+              { value: 2, name: "Dinopark Tycoon" },
+              { value: 3, name: "Microcosm" },
+              { value: 5, name: "Samurai Shodown" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, hack: e.target.value }
+              setObject({ ...object, props })
+            }}
           />
         </div>
       ) : null}

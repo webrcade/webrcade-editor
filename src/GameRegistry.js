@@ -185,6 +185,11 @@ class GameRegistryImpl {
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-quake-images/master/Named_Snaps/output',
       descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Quake/output'
     },
+    '3do': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-3do-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-3do-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Panasonic%203DO/output'
+    },
   }
 
   CUSTOM_PROPS = {

@@ -33,6 +33,7 @@ function PropertiesTab(props) {
   const [app, setApp] = React.useState(is5200Enabled ? "5200" : "lynx");
 
   const items = [
+    { value: "3do", name: "3DO" },
     { value: "lynx", name: "Atari Lynx" },
     { value: "coleco", name: "ColecoVision"},
     { value: "pcecd", name: "NEC PC Engine CD"},
@@ -43,7 +44,7 @@ function PropertiesTab(props) {
     { value: "psx", name: "Sony PlayStation" },
   ]
   if (is5200Enabled) {
-    items.splice(0, 0, { value: "5200", name: "Atari 5200" });
+    items.splice(1, 0, { value: "5200", name: "Atari 5200" });
   }
 
   return (
@@ -142,6 +143,23 @@ function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             value={Util.asString(object.props.neogeocd_bios)}
+          />
+        )}
+      </div>
+      <div>
+        {app === "3do" && (
+          <EditorUrlField
+            sx={{ width: '50ch' }}
+            label="3DO BIOS (URL)"
+            onDropText={(text) => {
+              const props = { ...object.props, threedo_bios: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, threedo_bios: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.threedo_bios)}
           />
         )}
       </div>
