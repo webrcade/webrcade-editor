@@ -252,6 +252,31 @@ class GameRegistryImpl {
     "88e0c5180391f5b4eedea0f06df24c4c": { game: "freedoom2" },
     // Doom 1 (Shareware)
     "9c69ed31b99047073cbe9a5aaf616b5b": { game: "doom1" },
+
+    /* 3DO */
+
+    // Alone in the Dark
+    "0999360e91c941469c7fceb8b20c6df5": { hack: 4},
+    "abedff17853f355ba2b2238ea0d465cc": { hack: 4},
+    "49564f60b021fbd59f95f39acf6cbd8d": { hack: 4},
+    "192de93ff970cc04caa49d4a723a390f": { hack: 4},
+    "4224f017a7b91bfdd69814e2c9fd7c22": { hack: 4},
+
+    // Crash 'n Burn
+    "088b32295489444bdfec469e4f074a71": { hack: 1},
+    "95f1ba427b83c958bc32974e04007a40": { hack: 1},
+    "b62ff1e051a5ed2acc76ad647ee37b50": { hack: 1},
+
+    // DinoPark Tycoon
+    "108d2f25ca9a8b09541e30352d59696f": { hack: 2},
+
+    // Microcosm
+    "465fdc3bfd701fae4f660a1a1c7c8373": { hack: 3},
+    "f680353429def4d3c1e95120fd9c503f": { hack: 3},
+
+    // Samurai Shodown
+    "d36d1d26dba93004b33a2d3fae71d03b": { hack: 5},
+    "b0a0bf31f20b8a1fc45d2ea552c94540": { hack: 5},
   }
 
   METADATA_OVERRIDE = {

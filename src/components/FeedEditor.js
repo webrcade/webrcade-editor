@@ -30,7 +30,7 @@ function PropertiesTab(props) {
 
   const is5200Enabled = AppRegistry.instance.getAppTypes()["5200"];
 
-  const [app, setApp] = React.useState(is5200Enabled ? "5200" : "lynx");
+  const [app, setApp] = React.useState("3do");
 
   const items = [
     { value: "3do", name: "3DO" },
@@ -160,6 +160,24 @@ function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             value={Util.asString(object.props.threedo_bios)}
+          />
+        )}
+      </div>
+      <div>
+        {app === "3do" && (
+          <EditorUrlField
+            sx={{ width: '50ch' }}
+            label="3DO Fonts (URL)"
+            helperText="Required for some Japanese games (optional)"
+            onDropText={(text) => {
+              const props = { ...object.props, threedo_fonts: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, threedo_fonts: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.threedo_fonts)}
           />
         )}
       </div>

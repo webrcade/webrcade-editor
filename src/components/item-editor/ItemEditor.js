@@ -362,6 +362,7 @@ export default function ItemEditor(props) {
                           const info = v.byName ?
                             await GameRegistry.findByName(v.key, null, null, true, false) :
                             await GameRegistry.find(v.key);
+
                           const update = {
                             title: title,
                             description: "",
@@ -378,6 +379,23 @@ export default function ItemEditor(props) {
                             update.background = info.background;
                             update.backgroundPixelated = true;
                           }
+
+                          // Set 3DO hack.
+                          // TODO: This should be moved to common location for use by all
+                          // types.
+                          let props = null;
+                          if (item.type === '3do') {
+                            props = {hack: 0}
+                            const hack = info.props?.hack;
+                            if (hack) {
+                              props.hack = hack;
+                            }
+                          }
+
+                          if (props) {
+                            update.props = {...item.props, ...props}
+                          }
+
                           setItem({...item, ...update})
                         } finally {
                           Global.openBusyScreen(false);
