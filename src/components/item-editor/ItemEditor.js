@@ -134,6 +134,24 @@ const setDefaultForNeoGeoCd = (type, item) => {
   }
 }
 
+const setDefaultFor3do = (type, item) => {
+  if (type === APP_TYPE_KEYS.RETRO_OPERA ||
+    type === APP_TYPE_KEYS.THREEDO) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
+
+// const setDefaultForSaturn = (type, item) => {
+//   if (type === APP_TYPE_KEYS.RETRO_YABAUSE ||
+//     type === APP_TYPE_KEYS.SATURN) {
+//     if (isEmptyString(item.props.uid)) {
+//       item.props.uid = uuidv4();
+//     }
+//   }
+// }
+
 const setDefaultForPcfx = (type, item) => {
   if (type === APP_TYPE_KEYS.BEETLE_PCFX ||
     type === APP_TYPE_KEYS.PCFX) {
@@ -266,6 +284,8 @@ export default function ItemEditor(props) {
         setDefaultForA5200(clone.type, clone);
         setDefaultForQuake(clone.type, clone);
         setDefaultForNeoGeoCd(clone.type, clone);
+        setDefaultFor3do(clone.type, clone);
+        // setDefaultForSaturn(clone.type, clone);
         setItem(clone);
 
         forceUpdate();
@@ -286,6 +306,8 @@ export default function ItemEditor(props) {
         setDefaultForSegaCd(item.type, item); // TODO: Find a better way, maybe required id? on the type
         setDefaultForPcEngineCd(item.type, item); // TODO: Find a better way, maybe required id? on the type
         setDefaultForNeoGeoCd(item.type, item);
+        setDefaultFor3do(item.type, item);
+        // setDefaultForSaturn(item.type, item);
         setDefaultForPcfx(item.type, item); // TODO: Find a better way, maybe required id? on the type
         setDefaultForColeco(item.type, item);
         setDefaultForA5200(item.type, item);
@@ -340,6 +362,7 @@ export default function ItemEditor(props) {
                           const info = v.byName ?
                             await GameRegistry.findByName(v.key, null, null, true, false) :
                             await GameRegistry.find(v.key);
+
                           const update = {
                             title: title,
                             description: "",
@@ -356,6 +379,23 @@ export default function ItemEditor(props) {
                             update.background = info.background;
                             update.backgroundPixelated = true;
                           }
+
+                          // Set 3DO hack.
+                          // TODO: This should be moved to common location for use by all
+                          // types.
+                          let props = null;
+                          if (item.type === '3do') {
+                            props = {hack: 0}
+                            const hack = info.props?.hack;
+                            if (hack) {
+                              props.hack = hack;
+                            }
+                          }
+
+                          if (props) {
+                            update.props = {...item.props, ...props}
+                          }
+
                           setItem({...item, ...update})
                         } finally {
                           Global.openBusyScreen(false);
