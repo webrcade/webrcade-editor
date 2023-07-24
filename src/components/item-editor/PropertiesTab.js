@@ -25,6 +25,7 @@ const PROP_ANALOG = "PROP_ANALOG";
 const PROP_ARCHIVE = "PROP_ARCHIVE";
 const PROP_CD_SPEED_HACK = "PROP_CD_SPEED_HACK";
 const PROP_COLECO_CONTROLS_MODE = "PROP_COLECO_CONTROLS_MODE";
+const PROP_CUSTOM_BIOS = "PROP_CUSTOM_BIOS";
 const PROP_DISABLE_LOOKUP = "PROP_DISABLE_LOOKUP";
 const PROP_DISABLE_MEMCARD1 = "PROP_DISABLE_MEMCARD1";
 const PROP_DISCS = "PROP_DISCS";
@@ -71,6 +72,7 @@ const ALL_PROPS = [
   PROP_ARCHIVE,
   PROP_CD_SPEED_HACK,
   PROP_COLECO_CONTROLS_MODE,
+  PROP_CUSTOM_BIOS,
   PROP_DISABLE_LOOKUP,
   PROP_DISABLE_MEMCARD1,
   PROP_DISCS,
@@ -277,10 +279,10 @@ export const buildFieldMap = () => {
       PROP_DISCS, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.PCECD]: {
-      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_6BUTTON, PROP_MAP_RUN_SELECT
+      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_6BUTTON, PROP_MAP_RUN_SELECT, PROP_CUSTOM_BIOS
     },
     [APP_TYPE_KEYS.RETRO_PCE_FAST]: {
-      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_6BUTTON, PROP_MAP_RUN_SELECT
+      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_6BUTTON, PROP_MAP_RUN_SELECT, PROP_CUSTOM_BIOS
     },
     [APP_TYPE_KEYS.COLECO]: {
       PROP_ROM,  PROP_ZOOM_LEVEL, PROP_COLECO_CONTROLS_MODE
@@ -515,6 +517,23 @@ export default function PropertiesTab(props) {
             }}
             value={object.props.discs && object.props.discs.length > 0 ?
               object.props.discs.join("\n") : ""}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_CUSTOM_BIOS) ? (
+        <div>
+          <EditorUrlField
+            sx={{ width: '50ch' }}
+            label="Custom BIOS (optional)"
+            onDropText={(text) => {
+              const props = { ...object.props, customBios: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, customBios: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.customBios)}
           />
         </div>
       ) : null}

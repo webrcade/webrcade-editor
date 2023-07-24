@@ -202,12 +202,86 @@ class GameRegistryImpl {
 
     // Air Sea Battle
     "16cb43492987d2f32b423817cdaaf7c4": { swap: true },
+    // Bachelor Party
+    "5b124850de9eea66781a50b2e9837000": { port0: 2, paddleSensitivity: 16, paddleVertical: true, paddleInverted: true, paddleCenter: -10 },
     // Basketball
     "ab4ac994865fb16ebb85738316309457": { swap: true },
+    // Beat'Em & Eat'Em (Brazil) (Unl)
+    "6c25f58fd184632ca76020f589bb3767": { port0: 2, port1: 2, paddleSensitivity: -50, paddleCenter: 20},
+    // Beat'Em & Eat'Em (Europe)
+    "b4f31ea8a6cc9f1fd4d5585a87c3b487": { port0: 2, port1: 2, paddleSensitivity: -50, paddleCenter: 20},
+    // Beat'Em & Eat'Em (USA)
+    "59e96de9628e8373d1c685f5e57dcf10": { port0: 2, port1: 2, paddleSensitivity: -50, paddleCenter: 20},
+    // Breakout (Europe)
+    "6c76fe09aa8b39ee52035e0da6d0808b": { port0: 2, port1: 2, paddleCenter: -16 },
+    // Breakout (Japan, USA)
+    "f34f08e5eb96e500e851a80be3277a56": { port0: 2, port1: 2, paddleCenter: -16 },
+    // Bugs (Europe)
+    "e61210293b14c9c4ecc91705072c6a7e": { port0: 2, port1: 2, paddleCenter: 16 },
+    // Bugs (USA)
+    "68597264c8e57ada93be3a5be4565096": { port0: 2, port1: 2, paddleCenter: 16 },
+    // Bumper Bash (Europe)
+    "16ee443c990215f61f7dd1e55a0d2256": { port0: 1 },
+    // Bumper Bash (USA)
+    "aa1c41f86ec44c0a44eb64c332ce08af": { port0: 1 },
+    // Canyon Bomber (USA)
+    "feedcc20bc3ca34851cd5d9e38aa2ca6": { port0: 2, port1: 2, paddleVertical: true, paddleCenter: -20, paddleSensitivity: -40 },
+    // Casino (Europe)
+    "2bc26619e31710a9884c110d8430c1da": { paddleSensitivity: 40, port0: 2, port1: 2 },
+    // Casino (USA)
+    "b816296311019ab69a21cb9e9e235d12": { paddleSensitivity: 40, port0: 2, port1: 2 },
+    // Circus Atari (Europe)
+    "30e0ab8be713208ae9a978b34e9e8e8c": { port0: 2, port1: 2, paddleSensitivity: -20 },
+    // Circus Atari (Japan, USA)
+    "a7b96a8150600b3e800a4689c3ec60a2": { port0: 2, port1: 2, paddleSensitivity: -20 },
+    // Demons to Diamonds (USA)
+    "f91fb8da3223b79f1c9a07b77ebfa0b2": { port0: 2, port1: 2, paddleSensitivity: -20 },
+    // Eggomania (USA)
+    "42b2c3b4545f1499a083cfbc4a3b7640": { port0: 2, port1: 2, paddleCenter: -20 },
+    // Fireball (USA)
+    "386ff28ac5e254ba1b1bac6916bcc93a": { port0: 2, port1: 2, paddleSensitivity: -20 },
+    // G.I. Joe - Cobra Strike (USA)
+    "c1fdd44efda916414be3527a47752c75": { port0: 1 },
+    // Guardian (USA)
+    "7ab2f190d4e59e8742e76a6e870b567e": { port0: 2, port1: 2, paddleCenter: -20, paddleSensitivity: 20 },
     // Home Run
     "0bfabf1e98bdb180643f35f2165995d0": { swap: true },
+    // Kaboom!
+    "5428cdfada281c569c74c7308c7f2c26": { port0: 2, port1: 2 },
+    // Music Machine, The (USA)
+    "65b106eba3e45f3dab72ea907f39f8b4": { port0: 2, port1: 2,  paddleCenter: 20 },
+    // Night Driver
+    "392f00fd1a074a3c15bc96b0a57d52a1": { port0: 2, port1: 2 },
+    // Party Mix (USA)
+    "012b8e6ef3b5fd5aabc94075c527709d": { port0: 2, port1: 2, paddleCenter: -20 },
+    // Picnic (USA)
+    "17c0a63f9a680e7a61beba81692d9297": { port0: 2, port1: 2, paddleCenter: 30, paddleSensitivity: -20 },
+    // Piece o' Cake (USA)
+    "d3423d7600879174c038f53e5ebbf9d3": { port0: 2, port1: 2, paddleCenter: -20 },
+    // Solar Storm (USA)
+    "97842fe847e8eb71263d6f92f7e122bd": { port0: 2, port1: 2, paddleCenter: 20, paddleSensitivity: -20 },
+    // Star Wars - Jedi Arena (USA)
+    "c9f6e521a49a2d15dac56b6ddb3fb4c7": { port0: 2, port1: 2, paddleSensitivity: -20 },
+    // Steeplechase (Europe)
+    "f1eeeccc4bba6999345a2575ae96508e": { port0: 2, port1: 2 },
+    // Steeplechase (USA)
+    "656dc247db2871766dffd978c71da80c": { port0: 2, port1: 2 },
+    // Street Racer (USA)
+    "396f7bc90ab4fa4975f8c74abe4e81f0": { port0: 2, port1: 2 },
+    // Super Breakout (USA)
+    "8885d0ce11c5b40c3a8a8d9ed28cefef": { port0: 2, port1: 2 },
+    // Super Breakout (USA, Europe) (Atari Anthology)
+    "0ad9a358e361256b94f3fb4f2fa5a3b1": { port0: 2, port1: 2 },
     // Surround
     "4d7517ae69f95cfbc053be01312b7dba": { swap: true },
+    // Tac-Scan (USA)
+    "d45ebf130ed9070ea8ebd56176e48a38": { port0: 2, port1: 2 },
+    // Video Olympics (USA)
+    "60e0ea3cbe0913d39803477945e9e5ec": { port0: 2, port1: 2, paddleVertical: true, paddleCenter: -10 },
+    // Warlords
+    "cbe5a166550a8129a5e6d374901dffad": { port0: 2, port1: 2 },
+    // Warplock (USA)
+    "679e910b27406c6a2072f9569ae35fc8": { port0: 2, port1: 2, paddleCenter: 20 },
 
     /* NES */
 

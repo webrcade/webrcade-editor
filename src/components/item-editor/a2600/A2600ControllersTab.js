@@ -167,6 +167,19 @@ export default function A2600ControllersTab(props) {
           />
         </div>
       )}
+      {hasPaddles === true && (
+        <div style={{marginTop: '0px'}}>
+          <EditorSwitch
+            label="Invert Paddle Input"
+            tooltip=""
+            onChange={(e) => {
+              const props = { ...object.props, paddleInverted: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.paddleInverted)}
+          />
+        </div>
+      )}
       <div style={{marginTop: '0px'}}>
         <EditorSwitch
           label="Swap Controllers"
