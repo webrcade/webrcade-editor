@@ -20,6 +20,7 @@ export default function EditorTextField(props) {
       sx={{
         m: 1.5,
         width: '35ch',
+        maxWidth: '100%',
         ...sx
       }}
       {...other}

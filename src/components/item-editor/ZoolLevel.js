@@ -17,12 +17,12 @@ export default function ZoomLevel(props) {
   return (
     <>
       <Typography sx={{ ml: 1.5, mt: 1.5 }} id="input-slider" gutterBottom>
-        Zoom level
+        Zoom Level
       </Typography>
       <Stack
         spacing={2}
         direction="row"
-        sx={{ width: '50ch', ml: 1.5, mb: .5 }}
+        sx={{ width: '50ch', maxWidth: '100%', ml: 1.5, mb: .5 }}
       >
         {/* <VolumeDown /> */}
         <Box sx={{ width: '100%' }}>

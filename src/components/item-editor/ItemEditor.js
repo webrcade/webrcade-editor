@@ -18,6 +18,7 @@ import SelectType from './SelectType';
 import ThumbnailTab from '../common/editor/ThumbnailTab';
 import { GlobalHolder, Global } from '../../Global';
 
+import A2600ControllersTab from './a2600/A2600ControllersTab';
 import A5200DescriptionsTab from './a5200/A5200DescriptionsTab';
 import A5200MappingsTab from './a5200/A5200MappingsTab';
 import ColecoDescriptionsTab from './coleco/ColecoDescriptionsTab';
@@ -202,6 +203,7 @@ export default function ItemEditor(props) {
 
   const isColeco = (item.type === APP_TYPE_KEYS.COLEM || item.type === APP_TYPE_KEYS.COLECO);
   const isA5200 = (item.type === APP_TYPE_KEYS.A5200 || item.type === APP_TYPE_KEYS.RETRO_A5200);
+  const isA2600 = (item.type === APP_TYPE_KEYS.A2600 || item.type === APP_TYPE_KEYS.RETRO_STELLA);
 
   GlobalHolder.setItemEditorOpen = (open, isCreate = false) => {
     setCreate(isCreate);
@@ -239,6 +241,11 @@ export default function ItemEditor(props) {
     colecoDescriptionsTab = index++;
   }
 
+  let a2600ControllersTab = 0;
+  if (isA2600) {
+    a2600ControllersTab = index++;
+  }
+
   let thumbTab = index++;
   let bgTab = index++;
 
@@ -253,6 +260,9 @@ export default function ItemEditor(props) {
   if (isColeco) {
     tabs.push(<Tab label="Mappings" key={colecoMappingsTab} />);
     tabs.push(<Tab label="Descriptions" key={colecoDescriptionsTab} />);
+  }
+  if (isA2600) {
+    tabs.push(<Tab label="Controllers" key={a2600ControllersTab} />);
   }
   tabs.push(<Tab label="Thumbnail" key={thumbTab} />);
   tabs.push(<Tab label="Background" key={bgTab} />);
@@ -494,6 +504,12 @@ export default function ItemEditor(props) {
           {isColeco && <ColecoDescriptionsTab
             tabValue={tabValue}
             tabIndex={colecoDescriptionsTab}
+            object={item}
+            setObject={setItem}
+          />}
+          {isA2600 && <A2600ControllersTab
+            tabValue={tabValue}
+            tabIndex={a2600ControllersTab}
             object={item}
             setObject={setItem}
           />}

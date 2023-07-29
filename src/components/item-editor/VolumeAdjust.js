@@ -12,7 +12,7 @@ const UNSET_TEMP = -9999;
 export default function SelectPlayerOrder(props) {
   const { value, onChange, onChangeCommitted } = props;
   // Allows for smoother updated prior to change being committed
-  const [tempValue, setTempValue] = React.useState(UNSET_TEMP);  
+  const [tempValue, setTempValue] = React.useState(UNSET_TEMP);
 
   return (
     <>
@@ -22,7 +22,7 @@ export default function SelectPlayerOrder(props) {
       <Stack
         spacing={2}
         direction="row"
-        sx={{ width: '50ch', ml: 1.5, mb: .5 }}
+        sx={{ width: '50ch', maxWidth: '100%', ml: 1.5, mb: .5 }}
       >
         <VolumeDown />
         <Box sx={{ width: '100%' }}>

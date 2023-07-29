@@ -7,6 +7,7 @@ import {
   applyIosNavBarHack,
   dropbox,
   removeIosNavBarHack,
+  storagePersist,
   settings,
   AppProps,
   AppScreen,
@@ -87,6 +88,9 @@ function App(props) {
   currentApp = app;
 
   React.useEffect(() => {
+    // Ask for long term storage
+    storagePersist();
+
     console.log("Application was loaded");
     Global.openBusyScreen(true, "Preparing editor...", true);
 
@@ -139,7 +143,7 @@ function App(props) {
             })
             .catch(e => {
               LOG.error("Error during startup: " + e);
-              setFeed(Feed.newFeed()); // Set a new feed 
+              setFeed(Feed.newFeed()); // Set a new feed
             })
             .finally(() => {
               // Mark as started
