@@ -20,7 +20,7 @@ function SelectedFeed(props) {
           <CommonImage
             imageSrc={feed.thumbnail}
             defaultImageSrc={WrcCommon.FeedThumbImage}
-            requiredSize={Global.getThumbSize()}
+            requiredAspectRatio={Global.getThumbAspectRatio()}
             sx={{ mr: 2, width: 48, height: 36 }}
           />
           <Typography variant="h8" noWrap component="div">

@@ -10,7 +10,7 @@ import { usePrevious } from '../../Util';
 export default function CommonImage(props) {
   const {
     defaultImageSrc,
-    requiredSize,
+    requiredAspectRatio,
     errorCallback,
     onDropText,
     sx
@@ -21,7 +21,7 @@ export default function CommonImage(props) {
 
   const [img, setImg] = React.useState(null);
   const prevValues = usePrevious({
-    imageSrc, defaultImageSrc, requiredSize
+    imageSrc, defaultImageSrc, requiredAspectRatio
   });
 
   React.useEffect(() => {
@@ -29,17 +29,26 @@ export default function CommonImage(props) {
     if (!prevValues || (
       (imageSrc !== prevValues.imageSrc) ||
       (defaultImageSrc !== prevValues.defaultImageSrc) ||
-      (requiredSize !== prevValues.requiredSize))) {
+      (requiredAspectRatio !== prevValues.requiredAspectRatio))) {
 
       const tempImg = new Image();
       tempImg.onload = (e) => {
         const target = e.target;
-        if (requiredSize &&
-          (target.naturalWidth !== requiredSize[0] ||
-            target.naturalHeight !== requiredSize[1])) {
+
+
+        let arTarget = 1;
+        let arReq = 1;
+        if (requiredAspectRatio) {
+          arTarget = (target.naturalWidth/target.naturalHeight).toFixed(2);
+          arReq = (requiredAspectRatio[0]/requiredAspectRatio[1]).toFixed(2);
+          // console.log('target: ' + arTarget);
+          // console.log('req: '+ arReq);
+        }
+
+        if (requiredAspectRatio && (arTarget !== arReq)) {
           const msg = (
             <>
-              {`Thumbnail dimensions must be ${requiredSize[0]}x${requiredSize[1]}.`} &nbsp;&nbsp;
+              {`Thumbnail has been sized to a ${requiredAspectRatio[0]}:${requiredAspectRatio[1]} aspect ratio.`} &nbsp;&nbsp;
               <Link
                 underline="none"
                 href="https://www.birme.net/?target_width=400&target_height=300&auto_focal=false"
@@ -55,18 +64,20 @@ export default function CommonImage(props) {
           if (errorCallback) errorCallback(msg);
 
           // Attempt to use proxy
-          const proxyImg = new Image();
-          proxyImg.onload = (e) => {
-            const proxyTarget = e.target;
-            setImg(proxyTarget.src);
-          }
-          proxyImg.onerror = (e) => {            
-            setImg(defaultImageSrc);
-          }
-          const url = encodeURIComponent(target.src);
-          //&fpy=0&a=focal          
+          // const proxyImg = new Image();
+          // proxyImg.onload = (e) => {
+          //   const proxyTarget = e.target;
+          //   setImg(proxyTarget.src);
+          // }
+          // proxyImg.onerror = (e) => {
+          //   setImg(defaultImageSrc);
+          // }
+          // const url = encodeURIComponent(target.src);
+          //&fpy=0&a=focal
           //&fit=contain&cbg=00FFFFFF
-          proxyImg.src = `https://images.weserv.nl/?url=${url}&w=${requiredSize[0]}&h=${requiredSize[1]}&fit=cover&output=gif`; 
+          //proxyImg.src = `https://images.weserv.nl/?url=${url}&w=${requiredSize[0]}&h=${requiredSize[1]}&fit=cover&output=gif`;
+
+          setImg(target.src);
         } else {
           if (errorCallback) errorCallback(null);
           setImg(target.src);
@@ -80,7 +91,7 @@ export default function CommonImage(props) {
       tempImg.src = WrcCommon.isValidString(imageSrc) ?
         imageSrc : defaultImageSrc;
     }
-  }, [imageSrc, defaultImageSrc, setImg, errorCallback, requiredSize, prevValues]);
+  }, [imageSrc, defaultImageSrc, setImg, errorCallback, requiredAspectRatio, prevValues]);
 
   return (
     <Avatar

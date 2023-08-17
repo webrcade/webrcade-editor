@@ -10,7 +10,7 @@ export default function ThumbnailTab(props) {
   const {
     tabValue,
     tabIndex,
-    thumbSrc, 
+    thumbSrc,
     defaultThumbSrc,
     setObject,
     object
@@ -35,7 +35,7 @@ export default function ThumbnailTab(props) {
         <EditorImage
           src={thumbSrc}
           defaultSrc={defaultThumbSrc}
-          requiredSize={Global.getThumbSize()}
+          requiredAspectRatio={Global.getThumbAspectRatio()}
           errorCallback={setThumbnailError}
           onDropText={(text) => { setObject({ ...object, thumbnail: text }) }}
         />

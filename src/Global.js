@@ -44,7 +44,7 @@ class Holder {
 
 const GlobalHolder = Holder.instance;
 
-const THUMB_SIZE = [400, 300];
+const THUMB_AR = [4, 3];
 
 const Global = {
   isDebug: () => {
@@ -151,8 +151,8 @@ const Global = {
   setFeedCategoryId: (id) => {
     return GlobalHolder.setFeedCategoryId(id);
   },
-  getThumbSize: () => {
-    return THUMB_SIZE;
+  getThumbAspectRatio: () => {
+    return THUMB_AR;
   },
   setApp: (app) => {
     GlobalHolder.setApp(app);

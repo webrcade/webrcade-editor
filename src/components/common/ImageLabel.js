@@ -14,8 +14,8 @@ export default function ImageLabel(props) {
       <CommonImage
         imageSrc={imageSrc}
         defaultImageSrc={defaultImageSrc}
-        requiredSize={Global.getThumbSize()}
-        sx={{mr: 1.6, width: 48, height: 36}}        
+        requiredAspectRatio={Global.getThumbAspectRatio()}
+        sx={{mr: 1.6, width: 48, height: 36}}
       />
       <Box component="div" sx={{
         justifyContent: "center",
