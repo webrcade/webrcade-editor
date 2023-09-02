@@ -195,14 +195,14 @@ const setDefaultForQuake = (type, item) => {
   }
 }
 
-// const setDefaultForScumm = (type, item) => {
-//   if (type === APP_TYPE_KEYS.SCUMM ||
-//     type === APP_TYPE_KEYS.SCUMMVM) {
-//     if (isEmptyString(item.props.uid)) {
-//       item.props.uid = uuidv4();
-//     }
-//   }
-// }
+const setDefaultForScumm = (type, item) => {
+  if (type === APP_TYPE_KEYS.SCUMM ||
+    type === APP_TYPE_KEYS.SCUMMVM) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
 
 export default function ItemEditor(props) {
   const [tabValue, setTabValue] = React.useState(0);

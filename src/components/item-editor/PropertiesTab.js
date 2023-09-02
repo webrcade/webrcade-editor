@@ -329,12 +329,12 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.TYRQUAKE]: {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_WAD_SELECTOR
     },
-    // [APP_TYPE_KEYS.SCUMM]: {
-    //   PROP_ARCHIVE, PROP_ZOOM_LEVEL
-    // },
-    // [APP_TYPE_KEYS.SCUMMVM]: {
-    //   PROP_ARCHIVE, PROP_ZOOM_LEVEL
-    // },
+    [APP_TYPE_KEYS.SCUMM]: {
+      PROP_ARCHIVE, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.SCUMMVM]: {
+      PROP_ARCHIVE, PROP_ZOOM_LEVEL
+    },
     [APP_TYPE_KEYS.RETRO_PARALLEL_N64]: {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
