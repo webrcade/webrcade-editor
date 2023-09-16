@@ -72,6 +72,9 @@ function App(props) {
   const [editorHidden, setEditorHidden] = React.useState(false);
   const [started, setStarted] = React.useState(false);
   const previousApp = Util.usePrevious(app);
+  const forceRefresh = Util.useForceUpdate();
+
+  GlobalHolder.forceRefresh = forceRefresh;
 
   if (previousApp && !app) {
     document.body.style.removeProperty('overflow');

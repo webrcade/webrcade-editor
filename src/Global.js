@@ -10,6 +10,7 @@ import * as Util from './Util';
 class Holder {
   static instance = Holder.instance || new Holder();
 
+  forceRefresh = null;
   setBusyScreenOpen = null;
   setBusyScreenMessage = null;
   setBusyScreenDisableAutoFocus = null;
@@ -50,6 +51,9 @@ const Global = {
   isDebug: () => {
     return GlobalHolder.isDebug
   },
+  forceRefresh: () => {
+    GlobalHolder.forceRefresh();
+  },
   openBusyScreen: (open, message = null, disableAutoFocus, disableDrop = true) => {
     GlobalHolder.setBusyScreenOpen(open);
     GlobalHolder.setBusyScreenDisableDrop(disableDrop);
@@ -76,9 +80,14 @@ const Global = {
     }
     GlobalHolder.setConfirmDialogOpen(open);
   },
-  openCopyLinkDialog: (open, link) => {
+  openCopyLinkDialog: (open, link, title, success, disableShortened) => {
     if (link) {
-      GlobalHolder.setCopyLinkDialogProps({link: link});
+      GlobalHolder.setCopyLinkDialogProps({
+        link: link,
+        title: title,
+        success: success,
+        disableShortened: disableShortened
+      });
     }
     GlobalHolder.setCopyLinkDialogOpen(open);
   },

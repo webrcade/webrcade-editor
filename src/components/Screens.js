@@ -11,6 +11,7 @@ import ImportDialog from './ImportDialog';
 import ItemEditor from './item-editor/ItemEditor';
 import LoadFeedDialog from './load-dialog/LoadFeedDialog';
 import SettingsEditor from './SettingsEditor';
+import { GenerateManifestDialog } from './cloud/generate-manifest/GenerateManifestDialog';
 
 export default function Screens() {
 
@@ -27,6 +28,7 @@ export default function Screens() {
       <ConfirmDialog />
       <LoadFeedDialog />
       <SettingsEditor />
+      <GenerateManifestDialog />
     </>
   );
 }

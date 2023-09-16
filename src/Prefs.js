@@ -28,7 +28,7 @@ class PrefsImpl {
       if (feed) {
         this.feed = feed;
       }
-      
+
     } catch (e) {
       LOG.error("Error loading preferences: " + e);
     }
@@ -40,7 +40,7 @@ class PrefsImpl {
   }
 
   getPreference(name, defaultValue) {
-    return this.prefs[name] ? 
+    return this.prefs[name] ?
       this.prefs[name] : defaultValue;
   }
 
@@ -50,7 +50,7 @@ class PrefsImpl {
       return defaultValue;
     } else {
       return val === true;
-    }    
+    }
   }
 
   getIntPreference(name, defaultValue) {

@@ -192,6 +192,7 @@ export default function SettingsEditor(props) {
             setOpen(false);
           }
         });
+        Global.forceRefresh();
         return false;
       }}
       tabs={[

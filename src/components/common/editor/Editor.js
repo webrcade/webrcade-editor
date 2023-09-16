@@ -30,6 +30,8 @@ export default function Editor(props) {
     height,
     maxWidth,
     closeButton,
+    okTitle,
+    okDisabled,
     ...other
   } = props;
 
@@ -42,7 +44,7 @@ export default function Editor(props) {
     enableDropHandler(true);
     //console.log('enable drop');
   } else if (!prevOpen && isOpen) {
-    //console.log('disable drop');    
+    //console.log('disable drop');
     enableDropHandler(false);
   }
 
@@ -100,9 +102,9 @@ export default function Editor(props) {
               <Button onClick={onOkHandler}>
                   Close
               </Button> :
-              <>              
-                <Button onClick={onOkHandler}>
-                  OK
+              <>
+                <Button onClick={onOkHandler} disabled={okDisabled}>
+                  {okTitle ? okTitle : "OK"}
                 </Button>
                 <Button onClick={() => { setOpen(false) }}>
                   Cancel
