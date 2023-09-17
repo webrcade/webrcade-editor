@@ -421,7 +421,7 @@ export default function PropertiesTab(props) {
           <EditorUrlField
             required
             sx={{ width: '50ch' }}
-            label="Archive (URL)"
+            label="Package Archive or Package Manifest (URL)"
             // helperText="(.zip file containing the contents)"
             onDropText={(text) => {
               const props = { ...object.props, archive: text }
