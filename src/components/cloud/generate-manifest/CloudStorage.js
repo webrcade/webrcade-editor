@@ -45,6 +45,10 @@ class CloudStorage {
     return await this.dropbox.uploadFile(blob, path);
   }
 
+  async uploadFile(blob, path) {
+    return await this.dropbox.uploadFile(blob, path);
+  }
+
   async addChildren(rootPath, path, files) {
 
     const result = await this.listFolder(path);
@@ -72,23 +76,27 @@ class CloudStorage {
     }
   }
 
-  async generateManifest(node) {
+  async generateManifest(path, name) {
     const manifest = {
       props: {
-        title: node.getName()
+        title: name
       }
     }
 
     const files = [];
     manifest.files = files;
-    await this.addChildren(node.getPath(), node.getPath(), files);
+    await this.addChildren(path, path, files);
 
-    const name = "WRC-MANIFEST.JSON";
-    const manifestFile = node.getPath() +
-      (node.getPath().endsWith("/") ? name : "/" + name);
+    const mName = "WRC-MANIFEST.JSON";
+    const manifestFile = path +
+      (path.endsWith("/") ? mName : "/" + mName);
 
     await this.createManifestFile(manifestFile, manifest);
     return await this.createSharedLink(manifestFile);
+  }
+
+  async generateManifestFromNode(node) {
+    return await this.generateManifest(node.getPath(), node.getName());
   }
 }
 

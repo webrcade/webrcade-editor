@@ -1,18 +1,15 @@
 import * as React from 'react';
 import Tab from '@mui/material/Tab';
+import Stack from '@mui/material/Stack';
 import useTheme from '@mui/material/styles/useTheme';
 
-import {
-  LOG
-} from '@webrcade/app-common'
-
-import { Global } from '../../../Global';
 import Editor from '../../common/editor/Editor';
+import EditorButton from '../../common/editor/EditorButton';
 import EditorTabPanel from '../../common/editor/EditorTabPanel';
-import { CloudStorage } from './CloudStorage';
-import TreeModel from './TreeModel';
-import TreeComponent from './TreeComponent';
+import EditorTextField from '../../common/editor/EditorTextField';
 import { Typography } from '@mui/material';
+import { openSelectCloudFolderDialog } from '../../cloud/generate-manifest/SelectCloudFolderDialog';
+import GenerateManifestWrapper from './GenerateManifestWrapper';
 
 let _setId = null;
 let _setOpen = null;
@@ -21,32 +18,10 @@ let _setNodeSelected = null;
 let id = 0;
 
 export async function openManifestDialog() {
-  try {
-    Global.openBusyScreen(true, "Reading cloud storage...");
-    let cloudStorage = null;
-    try {
-      cloudStorage = new CloudStorage();
-      const enabled = await cloudStorage.isCloudEnabled();
-      if (!enabled) {
-        LOG.info("Cloud is not enabled.")
-        return;
-      }
-
-      const treeModel = new TreeModel(cloudStorage);
-      await treeModel.init();
-      _setModel(treeModel);
-    } catch (e) {
-      LOG.error(e);
-      Global.displayMessage("An error occurred attempting to connect to cloud storage.", "error");
-      return;
-    }
-
-    _setId(id++);
-    _setNodeSelected(null);
-    _setOpen(true);
-  } finally {
-    Global.openBusyScreen(false);
-  }
+  _setId(id++);
+  _setModel(null);
+  _setNodeSelected(null);
+  _setOpen(true);
 }
 
 export function GenerateManifestDialog() {
@@ -70,13 +45,12 @@ export function GenerateManifestDialog() {
       isOpen={isOpen}
       setOpen={setOpen}
       model={model}
+      setModel={setModel}
     />
   );
 }
 
-const setTabValue = () => { };
-
-function GenerateManifestDialogInner({ isOpen, setOpen, model, nodeSelected, setNodeSelected }) {
+function GenerateManifestDialogInner({ isOpen, setOpen, model, setModel, nodeSelected, setNodeSelected }) {
   const theme = useTheme();
   const generateTab = 0;
 
@@ -84,46 +58,27 @@ function GenerateManifestDialogInner({ isOpen, setOpen, model, nodeSelected, set
     console.log("generate manifest.");
     console.log(nodeSelected);
 
-    Global.openBusyScreen(true, "Generating manifest file...");
-    try {
-      const manifestUrl = await model.getStorage().generateManifest(nodeSelected);
-      Global.displayMessage("Successfully created package manifest file.", "success");
-      setOpen(false);
-      setTimeout(() => {
-        Global.openCopyLinkDialog(
-          true,
-          manifestUrl,
-          "Package Manifest File URL",
-          "Successfully copied the package manifest file URL to the clipboard.",
-          true
-        )
-
-      }, 0);
-    } catch (e) {
-      LOG.error(e);
-
-      // Check for token scope error
-      if (e?.error?.error?.required_scope) {
-        Global.displayMessage("This operation requires an updated Dropbox token. Please use settings to unlink and relink to Dropbox.", "error");
-      } else {
-        Global.displayMessage("An error occurred while attempting to generate the manifest.", "error");
-      }
-    } finally {
-      Global.openBusyScreen(false);
-    }
+    new GenerateManifestWrapper().generate(
+      async () => {
+        return await model.getStorage().generateManifestFromNode(nodeSelected);
+      },
+      () => {
+        setOpen(false);
+      },
+      true
+    )
   }
 
   return (
     <Editor
       title="Generate Package Manifest File"
-      height={400}
+      height={340}
+      maxWidth={"md"}
       isOpen={isOpen}
       setOpen={setOpen}
       tabValue={generateTab}
-      setTabValue={setTabValue}
-      onShow={() => {
-        console.log("on show...");
-      }}
+      setTabValue={() => { }}
+      onShow={() => { }}
       okTitle={"Generate"}
       onOk={() => {
         onOk();
@@ -136,13 +91,34 @@ function GenerateManifestDialogInner({ isOpen, setOpen, model, nodeSelected, set
       tabPanels={(
         <>
           <EditorTabPanel value={generateTab} index={generateTab}>
-            <Typography sx={{mt: .5}}>
-              Select a folder that contains the contents to generate the manifest file for.<br/>
+            <Typography sx={{ mt: .5 }}>
+              Select a folder that contains the contents to generate the manifest file for.<br />
             </Typography>
-            <Typography sx={{mb: 2}} variant={"subtitle2"} color={theme.palette.primary.main}>
+            <Typography sx={{ mb: 2 }} variant={"subtitle2"} color={theme.palette.primary.main}>
               (For example, the root folder of a game)
             </Typography>
-            <TreeComponent model={model} setNodeSelected={setNodeSelected}/>
+            <Stack
+              spacing={0}
+              direction="row"
+              alignItems="center"
+            >
+              <EditorTextField
+                disabled
+                sx={{ width: '50ch' }}
+                label="Package Root Folder"
+                value={nodeSelected ? nodeSelected.path : ""}
+              />
+              <EditorButton
+                label="Select folder..."
+                onClick={() => {
+                  openSelectCloudFolderDialog((model, node) => {
+                    setModel(model);
+                    setNodeSelected(node)
+                  });
+                }}
+              />
+            </Stack>
+            {/* <TreeComponent model={model} setNodeSelected={setNodeSelected}/> */}
           </EditorTabPanel>
         </>
       )}
