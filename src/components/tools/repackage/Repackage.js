@@ -271,7 +271,7 @@ export default class Repackage {
         name = r.getName();
       }
       const path = this.getPath(rootPath, name);
-      const fullPath = path[0] + "/" + path[1];
+      const fullPath = path[0] + (path[0].endsWith("/") ? "" : "/") + path[1];
       console.log(fullPath);
       GlobalHolder.setBusyScreenMessage(`Uploading file ${i + 1} of ${results.length}...`);
       await storage.uploadFile(blob, fullPath);

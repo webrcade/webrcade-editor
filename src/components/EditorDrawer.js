@@ -9,7 +9,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
-import CloudRoundedIcon from '@mui/icons-material/CloudRounded';
+// import CloudRoundedIcon from '@mui/icons-material/CloudRounded';
 import HomeRepairServiceRoundedIcon from '@mui/icons-material/HomeRepairServiceRounded';
 import SaveIcon from '@mui/icons-material/Save';
 import Toolbar from '@mui/material/Toolbar';
@@ -21,7 +21,7 @@ import { Global, GlobalHolder } from '../Global';
 import CommonTooltip from './common/CommonTooltip';
 import * as Feed from '../Feed';
 import NewMenu from './NewMenu';
-import CloudMenu from './CloudMenu';
+// import CloudMenu from './CloudMenu';
 import ToolsMenu from './ToolsMenu';
 import Prefs from '../Prefs';
 
@@ -30,7 +30,7 @@ function EditorDrawer(props) {
 
   const [open, setOpen] = React.useState(false);
   const [newMenuAnchor, setNewMenuAnchor] = React.useState(false);
-  const [cloudMenuAnchor, setCloudMenuAnchor] = React.useState(false);
+  // const [cloudMenuAnchor, setCloudMenuAnchor] = React.useState(false);
   const [toolsMenuAnchor, setToolsMenuAnchor] = React.useState(false);
 
   const toggleDrawer = () => {
