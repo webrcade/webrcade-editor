@@ -195,6 +195,15 @@ const setDefaultForQuake = (type, item) => {
   }
 }
 
+const setDefaultForScumm = (type, item) => {
+  if (type === APP_TYPE_KEYS.SCUMM ||
+    type === APP_TYPE_KEYS.SCUMMVM) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
+
 export default function ItemEditor(props) {
   const [tabValue, setTabValue] = React.useState(0);
   const [item, setItem] = React.useState({});
@@ -293,6 +302,7 @@ export default function ItemEditor(props) {
         setDefaultForColeco(clone.type, clone);
         setDefaultForA5200(clone.type, clone);
         setDefaultForQuake(clone.type, clone);
+        setDefaultForScumm(clone.type, clone);
         setDefaultForNeoGeoCd(clone.type, clone);
         setDefaultFor3do(clone.type, clone);
         // setDefaultForSaturn(clone.type, clone);
@@ -322,6 +332,7 @@ export default function ItemEditor(props) {
         setDefaultForColeco(item.type, item);
         setDefaultForA5200(item.type, item);
         setDefaultForQuake(item.type, item);
+        setDefaultForScumm(item.type, item);
 
         if (isDebug) {
           LOG.info(item);

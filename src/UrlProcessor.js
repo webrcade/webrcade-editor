@@ -6,7 +6,8 @@ import {
   isValidString,
   md5,
   remapUrl,
-  romNameScorer
+  romNameScorer,
+  getContentDispositionFilename
 } from '@webrcade/app-common'
 
 import * as Drop from './Drop';
@@ -19,12 +20,13 @@ const isDebug = Global.isDebug();
 const MD5_PREFIX = "_md5_:";
 
 class Processor {
-  constructor(urls, processor) {
+  constructor(urls, processor, names) {
     this.total = urls.length;
     this.processor = processor;
     this.recordTitleSource = false;
     this.failed = 0;
     this.urls = urls;
+    this.names = names;
     this.allExtensions =
       // dotted and unique
       AppRegistry.instance.getAllExtensions(true, false);
@@ -56,7 +58,7 @@ class Processor {
     ];
   }
 
-  async processUrl(url, nameParts) {
+  async processUrl(url, nameParts, name) {
     let title = nameParts[0];
     let ext = nameParts[1];
     let registryGame = {};
@@ -76,15 +78,23 @@ class Processor {
       const res = await fad.fetch();
 
       if (res.ok) {
-        // Capture content disposition
-        const headers = fad.getHeaders(res);
-        const disposition = headers['content-disposition'];
-        if (disposition) {
-          const matches = /filename\*?=['"]?(?:UTF-\d['"]*)?([^;\r\n"']*)['"]?;?/gim.exec(disposition);
-          if (matches.length > 1) {
-            let match = matches[1];
-            match = match.trim();
-            if (match.length > 0) {
+        if (name) {
+          const parts = this.getNameParts(name);
+          title = parts[0];
+          ext = parts[1];
+          // Check for type from content disposition (if not already resolved)
+          if (!type) {
+            type = AppRegistry.instance.getTypeForExtension(ext);
+            if (type && isDebug) {
+              LOG.info("Found type from name.");
+            }
+          }
+        } else {
+          // Capture content disposition
+          const headers = fad.getHeaders(res);
+          if (headers) {
+            const match = getContentDispositionFilename(headers);
+            if (match) {
               // Update name parts based on content disposition
               const parts = this.getNameParts(match);
               title = parts[0];
@@ -172,7 +182,6 @@ class Processor {
       game.title = title;
       titleFromReg = false;
     }
-
     if (this.recordTitleSource) {
       game._titleFromRegistry = titleFromReg;
     }
@@ -201,6 +210,7 @@ class Processor {
 
   async process() {
     const urls = this.urls;
+    const names = this.names;
     Global.openBusyScreen(true);
     let message = null;
 
@@ -220,7 +230,7 @@ class Processor {
               `Analyzing ${i + 1} of ${len}...` :
               "Analyzing...");
 
-          const item = await this.processUrl(url, nameParts);
+          const item = await this.processUrl(url, nameParts, names && names.length > i ? names[i] : null);
           if (item) {
             items.push(item);
           }
@@ -300,7 +310,7 @@ const getMessage = (succeeded, failed, isAdd = true) => {
   return [message, severity];
 }
 
-const process = (urls) => {
+const process = (urls, names) => {
   const catId = Global.getFeedCategoryId();
   if (catId) {
     new Processor(urls,
@@ -321,7 +331,7 @@ const process = (urls) => {
           }
         }
         return getMessage(succeeded, urls.length - succeeded);
-      }).process();
+      }, names).process();
   }
 }
 

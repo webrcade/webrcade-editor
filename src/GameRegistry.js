@@ -190,6 +190,11 @@ class GameRegistryImpl {
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-3do-images/master/Named_Snaps/output',
       descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Panasonic%203DO/output'
     },
+    'scumm': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-scummvm-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-scummvm-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/ScummVM%20Descriptions'
+    },
   }
 
   CUSTOM_PROPS = {

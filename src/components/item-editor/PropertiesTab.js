@@ -29,6 +29,7 @@ const PROP_CUSTOM_BIOS = "PROP_CUSTOM_BIOS";
 const PROP_DISABLE_LOOKUP = "PROP_DISABLE_LOOKUP";
 const PROP_DISABLE_MEMCARD1 = "PROP_DISABLE_MEMCARD1";
 const PROP_DISCS = "PROP_DISCS";
+const PROP_SBI = "PROP_SBI";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
 const PROP_TWIN_STICK = "PROP_TWIN_STICK";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
@@ -97,6 +98,7 @@ const ALL_PROPS = [
   PROP_ROTATION_LNX,
   PROP_RTC,
   PROP_SAMPLES,
+  PROP_SBI,
   PROP_SAVE_TYPE,
   PROP_SKIP_BIOS,
   PROP_SKIP_CD_LOADING,
@@ -128,6 +130,9 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.JS7800]: {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
+    // [APP_TYPE_KEYS.RETRO_PROSYSTEM]: {
+    //   PROP_ROM, PROP_ZOOM_LEVEL
+    // },
     [APP_TYPE_KEYS.NES]: {
       PROP_ROM, PROP_FORCE_PAL, PROP_ZOOM_LEVEL
     },
@@ -267,10 +272,10 @@ export const buildFieldMap = () => {
       PROP_ROM, PROP_ADDITIONAL_ROMS, PROP_SAMPLES, PROP_VOL_ADJUST, PROP_PLAYER_ORDER, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.PSX]: {
-      PROP_DISCS, PROP_ANALOG, PROP_MULTITAP, PROP_ZOOM_LEVEL, PROP_SKIP_BIOS, PROP_DISABLE_MEMCARD1
+      PROP_DISCS, PROP_ANALOG, PROP_MULTITAP, PROP_ZOOM_LEVEL, PROP_SKIP_BIOS, PROP_DISABLE_MEMCARD1, PROP_SBI
     },
     [APP_TYPE_KEYS.BEETLE_PSX]: {
-      PROP_DISCS, PROP_ANALOG, PROP_MULTITAP, PROP_ZOOM_LEVEL, PROP_SKIP_BIOS, PROP_DISABLE_MEMCARD1
+      PROP_DISCS, PROP_ANALOG, PROP_MULTITAP, PROP_ZOOM_LEVEL, PROP_SKIP_BIOS, PROP_DISABLE_MEMCARD1, PROP_SBI
     },
     [APP_TYPE_KEYS.SEGACD]: {
       PROP_DISCS, PROP_ZOOM_LEVEL
@@ -328,6 +333,12 @@ export const buildFieldMap = () => {
     },
     [APP_TYPE_KEYS.TYRQUAKE]: {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_WAD_SELECTOR
+    },
+    [APP_TYPE_KEYS.SCUMM]: {
+      PROP_ARCHIVE, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.SCUMMVM]: {
+      PROP_ARCHIVE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.RETRO_PARALLEL_N64]: {
       PROP_ROM, PROP_ZOOM_LEVEL
@@ -415,7 +426,7 @@ export default function PropertiesTab(props) {
           <EditorUrlField
             required
             sx={{ width: '50ch' }}
-            label="Archive (URL)"
+            label="Package Archive or Package Manifest (URL)"
             // helperText="(.zip file containing the contents)"
             onDropText={(text) => {
               const props = { ...object.props, archive: text }
@@ -517,6 +528,40 @@ export default function PropertiesTab(props) {
             }}
             value={object.props.discs && object.props.discs.length > 0 ?
               object.props.discs.join("\n") : ""}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_SBI) ? (
+        <div>
+          <EditorMultiUrlField
+            label="SBI Files (URLs)"
+            rows={3}
+            onDropText={(text) => {
+              let urls = object.props.sbi ? object.props.sbi : [];
+              if (Array.isArray(text)) {
+                urls.push(...text);
+              } else {
+                urls.push(text);
+              }
+              urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, sbi: urls }
+              if (urls.length === 0) {
+                delete props.sbi;
+              }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const val = e.target.value;
+              let urls = Util.splitLines(val);
+              //urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, sbi: urls }
+              if (urls.length === 0) {
+                delete props.sbi;
+              }
+              setObject({ ...object, props })
+            }}
+            value={object.props.sbi && object.props.sbi.length > 0 ?
+              object.props.sbi.join("\n") : ""}
           />
         </div>
       ) : null}

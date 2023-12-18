@@ -51,7 +51,7 @@ const minimizeLink = (location, copyLinkProps, setCopyLinkProps) => {
   new WrcCommon.FetchAppData(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(location)}`).fetch()
     .then((res) => {
       if (res.ok) {
-        return res.text();
+          return res.text();
       } else {
         throw Error("Error attempting to shorten URL");
       }
@@ -92,6 +92,10 @@ const CopyLinkDialog = (props) => {
   GlobalHolder.setCopyLinkDialogOpen = setOpen;
   GlobalHolder.setCopyLinkDialogProps = setCopyLinkProps;
 
+  const title = copyLinkProps.title;
+  const success = copyLinkProps.success;
+  const disabledShortened = copyLinkProps.disableShortened;
+
   const getLink = () => {
     return copyLinkProps.checked && copyLinkProps.minLink ? copyLinkProps.minLink : copyLinkProps.link;
   }
@@ -102,23 +106,25 @@ const CopyLinkDialog = (props) => {
       onClose={() => setOpen(false)}
       fullScreen={fullScreen}
     >
-      <DialogTitle>Copy Stand-alone Link</DialogTitle>
+      <DialogTitle>{title ? title : "Copy Stand-alone Link"}</DialogTitle>
       <DialogContent>
-        <div>
-          <FormControlLabel sx={{ whiteSpace: 'nowrap', ml: 1 }} control={
-            <Switch
-              onChange={(e) => {
-                const updatedProps = {...copyLinkProps, checked: e.target.checked};
-                setCopyLinkProps(updatedProps);
-                if (e.target.checked) {
-                  minimizeLink(copyLinkProps.link, updatedProps, setCopyLinkProps)
-                }
-              }}
-            />
-          }
-          label={"Shortened URL"}
-        />
-        </div>
+        {!disabledShortened && (
+          <div>
+            <FormControlLabel sx={{ whiteSpace: 'nowrap', ml: 1 }} control={
+              <Switch
+                onChange={(e) => {
+                  const updatedProps = {...copyLinkProps, checked: e.target.checked};
+                  setCopyLinkProps(updatedProps);
+                  if (e.target.checked) {
+                    minimizeLink(copyLinkProps.link, updatedProps, setCopyLinkProps)
+                  }
+                }}
+              />
+            }
+            label={"Shortened URL"}
+          />
+          </div>
+        )}
         <div>
           <TextField
             value={getLink()}
@@ -139,7 +145,8 @@ const CopyLinkDialog = (props) => {
 
           setTimeout(() => {
             copyToClipboard('copyField', getLink());
-            Global.displayMessage("Successfully copied stand-alone link (URL) to clipboard.", "success");
+            Global.displayMessage(
+              success ? success : "Successfully copied stand-alone link (URL) to clipboard.", "success");
             window.document.body.removeChild(copyEl);
           }, 0);
         }}>

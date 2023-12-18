@@ -34,7 +34,7 @@ export default function NewMenu(props) {
         handleClose();
       }}>
         <ListItemIcon>
-          <FileCopyIcon fontSize="small" />
+          <FileCopyIcon />
         </ListItemIcon>
         Clone example feed
       </MenuItem>
@@ -54,7 +54,7 @@ export default function NewMenu(props) {
           });
       }}>
         <ListItemIcon>
-          <FileCopyIcon fontSize="small" />
+          <FileCopyIcon />
         </ListItemIcon>
         Clone default feed
       </MenuItem>
@@ -65,7 +65,7 @@ export default function NewMenu(props) {
         handleClose();
       }}>
         <ListItemIcon>
-          <InsertDriveFileIcon fontSize="small" />
+          <InsertDriveFileIcon />
         </ListItemIcon>
         Empty feed
       </MenuItem>

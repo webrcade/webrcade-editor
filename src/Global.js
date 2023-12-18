@@ -10,6 +10,7 @@ import * as Util from './Util';
 class Holder {
   static instance = Holder.instance || new Holder();
 
+  forceRefresh = null;
   setBusyScreenOpen = null;
   setBusyScreenMessage = null;
   setBusyScreenDisableAutoFocus = null;
@@ -44,11 +45,14 @@ class Holder {
 
 const GlobalHolder = Holder.instance;
 
-const THUMB_SIZE = [400, 300];
+const THUMB_AR = [4, 3];
 
 const Global = {
   isDebug: () => {
     return GlobalHolder.isDebug
+  },
+  forceRefresh: () => {
+    GlobalHolder.forceRefresh();
   },
   openBusyScreen: (open, message = null, disableAutoFocus, disableDrop = true) => {
     GlobalHolder.setBusyScreenOpen(open);
@@ -76,9 +80,14 @@ const Global = {
     }
     GlobalHolder.setConfirmDialogOpen(open);
   },
-  openCopyLinkDialog: (open, link) => {
+  openCopyLinkDialog: (open, link, title, success, disableShortened) => {
     if (link) {
-      GlobalHolder.setCopyLinkDialogProps({link: link});
+      GlobalHolder.setCopyLinkDialogProps({
+        link: link,
+        title: title,
+        success: success,
+        disableShortened: disableShortened
+      });
     }
     GlobalHolder.setCopyLinkDialogOpen(open);
   },
@@ -151,8 +160,8 @@ const Global = {
   setFeedCategoryId: (id) => {
     return GlobalHolder.setFeedCategoryId(id);
   },
-  getThumbSize: () => {
-    return THUMB_SIZE;
+  getThumbAspectRatio: () => {
+    return THUMB_AR;
   },
   setApp: (app) => {
     GlobalHolder.setApp(app);

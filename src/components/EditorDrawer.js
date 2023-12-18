@@ -9,6 +9,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
+// import CloudRoundedIcon from '@mui/icons-material/CloudRounded';
+import HomeRepairServiceRoundedIcon from '@mui/icons-material/HomeRepairServiceRounded';
 import SaveIcon from '@mui/icons-material/Save';
 import Toolbar from '@mui/material/Toolbar';
 import UploadIcon from '@mui/icons-material/Upload';
@@ -19,6 +21,8 @@ import { Global, GlobalHolder } from '../Global';
 import CommonTooltip from './common/CommonTooltip';
 import * as Feed from '../Feed';
 import NewMenu from './NewMenu';
+// import CloudMenu from './CloudMenu';
+import ToolsMenu from './ToolsMenu';
 import Prefs from '../Prefs';
 
 function EditorDrawer(props) {
@@ -26,6 +30,8 @@ function EditorDrawer(props) {
 
   const [open, setOpen] = React.useState(false);
   const [newMenuAnchor, setNewMenuAnchor] = React.useState(false);
+  // const [cloudMenuAnchor, setCloudMenuAnchor] = React.useState(false);
+  const [toolsMenuAnchor, setToolsMenuAnchor] = React.useState(false);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -154,6 +160,26 @@ function EditorDrawer(props) {
           </ListItem>
         </CommonTooltip>
       </List>
+      <Divider />
+      <List>
+        <ListItem button key="tools" onClick={(e) => {
+          setToolsMenuAnchor(e.target);
+        }}>
+          <ListItemIcon><HomeRepairServiceRoundedIcon /></ListItemIcon>
+          <ListItemText primary="Tools" />
+        </ListItem>
+      </List>
+      {/* <Divider /> */}
+      {/* {WrcCommon.settings.isCloudStorageEnabled() &&
+        <List>
+          <ListItem button key="cloud" onClick={(e) => {
+            setCloudMenuAnchor(e.target);
+          }}>
+            <ListItemIcon><CloudRoundedIcon /></ListItemIcon>
+            <ListItemText primary="Cloud Storage" />
+          </ListItem>
+        </List>
+      } */}
     </div>
   );
   return (
@@ -185,6 +211,16 @@ function EditorDrawer(props) {
       <NewMenu
         anchorEl={newMenuAnchor}
         setAnchorEl={setNewMenuAnchor}
+        setOpen={setOpen}
+      />
+      {/* <CloudMenu
+        anchorEl={cloudMenuAnchor}
+        setAnchorEl={setCloudMenuAnchor}
+        setOpen={setOpen}
+      /> */}
+      <ToolsMenu
+        anchorEl={toolsMenuAnchor}
+        setAnchorEl={setToolsMenuAnchor}
         setOpen={setOpen}
       />
     </>

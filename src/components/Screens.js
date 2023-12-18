@@ -11,6 +11,10 @@ import ImportDialog from './ImportDialog';
 import ItemEditor from './item-editor/ItemEditor';
 import LoadFeedDialog from './load-dialog/LoadFeedDialog';
 import SettingsEditor from './SettingsEditor';
+import { GenerateManifestDialog } from './cloud/generate-manifest/GenerateManifestDialog';
+import { RepackageDialog } from './tools/repackage/RepackageDialog';
+import { SelectCloudFolderDialog } from './cloud/generate-manifest/SelectCloudFolderDialog';
+import { DownloadFileDialog } from './DownloadFileDialog';
 
 export default function Screens() {
 
@@ -27,6 +31,10 @@ export default function Screens() {
       <ConfirmDialog />
       <LoadFeedDialog />
       <SettingsEditor />
+      <GenerateManifestDialog />
+      <RepackageDialog />
+      <SelectCloudFolderDialog />
+      <DownloadFileDialog />
     </>
   );
 }
