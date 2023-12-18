@@ -6,12 +6,14 @@ export function dropboxPicker(cb, multi=true) {
     folderselect: false,
     success: function (files) {
       const res = [];
+      const names = [];
       for (let i = 0; i < files.length; i++) {
         const f = files[i];
         res.push(f.link);
+        names.push(f.name);
       }
       if (res.length > 0) {
-        cb(res);
+        cb(res, names);
       }
     },
     sizeLimit: 600 * 1024 * 1024 // 65mb

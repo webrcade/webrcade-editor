@@ -51,13 +51,13 @@ const minimizeLink = (location, copyLinkProps, setCopyLinkProps) => {
   new WrcCommon.FetchAppData(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(location)}`).fetch()
     .then((res) => {
       if (res.ok) {
-        return res.text();
+          return res.text();
       } else {
         throw Error("Error attempting to shorten URL");
       }
     })
     .then((text) => {
-      if (text.toLowerCase().startsWith("https://tinyurl.com")) {
+      if (text.indexOf("//tinyurl.com") !== -1) {
         location = text;
       } else {
         throw Error("Invalid response from tinyurl");

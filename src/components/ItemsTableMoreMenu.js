@@ -46,8 +46,8 @@ export default function ItemsTableMoreMenu(props) {
         </MenuItem>
         <MenuItem onClick={() => {
           handleClose();
-          dropboxPicker((res) => {
-            UrlProcessor.process(res);
+          dropboxPicker((res, names) => {
+            UrlProcessor.process(res, names);
           });
         }}>
           <ListItemIcon>

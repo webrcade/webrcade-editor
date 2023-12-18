@@ -130,6 +130,9 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.JS7800]: {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
+    // [APP_TYPE_KEYS.RETRO_PROSYSTEM]: {
+    //   PROP_ROM, PROP_ZOOM_LEVEL
+    // },
     [APP_TYPE_KEYS.NES]: {
       PROP_ROM, PROP_FORCE_PAL, PROP_ZOOM_LEVEL
     },
