@@ -57,7 +57,7 @@ const minimizeLink = (location, copyLinkProps, setCopyLinkProps) => {
       }
     })
     .then((text) => {
-      if (text.indexOf("//tinyurl.com") !== -1) {
+      if (text.toLowerCase().indexOf("//tinyurl.com") !== -1) {
         location = text;
       } else {
         throw Error("Invalid response from tinyurl");
