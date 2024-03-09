@@ -124,6 +124,9 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.RETRO_STELLA]: {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
+    [APP_TYPE_KEYS.RETRO_STELLA_LATEST]: {
+      PROP_ROM, PROP_ZOOM_LEVEL
+    },
     [APP_TYPE_KEYS.A7800]: {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
