@@ -7,7 +7,8 @@ import {
   md5,
   remapUrl,
   romNameScorer,
-  getContentDispositionFilename
+  getContentDispositionFilename,
+  uuidv4
 } from '@webrcade/app-common'
 
 import * as Drop from './Drop';
@@ -184,6 +185,16 @@ class Processor {
     }
     if (this.recordTitleSource) {
       game._titleFromRegistry = titleFromReg;
+    }
+
+    // If the type supports media, remove rom and add media
+    if (game.type) {
+      const defs = AppRegistry.instance.getDefaultsForType(game.type);
+      if (defs.media) {
+        game.props.media = [url];
+        game.props.uid = uuidv4();
+        delete game.props.rom;
+      }
     }
 
     return (game.type && game.title ? game : null);

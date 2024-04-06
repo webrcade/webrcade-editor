@@ -35,8 +35,10 @@ const PROP_TWIN_STICK = "PROP_TWIN_STICK";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
 const PROP_FORCE_PAL = "PROP_FORCE_PAL";
 const PROP_FORCE_YM2413 = "PROP_FORCE_YM2413";
+const PROP_JIFFYDOS = "PROP_JIFFYDOS";
 const PROP_LANGUAGE = "PROP_LANGUAGE";
 const PROP_MAP_RUN_SELECT = "PROP_MAP_RUN_SELECT";
+const PROP_MEDIA = "PROP_MEDIA";
 const PROP_MIRRORING = "PROP_MIRRORING";
 const PROP_MULTITAP = "PROP_MULTITAP";
 const PROP_NEOGEO_BIOS = "PROP_NEOGEO_BIOS";
@@ -85,7 +87,9 @@ const ALL_PROPS = [
   PROP_GB_COLORS,
   PROP_GB_HW_TYPE,
   PROP_GB_PALETTE,
+  PROP_JIFFYDOS,
   PROP_LANGUAGE,
+  PROP_MEDIA,
   PROP_MIRRORING,
   PROP_NEOGEO_BIOS,
   PROP_MULTITAP,
@@ -126,6 +130,12 @@ export const buildFieldMap = () => {
     },
     [APP_TYPE_KEYS.RETRO_STELLA_LATEST]: {
       PROP_ROM, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.COMMODORE_C64]: {
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_JIFFYDOS, PROP_SWAP_CONTROLLERS
+    },
+    [APP_TYPE_KEYS.RETRO_COMMODORE_C64]: {
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_JIFFYDOS, PROP_SWAP_CONTROLLERS
     },
     [APP_TYPE_KEYS.A7800]: {
       PROP_ROM, PROP_ZOOM_LEVEL
@@ -534,6 +544,40 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_MEDIA) ? (
+        <div>
+          <EditorMultiUrlField
+            label="Media (URLs)"
+            rows={4}
+            onDropText={(text) => {
+              let urls = object.props.media ? object.props.media : [];
+              if (Array.isArray(text)) {
+                urls.push(...text);
+              } else {
+                urls.push(text);
+              }
+              urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, media: urls }
+              if (urls.length === 0) {
+                delete props.media;
+              }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const val = e.target.value;
+              let urls = Util.splitLines(val);
+              //urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, media: urls }
+              if (urls.length === 0) {
+                delete props.media;
+              }
+              setObject({ ...object, props })
+            }}
+            value={object.props.media && object.props.media.length > 0 ?
+              object.props.media.join("\n") : ""}
+          />
+        </div>
+      ) : null}
       {hasProp(object, PROP_SBI) ? (
         <div>
           <EditorMultiUrlField
@@ -769,6 +813,23 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.swap)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_JIFFYDOS) ? (
+        <div>
+          <EditorSelect
+            label="Use JiffyDOS"
+            tooltip="Whether to use JiffyDOS (if the bios files are available)."
+            value={object.props.jiffydos ? object.props.jiffydos : 0}
+            menuItems={[
+              { value: 0, name: "(auto)" },
+              { value: 1, name: "Disabled" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, jiffydos: e.target.value }
+              setObject({ ...object, props })
+            }}
           />
         </div>
       ) : null}

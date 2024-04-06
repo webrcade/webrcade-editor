@@ -36,6 +36,7 @@ function PropertiesTab(props) {
     { value: "3do", name: "3DO" },
     { value: "lynx", name: "Atari Lynx" },
     { value: "coleco", name: "ColecoVision"},
+    { value: "commodore", name: "Commodore (8-bit)"},
     { value: "pcecd", name: "NEC PC Engine CD"},
     { value: "pcfx", name: "NEC PC-FX"},
     { value: "segacd", name: "Sega CD" },
@@ -280,6 +281,40 @@ function PropertiesTab(props) {
             }}
             value={object.props.segacd_bios && object.props.segacd_bios.length > 0 ?
               object.props.segacd_bios.join("\n") : ""}
+          />
+        )}
+      </div>
+      <div>
+        {app === "commodore" && (
+          <EditorMultiUrlField
+            label="Commodore (8-bit) BIOS (URLs)"
+            rows={5}
+            onDropText={(text) => {
+              let urls = object.props.commodore8bit_bios ? object.props.commodore8bit_bios : [];
+              if (Array.isArray(text)) {
+                urls.push(...text);
+              } else {
+                urls.push(text);
+              }
+              urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, commodore8bit_bios: urls }
+              if (urls.length === 0) {
+                delete props.commodore8bit_bios;
+              }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const val = e.target.value;
+              let urls = Util.splitLines(val);
+              //urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, commodore8bit_bios: urls }
+              if (urls.length === 0) {
+                delete props.commodore8bit_bios;
+              }
+              setObject({ ...object, props })
+            }}
+            value={object.props.commodore8bit_bios && object.props.commodore8bit_bios.length > 0 ?
+              object.props.commodore8bit_bios.join("\n") : ""}
           />
         )}
       </div>

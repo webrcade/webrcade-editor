@@ -144,6 +144,16 @@ const setDefaultFor3do = (type, item) => {
   }
 }
 
+const setDefaultForCommodore8Bit = (type, item) => {
+  if (type === APP_TYPE_KEYS.COMMODORE_C64 ||
+    type === APP_TYPE_KEYS.RETRO_COMMODORE_C64) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
+
+
 // const setDefaultForSaturn = (type, item) => {
 //   if (type === APP_TYPE_KEYS.RETRO_YABAUSE ||
 //     type === APP_TYPE_KEYS.SATURN) {
@@ -305,6 +315,7 @@ export default function ItemEditor(props) {
         setDefaultForScumm(clone.type, clone);
         setDefaultForNeoGeoCd(clone.type, clone);
         setDefaultFor3do(clone.type, clone);
+        setDefaultForCommodore8Bit(clone.type, clone);
         // setDefaultForSaturn(clone.type, clone);
         setItem(clone);
 
@@ -333,6 +344,7 @@ export default function ItemEditor(props) {
         setDefaultForA5200(item.type, item);
         setDefaultForQuake(item.type, item);
         setDefaultForScumm(item.type, item);
+        setDefaultForCommodore8Bit(item.type, item);
 
         if (isDebug) {
           LOG.info(item);
