@@ -193,6 +193,23 @@ class Processor {
       if (defs.media) {
         game.props.media = [url];
         game.props.uid = uuidv4();
+        const metadata = await GameRegistry.getMetaDataByMediaTitle(game.type, game.title);
+        console.log(metadata);
+        if (metadata) {
+          if (metadata.title) {
+            game.title = metadata.title;
+          }
+          if (metadata.description) {
+            game.description = metadata.description;
+          }
+          if (metadata.thumbnail) {
+            game.thumbnail = metadata.thumbnail;
+          }
+          if (metadata.background) {
+            game.background = metadata.background;
+            game.backgroundPixelated = true;
+          }
+        }
         delete game.props.rom;
       }
     }

@@ -2,6 +2,7 @@ import {
   normalizeFileName,
   resolvePath,
   settings,
+  AppRegistry,
   FetchAppData,
   Unzip,
   LOG
@@ -194,6 +195,11 @@ class GameRegistryImpl {
       thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-scummvm-images/master/Named_Titles/resized',
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-scummvm-images/master/Named_Snaps/output',
       descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/ScummVM%20Descriptions'
+    },
+    'commodore-c64': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-commodore-64-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-commodore-64-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Commodore%2064'
     },
   }
 
@@ -417,6 +423,27 @@ class GameRegistryImpl {
         const json = await blob.text();
         this.db = JSON.parse(json);
         LOG.info(`Loaded types database (MD5), ${Object.keys(this.db).length} types.`);
+
+        // Build media based lookups
+        const types = AppRegistry.instance.getAppTypes();
+        const lookups = {};
+        for (let type in types) {
+          const defs = AppRegistry.instance.getDefaultsForType(type);
+          if (defs.media) {
+            const alias = AppRegistry.instance.getAlias(type);
+            if (!lookups[alias]) {
+              const typemap = {};
+              lookups[alias] = typemap;
+              const dbmap = this.db[alias];
+              for (let id in dbmap) {
+                const normalized = this.normalizeTitle(dbmap[id]);
+                typemap[normalized] = id;
+                this.addTitleAliases(typemap, normalized, id);
+              }
+            }
+          }
+        }
+        this.titleLookups = lookups;
       }
     } catch (e) {
       LOG.error("Error loading types database: " + e);
@@ -437,6 +464,21 @@ class GameRegistryImpl {
     await uz.unzip(blob, [], []);
     console.log(filenames);
     return filenames[filename] !== undefined;
+  }
+
+  async getMetaDataByMediaTitle(type, title) {
+    const alias = AppRegistry.instance.getAlias(type);
+    const normalizedTitle = this.normalizeTitle(title);
+    const id = this.titleLookups[alias][normalizedTitle];
+    if (id) {
+      const ret = {};
+      const foundTitle = this.db[alias][id];
+      ret.title = foundTitle;
+      ret.type = type;
+      await this.addMetaData(ret, type, foundTitle);
+      return ret;
+    }
+    return null;
   }
 
   async findByName(name, ext, blob, isFullName = false, verifyBlob = true) {
@@ -631,6 +673,49 @@ class GameRegistryImpl {
     }
 
     return ret;
+  }
+
+  normalizeTitle = (title) => {
+    title = title.toLowerCase();
+    let search = "("
+    let find = title.indexOf(search);
+    if (find !== -1) {
+      title = title.substring(0, find);
+    }
+    search = ", the"
+    find = title.indexOf(search);
+    if (find !== -1) {
+      title = title.substring(0, find);
+    }
+    if (title.startsWith("the ")) {
+      title = title.substring(4);
+    }
+    if (title.endsWith("!")) {
+      title = title.substring(0, title.length - 1);
+    }
+
+    title = title.replaceAll("  ", " ");
+
+    return title.trim();
+  }
+
+  addTitleAliases = (typemap, title, id) => {
+    if (title.indexOf(":") !== -1) {
+      let updated = title.replaceAll(":", " -");
+      typemap[updated] = id;
+      typemap[title.replaceAll(":", "")] = id;
+      typemap[title.substring(0, title.indexOf(":"))] = id;
+    }
+    if (title.endsWith(" 2")) {
+      const updated = title.substring(0, title.length - 2) + " ii";
+      // console.log(updated);
+      typemap[updated] = id;
+    }
+    if (title.endsWith(" part ii")) {
+      const updated = title.substring(0, title.length - 8) + " ii";
+      console.log(updated);
+      typemap[updated] = id;
+    }
   }
 }
 

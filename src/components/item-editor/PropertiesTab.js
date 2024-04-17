@@ -46,6 +46,7 @@ const PROP_NEOGEO_FORCE_AES = "PROP_NEOGEO_FORCE_AES";
 const PROP_PARENT_ROM = "PROP_PARENT_ROM";
 const PROP_PLAYER_ORDER = "PROP_PLAYER_ORDER";
 const PROP_REGION = "PROP_REGION";
+const PROP_REGION_AUTO = "PROP_REGION_AUTO";
 const PROP_ROM = "PROP_ROM";
 const PROP_ROTATED = "PROP_ROTATED";
 const PROP_ROTATION = "PROP_ROTATION";
@@ -96,6 +97,7 @@ const ALL_PROPS = [
   PROP_PARENT_ROM,
   PROP_PLAYER_ORDER,
   PROP_REGION,
+  PROP_REGION_AUTO,
   PROP_ROM,
   PROP_ROTATED,
   PROP_ROTATION,
@@ -132,10 +134,10 @@ export const buildFieldMap = () => {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.COMMODORE_C64]: {
-      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_JIFFYDOS, PROP_SWAP_CONTROLLERS
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_JIFFYDOS, PROP_SWAP_CONTROLLERS, PROP_REGION_AUTO
     },
     [APP_TYPE_KEYS.RETRO_COMMODORE_C64]: {
-      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_JIFFYDOS, PROP_SWAP_CONTROLLERS
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_JIFFYDOS, PROP_SWAP_CONTROLLERS, PROP_REGION_AUTO
     },
     [APP_TYPE_KEYS.A7800]: {
       PROP_ROM, PROP_ZOOM_LEVEL
@@ -816,23 +818,6 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
-      {hasProp(object, PROP_JIFFYDOS) ? (
-        <div>
-          <EditorSelect
-            label="Use JiffyDOS"
-            tooltip="Whether to use JiffyDOS (if the bios files are available)."
-            value={object.props.jiffydos ? object.props.jiffydos : 0}
-            menuItems={[
-              { value: 0, name: "(auto)" },
-              { value: 1, name: "Disabled" },
-            ]}
-            onChange={(e) => {
-              const props = { ...object.props, jiffydos: e.target.value }
-              setObject({ ...object, props })
-            }}
-          />
-        </div>
-      ) : null}
       {hasProp(object, PROP_COLECO_CONTROLS_MODE) ? (
         <div>
           <EditorSelect
@@ -974,6 +959,41 @@ export default function PropertiesTab(props) {
             ]}
             onChange={(e) => {
               const props = { ...object.props, region: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_REGION_AUTO) ? (
+        <div>
+          <EditorSelect
+            label="Region"
+            tooltip="The region of the game."
+            value={object.props.region ? object.props.region : 0}
+            menuItems={[
+              { value: 0, name: "(auto)" },
+              { value: 1, name: "NTSC" },
+              { value: 2, name: "PAL" }
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, region: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_JIFFYDOS) ? (
+        <div>
+          <EditorSelect
+            label="Use JiffyDOS"
+            tooltip="Whether to use JiffyDOS (if the bios files are available)."
+            value={object.props.jiffydos ? object.props.jiffydos : 0}
+            menuItems={[
+              { value: 0, name: "(auto)" },
+              { value: 1, name: "Disabled" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, jiffydos: e.target.value }
               setObject({ ...object, props })
             }}
           />
