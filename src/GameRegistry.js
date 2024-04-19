@@ -713,7 +713,7 @@ class GameRegistryImpl {
     }
     if (title.endsWith(" part ii")) {
       const updated = title.substring(0, title.length - 8) + " ii";
-      console.log(updated);
+      // console.log(updated);
       typemap[updated] = id;
     }
   }
