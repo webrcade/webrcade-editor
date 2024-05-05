@@ -690,13 +690,15 @@ class GameRegistryImpl {
     if (title.startsWith("the ")) {
       title = title.substring(4);
     }
+
+    title = title.replaceAll("  ", " ");
+    title = title.trim();
+
     if (title.endsWith("!")) {
       title = title.substring(0, title.length - 1);
     }
 
-    title = title.replaceAll("  ", " ");
-
-    return title.trim();
+    return title;
   }
 
   addTitleAliases = (typemap, title, id) => {

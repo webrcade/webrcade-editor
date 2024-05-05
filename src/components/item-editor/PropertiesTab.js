@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import {
-  APP_TYPE_KEYS
+  APP_TYPE_KEYS,
 } from '@webrcade/app-common'
 
 import * as Util from '../../Util';
@@ -26,6 +26,7 @@ const PROP_ARCHIVE = "PROP_ARCHIVE";
 const PROP_CD_SPEED_HACK = "PROP_CD_SPEED_HACK";
 const PROP_COLECO_CONTROLS_MODE = "PROP_COLECO_CONTROLS_MODE";
 const PROP_CUSTOM_BIOS = "PROP_CUSTOM_BIOS";
+const PROP_DISABLE_AUTOLOAD = "PROP_DISABLE_AUTOLOAD";
 const PROP_DISABLE_LOOKUP = "PROP_DISABLE_LOOKUP";
 const PROP_DISABLE_MEMCARD1 = "PROP_DISABLE_MEMCARD1";
 const PROP_DISCS = "PROP_DISCS";
@@ -53,6 +54,7 @@ const PROP_ROTATION = "PROP_ROTATION";
 const PROP_ROTATION_LNX = "PROP_ROTATION_LNX";
 const PROP_RTC = "PROP_RTC";
 const PROP_SAMPLES = "PROP_SAMPLES";
+const PROP_SAVE_DISKS = "PROP_SAVE_DISKS";
 const PROP_SAVE_TYPE = "PROP_SAVE_TYPE";
 const PROP_SMS_HW_TYPE = "PROP_SMS_HW_TYPE";
 const PROP_SWAP_CONTROLLERS = "PROP_SWAP_CONTROLLERS";
@@ -77,6 +79,7 @@ const ALL_PROPS = [
   PROP_CD_SPEED_HACK,
   PROP_COLECO_CONTROLS_MODE,
   PROP_CUSTOM_BIOS,
+  PROP_DISABLE_AUTOLOAD,
   PROP_DISABLE_LOOKUP,
   PROP_DISABLE_MEMCARD1,
   PROP_DISCS,
@@ -104,6 +107,7 @@ const ALL_PROPS = [
   PROP_ROTATION_LNX,
   PROP_RTC,
   PROP_SAMPLES,
+  PROP_SAVE_DISKS,
   PROP_SBI,
   PROP_SAVE_TYPE,
   PROP_SKIP_BIOS,
@@ -134,10 +138,10 @@ export const buildFieldMap = () => {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.COMMODORE_C64]: {
-      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_JIFFYDOS, PROP_SWAP_CONTROLLERS, PROP_REGION_AUTO
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_JIFFYDOS, PROP_SWAP_CONTROLLERS, PROP_REGION_AUTO, PROP_SAVE_DISKS, PROP_DISABLE_AUTOLOAD
     },
     [APP_TYPE_KEYS.RETRO_COMMODORE_C64]: {
-      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_JIFFYDOS, PROP_SWAP_CONTROLLERS, PROP_REGION_AUTO
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_JIFFYDOS, PROP_SWAP_CONTROLLERS, PROP_REGION_AUTO, PROP_SAVE_DISKS, PROP_DISABLE_AUTOLOAD
     },
     [APP_TYPE_KEYS.A7800]: {
       PROP_ROM, PROP_ZOOM_LEVEL
@@ -414,6 +418,8 @@ export default function PropertiesTab(props) {
   }, [addValidateCallback, object, tabIndex, validator]);
 
   const showGbColors = object.props.hwType !== 1 && object.props.hwType !== 4;
+
+  // console.log(object)
 
   return (
     <EditorTabPanel value={tabValue} index={tabIndex}>
@@ -815,6 +821,19 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.swap)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_DISABLE_AUTOLOAD) ? (
+        <div>
+          <EditorSwitch
+            label="Disable Autoload"
+            tooltip="Whether to disable media auto-loading."
+            onChange={(e) => {
+              const props = { ...object.props, disableAutoload: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.disableAutoload)}
           />
         </div>
       ) : null}
@@ -1291,6 +1310,26 @@ export default function PropertiesTab(props) {
             ]}
             onChange={(e) => {
               const props = { ...object.props, hack: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_SAVE_DISKS) ? (
+        <div>
+          <EditorSelect
+            label="Save Disks"
+            tooltip="The quantity of save disks."
+            value={object.props.saveDisks ? object.props.saveDisks : 0}
+            menuItems={[
+              { value: 0, name: "(none)" },
+              { value: 1, name: "One" },
+              { value: 2, name: "Two" },
+              { value: 3, name: "Three" },
+              { value: 4, name: "Four" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, saveDisks: e.target.value }
               setObject({ ...object, props })
             }}
           />
