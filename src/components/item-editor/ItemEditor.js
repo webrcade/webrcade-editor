@@ -23,6 +23,7 @@ import A5200DescriptionsTab from './a5200/A5200DescriptionsTab';
 import A5200MappingsTab from './a5200/A5200MappingsTab';
 import ColecoDescriptionsTab from './coleco/ColecoDescriptionsTab';
 import ColecoMappingsTab from './coleco/ColecoMappingsTab';
+// import C64MappingsTab from './c64/C64MappingsTab';
 
 import {
   AppRegistry, APP_TYPE_KEYS, LOG, isEmptyString, uuidv4
@@ -76,11 +77,13 @@ const removeDefaults = (item, defaults) => {
 
 const applyDefaults = (item, type) => {
   const defaults = AppRegistry.instance.getDefaultsForType(type);
+  console.log(defaults)
   for (const p in defaults) {
     if (item.props[p] === undefined) {
       item.props[p] = defaults[p];
     }
   }
+  console.log(item)
 }
 
 const setDefaultForDoom = (type, item) => {
@@ -149,6 +152,9 @@ const setDefaultForCommodore8Bit = (type, item) => {
     type === APP_TYPE_KEYS.RETRO_COMMODORE_C64) {
     if (isEmptyString(item.props.uid)) {
       item.props.uid = uuidv4();
+    }
+    if (item.props.saveDisks === undefined) {
+      item.props.saveDisks = 1;
     }
   }
 }
@@ -221,6 +227,7 @@ export default function ItemEditor(props) {
   const [isCreate, setCreate] = React.useState(false);
 
   const isColeco = (item.type === APP_TYPE_KEYS.COLEM || item.type === APP_TYPE_KEYS.COLECO);
+  // const isC64 = (item.type === APP_TYPE_KEYS.COMMODORE_C64 || item.type === APP_TYPE_KEYS.RETRO_COMMODORE_C64);
   const isA5200 = (item.type === APP_TYPE_KEYS.A5200 || item.type === APP_TYPE_KEYS.RETRO_A5200);
   const isA2600 = (item.type === APP_TYPE_KEYS.A2600 || item.type === APP_TYPE_KEYS.RETRO_STELLA || item.type === APP_TYPE_KEYS.RETRO_STELLA_LATEST);
 
@@ -265,6 +272,11 @@ export default function ItemEditor(props) {
     a2600ControllersTab = index++;
   }
 
+  // let c64MappingsTab = 0;
+  // if (isC64) {
+  //   c64MappingsTab = index++;
+  // }
+
   let thumbTab = index++;
   let bgTab = index++;
 
@@ -283,6 +295,9 @@ export default function ItemEditor(props) {
   if (isA2600) {
     tabs.push(<Tab label="Controllers" key={a2600ControllersTab} />);
   }
+  // if (isC64) {
+  //   tabs.push(<Tab label="Mappings" key={c64MappingsTab} />);
+  // }
   tabs.push(<Tab label="Thumbnail" key={thumbTab} />);
   tabs.push(<Tab label="Background" key={bgTab} />);
 
@@ -300,6 +315,10 @@ export default function ItemEditor(props) {
           const type = Prefs.getLastNewType();
           if (!isEmptyString(type) && AppRegistry.instance.getAppTypes()[type]) {
             clone.type = type;
+
+            // Apply defaults
+            // applyDefaults(clone, type)
+
             // Set defaults
             // TODO: Move to common location, hide specific types
             setDefaultForDoom(type, clone);
@@ -318,6 +337,9 @@ export default function ItemEditor(props) {
         setDefaultForCommodore8Bit(clone.type, clone);
         // setDefaultForSaturn(clone.type, clone);
         setItem(clone);
+
+        console.log("## HERE")
+        console.log(clone)
 
         forceUpdate();
       }}
@@ -493,6 +515,9 @@ export default function ItemEditor(props) {
 
                     //  Set the default when Doom type is selected
                     setDefaultForDoom(type, item);
+
+                    console.log("## SWITCH")
+                    console.log(item);
                   }}
                 />
               </div>
@@ -518,6 +543,12 @@ export default function ItemEditor(props) {
             object={item}
             setObject={setItem}
           />}
+          {/* {isC64 && <C64MappingsTab
+            tabValue={tabValue}
+            tabIndex={c64MappingsTab}
+            object={item}
+            setObject={setItem}
+          />} */}
           {isColeco && <ColecoMappingsTab
             tabValue={tabValue}
             tabIndex={colecoMappingsTab}

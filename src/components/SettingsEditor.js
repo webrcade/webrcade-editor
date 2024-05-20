@@ -58,6 +58,19 @@ function CloudStorageTab(props) {
           </Button>
         </div>
       )}
+      {values.cloudStorage && (
+        <div>
+          <EditorSwitch
+            label="Disable saves after state load"
+            tooltip="Whether to disable in-games saves after loading a save state."
+            onChange={(e) => {
+              const vals = { ...values, disableInGame: e.target.checked };
+              setValues(vals);
+            }}
+            checked={Util.asBoolean(values.disableInGame)}
+          />
+        </div>
+      )}
     </EditorTabPanel>
   );
 }
@@ -171,7 +184,8 @@ export default function SettingsEditor(props) {
           bilinear: settings.isBilinearFilterEnabled(),
           cloudStorage: settings.isCloudStorageEnabled(),
           screenSize: settings.getScreenSize(),
-          dbLinked: settings.getDbToken() !== null
+          dbLinked: settings.getDbToken() !== null,
+          disableInGame: settings.isGameSavesDisabledAfterState()
         }
         setValues({
           ...vals,
@@ -185,6 +199,7 @@ export default function SettingsEditor(props) {
         settings.setBilinearFilterEnabled(values.bilinear);
         settings.setScreenSize(values.screenSize);
         settings.setCloudStorageEnabled(values.cloudStorage);
+        settings.setGameSavesDisabledAfterState(values.disableInGame);
         settings.save().finally(() => {
           if (values.originalValues.expApps !== values.expApps) {
             window.location.reload();

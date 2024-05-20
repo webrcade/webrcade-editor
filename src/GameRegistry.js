@@ -706,7 +706,15 @@ class GameRegistryImpl {
       let updated = title.replaceAll(":", " -");
       typemap[updated] = id;
       typemap[title.replaceAll(":", "")] = id;
-      typemap[title.substring(0, title.indexOf(":"))] = id;
+      //typemap[title.substring(0, title.indexOf(":"))] = id;
+    }
+    if (title.indexOf("g.i. ") !== -1) {
+      let updated = title.replaceAll("g.i. ", "gi ");
+      typemap[updated] = id;
+    }
+    if (title.indexOf("gi ") !== -1) {
+      let updated = title.replaceAll("gi ", "g.i. ");
+      typemap[updated] = id;
     }
     if (title.endsWith(" 2")) {
       const updated = title.substring(0, title.length - 2) + " ii";

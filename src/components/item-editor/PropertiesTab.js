@@ -23,10 +23,12 @@ const PROP_6BUTTON = "PROP_6BUTTON";
 const PROP_ADDITIONAL_ROMS = "PROP_ADDITIONAL_ROMS";
 const PROP_ANALOG = "PROP_ANALOG";
 const PROP_ARCHIVE = "PROP_ARCHIVE";
+const PROP_C64_RAM_EXPANSION = "PROP_C64_RAM_EXPANSION";
 const PROP_CD_SPEED_HACK = "PROP_CD_SPEED_HACK";
 const PROP_COLECO_CONTROLS_MODE = "PROP_COLECO_CONTROLS_MODE";
 const PROP_CUSTOM_BIOS = "PROP_CUSTOM_BIOS";
 const PROP_DISABLE_AUTOLOAD = "PROP_DISABLE_AUTOLOAD";
+const PROP_DISABLE_TDE = "PROP_DISABLE_TDE";
 const PROP_DISABLE_LOOKUP = "PROP_DISABLE_LOOKUP";
 const PROP_DISABLE_MEMCARD1 = "PROP_DISABLE_MEMCARD1";
 const PROP_DISCS = "PROP_DISCS";
@@ -76,12 +78,14 @@ const ALL_PROPS = [
   PROP_ADDITIONAL_ROMS,
   PROP_ANALOG,
   PROP_ARCHIVE,
+  PROP_C64_RAM_EXPANSION,
   PROP_CD_SPEED_HACK,
   PROP_COLECO_CONTROLS_MODE,
   PROP_CUSTOM_BIOS,
   PROP_DISABLE_AUTOLOAD,
   PROP_DISABLE_LOOKUP,
   PROP_DISABLE_MEMCARD1,
+  PROP_DISABLE_TDE,
   PROP_DISCS,
   PROP_DOOM_GAME,
   PROP_FLASH_SIZE,
@@ -138,10 +142,10 @@ export const buildFieldMap = () => {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.COMMODORE_C64]: {
-      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_JIFFYDOS, PROP_SWAP_CONTROLLERS, PROP_REGION_AUTO, PROP_SAVE_DISKS, PROP_DISABLE_AUTOLOAD
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_JIFFYDOS, PROP_SWAP_CONTROLLERS, PROP_REGION_AUTO, PROP_SAVE_DISKS, PROP_DISABLE_AUTOLOAD, PROP_DISABLE_TDE, PROP_C64_RAM_EXPANSION
     },
     [APP_TYPE_KEYS.RETRO_COMMODORE_C64]: {
-      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_JIFFYDOS, PROP_SWAP_CONTROLLERS, PROP_REGION_AUTO, PROP_SAVE_DISKS, PROP_DISABLE_AUTOLOAD
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_JIFFYDOS, PROP_SWAP_CONTROLLERS, PROP_REGION_AUTO, PROP_SAVE_DISKS, PROP_DISABLE_AUTOLOAD, PROP_DISABLE_TDE, PROP_C64_RAM_EXPANSION
     },
     [APP_TYPE_KEYS.A7800]: {
       PROP_ROM, PROP_ZOOM_LEVEL
@@ -837,6 +841,19 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_DISABLE_TDE) ? (
+        <div>
+          <EditorSwitch
+            label="Disable True Drive Emulation"
+            tooltip="Whether to disable true drive emulation."
+            onChange={(e) => {
+              const props = { ...object.props, disableTrueDriveEmulation: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.disableTrueDriveEmulation)}
+          />
+        </div>
+      ) : null}
       {hasProp(object, PROP_COLECO_CONTROLS_MODE) ? (
         <div>
           <EditorSelect
@@ -1330,6 +1347,30 @@ export default function PropertiesTab(props) {
             ]}
             onChange={(e) => {
               const props = { ...object.props, saveDisks: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_C64_RAM_EXPANSION) ? (
+        <div>
+          <EditorSelect
+            label="Ram Expansion"
+            tooltip="Whether the RAM should be expanded."
+            value={object.props.ramExpansion ? object.props.ramExpansion : 0}
+            menuItems={[
+              { value: 0, name: "(none)" },
+              { value: 1, name: "128kB (1700)" },
+              { value: 2, name: "256kB (1764)" },
+              { value: 3, name: "512kB (1750)" },
+              { value: 4, name: "1024kB" },
+              { value: 5, name: "2048kB" },
+              { value: 6, name: "4096kB" },
+              { value: 7, name: "8192kB" },
+              { value: 8, name: "16384kB" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, ramExpansion: e.target.value }
               setObject({ ...object, props })
             }}
           />
