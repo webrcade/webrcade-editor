@@ -23,7 +23,7 @@ import A5200DescriptionsTab from './a5200/A5200DescriptionsTab';
 import A5200MappingsTab from './a5200/A5200MappingsTab';
 import ColecoDescriptionsTab from './coleco/ColecoDescriptionsTab';
 import ColecoMappingsTab from './coleco/ColecoMappingsTab';
-// import C64MappingsTab from './c64/C64MappingsTab';
+import C64MappingsTab from './c64/C64MappingsTab';
 
 import {
   AppRegistry, APP_TYPE_KEYS, LOG, isEmptyString, uuidv4
@@ -156,6 +156,20 @@ const setDefaultForCommodore8Bit = (type, item) => {
     if (item.props.saveDisks === undefined) {
       item.props.saveDisks = 1;
     }
+    if (!item.props.mappings || Object.keys(item.props.mappings).length === 0) {
+      item.props.mappings = {
+        "start": "return",
+        // "left": "joy-left",
+        // "right": "joy-right",
+        // "up": "joy-up",
+        // "down": "joy-down",
+        "a": "fire1",
+        "b": "fire2",
+        "y": "space",
+        "lb": "runstop",
+        "rb": "f1"
+      };
+    }
   }
 }
 
@@ -227,7 +241,7 @@ export default function ItemEditor(props) {
   const [isCreate, setCreate] = React.useState(false);
 
   const isColeco = (item.type === APP_TYPE_KEYS.COLEM || item.type === APP_TYPE_KEYS.COLECO);
-  // const isC64 = (item.type === APP_TYPE_KEYS.COMMODORE_C64 || item.type === APP_TYPE_KEYS.RETRO_COMMODORE_C64);
+  const isC64 = (item.type === APP_TYPE_KEYS.COMMODORE_C64 || item.type === APP_TYPE_KEYS.RETRO_COMMODORE_C64);
   const isA5200 = (item.type === APP_TYPE_KEYS.A5200 || item.type === APP_TYPE_KEYS.RETRO_A5200);
   const isA2600 = (item.type === APP_TYPE_KEYS.A2600 || item.type === APP_TYPE_KEYS.RETRO_STELLA || item.type === APP_TYPE_KEYS.RETRO_STELLA_LATEST);
 
@@ -272,10 +286,10 @@ export default function ItemEditor(props) {
     a2600ControllersTab = index++;
   }
 
-  // let c64MappingsTab = 0;
-  // if (isC64) {
-  //   c64MappingsTab = index++;
-  // }
+  let c64MappingsTab = 0;
+  if (isC64) {
+    c64MappingsTab = index++;
+  }
 
   let thumbTab = index++;
   let bgTab = index++;
@@ -295,11 +309,27 @@ export default function ItemEditor(props) {
   if (isA2600) {
     tabs.push(<Tab label="Controllers" key={a2600ControllersTab} />);
   }
-  // if (isC64) {
-  //   tabs.push(<Tab label="Mappings" key={c64MappingsTab} />);
-  // }
+  if (isC64) {
+    tabs.push(<Tab label="Mappings" key={c64MappingsTab} />);
+  }
   tabs.push(<Tab label="Thumbnail" key={thumbTab} />);
   tabs.push(<Tab label="Background" key={bgTab} />);
+
+  const setDefaultsForType = (type, object) => {
+    setDefaultForDoom(type, object);
+    setDefaultForPsx(type, object);
+    setDefaultForSegaCd(type, object);
+    setDefaultForPcEngineCd(type, object);
+    setDefaultForPcfx(type, object);
+    setDefaultForColeco(type, object);
+    setDefaultForA5200(type, object);
+    setDefaultForQuake(type, object);
+    setDefaultForScumm(type, object);
+    setDefaultForNeoGeoCd(type, object);
+    setDefaultFor3do(type, object);
+    setDefaultForCommodore8Bit(type, object);
+    // setDefaultForSaturn(type, object);
+  }
 
   return (
     <Editor
@@ -315,32 +345,10 @@ export default function ItemEditor(props) {
           const type = Prefs.getLastNewType();
           if (!isEmptyString(type) && AppRegistry.instance.getAppTypes()[type]) {
             clone.type = type;
-
-            // Apply defaults
-            // applyDefaults(clone, type)
-
-            // Set defaults
-            // TODO: Move to common location, hide specific types
-            setDefaultForDoom(type, clone);
-            setDefaultForPsx(type, clone);
-            setDefaultForSegaCd(type, clone);
-            setDefaultForPcEngineCd(type, clone);
-            setDefaultForPcfx(type, clone);
           }
         }
-        setDefaultForColeco(clone.type, clone);
-        setDefaultForA5200(clone.type, clone);
-        setDefaultForQuake(clone.type, clone);
-        setDefaultForScumm(clone.type, clone);
-        setDefaultForNeoGeoCd(clone.type, clone);
-        setDefaultFor3do(clone.type, clone);
-        setDefaultForCommodore8Bit(clone.type, clone);
-        // setDefaultForSaturn(clone.type, clone);
+        setDefaultsForType(clone.type, clone);
         setItem(clone);
-
-        console.log("## HERE")
-        console.log(clone)
-
         forceUpdate();
       }}
       onOk={() => {
@@ -354,19 +362,7 @@ export default function ItemEditor(props) {
 
         // Remove the default values
         removeDefaults(item, AppRegistry.instance.getDefaultsForType(item.type));
-
-        setDefaultForPsx(item.type, item); // TODO: Find a better way, maybe required id? on the type
-        setDefaultForSegaCd(item.type, item); // TODO: Find a better way, maybe required id? on the type
-        setDefaultForPcEngineCd(item.type, item); // TODO: Find a better way, maybe required id? on the type
-        setDefaultForNeoGeoCd(item.type, item);
-        setDefaultFor3do(item.type, item);
-        // setDefaultForSaturn(item.type, item);
-        setDefaultForPcfx(item.type, item); // TODO: Find a better way, maybe required id? on the type
-        setDefaultForColeco(item.type, item);
-        setDefaultForA5200(item.type, item);
-        setDefaultForQuake(item.type, item);
-        setDefaultForScumm(item.type, item);
-        setDefaultForCommodore8Bit(item.type, item);
+        setDefaultsForType(item.type, item);
 
         if (isDebug) {
           LOG.info(item);
@@ -507,17 +503,13 @@ export default function ItemEditor(props) {
                   setItem={setItem}
                   onChange={(e) => {
                     const type = e.target.value;
+                    // Clear props on type change
+                    item.props = {};
                     applyDefaults(item, type)
-
+                    setDefaultsForType(type, item);
                     if (isCreate) {
                       Prefs.setLastNewType(type);
                     }
-
-                    //  Set the default when Doom type is selected
-                    setDefaultForDoom(type, item);
-
-                    console.log("## SWITCH")
-                    console.log(item);
                   }}
                 />
               </div>
@@ -543,12 +535,12 @@ export default function ItemEditor(props) {
             object={item}
             setObject={setItem}
           />}
-          {/* {isC64 && <C64MappingsTab
+          {isC64 && <C64MappingsTab
             tabValue={tabValue}
             tabIndex={c64MappingsTab}
             object={item}
             setObject={setItem}
-          />} */}
+          />}
           {isColeco && <ColecoMappingsTab
             tabValue={tabValue}
             tabIndex={colecoMappingsTab}

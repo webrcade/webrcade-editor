@@ -86,10 +86,11 @@ export default function C64MappingsTab(props) {
       <Box sx={{m: 1.5}}>
         Create game-specific mappings from the Commodore keys and joystick to the gamepad.
       </Box>
-      <MappingField label="Left" buttonName="left" object={object} setObject={setObject} />
+      <MappingField label="Start" buttonName="start" object={object} setObject={setObject} />
+      {/* <MappingField label="Left" buttonName="left" object={object} setObject={setObject} />
       <MappingField label="Right" buttonName="right" object={object} setObject={setObject} />
       <MappingField label="Up" buttonName="up" object={object} setObject={setObject} />
-      <MappingField label="Down" buttonName="down" object={object} setObject={setObject} />
+      <MappingField label="Down" buttonName="down" object={object} setObject={setObject} /> */}
       <MappingField label="A button" buttonName="a" object={object} setObject={setObject} />
       <MappingField label="B button" buttonName="b" object={object} setObject={setObject} />
       <MappingField label="X button" buttonName="x" object={object} setObject={setObject} />
@@ -105,55 +106,3 @@ export default function C64MappingsTab(props) {
     </EditorTabPanel>
   );
 }
-
-
-// if (state & INP_UP) joy_value |= JOYPAD_N;
-// if (state & INP_DOWN) joy_value |= JOYPAD_S;
-// if (state & INP_LEFT) joy_value |= JOYPAD_W;
-// if (state & INP_RIGHT) joy_value |= JOYPAD_E;
-// if (state & INP_A) joy_value |= JOYPAD_FIRE;
-// if (state & INP_B) joy_value |= JOYPAD_FIRE2;
-
-      //    // Run/Stop key
-      //    if (state & INP_LBUMP) {
-      //     if (!retro_key_event_state[RETROK_ESCAPE]) {
-      //        retro_key_event_state[RETROK_ESCAPE] = 1;
-      //        process = 1;
-      //     }
-      //  } else if (retro_key_event_state[RETROK_ESCAPE]) {
-      //     retro_key_event_state[RETROK_ESCAPE] = 0;
-      //     process = 1;
-      //  }
-
-      //  // F1 key
-      //  if (state & INP_RBUMP) {
-      //     if (!retro_key_event_state[RETROK_F1]) {
-      //        retro_key_event_state[RETROK_F1] = 1;
-      //        process = 1;
-      //     }
-      //  } else if (retro_key_event_state[RETROK_F1]) {
-      //     retro_key_event_state[RETROK_F1] = 0;
-      //     process = 1;
-      //  }
-
-      //  // Space key
-      //  if (state & INP_Y) {
-      //     if (!retro_key_event_state[RETROK_SPACE]) {
-      //        retro_key_event_state[RETROK_SPACE] = 1;
-      //        process = 1;
-      //     }
-      //  } else if (retro_key_event_state[RETROK_SPACE]) {
-      //     retro_key_event_state[RETROK_SPACE] = 0;
-      //     process = 1;
-      //  }
-
-      //  // Enter
-      //  if (state & INP_START) {
-      //     if (!retro_key_event_state[RETROK_RETURN]) {
-      //        retro_key_event_state[RETROK_RETURN] = 1;
-      //        process = 1;
-      //     }
-      //  } else if (retro_key_event_state[RETROK_RETURN]) {
-      //     retro_key_event_state[RETROK_RETURN] = 0;
-      //     process = 1;
-      //  }
