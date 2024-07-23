@@ -1,7 +1,14 @@
+import * as React from 'react';
 import EditorUrlField from './EditorUrlField';
 
 
+import {
+  uuidv4,
+} from '@webrcade/app-common'
+
 export default function EditorMultiUrlField(props) {
+  const [uuid, setUuid] = React.useState(uuidv4());
+
   const {
     sx,
     rows,
@@ -26,7 +33,13 @@ export default function EditorMultiUrlField(props) {
 
   return (
     <EditorUrlField
-      onDropText={(text) => {if (onDropText) onDropText(updateUrls(text))}}
+      key={uuid}
+      onDropText={(text) => {
+        if (onDropText) {
+           onDropText(updateUrls(text))
+           setUuid(uuidv4());
+        }
+      }}
       onChange={(e) => {if (onChange) {
         const urls = updateUrls(e.target.value);
         onChange({

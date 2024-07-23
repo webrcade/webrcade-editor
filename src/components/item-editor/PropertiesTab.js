@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import {
-  APP_TYPE_KEYS
+  APP_TYPE_KEYS,
 } from '@webrcade/app-common'
 
 import * as Util from '../../Util';
@@ -23,9 +23,12 @@ const PROP_6BUTTON = "PROP_6BUTTON";
 const PROP_ADDITIONAL_ROMS = "PROP_ADDITIONAL_ROMS";
 const PROP_ANALOG = "PROP_ANALOG";
 const PROP_ARCHIVE = "PROP_ARCHIVE";
+const PROP_C64_RAM_EXPANSION = "PROP_C64_RAM_EXPANSION";
 const PROP_CD_SPEED_HACK = "PROP_CD_SPEED_HACK";
 const PROP_COLECO_CONTROLS_MODE = "PROP_COLECO_CONTROLS_MODE";
 const PROP_CUSTOM_BIOS = "PROP_CUSTOM_BIOS";
+const PROP_DISABLE_AUTOLOAD = "PROP_DISABLE_AUTOLOAD";
+const PROP_DISABLE_TDE = "PROP_DISABLE_TDE";
 const PROP_DISABLE_LOOKUP = "PROP_DISABLE_LOOKUP";
 const PROP_DISABLE_MEMCARD1 = "PROP_DISABLE_MEMCARD1";
 const PROP_DISCS = "PROP_DISCS";
@@ -35,8 +38,10 @@ const PROP_TWIN_STICK = "PROP_TWIN_STICK";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
 const PROP_FORCE_PAL = "PROP_FORCE_PAL";
 const PROP_FORCE_YM2413 = "PROP_FORCE_YM2413";
+const PROP_JIFFYDOS = "PROP_JIFFYDOS";
 const PROP_LANGUAGE = "PROP_LANGUAGE";
 const PROP_MAP_RUN_SELECT = "PROP_MAP_RUN_SELECT";
+const PROP_MEDIA = "PROP_MEDIA";
 const PROP_MIRRORING = "PROP_MIRRORING";
 const PROP_MULTITAP = "PROP_MULTITAP";
 const PROP_NEOGEO_BIOS = "PROP_NEOGEO_BIOS";
@@ -44,12 +49,14 @@ const PROP_NEOGEO_FORCE_AES = "PROP_NEOGEO_FORCE_AES";
 const PROP_PARENT_ROM = "PROP_PARENT_ROM";
 const PROP_PLAYER_ORDER = "PROP_PLAYER_ORDER";
 const PROP_REGION = "PROP_REGION";
+const PROP_REGION_AUTO = "PROP_REGION_AUTO";
 const PROP_ROM = "PROP_ROM";
 const PROP_ROTATED = "PROP_ROTATED";
 const PROP_ROTATION = "PROP_ROTATION";
 const PROP_ROTATION_LNX = "PROP_ROTATION_LNX";
 const PROP_RTC = "PROP_RTC";
 const PROP_SAMPLES = "PROP_SAMPLES";
+const PROP_SAVE_DISKS = "PROP_SAVE_DISKS";
 const PROP_SAVE_TYPE = "PROP_SAVE_TYPE";
 const PROP_SMS_HW_TYPE = "PROP_SMS_HW_TYPE";
 const PROP_SWAP_CONTROLLERS = "PROP_SWAP_CONTROLLERS";
@@ -71,11 +78,14 @@ const ALL_PROPS = [
   PROP_ADDITIONAL_ROMS,
   PROP_ANALOG,
   PROP_ARCHIVE,
+  PROP_C64_RAM_EXPANSION,
   PROP_CD_SPEED_HACK,
   PROP_COLECO_CONTROLS_MODE,
   PROP_CUSTOM_BIOS,
+  PROP_DISABLE_AUTOLOAD,
   PROP_DISABLE_LOOKUP,
   PROP_DISABLE_MEMCARD1,
+  PROP_DISABLE_TDE,
   PROP_DISCS,
   PROP_DOOM_GAME,
   PROP_FLASH_SIZE,
@@ -85,19 +95,23 @@ const ALL_PROPS = [
   PROP_GB_COLORS,
   PROP_GB_HW_TYPE,
   PROP_GB_PALETTE,
+  PROP_JIFFYDOS,
   PROP_LANGUAGE,
+  PROP_MEDIA,
   PROP_MIRRORING,
   PROP_NEOGEO_BIOS,
   PROP_MULTITAP,
   PROP_PARENT_ROM,
   PROP_PLAYER_ORDER,
   PROP_REGION,
+  PROP_REGION_AUTO,
   PROP_ROM,
   PROP_ROTATED,
   PROP_ROTATION,
   PROP_ROTATION_LNX,
   PROP_RTC,
   PROP_SAMPLES,
+  PROP_SAVE_DISKS,
   PROP_SBI,
   PROP_SAVE_TYPE,
   PROP_SKIP_BIOS,
@@ -126,6 +140,12 @@ export const buildFieldMap = () => {
     },
     [APP_TYPE_KEYS.RETRO_STELLA_LATEST]: {
       PROP_ROM, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.COMMODORE_C64]: {
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_JIFFYDOS, PROP_SWAP_CONTROLLERS, PROP_REGION_AUTO, PROP_SAVE_DISKS, PROP_DISABLE_AUTOLOAD, PROP_DISABLE_TDE, PROP_C64_RAM_EXPANSION
+    },
+    [APP_TYPE_KEYS.RETRO_COMMODORE_C64]: {
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_JIFFYDOS, PROP_SWAP_CONTROLLERS, PROP_REGION_AUTO, PROP_SAVE_DISKS, PROP_DISABLE_AUTOLOAD, PROP_DISABLE_TDE, PROP_C64_RAM_EXPANSION
     },
     [APP_TYPE_KEYS.A7800]: {
       PROP_ROM, PROP_ZOOM_LEVEL
@@ -403,6 +423,8 @@ export default function PropertiesTab(props) {
 
   const showGbColors = object.props.hwType !== 1 && object.props.hwType !== 4;
 
+  // console.log(object)
+
   return (
     <EditorTabPanel value={tabValue} index={tabIndex}>
       {hasProp(object, PROP_ROM) ? (
@@ -531,6 +553,40 @@ export default function PropertiesTab(props) {
             }}
             value={object.props.discs && object.props.discs.length > 0 ?
               object.props.discs.join("\n") : ""}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_MEDIA) ? (
+        <div>
+          <EditorMultiUrlField
+            label="Media (URLs)"
+            rows={4}
+            onDropText={(text) => {
+              let urls = object.props.media ? object.props.media : [];
+              if (Array.isArray(text)) {
+                urls.push(...text);
+              } else {
+                urls.push(text);
+              }
+              urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, media: urls }
+              if (urls.length === 0) {
+                delete props.media;
+              }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const val = e.target.value;
+              let urls = Util.splitLines(val);
+              //urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, media: urls }
+              if (urls.length === 0) {
+                delete props.media;
+              }
+              setObject({ ...object, props })
+            }}
+            value={object.props.media && object.props.media.length > 0 ?
+              object.props.media.join("\n") : ""}
           />
         </div>
       ) : null}
@@ -772,6 +828,32 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_DISABLE_AUTOLOAD) ? (
+        <div>
+          <EditorSwitch
+            label="Disable Autoload"
+            tooltip="Whether to disable media auto-loading."
+            onChange={(e) => {
+              const props = { ...object.props, disableAutoload: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.disableAutoload)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_DISABLE_TDE) ? (
+        <div>
+          <EditorSwitch
+            label="Disable True Drive Emulation"
+            tooltip="Whether to disable true drive emulation."
+            onChange={(e) => {
+              const props = { ...object.props, disableTrueDriveEmulation: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.disableTrueDriveEmulation)}
+          />
+        </div>
+      ) : null}
       {hasProp(object, PROP_COLECO_CONTROLS_MODE) ? (
         <div>
           <EditorSelect
@@ -913,6 +995,41 @@ export default function PropertiesTab(props) {
             ]}
             onChange={(e) => {
               const props = { ...object.props, region: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_REGION_AUTO) ? (
+        <div>
+          <EditorSelect
+            label="Region"
+            tooltip="The region of the game."
+            value={object.props.region ? object.props.region : 0}
+            menuItems={[
+              { value: 0, name: "(auto)" },
+              { value: 1, name: "NTSC" },
+              { value: 2, name: "PAL" }
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, region: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_JIFFYDOS) ? (
+        <div>
+          <EditorSelect
+            label="Use JiffyDOS"
+            tooltip="Whether to use JiffyDOS (if the bios files are available)."
+            value={object.props.jiffydos ? object.props.jiffydos : 0}
+            menuItems={[
+              { value: 0, name: "(auto)" },
+              { value: 1, name: "Disabled" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, jiffydos: e.target.value }
               setObject({ ...object, props })
             }}
           />
@@ -1210,6 +1327,50 @@ export default function PropertiesTab(props) {
             ]}
             onChange={(e) => {
               const props = { ...object.props, hack: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_SAVE_DISKS) ? (
+        <div>
+          <EditorSelect
+            label="Save Disks"
+            tooltip="The quantity of save disks."
+            value={object.props.saveDisks ? object.props.saveDisks : 0}
+            menuItems={[
+              { value: 0, name: "(none)" },
+              { value: 1, name: "One" },
+              { value: 2, name: "Two" },
+              { value: 3, name: "Three" },
+              { value: 4, name: "Four" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, saveDisks: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_C64_RAM_EXPANSION) ? (
+        <div>
+          <EditorSelect
+            label="Ram Expansion"
+            tooltip="Whether the RAM should be expanded."
+            value={object.props.ramExpansion ? object.props.ramExpansion : 0}
+            menuItems={[
+              { value: 0, name: "(none)" },
+              { value: 1, name: "128kB (1700)" },
+              { value: 2, name: "256kB (1764)" },
+              { value: 3, name: "512kB (1750)" },
+              { value: 4, name: "1024kB" },
+              { value: 5, name: "2048kB" },
+              { value: 6, name: "4096kB" },
+              { value: 7, name: "8192kB" },
+              { value: 8, name: "16384kB" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, ramExpansion: e.target.value }
               setObject({ ...object, props })
             }}
           />
