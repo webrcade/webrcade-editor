@@ -23,6 +23,7 @@ const PROP_6BUTTON = "PROP_6BUTTON";
 const PROP_ADDITIONAL_ROMS = "PROP_ADDITIONAL_ROMS";
 const PROP_ANALOG = "PROP_ANALOG";
 const PROP_ARCHIVE = "PROP_ARCHIVE";
+const PROP_AUTO_START_PATH = "PROP_AUTO_START_PATH";
 const PROP_C64_RAM_EXPANSION = "PROP_C64_RAM_EXPANSION";
 const PROP_CD_SPEED_HACK = "PROP_CD_SPEED_HACK";
 const PROP_COLECO_CONTROLS_MODE = "PROP_COLECO_CONTROLS_MODE";
@@ -78,6 +79,7 @@ const ALL_PROPS = [
   PROP_ADDITIONAL_ROMS,
   PROP_ANALOG,
   PROP_ARCHIVE,
+  PROP_AUTO_START_PATH,
   PROP_C64_RAM_EXPANSION,
   PROP_CD_SPEED_HACK,
   PROP_COLECO_CONTROLS_MODE,
@@ -160,6 +162,9 @@ export const buildFieldMap = () => {
       PROP_ROM, PROP_FORCE_PAL, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.FCEUX]: {
+      PROP_ROM, PROP_FORCE_PAL, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_FCEUMM]: {
       PROP_ROM, PROP_FORCE_PAL, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.SNES]: {
@@ -345,17 +350,23 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.RETRO_OPERA]: {
       PROP_DISCS, PROP_ZOOM_LEVEL, PROP_3DO_HACK
     },
-    // [APP_TYPE_KEYS.RETRO_YABAUSE]: {
-    //   PROP_DISCS, PROP_ZOOM_LEVEL
-    // },
-    // [APP_TYPE_KEYS.SATURN]: {
-    //   PROP_DISCS, PROP_ZOOM_LEVEL
-    // },
+    [APP_TYPE_KEYS.RETRO_YABAUSE]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.SATURN]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL
+    },
     [APP_TYPE_KEYS.QUAKE]: {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_WAD_SELECTOR
     },
     [APP_TYPE_KEYS.TYRQUAKE]: {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_WAD_SELECTOR
+    },
+    [APP_TYPE_KEYS.DOS]: {
+      PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_AUTO_START_PATH
+    },
+    [APP_TYPE_KEYS.RETRO_DOSBOX_PURE]: {
+      PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_AUTO_START_PATH
     },
     [APP_TYPE_KEYS.SCUMM]: {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL
@@ -670,6 +681,23 @@ export default function PropertiesTab(props) {
               const props = { ...object.props, zoomLevel: parseInt(val) }
               setObject({ ...object, props })
             }} />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_AUTO_START_PATH) ? (
+        <div>
+          <EditorTextField
+            sx={{ width: '50ch' }}
+            label="Auto-Start Path"
+            onDropText={(text) => {
+              const props = { ...object.props, autoStartPath: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, autoStartPath: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.autoStartPath)}
+          />
         </div>
       ) : null}
       {hasProp(object, PROP_LANGUAGE) ? (

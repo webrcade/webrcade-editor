@@ -39,6 +39,7 @@ function PropertiesTab(props) {
     { value: "commodore", name: "Commodore (8-bit)"},
     { value: "pcecd", name: "NEC PC Engine CD"},
     { value: "pcfx", name: "NEC PC-FX"},
+    { value: "nes", name: "Nintendo NES"},
     { value: "segacd", name: "Sega CD" },
     { value: "neogeo", name: "SNK Neo Geo" },
     { value: "neogeocd", name: "SNK Neo Geo CD" },
@@ -93,6 +94,23 @@ function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             value={Util.asString(object.props.coleco_rom)}
+          />
+        )}
+      </div>
+      <div>
+        {app === "nes" && (
+          <EditorUrlField
+            sx={{ width: '50ch' }}
+            label="Famicom Disk System ROM (URL)"
+            onDropText={(text) => {
+              const props = { ...object.props, fds_bios: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, fds_bios: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.fds_bios)}
           />
         )}
       </div>

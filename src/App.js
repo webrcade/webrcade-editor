@@ -6,10 +6,12 @@ import Toolbar from '@mui/material/Toolbar';
 import {
   applyIosNavBarHack,
   dropbox,
+  isDev,
   removeIosNavBarHack,
   storagePersist,
   settings,
   AppProps,
+  AppRegistry,
   AppScreen,
   Feed as CommonFeed,
   config,
@@ -172,9 +174,20 @@ function App(props) {
 
 
   GlobalHolder.setApp = (app) => {
-    window.location.hash = HASH_PLAY;
-    setEditorHidden(true);
-    setApp(app);
+    const context = AppProps.RV_CONTEXT_EDITOR;
+    const reg = AppRegistry.instance;
+    let location = reg.getLocation(app, context, feed.props);
+    if (!isDev() && context && context === AppProps.RV_CONTEXT_EDITOR) {
+      location = "../../" + location;
+    }
+    if (reg.isMultiThreaded(app.type)) {
+      // multi-threaded
+      window.open(location, "_blank");
+    } else {
+      window.location.hash = HASH_PLAY;
+      setEditorHidden(true);
+      setApp(app);
+    }
   }
   GlobalHolder.setFeed = setFeed;
   GlobalHolder.getFeed = () => {

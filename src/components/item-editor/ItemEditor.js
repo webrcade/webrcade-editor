@@ -174,14 +174,14 @@ const setDefaultForCommodore8Bit = (type, item) => {
 }
 
 
-// const setDefaultForSaturn = (type, item) => {
-//   if (type === APP_TYPE_KEYS.RETRO_YABAUSE ||
-//     type === APP_TYPE_KEYS.SATURN) {
-//     if (isEmptyString(item.props.uid)) {
-//       item.props.uid = uuidv4();
-//     }
-//   }
-// }
+const setDefaultForSaturn = (type, item) => {
+  if (type === APP_TYPE_KEYS.RETRO_YABAUSE ||
+    type === APP_TYPE_KEYS.SATURN) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
 
 const setDefaultForPcfx = (type, item) => {
   if (type === APP_TYPE_KEYS.BEETLE_PCFX ||
@@ -224,6 +224,16 @@ const setDefaultForQuake = (type, item) => {
     }
   }
 }
+
+const setDefaultForDosBox = (type, item) => {
+  if (type === APP_TYPE_KEYS.DOS ||
+    type === APP_TYPE_KEYS.RETRO_DOSBOX_PURE) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
+
 
 const setDefaultForScumm = (type, item) => {
   if (type === APP_TYPE_KEYS.SCUMM ||
@@ -324,11 +334,12 @@ export default function ItemEditor(props) {
     setDefaultForColeco(type, object);
     setDefaultForA5200(type, object);
     setDefaultForQuake(type, object);
+    setDefaultForDosBox(type, object);
     setDefaultForScumm(type, object);
     setDefaultForNeoGeoCd(type, object);
     setDefaultFor3do(type, object);
     setDefaultForCommodore8Bit(type, object);
-    // setDefaultForSaturn(type, object);
+    setDefaultForSaturn(type, object);
   }
 
   return (
@@ -502,9 +513,24 @@ export default function ItemEditor(props) {
                   item={item}
                   setItem={setItem}
                   onChange={(e) => {
+                    const oldType = item.type;
                     const type = e.target.value;
-                    // Clear props on type change
-                    item.props = {};
+
+                    let sameBaseType = false;
+                    if (oldType && type) {
+                      // If the old and new have the same alias, don't clear
+                      const oldAlias = AppRegistry.instance.getAlias(oldType);
+                      const newAlias = AppRegistry.instance.getAlias(type);
+                      if (oldAlias === newAlias) {
+                        sameBaseType = true;
+                      }
+                    }
+
+                    if (!sameBaseType) {
+                      // Clear props on type change
+                      item.props = {};
+                    }
+
                     applyDefaults(item, type)
                     setDefaultsForType(type, item);
                     if (isCreate) {
