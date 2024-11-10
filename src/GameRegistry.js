@@ -5,6 +5,8 @@ import {
   AppRegistry,
   FetchAppData,
   Unzip,
+  isDev,
+  config,
   LOG
 } from '@webrcade/app-common'
 
@@ -19,7 +21,7 @@ class GameRegistryImpl {
     // console.log(this.CUSTOM_PROPS)
   }
 
-  DB_FILE = resolvePath("roms.json.zip");
+  DB_FILE = !isDev() ? resolvePath("roms.json.zip") : `http://${config.getLocalExternalIp()}:${config.getLocalPort()}/roms.json.zip`;
   // eslint-disable-next-line
   TITLE_REGEX = /^([^\(]*).*$/i
 
