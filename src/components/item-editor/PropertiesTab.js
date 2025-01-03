@@ -11,6 +11,7 @@ import EditorSwitch from '../common/editor/EditorSwitch';
 import EditorTabPanel from '../common/editor/EditorTabPanel';
 import EditorTextField from '../common/editor/EditorTextField';
 import EditorUrlField from '../common/editor/EditorUrlField';
+import MouseSpeed from './dos/MouseSpeed';
 import SelectPalette from './gb/SelectPalette';
 import SelectPlayerOrder from './SelectPlayerOrder';
 import VolumeAdjust from './VolumeAdjust';
@@ -33,6 +34,7 @@ const PROP_DISABLE_TDE = "PROP_DISABLE_TDE";
 const PROP_DISABLE_LOOKUP = "PROP_DISABLE_LOOKUP";
 const PROP_DISABLE_MEMCARD1 = "PROP_DISABLE_MEMCARD1";
 const PROP_DISCS = "PROP_DISCS";
+const PROP_DOS_CONTROLLER_MODE = "PROP_DOS_CONTROLLER_MODE";
 const PROP_SBI = "PROP_SBI";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
 const PROP_TWIN_STICK = "PROP_TWIN_STICK";
@@ -44,6 +46,7 @@ const PROP_LANGUAGE = "PROP_LANGUAGE";
 const PROP_MAP_RUN_SELECT = "PROP_MAP_RUN_SELECT";
 const PROP_MEDIA = "PROP_MEDIA";
 const PROP_MIRRORING = "PROP_MIRRORING";
+const PROP_MOUSE_SPEED = "PROP_MOUSE_SPEED";
 const PROP_MULTITAP = "PROP_MULTITAP";
 const PROP_NEOGEO_BIOS = "PROP_NEOGEO_BIOS";
 const PROP_NEOGEO_FORCE_AES = "PROP_NEOGEO_FORCE_AES";
@@ -90,6 +93,7 @@ const ALL_PROPS = [
   PROP_DISABLE_TDE,
   PROP_DISCS,
   PROP_DOOM_GAME,
+  PROP_DOS_CONTROLLER_MODE,
   PROP_FLASH_SIZE,
   PROP_FORCE_PAL,
   PROP_FORCE_YM2413,
@@ -101,6 +105,7 @@ const ALL_PROPS = [
   PROP_LANGUAGE,
   PROP_MEDIA,
   PROP_MIRRORING,
+  PROP_MOUSE_SPEED,
   PROP_NEOGEO_BIOS,
   PROP_MULTITAP,
   PROP_PARENT_ROM,
@@ -363,10 +368,10 @@ export const buildFieldMap = () => {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_WAD_SELECTOR
     },
     [APP_TYPE_KEYS.DOS]: {
-      PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_AUTO_START_PATH
+      PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_AUTO_START_PATH, PROP_DOS_CONTROLLER_MODE, PROP_MOUSE_SPEED
     },
     [APP_TYPE_KEYS.RETRO_DOSBOX_PURE]: {
-      PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_AUTO_START_PATH
+      PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_AUTO_START_PATH, PROP_DOS_CONTROLLER_MODE, PROP_MOUSE_SPEED
     },
     [APP_TYPE_KEYS.SCUMM]: {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL
@@ -1044,6 +1049,37 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
           />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_DOS_CONTROLLER_MODE) ? (
+        <div>
+          <EditorSelect
+            label="Controller Mode (Initial)"
+            tooltip="The initial mode for the controller"
+            value={object.props.controllerMode ? object.props.controllerMode : 0}
+            menuItems={[
+              { value: 0, name: "Gamepad" },
+              { value: 1, name: "Mouse" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, controllerMode: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_MOUSE_SPEED) ? (
+        <div>
+          <MouseSpeed
+            value={object.props.mouseSpeed ? object.props.mouseSpeed : 0}
+            onChange={(e, val) => {
+              // Allows for smoother updated prior to change being committed
+              object.props.mouseSpeed = parseInt(val);
+            }}
+            onChangeCommitted={(e, val) => {
+              const props = { ...object.props, mouseSpeed: parseInt(val) }
+              setObject({ ...object, props })
+            }} />
         </div>
       ) : null}
       {hasProp(object, PROP_JIFFYDOS) ? (
