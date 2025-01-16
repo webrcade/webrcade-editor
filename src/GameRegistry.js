@@ -5,6 +5,8 @@ import {
   AppRegistry,
   FetchAppData,
   Unzip,
+  isDev,
+  config,
   LOG
 } from '@webrcade/app-common'
 
@@ -19,7 +21,7 @@ class GameRegistryImpl {
     // console.log(this.CUSTOM_PROPS)
   }
 
-  DB_FILE = resolvePath("roms.json.zip");
+  DB_FILE = !isDev() ? resolvePath("roms.json.zip") : `http://${config.getLocalExternalIp()}:${config.getLocalPort()}/roms.json.zip`;
   // eslint-disable-next-line
   TITLE_REGEX = /^([^\(]*).*$/i
 
@@ -200,6 +202,11 @@ class GameRegistryImpl {
       thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-commodore-64-images/master/Named_Titles/resized',
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-commodore-64-images/master/Named_Snaps/output',
       descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Commodore%2064'
+    },
+    'dos': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-dos-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-dos-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/DOS'
     },
   }
 

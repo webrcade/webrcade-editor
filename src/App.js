@@ -6,15 +6,18 @@ import Toolbar from '@mui/material/Toolbar';
 import {
   applyIosNavBarHack,
   dropbox,
+  isDev,
   removeIosNavBarHack,
   storagePersist,
   settings,
   AppProps,
+  AppRegistry,
   AppScreen,
   Feed as CommonFeed,
   config,
   APP_FRAME_ID,
-  LOG
+  LOG,
+  isLocalhostOrHttps
 } from '@webrcade/app-common'
 
 import { Global, GlobalHolder } from './Global';
@@ -91,6 +94,8 @@ function App(props) {
   currentApp = app;
 
   React.useEffect(() => {
+    AppRegistry.instance.setAllowMultiThreaded(true);
+
     // Ask for long term storage
     storagePersist();
 
@@ -172,9 +177,24 @@ function App(props) {
 
 
   GlobalHolder.setApp = (app) => {
-    window.location.hash = HASH_PLAY;
-    setEditorHidden(true);
-    setApp(app);
+    const context = AppProps.RV_CONTEXT_EDITOR;
+    const reg = AppRegistry.instance;
+    let location = reg.getLocation(app, context, feed.props);
+    if (!isDev() && context && context === AppProps.RV_CONTEXT_EDITOR) {
+      location = "../../" + location;
+    }
+    if (reg.isMultiThreaded(app.type)) {
+      if (!isLocalhostOrHttps()) {
+        Global.displayMessage(`The ${reg.getName(app)} application requires HTTPS and the proper headers.`);
+        return;
+      }
+      // multi-threaded
+      window.open(location, "_blank");
+    } else {
+      window.location.hash = HASH_PLAY;
+      setEditorHidden(true);
+      setApp(app);
+    }
   }
   GlobalHolder.setFeed = setFeed;
   GlobalHolder.getFeed = () => {
