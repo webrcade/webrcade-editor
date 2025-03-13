@@ -39,6 +39,7 @@ function PropertiesTab(props) {
     { value: "commodore", name: "Commodore (8-bit)"},
     { value: "pcecd", name: "NEC PC Engine CD"},
     { value: "pcfx", name: "NEC PC-FX"},
+    { value: "ds", name: "Nintendo DS" },
     { value: "nes", name: "Nintendo NES"},
     { value: "segacd", name: "Sega CD" },
     { value: "neogeo", name: "SNK Neo Geo" },
@@ -265,6 +266,40 @@ function PropertiesTab(props) {
             }}
             value={object.props.psx_bios && object.props.psx_bios.length > 0 ?
               object.props.psx_bios.join("\n") : ""}
+          />
+        )}
+      </div>
+      <div>
+        {app === "ds" && (
+          <EditorMultiUrlField
+            label="Nintendo DS (URLs)"
+            rows={5}
+            onDropText={(text) => {
+              let urls = object.props.ds_bios ? object.props.ds_bios : [];
+              if (Array.isArray(text)) {
+                urls.push(...text);
+              } else {
+                urls.push(text);
+              }
+              urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, ds_bios: urls }
+              if (urls.length === 0) {
+                delete props.ds_bios;
+              }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const val = e.target.value;
+              let urls = Util.splitLines(val);
+              //urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, ds_bios: urls }
+              if (urls.length === 0) {
+                delete props.ds_bios;
+              }
+              setObject({ ...object, props })
+            }}
+            value={object.props.ds_bios && object.props.ds_bios.length > 0 ?
+              object.props.ds_bios.join("\n") : ""}
           />
         )}
       </div>

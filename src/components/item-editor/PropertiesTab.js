@@ -379,6 +379,12 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.SCUMMVM]: {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL
     },
+    [APP_TYPE_KEYS.NDS]: {
+      PROP_ROM, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_MELONDS]: {
+      PROP_ROM, PROP_ZOOM_LEVEL
+    },
     [APP_TYPE_KEYS.RETRO_PARALLEL_N64]: {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
