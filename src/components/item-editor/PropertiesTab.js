@@ -62,6 +62,8 @@ const PROP_RTC = "PROP_RTC";
 const PROP_SAMPLES = "PROP_SAMPLES";
 const PROP_SAVE_DISKS = "PROP_SAVE_DISKS";
 const PROP_SAVE_TYPE = "PROP_SAVE_TYPE";
+const PROP_SCREEN_GAP = "PROP_SCREEN_GAP";
+const PROP_SCREEN_LAYOUT = "PROP_SCREEN_LAYOUT";
 const PROP_SMS_HW_TYPE = "PROP_SMS_HW_TYPE";
 const PROP_SWAP_CONTROLLERS = "PROP_SWAP_CONTROLLERS";
 const PROP_GB_HW_TYPE = "PROP_GB_HW_TYPE";
@@ -121,6 +123,8 @@ const ALL_PROPS = [
   PROP_SAVE_DISKS,
   PROP_SBI,
   PROP_SAVE_TYPE,
+  PROP_SCREEN_GAP,
+  PROP_SCREEN_LAYOUT,
   PROP_SKIP_BIOS,
   PROP_SKIP_CD_LOADING,
   PROP_SMS_HW_TYPE,
@@ -380,10 +384,10 @@ export const buildFieldMap = () => {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.NDS]: {
-      PROP_ROM, PROP_ZOOM_LEVEL
+      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP
     },
     [APP_TYPE_KEYS.RETRO_MELONDS]: {
-      PROP_ROM, PROP_ZOOM_LEVEL
+      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP
     },
     [APP_TYPE_KEYS.RETRO_PARALLEL_N64]: {
       PROP_ROM, PROP_ZOOM_LEVEL
@@ -1446,9 +1450,42 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_SCREEN_LAYOUT) ? (
+        <div>
+          <EditorSelect
+            label="Screen Layout"
+            tooltip="The layout for the DS screens."
+            value={object.props.screenLayout ? object.props.screenLayout : "default"}
+            menuItems={[
+              { value: "default", name: "(default)" },
+              { value: "left-right", name: "Left-Right" },
+              { value: "right-left", name: "Right-Left" },
+              { value: "top-bottom", name: "Top-Bottom" },
+              { value: "bottom-top", name: "Bottom-Top" },
+              { value: "top-only", name: "Top-Only" },
+              { value: "bottom-only", name: "Bottom-Only" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, screenLayout: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_SCREEN_GAP) ? (
+        <div>
+          <EditorSwitch
+            label="Screen Gap"
+            tooltip="Whether to have a gap between the DS screens."
+            onChange={(e) => {
+              const props = { ...object.props, screenGap: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.screenGap)}
+          />
+        </div>
+      ) : null}
     </EditorTabPanel>
   );
 }
-
-
 
