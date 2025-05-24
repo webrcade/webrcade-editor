@@ -61,10 +61,17 @@ const createPopstateHandler = () => {
   }
 }
 
+let popstateGlobal = null;
+
 const createMessageListener = (setApp) => {
   return (e) => {
     if (e.data === 'exitComplete') {
       setApp(null);
+    }
+    if (e.data === 'appExiting') {
+      if (popstateGlobal) {
+        popstateGlobal();
+      }
     }
   }
 };
@@ -107,6 +114,7 @@ function App(props) {
     document.addEventListener("dragover", ignore);
 
     popstateListener = createPopstateHandler();
+    popstateGlobal = popstateListener;
     window.addEventListener("popstate", popstateListener, false);
     messageListener = createMessageListener(setApp);
     window.addEventListener("message", messageListener);

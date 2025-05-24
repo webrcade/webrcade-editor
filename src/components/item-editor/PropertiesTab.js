@@ -25,6 +25,7 @@ const PROP_ADDITIONAL_ROMS = "PROP_ADDITIONAL_ROMS";
 const PROP_ANALOG = "PROP_ANALOG";
 const PROP_ARCHIVE = "PROP_ARCHIVE";
 const PROP_AUTO_START_PATH = "PROP_AUTO_START_PATH";
+const PROP_BOOK_MODE = "PROP_BOOK_MODE";
 const PROP_C64_RAM_EXPANSION = "PROP_C64_RAM_EXPANSION";
 const PROP_CD_SPEED_HACK = "PROP_CD_SPEED_HACK";
 const PROP_COLECO_CONTROLS_MODE = "PROP_COLECO_CONTROLS_MODE";
@@ -35,6 +36,7 @@ const PROP_DISABLE_LOOKUP = "PROP_DISABLE_LOOKUP";
 const PROP_DISABLE_MEMCARD1 = "PROP_DISABLE_MEMCARD1";
 const PROP_DISCS = "PROP_DISCS";
 const PROP_DOS_CONTROLLER_MODE = "PROP_DOS_CONTROLLER_MODE";
+const PROP_DUAL_ANALOG = "PROP_DUAL_ANALOG";
 const PROP_SBI = "PROP_SBI";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
 const PROP_TWIN_STICK = "PROP_TWIN_STICK";
@@ -85,6 +87,7 @@ const ALL_PROPS = [
   PROP_ANALOG,
   PROP_ARCHIVE,
   PROP_AUTO_START_PATH,
+  PROP_BOOK_MODE,
   PROP_C64_RAM_EXPANSION,
   PROP_CD_SPEED_HACK,
   PROP_COLECO_CONTROLS_MODE,
@@ -96,6 +99,7 @@ const ALL_PROPS = [
   PROP_DISCS,
   PROP_DOOM_GAME,
   PROP_DOS_CONTROLLER_MODE,
+  PROP_DUAL_ANALOG,
   PROP_FLASH_SIZE,
   PROP_FORCE_PAL,
   PROP_FORCE_YM2413,
@@ -384,10 +388,10 @@ export const buildFieldMap = () => {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.NDS]: {
-      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP
+      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP, PROP_BOOK_MODE, PROP_DUAL_ANALOG
     },
     [APP_TYPE_KEYS.RETRO_MELONDS]: {
-      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP
+      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP, PROP_BOOK_MODE, PROP_DUAL_ANALOG
     },
     [APP_TYPE_KEYS.RETRO_PARALLEL_N64]: {
       PROP_ROM, PROP_ZOOM_LEVEL
@@ -1482,6 +1486,32 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.screenGap)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_BOOK_MODE) ? (
+        <div>
+          <EditorSwitch
+            label="Book Mode"
+            tooltip="Whether to orient the DS in book mode."
+            onChange={(e) => {
+              const props = { ...object.props, bookMode: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.bookMode)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_DUAL_ANALOG) ? (
+        <div>
+          <EditorSwitch
+            label="Dual Analog (Stylus)"
+            tooltip="Whether the game uses the stylus to mimic dual-analog support."
+            onChange={(e) => {
+              const props = { ...object.props, dualAnalog: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.dualAnalog)}
           />
         </div>
       ) : null}
