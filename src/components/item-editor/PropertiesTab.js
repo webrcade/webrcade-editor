@@ -47,6 +47,7 @@ const PROP_JIFFYDOS = "PROP_JIFFYDOS";
 const PROP_LANGUAGE = "PROP_LANGUAGE";
 const PROP_MAP_RUN_SELECT = "PROP_MAP_RUN_SELECT";
 const PROP_MEDIA = "PROP_MEDIA";
+const PROP_MICROPHONE = "PROP_MICROPHONE";
 const PROP_MIRRORING = "PROP_MIRRORING";
 const PROP_MOUSE_SPEED = "PROP_MOUSE_SPEED";
 const PROP_MULTITAP = "PROP_MULTITAP";
@@ -110,6 +111,7 @@ const ALL_PROPS = [
   PROP_JIFFYDOS,
   PROP_LANGUAGE,
   PROP_MEDIA,
+  PROP_MICROPHONE,
   PROP_MIRRORING,
   PROP_MOUSE_SPEED,
   PROP_NEOGEO_BIOS,
@@ -388,10 +390,10 @@ export const buildFieldMap = () => {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.NDS]: {
-      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP, PROP_BOOK_MODE, PROP_DUAL_ANALOG
+      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP, PROP_BOOK_MODE, PROP_DUAL_ANALOG, PROP_MICROPHONE
     },
     [APP_TYPE_KEYS.RETRO_MELONDS]: {
-      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP, PROP_BOOK_MODE, PROP_DUAL_ANALOG
+      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP, PROP_BOOK_MODE, PROP_DUAL_ANALOG, PROP_MICROPHONE
     },
     [APP_TYPE_KEYS.RETRO_PARALLEL_N64]: {
       PROP_ROM, PROP_ZOOM_LEVEL
@@ -1499,6 +1501,19 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.bookMode)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_MICROPHONE) ? (
+        <div>
+          <EditorSwitch
+            label="Microphone Supported"
+            tooltip="Whether the game supports the use of a microphone."
+            onChange={(e) => {
+              const props = { ...object.props, microphone: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.microphone)}
           />
         </div>
       ) : null}

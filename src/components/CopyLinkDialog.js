@@ -17,28 +17,35 @@ import { usePrevious } from '../Util';
 
 import * as WrcCommon from '@webrcade/app-common';
 
-const copyToClipboard = (elementId, value) => {
-  var input = document.getElementById(elementId);
-  input.value = value;
-  var isiOSDevice = navigator.userAgent.match(/ipad|iphone/i);
-  if (isiOSDevice) {
-    var editable = input.contentEditable;
-    var readOnly = input.readOnly;
-    input.contentEditable = true;
-    input.readOnly = false;
-    var range = document.createRange();
-    range.selectNodeContents(input);
-    var selection = window.getSelection();
-    selection.removeAllRanges();
-    selection.addRange(range);
-    input.setSelectionRange(0, 999999);
-    input.contentEditable = editable;
-    input.readOnly = readOnly;
-  } else {
-    input.select();
+const copyToClipboard = (text) => {
+  const input = document.createElement('input');
+  input.value = text;
+
+  // Critical for iOS Safari:
+  input.setAttribute('readonly', '');
+  input.style.position = 'fixed';
+  input.style.top = '0';
+  input.style.left = '0';
+  input.style.opacity = '1'; // Not hidden
+  input.style.zIndex = '-1'; // Visually non-disruptive
+  input.style.height = '1px'; // Minimal size
+  input.style.fontSize = '16px'; // iOS Safari bug: small font sizes can break selection
+
+  document.body.appendChild(input);
+  input.focus();
+  input.select();
+
+  try {
+    const successful = document.execCommand('copy');
+    if (!successful) {
+      throw new Error('Copy command failed');
+    }
+  } catch (err) {
+    console.warn('Copy failed', err);
   }
-  document.execCommand('copy');
-}
+
+  document.body.removeChild(input);
+};
 
 const minimizeLink = (location, copyLinkProps, setCopyLinkProps) => {
   const originalLocation = location;
@@ -139,15 +146,12 @@ const CopyLinkDialog = (props) => {
       <DialogActions>
         <Button onClick={() => {
           setOpen(false);
-          const copyEl = window.document.createElement('span');
-          copyEl.innerHTML = '<input type="text" id="copyField" value="" style="opacity: 0; top: 0; position: absolute; z-index: -100"/></input>';
-          window.document.body.appendChild(copyEl);
-
           setTimeout(() => {
-            copyToClipboard('copyField', getLink());
+            copyToClipboard(getLink());
             Global.displayMessage(
-              success ? success : "Successfully copied stand-alone link (URL) to clipboard.", "success");
-            window.document.body.removeChild(copyEl);
+              success || "Successfully copied stand-alone link (URL) to clipboard.",
+              "success"
+            );
           }, 0);
         }}>
           Copy

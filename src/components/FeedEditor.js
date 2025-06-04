@@ -9,6 +9,7 @@ import EditorMultiUrlField from './common/editor/EditorMultiUrlField';
 import EditorSelect from './common/editor/EditorSelect';
 import EditorTabPanel from './common/editor/EditorTabPanel';
 import EditorUrlField from './common/editor/EditorUrlField';
+import EditorTextField from './common/editor/EditorTextField';
 import EditorValidator from './common/editor/EditorValidator'
 import ThumbnailTab from './common/editor/ThumbnailTab';
 import { GlobalHolder, Global } from '../Global';
@@ -301,6 +302,22 @@ function PropertiesTab(props) {
             value={object.props.ds_bios && object.props.ds_bios.length > 0 ?
               object.props.ds_bios.join("\n") : ""}
           />
+        )}
+      </div>
+      <div>
+        {app === "ds" && (
+            <EditorTextField
+              label="Nickname"
+              onDropText={(text) => {
+                const props = { ...object.props, ds_nickname: text }
+                setObject({ ...object, props })
+              }}
+              onChange={(e) => {
+                const props = { ...object.props, ds_nickname: e.target.value }
+                setObject({ ...object, props })
+              }}
+              value={Util.asString(object.props.ds_nickname)}
+            />
         )}
       </div>
       <div>
