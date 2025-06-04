@@ -207,7 +207,7 @@ const loadFeed = (feedJson) => {
 
 const loadFeedFromUrl = (url) => {
   return new Promise((resolve, reject) => {
-    new FetchAppData(url).fetch()
+    new FetchAppData(url, true /* add prefix */).fetch()
       .then(response => response.blob())
       .then(blob => getFeedAsJson(blob))
       .then(json => {

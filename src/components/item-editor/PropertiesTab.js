@@ -25,6 +25,7 @@ const PROP_ADDITIONAL_ROMS = "PROP_ADDITIONAL_ROMS";
 const PROP_ANALOG = "PROP_ANALOG";
 const PROP_ARCHIVE = "PROP_ARCHIVE";
 const PROP_AUTO_START_PATH = "PROP_AUTO_START_PATH";
+const PROP_BOOK_MODE = "PROP_BOOK_MODE";
 const PROP_C64_RAM_EXPANSION = "PROP_C64_RAM_EXPANSION";
 const PROP_CD_SPEED_HACK = "PROP_CD_SPEED_HACK";
 const PROP_COLECO_CONTROLS_MODE = "PROP_COLECO_CONTROLS_MODE";
@@ -35,6 +36,7 @@ const PROP_DISABLE_LOOKUP = "PROP_DISABLE_LOOKUP";
 const PROP_DISABLE_MEMCARD1 = "PROP_DISABLE_MEMCARD1";
 const PROP_DISCS = "PROP_DISCS";
 const PROP_DOS_CONTROLLER_MODE = "PROP_DOS_CONTROLLER_MODE";
+const PROP_DUAL_ANALOG = "PROP_DUAL_ANALOG";
 const PROP_SBI = "PROP_SBI";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
 const PROP_TWIN_STICK = "PROP_TWIN_STICK";
@@ -45,6 +47,7 @@ const PROP_JIFFYDOS = "PROP_JIFFYDOS";
 const PROP_LANGUAGE = "PROP_LANGUAGE";
 const PROP_MAP_RUN_SELECT = "PROP_MAP_RUN_SELECT";
 const PROP_MEDIA = "PROP_MEDIA";
+const PROP_MICROPHONE = "PROP_MICROPHONE";
 const PROP_MIRRORING = "PROP_MIRRORING";
 const PROP_MOUSE_SPEED = "PROP_MOUSE_SPEED";
 const PROP_MULTITAP = "PROP_MULTITAP";
@@ -62,6 +65,8 @@ const PROP_RTC = "PROP_RTC";
 const PROP_SAMPLES = "PROP_SAMPLES";
 const PROP_SAVE_DISKS = "PROP_SAVE_DISKS";
 const PROP_SAVE_TYPE = "PROP_SAVE_TYPE";
+const PROP_SCREEN_GAP = "PROP_SCREEN_GAP";
+const PROP_SCREEN_LAYOUT = "PROP_SCREEN_LAYOUT";
 const PROP_SMS_HW_TYPE = "PROP_SMS_HW_TYPE";
 const PROP_SWAP_CONTROLLERS = "PROP_SWAP_CONTROLLERS";
 const PROP_GB_HW_TYPE = "PROP_GB_HW_TYPE";
@@ -83,6 +88,7 @@ const ALL_PROPS = [
   PROP_ANALOG,
   PROP_ARCHIVE,
   PROP_AUTO_START_PATH,
+  PROP_BOOK_MODE,
   PROP_C64_RAM_EXPANSION,
   PROP_CD_SPEED_HACK,
   PROP_COLECO_CONTROLS_MODE,
@@ -94,6 +100,7 @@ const ALL_PROPS = [
   PROP_DISCS,
   PROP_DOOM_GAME,
   PROP_DOS_CONTROLLER_MODE,
+  PROP_DUAL_ANALOG,
   PROP_FLASH_SIZE,
   PROP_FORCE_PAL,
   PROP_FORCE_YM2413,
@@ -104,6 +111,7 @@ const ALL_PROPS = [
   PROP_JIFFYDOS,
   PROP_LANGUAGE,
   PROP_MEDIA,
+  PROP_MICROPHONE,
   PROP_MIRRORING,
   PROP_MOUSE_SPEED,
   PROP_NEOGEO_BIOS,
@@ -121,6 +129,8 @@ const ALL_PROPS = [
   PROP_SAVE_DISKS,
   PROP_SBI,
   PROP_SAVE_TYPE,
+  PROP_SCREEN_GAP,
+  PROP_SCREEN_LAYOUT,
   PROP_SKIP_BIOS,
   PROP_SKIP_CD_LOADING,
   PROP_SMS_HW_TYPE,
@@ -378,6 +388,12 @@ export const buildFieldMap = () => {
     },
     [APP_TYPE_KEYS.SCUMMVM]: {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.NDS]: {
+      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP, PROP_BOOK_MODE, PROP_DUAL_ANALOG, PROP_MICROPHONE
+    },
+    [APP_TYPE_KEYS.RETRO_MELONDS]: {
+      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP, PROP_BOOK_MODE, PROP_DUAL_ANALOG, PROP_MICROPHONE
     },
     [APP_TYPE_KEYS.RETRO_PARALLEL_N64]: {
       PROP_ROM, PROP_ZOOM_LEVEL
@@ -1440,9 +1456,81 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_SCREEN_LAYOUT) ? (
+        <div>
+          <EditorSelect
+            label="Screen Layout"
+            tooltip="The layout for the DS screens."
+            value={object.props.screenLayout ? object.props.screenLayout : "default"}
+            menuItems={[
+              { value: "default", name: "(default)" },
+              { value: "left-right", name: "Left-Right" },
+              { value: "right-left", name: "Right-Left" },
+              { value: "top-bottom", name: "Top-Bottom" },
+              { value: "bottom-top", name: "Bottom-Top" },
+              { value: "top-only", name: "Top-Only" },
+              { value: "bottom-only", name: "Bottom-Only" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, screenLayout: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_SCREEN_GAP) ? (
+        <div>
+          <EditorSwitch
+            label="Screen Gap"
+            tooltip="Whether to have a gap between the DS screens."
+            onChange={(e) => {
+              const props = { ...object.props, screenGap: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.screenGap)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_BOOK_MODE) ? (
+        <div>
+          <EditorSwitch
+            label="Book Mode"
+            tooltip="Whether to orient the DS in book mode."
+            onChange={(e) => {
+              const props = { ...object.props, bookMode: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.bookMode)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_MICROPHONE) ? (
+        <div>
+          <EditorSwitch
+            label="Microphone Supported"
+            tooltip="Whether the game supports the use of a microphone."
+            onChange={(e) => {
+              const props = { ...object.props, microphone: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.microphone)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_DUAL_ANALOG) ? (
+        <div>
+          <EditorSwitch
+            label="Dual Analog (Stylus)"
+            tooltip="Whether the game uses the stylus to mimic dual-analog support."
+            onChange={(e) => {
+              const props = { ...object.props, dualAnalog: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.dualAnalog)}
+          />
+        </div>
+      ) : null}
     </EditorTabPanel>
   );
 }
-
-
 
