@@ -40,7 +40,7 @@ export default function NewMenu(props) {
       </MenuItem>
       <MenuItem onClick={() => {
         Global.openBusyScreen(true, "Cloning feed...");
-        Feed.loadFeedFromUrl(Feed.getDefaultFeedUrl())
+        Feed.loadFeedFromUrl(Feed.getDefaultFeedUrl(), false)
           .then((feed) => {
             Global.setFeed(feed);
           })

@@ -150,7 +150,7 @@ function App(props) {
               } else {
                 // load default feed (if applicable)
                 return config.isPublicServer() ?
-                  Feed.loadFeedFromUrl(Feed.getDefaultFeedUrl()) :
+                  Feed.loadFeedFromUrl(Feed.getDefaultFeedUrl(), false) :
                   Feed.newFeed();
               }
             })
