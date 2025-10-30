@@ -263,10 +263,16 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.MEDNAFEN_PCE]: {
       PROP_ROM, PROP_6BUTTON, PROP_MAP_RUN_SELECT, PROP_ZOOM_LEVEL
     },
+    [APP_TYPE_KEYS.RETRO_MEDNAFEN_PCE]: {
+      PROP_ROM, PROP_6BUTTON, PROP_MAP_RUN_SELECT, PROP_ZOOM_LEVEL
+    },
     [APP_TYPE_KEYS.SGX]: {
       PROP_ROM, PROP_6BUTTON, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.MEDNAFEN_SGX]: {
+      PROP_ROM, PROP_6BUTTON, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_MEDNAFEN_SGX]: {
       PROP_ROM, PROP_6BUTTON, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.VB]: {
@@ -281,10 +287,16 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.MEDNAFEN_NGC]: {
       PROP_ROM, PROP_LANGUAGE, PROP_ZOOM_LEVEL
     },
+    [APP_TYPE_KEYS.RETRO_MEDNAFEN_NGC]: {
+      PROP_ROM, PROP_LANGUAGE, PROP_ZOOM_LEVEL
+    },
     [APP_TYPE_KEYS.NGP]: {
       PROP_ROM, PROP_LANGUAGE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.MEDNAFEN_NGP]: {
+      PROP_ROM, PROP_LANGUAGE, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_MEDNAFEN_NGP]: {
       PROP_ROM, PROP_LANGUAGE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.WSC]: {
@@ -303,6 +315,9 @@ export const buildFieldMap = () => {
       PROP_ROM, PROP_ROTATION_LNX, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.MEDNAFEN_LNX]: {
+      PROP_ROM, PROP_ROTATION_LNX, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_MEDNAFEN_LYNX]: {
       PROP_ROM, PROP_ROTATION_LNX, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.NEOGEO]: {
@@ -1142,8 +1157,9 @@ export default function PropertiesTab(props) {
           <EditorSelect
             label="Rotation"
             tooltip="How many degrees the screen should be rotated."
-            value={object.props.rotation ? object.props.rotation : 0}
+            value={object.props.rotation >= 0 ? object.props.rotation : -1}
             menuItems={[
+              { value: -1, name: "(auto)" },
               { value: 0, name: "0 degrees" },
               { value: 90, name: "90 degrees" },
               { value: 270, name: "270 degrees" }

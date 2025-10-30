@@ -170,8 +170,7 @@ export default function SettingsEditor(props) {
   return (
     <Editor
       title={"Settings"}
-      height={250}
-      maxWidth={false}
+      height={400}
       isOpen={isOpen}
       setOpen={setOpen}
       tabValue={tabValue}
