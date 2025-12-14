@@ -9,6 +9,7 @@ import Editor from './common/editor/Editor';
 import EditorSelect from './common/editor/EditorSelect';
 import EditorSwitch from './common/editor/EditorSwitch';
 import EditorTabPanel from './common/editor/EditorTabPanel';
+import AppsTab from './common/editor/AppsTab';
 import { Global, GlobalHolder } from '../Global';
 
 import { dropbox, settings, Resources, SCREEN_SIZES, TEXT_IDS } from '@webrcade/app-common'
@@ -164,13 +165,14 @@ export default function SettingsEditor(props) {
   const forceUpdate = Util.useForceUpdate();
 
   const displayTab = 0;
-  const cloudStorageTab = 1;
-  const advancedTab = 2;
+  const appsTab = 1;
+  const cloudStorageTab = 2;
+  const advancedTab = 3;
 
   return (
     <Editor
       title={"Settings"}
-      height={400}
+      // height={400}
       isOpen={isOpen}
       setOpen={setOpen}
       tabValue={tabValue}
@@ -184,7 +186,8 @@ export default function SettingsEditor(props) {
           cloudStorage: settings.isCloudStorageEnabled(),
           screenSize: settings.getScreenSize(),
           dbLinked: settings.getDbToken() !== null,
-          disableInGame: settings.isGameSavesDisabledAfterState()
+          disableInGame: settings.isGameSavesDisabledAfterState(),
+          overrides: settings.getOverrides() ? settings.getOverrides() : {}
         }
         setValues({
           ...vals,
@@ -199,6 +202,7 @@ export default function SettingsEditor(props) {
         settings.setScreenSize(values.screenSize);
         settings.setCloudStorageEnabled(values.cloudStorage);
         settings.setGameSavesDisabledAfterState(values.disableInGame);
+        settings.setOverrides(values.overrides)
         settings.save().finally(() => {
           if (values.originalValues.expApps !== values.expApps) {
             window.location.reload();
@@ -211,6 +215,7 @@ export default function SettingsEditor(props) {
       }}
       tabs={[
         <Tab label="Display" key={displayTab} />,
+        <Tab label="Applications" key={appsTab} />,
         <Tab label="Cloud Storage" key={cloudStorageTab} />,
         <Tab label="Advanced" key={advancedTab} />,
       ]}
@@ -221,6 +226,16 @@ export default function SettingsEditor(props) {
             tabIndex={displayTab}
             setValues={setValues}
             values={values}
+          />
+          <AppsTab
+            isUser={true}
+            tabValue={tabValue}
+            tabIndex={appsTab}
+            overrides={values.overrides ? values.overrides : {}}
+            setOverrides={(overrides) => {
+              const vals = { ...values, overrides: overrides }
+              setValues(vals);
+            }}
           />
           <CloudStorageTab
             tabValue={tabValue}

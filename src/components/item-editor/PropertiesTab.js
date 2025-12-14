@@ -248,10 +248,16 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.VBA_M_GB]: {
       PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_PALETTE, PROP_GB_BORDER, PROP_ZOOM_LEVEL
     },
+    [APP_TYPE_KEYS.RETRO_SAMEBOY_GB]: {
+      PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_PALETTE, PROP_GB_BORDER, PROP_ZOOM_LEVEL
+    },
     [APP_TYPE_KEYS.GBC]: {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.VBA_M_GBC]: {
+      PROP_ROM, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_SAMEBOY_GBC]: {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.N64]: {
@@ -836,6 +842,7 @@ export default function PropertiesTab(props) {
               { value: 0, name: "Grayscale" },
               { value: 1, name: "Greenscale" },
               { value: 2, name: "Super Game Boy" },
+              { value: 3, name: "Defaults" },
             ]}
             onChange={(e) => {
               const props = { ...object.props, colors: e.target.value, palette: 0 }

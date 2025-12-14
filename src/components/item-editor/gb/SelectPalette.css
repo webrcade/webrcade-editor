@@ -18,10 +18,10 @@
 .gray0 > .c3 { background: #626262}
 .gray0 > .c4 { background: #000000}
 
-.green0 > .c1 { background: #31E673 }
-.green0 > .c2 { background: #00B400 }
-.green0 > .c3 { background: #186A00 }
-.green0 > .c4 { background: #205200 }
+.green0 > .c1 { background: #70e030 }
+.green0 > .c2 { background: #00b000 }
+.green0 > .c3 { background: #006818 }
+.green0 > .c4 { background: #005020 }
 
 .green1 > .c1 { background: #EFFFE0 }
 .green1 > .c2 { background: #AED798 }
@@ -207,3 +207,27 @@
 .sgb4h > .c2 { background: #B8C058 }
 .sgb4h > .c3 { background: #808840 }
 .sgb4h > .c4 { background: #405028 }
+
+/* --- Greyscale (GB_PALETTE_GREY) --- */
+.defaultGreyscale > .c1 { background: #FFFFFF }
+.defaultGreyscale > .c2 { background: #AAAAAA }
+.defaultGreyscale > .c3 { background: #555555 }
+.defaultGreyscale > .c4 { background: #000000 }
+
+/* --- Lime / DMG (GB_PALETTE_DMG) --- */
+.defaultLime > .c1 { background: #E0F8D0 }
+.defaultLime > .c2 { background: #88C070 }
+.defaultLime > .c3 { background: #346856 }
+.defaultLime > .c4 { background: #081820 }
+
+/* --- Olive / MGB (GB_PALETTE_MGB) --- */
+.defaultOlive > .c1 { background: #E8FFD8 }
+.defaultOlive > .c2 { background: #A0D088 }
+.defaultOlive > .c3 { background: #609848 }
+.defaultOlive > .c4 { background: #305030 }
+
+/* --- Teal / GBL (GB_PALETTE_GBL) --- */
+.defaultTeal > .c1 { background: #D0F8F8 }
+.defaultTeal > .c2 { background: #70C0C0 }
+.defaultTeal > .c3 { background: #407878 }
+.defaultTeal > .c4 { background: #203838 }

@@ -4,6 +4,7 @@ import Tab from '@mui/material/Tab';
 import * as Util from '../Util';
 import BackgroundTab from './common/editor/BackgroundTab';
 import GeneralTab from './common/editor/GeneralTab';
+import AppsTab from './common/editor/AppsTab';
 import Editor from './common/editor/Editor';
 import EditorMultiUrlField from './common/editor/EditorMultiUrlField';
 import EditorSelect from './common/editor/EditorSelect';
@@ -410,8 +411,9 @@ export default function FeedEditor(props) {
 
   const genTab = 0;
   const propsTab = 1;
-  const thumbTab = 2;
-  const bgTab = 3;
+  const appsTab = 2;
+  const thumbTab = 3;
+  const bgTab = 4;
 
   return (
     <Editor
@@ -442,6 +444,7 @@ export default function FeedEditor(props) {
       tabs={[
         <Tab label="General" key={genTab} />,
         <Tab label="Properties" key={propsTab} />,
+        <Tab label="Applications" key={appsTab} />,
         <Tab label="Thumbnail" key={thumbTab} />,
         <Tab label="Background" key={bgTab} />,
       ]}
@@ -460,6 +463,16 @@ export default function FeedEditor(props) {
             tabIndex={propsTab}
             object={feed}
             setObject={setFeed}
+          />
+          <AppsTab
+            tabValue={tabValue}
+            tabIndex={appsTab}
+            overrides={feed.props?.overrides ? feed.props.overrides : {}}
+            setOverrides={(overrides) => {
+              if (!feed.props) feed.props = {}
+              feed.props.overrides = overrides;
+              setFeed({...feed});
+            }}
           />
           <ThumbnailTab
             tabValue={tabValue}
