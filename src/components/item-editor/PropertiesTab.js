@@ -41,6 +41,7 @@ const PROP_SBI = "PROP_SBI";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
 const PROP_TWIN_STICK = "PROP_TWIN_STICK";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
+const PROP_FORCE_EMULATED_BIOS = "PROP_FORCE_EMULATED_BIOS";
 const PROP_FORCE_PAL = "PROP_FORCE_PAL";
 const PROP_FORCE_YM2413 = "PROP_FORCE_YM2413";
 const PROP_JIFFYDOS = "PROP_JIFFYDOS";
@@ -63,6 +64,7 @@ const PROP_ROTATION = "PROP_ROTATION";
 const PROP_ROTATION_LNX = "PROP_ROTATION_LNX";
 const PROP_RTC = "PROP_RTC";
 const PROP_SAMPLES = "PROP_SAMPLES";
+const PROP_SATURN_RAM_EXPANSION = "PROP_SATURN_RAM_EXPANSION";
 const PROP_SAVE_DISKS = "PROP_SAVE_DISKS";
 const PROP_SAVE_TYPE = "PROP_SAVE_TYPE";
 const PROP_SCREEN_GAP = "PROP_SCREEN_GAP";
@@ -102,6 +104,7 @@ const ALL_PROPS = [
   PROP_DOS_CONTROLLER_MODE,
   PROP_DUAL_ANALOG,
   PROP_FLASH_SIZE,
+  PROP_FORCE_EMULATED_BIOS,
   PROP_FORCE_PAL,
   PROP_FORCE_YM2413,
   PROP_GB_BORDER,
@@ -118,6 +121,7 @@ const ALL_PROPS = [
   PROP_MULTITAP,
   PROP_PARENT_ROM,
   PROP_PLAYER_ORDER,
+  PROP_SATURN_RAM_EXPANSION,
   PROP_REGION,
   PROP_REGION_AUTO,
   PROP_ROM,
@@ -414,11 +418,17 @@ export const buildFieldMap = () => {
       PROP_DISCS, PROP_ZOOM_LEVEL, PROP_3DO_HACK
     },
     [APP_TYPE_KEYS.RETRO_YABAUSE]: {
-      PROP_DISCS, PROP_ZOOM_LEVEL
+      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_FORCE_EMULATED_BIOS, PROP_SATURN_RAM_EXPANSION,
     },
     [APP_TYPE_KEYS.SATURN]: {
-      PROP_DISCS, PROP_ZOOM_LEVEL
+      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_FORCE_EMULATED_BIOS, PROP_SATURN_RAM_EXPANSION,
     },
+    // [APP_TYPE_KEYS.RETRO_PPSSPP]: {
+    //   PROP_DISCS, PROP_ZOOM_LEVEL,
+    // },
+    // [APP_TYPE_KEYS.PSP]: {
+    //   PROP_DISCS, PROP_ZOOM_LEVEL,
+    // },
     [APP_TYPE_KEYS.QUAKE]: {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_WAD_SELECTOR
     },
@@ -452,7 +462,12 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.RETRO_POKEMINI]: {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
-
+    // [APP_TYPE_KEYS.CDI]: {
+    //   PROP_DISCS, PROP_ZOOM_LEVEL
+    // },
+    // [APP_TYPE_KEYS.RETRO_SAME_CDI]: {
+    //   PROP_DISCS, PROP_ZOOM_LEVEL
+    // },
   }
 };
 
@@ -776,6 +791,24 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_SATURN_RAM_EXPANSION,) ? (
+        <div>
+          <EditorSelect
+            label="RAM Expansion Cartridge"
+            tooltip="Allows selection of the optional RAM Expansion cartridge used by some Sega Saturn games to increase available work memory."
+            value={object.props.ramExpansion ? object.props.ramExpansion : 0}
+            menuItems={[
+              { value: 0, name: "None" },
+              { value: 1, name: "1MB RAM Expansion" },
+              { value: 2, name: "4MB RAM Expansion" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, ramExpansion: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
       {hasProp(object, PROP_LANGUAGE) ? (
         <div>
           <EditorSelect
@@ -1034,6 +1067,19 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.ym2413)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_FORCE_EMULATED_BIOS) ? (
+        <div>
+          <EditorSwitch
+            label="Force Emulated BIOS"
+            tooltip="Whether to emulate the Sega Saturn BIOS in software instead of loading a real BIOS ROM. No BIOS file is required, but some games may not work correctly."
+            onChange={(e) => {
+              const props = { ...object.props, forceEmulatedBios: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.forceEmulatedBios)}
           />
         </div>
       ) : null}

@@ -31,6 +31,7 @@ function PropertiesTab(props) {
   } = props;
 
   const is5200Enabled = AppRegistry.instance.getAppTypes()["5200"];
+  const isSaturnEnabled = AppRegistry.instance.getAppTypes()["saturn"];
 
   const [app, setApp] = React.useState("3do");
 
@@ -43,13 +44,18 @@ function PropertiesTab(props) {
     { value: "pcfx", name: "NEC PC-FX"},
     { value: "ds", name: "Nintendo DS" },
     { value: "nes", name: "Nintendo NES"},
+    // { value: "philipscdi", name: "Philips CDI" },
     { value: "segacd", name: "Sega CD" },
+    // { value: "segasaturn", name: "Sega Saturn" },
     { value: "neogeo", name: "SNK Neo Geo" },
     { value: "neogeocd", name: "SNK Neo Geo CD" },
     { value: "psx", name: "Sony PlayStation" },
   ]
   if (is5200Enabled) {
     items.splice(1, 0, { value: "5200", name: "Atari 5200" });
+  }
+  if (isSaturnEnabled) {
+    items.splice(10, 0, { value: "segasaturn", name: "Sega Saturn" });
   }
 
   return (
@@ -203,6 +209,25 @@ function PropertiesTab(props) {
           />
         )}
       </div>
+      {isSaturnEnabled && (
+        <div>
+          {app === "segasaturn" && (
+            <EditorUrlField
+              sx={{ width: '50ch' }}
+              label="Sega Saturn BIOS (URL)"
+              onDropText={(text) => {
+                const props = { ...object.props, saturn_bios: text }
+                setObject({ ...object, props })
+              }}
+              onChange={(e) => {
+                const props = { ...object.props, saturn_bios: e.target.value }
+                setObject({ ...object, props })
+              }}
+              value={Util.asString(object.props.saturn_bios)}
+            />
+          )}
+        </div>
+      )}
       <div>
         {app === "pcecd" && (
           <EditorUrlField
@@ -271,6 +296,40 @@ function PropertiesTab(props) {
           />
         )}
       </div>
+      {/* <div>
+        {app === "philipscdi" && (
+          <EditorMultiUrlField
+            label="Philips CDI BIOS (URLs)"
+            rows={5}
+            onDropText={(text) => {
+              let urls = object.props.philipscdi_bios ? object.props.philipscdi_bios : [];
+              if (Array.isArray(text)) {
+                urls.push(...text);
+              } else {
+                urls.push(text);
+              }
+              urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, philipscdi_bios: urls }
+              if (urls.length === 0) {
+                delete props.philipscdi_bios;
+              }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const val = e.target.value;
+              let urls = Util.splitLines(val);
+              //urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, philipscdi_bios: urls }
+              if (urls.length === 0) {
+                delete props.philipscdi_bios;
+              }
+              setObject({ ...object, props })
+            }}
+            value={object.props.philipscdi_bios && object.props.philipscdi_bios.length > 0 ?
+              object.props.philipscdi_bios.join("\n") : ""}
+          />
+        )}
+      </div> */}
       <div>
         {app === "ds" && (
           <EditorMultiUrlField

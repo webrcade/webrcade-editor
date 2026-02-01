@@ -123,6 +123,15 @@ const setDefaultForPcEngineCd = (type, item) => {
   }
 }
 
+// const setDefaultForPhilipsCdi = (type, item) => {
+//   if (type === APP_TYPE_KEYS.RETRO_SAME_CDI ||
+//     type === APP_TYPE_KEYS.CDI) {
+//     if (isEmptyString(item.props.uid)) {
+//       item.props.uid = uuidv4();
+//     }
+//   }
+// }
+
 const setDefaultForNeoGeoCd = (type, item) => {
   if (type === APP_TYPE_KEYS.RETRO_NEOCD ||
     type === APP_TYPE_KEYS.NEOGEOCD) {
@@ -146,6 +155,15 @@ const setDefaultFor3do = (type, item) => {
     }
   }
 }
+
+// const setDefaultForPsp = (type, item) => {
+//   if (type === APP_TYPE_KEYS.RETRO_PPSSPP ||
+//     type === APP_TYPE_KEYS.PSP) {
+//     if (isEmptyString(item.props.uid)) {
+//       item.props.uid = uuidv4();
+//     }
+//   }
+// }
 
 const setDefaultForCommodore8Bit = (type, item) => {
   if (type === APP_TYPE_KEYS.COMMODORE_C64 ||
@@ -330,6 +348,7 @@ export default function ItemEditor(props) {
     setDefaultForPsx(type, object);
     setDefaultForSegaCd(type, object);
     setDefaultForPcEngineCd(type, object);
+    // setDefaultForPhilipsCdi(type, object);
     setDefaultForPcfx(type, object);
     setDefaultForColeco(type, object);
     setDefaultForA5200(type, object);
@@ -338,6 +357,7 @@ export default function ItemEditor(props) {
     setDefaultForScumm(type, object);
     setDefaultForNeoGeoCd(type, object);
     setDefaultFor3do(type, object);
+    // setDefaultForPsp(type, object);
     setDefaultForCommodore8Bit(type, object);
     setDefaultForSaturn(type, object);
   }
