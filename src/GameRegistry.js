@@ -218,6 +218,11 @@ class GameRegistryImpl {
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-pokemini-images/master/Named_Snaps/output',
       descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Pokemini'
     },
+    'saturn': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-saturn-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-saturn-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Saturn'
+    },
   }
 
   CUSTOM_PROPS = {
@@ -577,6 +582,15 @@ class GameRegistryImpl {
     const matches = name.match(TITLE_REGEX);
     if (matches.length > 1) {
       shortName = matches[1].trim();
+    }
+
+    if (shortName) {
+        // remove version only at the end
+        shortName = shortName.replace(/\s*v\d+(\.\d+)+\s*$/g, "");
+    }
+    if (name) {
+        // remove version only at the end
+        name = name.replace(/\s*v\d+(\.\d+)+\s*$/g, "");
     }
 
     return shortName ? shortName : name;

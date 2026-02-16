@@ -32,3 +32,46 @@
   background-color: black;
   z-index: 5000
 }
+
+
+/* Release notes dialog */
+.change-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.change-item {
+  font-size: 16px;
+  margin-bottom: 12px;
+  padding-left: 18px;
+  position: relative;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.55;
+}
+
+.change-item::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 14px;
+}
+
+.change-item strong {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.sub-change-list {
+  list-style: none;
+  padding: 10px 0 4px 22px;
+  margin: 0;
+}
+
+.sub-change-item {
+  font-size: 15px;
+  margin-bottom: 8px;
+  color: rgba(200, 200, 200, 0.8);
+  line-height: 1.5;
+}
