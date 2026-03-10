@@ -54,33 +54,140 @@ const minimizeLink = (location, copyLinkProps, setCopyLinkProps) => {
     return;
   }
 
+  fetch(`https://is.gd/create.php?format=json&url=${encodeURIComponent(location)}`)
+  .then(async (res) => {
+    if (res.ok) {
+      return res.json();
+    } else {
+      // Try to parse error message from body (though is.gd returns 200 even on errors)
+      const errorBody = await res.json().catch(() => null);
+      const errorMsg = errorBody?.errormessage || "Error attempting to shorten URL";
+      throw new Error(errorMsg);
+    }
+  })
+  .then((json) => {
+    if (json?.shorturl && typeof json.shorturl === "string") {
+      location = json.shorturl;
+    } else if (json?.errormessage) {
+      throw new Error(json.errormessage);
+    } else {
+      throw new Error("Invalid response from is.gd");
+    }
+  })
+  .catch((err) => {
+    WrcCommon.LOG.error(err);
+    Global.displayMessage(err.message || "An error occurred while attempting to shorten the URL.", "error");
+  })
+  .finally(() => {
+    // Global.openBusyScreen(false);
+    if (location !== originalLocation) {
+      setCopyLinkProps({ ...copyLinkProps, minLink: location });
+    }
+  });
+
+  // fetch("https://spoo.me", {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/x-www-form-urlencoded",
+  //     "Accept": "application/json"
+  //   },
+  //   body: `url=${encodeURIComponent(location)}`
+  // })
+  // .then(async (res) => {
+  //   if (res.ok) {
+  //     return res.json();
+  //   } else {
+  //     const errorBody = await res.json().catch(() => null);
+  //     const errorMsg = errorBody?.UrlError || "Error attempting to shorten URL";
+  //     throw new Error(errorMsg);
+  //   }
+  // })
+  // .then((json) => {
+  //   if (json?.short_url?.toLowerCase().startsWith("https://spoo.me")) {
+  //     location = json.short_url;
+  //   } else {
+  //     throw new Error("Invalid response from spoo.me");
+  //   }
+  // })
+  // .catch((err) => {
+  //   WrcCommon.LOG.error(err);
+  //   Global.displayMessage(err.message || "An error occurred while attempting to shorten the URL.", "error");
+  // })
+  // .finally(() => {
+  //   // Global.openBusyScreen(false);
+  //   if (location !== originalLocation) {
+  //     setCopyLinkProps({ ...copyLinkProps, minLink: location });
+  //   }
+  // });
+
   // Global.openBusyScreen(true, "Shortening URL...", true, false);
-  new WrcCommon.FetchAppData(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(location)}`).fetch()
-    .then((res) => {
-      if (res.ok) {
-          return res.text();
-      } else {
-        throw Error("Error attempting to shorten URL");
-      }
-    })
-    .then((text) => {
-      if (text.toLowerCase().indexOf("//tinyurl.com") !== -1) {
-        location = text;
-      } else {
-        throw Error("Invalid response from tinyurl");
-      }
-    })
-    .catch((err) => {
-      WrcCommon.LOG.error(err);
-      Global.displayMessage("An error occurred while attempting to shorten the URL.", "error");
-    })
-    .finally(() => {
-      // Global.openBusyScreen(false);
-      if (location !== originalLocation) {
-        setCopyLinkProps({...copyLinkProps, minLink: location});
-      }
-    });
+  // new WrcCommon.FetchAppData(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(location)}`).fetch()
+  //   .then((res) => {
+  //     if (res.ok) {
+  //         return res.text();
+  //     } else {
+  //       throw Error("Error attempting to shorten URL");
+  //     }
+  //   })
+  //   .then((text) => {
+  //     if (text.toLowerCase().indexOf("//tinyurl.com") !== -1) {
+  //       location = text;
+  //     } else {
+  //       throw Error("Invalid response from tinyurl");
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     WrcCommon.LOG.error(err);
+  //     Global.displayMessage("An error occurred while attempting to shorten the URL.", "error");
+  //   })
+  //   .finally(() => {
+  //     // Global.openBusyScreen(false);
+  //     if (location !== originalLocation) {
+  //       setCopyLinkProps({...copyLinkProps, minLink: location});
+  //     }
+  //   });
 }
+
+// const minimizeLink = (location, copyLinkProps, setCopyLinkProps) => {
+//   const originalLocation = location;
+
+//   if (copyLinkProps.minLink) {
+//     return;
+//   }
+
+//   // Global.openBusyScreen(true, "Shortening URL...", true, false);
+//   fetch("https://clc.is/api/links", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json"
+//     },
+//     body: JSON.stringify({ target_url: location })
+//   })
+//     .then((res) => {
+//       if (res.ok) {
+//         return res.json();
+//       } else {
+//         throw new Error("Error attempting to shorten URL");
+//       }
+//     })
+//     .then((data) => {
+//       if (data && data.short_url && data.short_url.startsWith("https://clc.is")) {
+//         location = data.short_url;
+//       } else {
+//         throw new Error("Invalid response from clc.is");
+//       }
+//     })
+//     .catch((err) => {
+//       WrcCommon.LOG.error(err);
+//       Global.displayMessage("An error occurred while attempting to shorten the URL.", "error");
+//     })
+//     .finally(() => {
+//       // Global.openBusyScreen(false);
+//       if (location !== originalLocation) {
+//         setCopyLinkProps({ ...copyLinkProps, minLink: location });
+//       }
+//     });
+// };
 
 const CopyLinkDialog = (props) => {
   const [isOpen, setOpen] = React.useState(false);
@@ -101,6 +208,7 @@ const CopyLinkDialog = (props) => {
 
   const title = copyLinkProps.title;
   const success = copyLinkProps.success;
+
   const disabledShortened = copyLinkProps.disableShortened;
 
   const getLink = () => {

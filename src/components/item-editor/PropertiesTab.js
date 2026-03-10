@@ -41,6 +41,7 @@ const PROP_SBI = "PROP_SBI";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
 const PROP_TWIN_STICK = "PROP_TWIN_STICK";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
+const PROP_FORCE_EMULATED_BIOS = "PROP_FORCE_EMULATED_BIOS";
 const PROP_FORCE_PAL = "PROP_FORCE_PAL";
 const PROP_FORCE_YM2413 = "PROP_FORCE_YM2413";
 const PROP_JIFFYDOS = "PROP_JIFFYDOS";
@@ -63,6 +64,7 @@ const PROP_ROTATION = "PROP_ROTATION";
 const PROP_ROTATION_LNX = "PROP_ROTATION_LNX";
 const PROP_RTC = "PROP_RTC";
 const PROP_SAMPLES = "PROP_SAMPLES";
+const PROP_SATURN_RAM_EXPANSION = "PROP_SATURN_RAM_EXPANSION";
 const PROP_SAVE_DISKS = "PROP_SAVE_DISKS";
 const PROP_SAVE_TYPE = "PROP_SAVE_TYPE";
 const PROP_SCREEN_GAP = "PROP_SCREEN_GAP";
@@ -102,6 +104,7 @@ const ALL_PROPS = [
   PROP_DOS_CONTROLLER_MODE,
   PROP_DUAL_ANALOG,
   PROP_FLASH_SIZE,
+  PROP_FORCE_EMULATED_BIOS,
   PROP_FORCE_PAL,
   PROP_FORCE_YM2413,
   PROP_GB_BORDER,
@@ -118,6 +121,7 @@ const ALL_PROPS = [
   PROP_MULTITAP,
   PROP_PARENT_ROM,
   PROP_PLAYER_ORDER,
+  PROP_SATURN_RAM_EXPANSION,
   PROP_REGION,
   PROP_REGION_AUTO,
   PROP_ROM,
@@ -188,16 +192,25 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.SNES9X]: {
       PROP_ROM, PROP_FORCE_PAL, PROP_SNES_MULTITAP, PROP_ZOOM_LEVEL
     },
+    [APP_TYPE_KEYS.RETRO_SNES9X]: {
+      PROP_ROM, PROP_FORCE_PAL, PROP_SNES_MULTITAP, PROP_ZOOM_LEVEL
+    },
     [APP_TYPE_KEYS.GENESIS]: {
       PROP_ROM, PROP_FORCE_PAL, PROP_3BUTTON, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.GENPLUSGX_MD]: {
-      PROP_ROM, PROP_FORCE_PAL, PROP_ZOOM_LEVEL
+      PROP_ROM, PROP_FORCE_PAL, PROP_3BUTTON, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_GENPLUSGX_MD]: {
+      PROP_ROM, PROP_FORCE_PAL, PROP_3BUTTON, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.GG]: {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.GENPLUSGX_GG]: {
+      PROP_ROM, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_GENPLUSGX_GG]: {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.SMS]: {
@@ -206,10 +219,16 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.GENPLUSGX_SMS]: {
       PROP_ROM, PROP_FORCE_PAL, PROP_SMS_HW_TYPE, PROP_FORCE_YM2413, PROP_ZOOM_LEVEL
     },
+    [APP_TYPE_KEYS.RETRO_GENPLUSGX_SMS]: {
+      PROP_ROM, PROP_FORCE_PAL, PROP_SMS_HW_TYPE, PROP_FORCE_YM2413, PROP_ZOOM_LEVEL
+    },
     [APP_TYPE_KEYS.SG1000]: {
       PROP_ROM, PROP_FORCE_PAL, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.GENPLUSGX_SG]: {
+      PROP_ROM, PROP_FORCE_PAL, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_GENPLUSGX_SG]: {
       PROP_ROM, PROP_FORCE_PAL, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.DOOM]: {
@@ -224,16 +243,25 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.VBA_M_GBA]: {
       PROP_ROM, PROP_ROTATION, PROP_RTC, PROP_MIRRORING, PROP_SAVE_TYPE, PROP_FLASH_SIZE, PROP_DISABLE_LOOKUP, PROP_ZOOM_LEVEL
     },
+    [APP_TYPE_KEYS.RETRO_MGBA]: {
+      PROP_ROM, PROP_ROTATION, PROP_RTC, PROP_MIRRORING, PROP_SAVE_TYPE, PROP_FLASH_SIZE, PROP_DISABLE_LOOKUP, PROP_ZOOM_LEVEL
+    },
     [APP_TYPE_KEYS.GB]: {
       PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_PALETTE, PROP_GB_BORDER, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.VBA_M_GB]: {
       PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_PALETTE, PROP_GB_BORDER, PROP_ZOOM_LEVEL
     },
+    [APP_TYPE_KEYS.RETRO_SAMEBOY_GB]: {
+      PROP_ROM, PROP_GB_HW_TYPE, PROP_GB_COLORS, PROP_GB_PALETTE, PROP_GB_BORDER, PROP_ZOOM_LEVEL
+    },
     [APP_TYPE_KEYS.GBC]: {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.VBA_M_GBC]: {
+      PROP_ROM, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_SAMEBOY_GBC]: {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.N64]: {
@@ -248,10 +276,16 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.MEDNAFEN_PCE]: {
       PROP_ROM, PROP_6BUTTON, PROP_MAP_RUN_SELECT, PROP_ZOOM_LEVEL
     },
+    [APP_TYPE_KEYS.RETRO_MEDNAFEN_PCE]: {
+      PROP_ROM, PROP_6BUTTON, PROP_MAP_RUN_SELECT, PROP_ZOOM_LEVEL
+    },
     [APP_TYPE_KEYS.SGX]: {
       PROP_ROM, PROP_6BUTTON, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.MEDNAFEN_SGX]: {
+      PROP_ROM, PROP_6BUTTON, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_MEDNAFEN_SGX]: {
       PROP_ROM, PROP_6BUTTON, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.VB]: {
@@ -260,10 +294,16 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.MEDNAFEN_VB]: {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
+    [APP_TYPE_KEYS.RETRO_MEDNAFEN_VB]: {
+      PROP_ROM, PROP_ZOOM_LEVEL
+    },
     [APP_TYPE_KEYS.NGC]: {
       PROP_ROM, PROP_LANGUAGE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.MEDNAFEN_NGC]: {
+      PROP_ROM, PROP_LANGUAGE, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_MEDNAFEN_NGC]: {
       PROP_ROM, PROP_LANGUAGE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.NGP]: {
@@ -272,10 +312,16 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.MEDNAFEN_NGP]: {
       PROP_ROM, PROP_LANGUAGE, PROP_ZOOM_LEVEL
     },
+    [APP_TYPE_KEYS.RETRO_MEDNAFEN_NGP]: {
+      PROP_ROM, PROP_LANGUAGE, PROP_ZOOM_LEVEL
+    },
     [APP_TYPE_KEYS.WSC]: {
       PROP_ROM, PROP_ROTATED, PROP_LANGUAGE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.MEDNAFEN_WSC]: {
+      PROP_ROM, PROP_ROTATED, PROP_LANGUAGE, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_MEDNAFEN_WSC]: {
       PROP_ROM, PROP_ROTATED, PROP_LANGUAGE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.WS]: {
@@ -284,10 +330,16 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.MEDNAFEN_WS]: {
       PROP_ROM, PROP_ROTATED, PROP_LANGUAGE, PROP_ZOOM_LEVEL
     },
+    [APP_TYPE_KEYS.RETRO_MEDNAFEN_WS]: {
+      PROP_ROM, PROP_ROTATED, PROP_LANGUAGE, PROP_ZOOM_LEVEL
+    },
     [APP_TYPE_KEYS.LNX]: {
       PROP_ROM, PROP_ROTATION_LNX, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.MEDNAFEN_LNX]: {
+      PROP_ROM, PROP_ROTATION_LNX, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_MEDNAFEN_LYNX]: {
       PROP_ROM, PROP_ROTATION_LNX, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.NEOGEO]: {
@@ -321,10 +373,10 @@ export const buildFieldMap = () => {
       PROP_DISCS, PROP_ANALOG, PROP_MULTITAP, PROP_ZOOM_LEVEL, PROP_SKIP_BIOS, PROP_DISABLE_MEMCARD1, PROP_SBI
     },
     [APP_TYPE_KEYS.SEGACD]: {
-      PROP_DISCS, PROP_ZOOM_LEVEL
+      PROP_DISCS, PROP_FORCE_PAL, PROP_3BUTTON, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD]: {
-      PROP_DISCS, PROP_ZOOM_LEVEL
+      PROP_DISCS, PROP_FORCE_PAL, PROP_3BUTTON, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.PCECD]: {
       PROP_DISCS, PROP_ZOOM_LEVEL, PROP_6BUTTON, PROP_MAP_RUN_SELECT, PROP_CUSTOM_BIOS
@@ -366,11 +418,17 @@ export const buildFieldMap = () => {
       PROP_DISCS, PROP_ZOOM_LEVEL, PROP_3DO_HACK
     },
     [APP_TYPE_KEYS.RETRO_YABAUSE]: {
-      PROP_DISCS, PROP_ZOOM_LEVEL
+      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_FORCE_EMULATED_BIOS, PROP_SATURN_RAM_EXPANSION,
     },
     [APP_TYPE_KEYS.SATURN]: {
-      PROP_DISCS, PROP_ZOOM_LEVEL
+      PROP_DISCS, PROP_ZOOM_LEVEL, PROP_FORCE_EMULATED_BIOS, PROP_SATURN_RAM_EXPANSION,
     },
+    // [APP_TYPE_KEYS.RETRO_PPSSPP]: {
+    //   PROP_DISCS, PROP_ZOOM_LEVEL,
+    // },
+    // [APP_TYPE_KEYS.PSP]: {
+    //   PROP_DISCS, PROP_ZOOM_LEVEL,
+    // },
     [APP_TYPE_KEYS.QUAKE]: {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_WAD_SELECTOR
     },
@@ -398,6 +456,18 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.RETRO_PARALLEL_N64]: {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
+    [APP_TYPE_KEYS.POKEMINI]: {
+      PROP_ROM, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_POKEMINI]: {
+      PROP_ROM, PROP_ZOOM_LEVEL
+    },
+    // [APP_TYPE_KEYS.CDI]: {
+    //   PROP_DISCS, PROP_ZOOM_LEVEL
+    // },
+    // [APP_TYPE_KEYS.RETRO_SAME_CDI]: {
+    //   PROP_DISCS, PROP_ZOOM_LEVEL
+    // },
   }
 };
 
@@ -721,6 +791,24 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_SATURN_RAM_EXPANSION,) ? (
+        <div>
+          <EditorSelect
+            label="RAM Expansion Cartridge"
+            tooltip="Allows selection of the optional RAM Expansion cartridge used by some Sega Saturn games to increase available work memory."
+            value={object.props.ramExpansion ? object.props.ramExpansion : 0}
+            menuItems={[
+              { value: 0, name: "None" },
+              { value: 1, name: "1MB RAM Expansion" },
+              { value: 2, name: "4MB RAM Expansion" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, ramExpansion: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
       {hasProp(object, PROP_LANGUAGE) ? (
         <div>
           <EditorSelect
@@ -787,6 +875,7 @@ export default function PropertiesTab(props) {
               { value: 0, name: "Grayscale" },
               { value: 1, name: "Greenscale" },
               { value: 2, name: "Super Game Boy" },
+              { value: 3, name: "Defaults" },
             ]}
             onChange={(e) => {
               const props = { ...object.props, colors: e.target.value, palette: 0 }
@@ -981,6 +1070,19 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_FORCE_EMULATED_BIOS) ? (
+        <div>
+          <EditorSwitch
+            label="Force Emulated BIOS"
+            tooltip="Whether to emulate the Sega Saturn BIOS in software instead of loading a real BIOS ROM. No BIOS file is required, but some games may not work correctly."
+            onChange={(e) => {
+              const props = { ...object.props, forceEmulatedBios: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.forceEmulatedBios)}
+          />
+        </div>
+      ) : null}
       {hasProp(object, PROP_DOOM_GAME) ? (
         <div>
           <EditorSelect
@@ -1120,8 +1222,9 @@ export default function PropertiesTab(props) {
           <EditorSelect
             label="Rotation"
             tooltip="How many degrees the screen should be rotated."
-            value={object.props.rotation ? object.props.rotation : 0}
+            value={object.props.rotation >= 0 ? object.props.rotation : -1}
             menuItems={[
+              { value: -1, name: "(auto)" },
               { value: 0, name: "0 degrees" },
               { value: 90, name: "90 degrees" },
               { value: 270, name: "270 degrees" }

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 
 import CategoryEditor from './CategoryEditor';
 import ConfirmDialog from './ConfirmDialog';
@@ -15,8 +16,20 @@ import { GenerateManifestDialog } from './cloud/generate-manifest/GenerateManife
 import { RepackageDialog } from './tools/repackage/RepackageDialog';
 import { SelectCloudFolderDialog } from './cloud/generate-manifest/SelectCloudFolderDialog';
 import { DownloadFileDialog } from './DownloadFileDialog';
+import { ReleaseNotesDialog } from './release-notes/ReleaseNotesDialog';
+
+import * as WrcCommon from '@webrcade/app-common'
 
 export default function Screens() {
+  const [openReleaseNotes, setOpenReleaseNotes] = useState(!WrcCommon.settings.getHideVersionInfo());
+
+  const handleClose = (dontShow) => {
+    if (dontShow) {
+      WrcCommon.settings.setHideVersionInfo();
+      WrcCommon.settings.save();
+    }
+    setOpenReleaseNotes(false); // hide for rest of session
+  };
 
   return (
     <>
@@ -35,6 +48,10 @@ export default function Screens() {
       <RepackageDialog />
       <SelectCloudFolderDialog />
       <DownloadFileDialog />
+      <ReleaseNotesDialog
+        open={openReleaseNotes}
+        onClose={handleClose}
+      />
     </>
   );
 }

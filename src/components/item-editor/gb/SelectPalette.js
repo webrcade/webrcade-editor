@@ -69,6 +69,16 @@ function getSuperGameBoyMenuItems() {
   ]);
 }
 
+function getDefaultMenuItems() {
+  return ([
+      <MenuItem key="0" value={0}><Palette palClass="defaultGreyscale"/></MenuItem>,
+      <MenuItem key="1" value={1}><Palette palClass="defaultLime"/></MenuItem>,
+      <MenuItem key="2" value={2}><Palette palClass="defaultOlive"/></MenuItem>,
+      <MenuItem key="3" value={3}><Palette palClass="defaultTeal"/></MenuItem>,
+  ]);
+}
+
+
 export default function SelectPalette(props) {
   const { colorsValue, value, onChange } = props;
 
@@ -87,6 +97,10 @@ export default function SelectPalette(props) {
     menuitems = getSuperGameBoyMenuItems();
     label = "Super Game Boy Palette";
     tooltip = "The particular Super Game Boy palette to use.";
+  } else if (colorsValue === 3) {
+    menuitems = getDefaultMenuItems();
+    label = "Defaults";
+    tooltip = "The default Game Boy palettes";
   }
 
   return (
