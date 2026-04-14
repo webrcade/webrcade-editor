@@ -526,9 +526,32 @@ const analyze = (categoryId, itemIds) => {
   _analyze(urls, urlToItems);
 }
 
+// Analyze items that may span multiple categories (used by search)
+const analyzeItems = (itemIds) => {
+  const feed = Global.getFeed();
+  const urls = new Set();
+  const urlToItems = new Map();
+
+  // Group item IDs by their category
+  const catMap = new Map();
+  itemIds.forEach(itemId => {
+    const cat = Feed.getCategoryForItem(feed, itemId);
+    if (cat) {
+      if (!catMap.has(cat.id)) catMap.set(cat.id, []);
+      catMap.get(cat.id).push(itemId);
+    }
+  });
+
+  catMap.forEach((ids, catId) => {
+    _updateAnalyzeUrls(catId, ids, urls, urlToItems);
+  });
+  _analyze(urls, urlToItems);
+}
+
 export {
   analyze,
   analyzeCategories,
+  analyzeItems,
   process,
   dropHandler,
   enableDropHandler

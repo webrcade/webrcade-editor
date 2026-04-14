@@ -22,6 +22,9 @@ class GameRegistryImpl {
   }
 
   DB_FILE = !isDev() ? resolvePath("roms.json.zip") : `http://${config.getLocalExternalIp()}:${config.getLocalPort()}/roms.json.zip`;
+  CHEAT_DB_FILE = 'https://raw.githubusercontent.com/webrcade-assets/libdb/master/cht/wrc-cheats.json.zip';
+
+  cheatDb = null;
   // eslint-disable-next-line
   TITLE_REGEX = /^([^\(]*).*$/i
 
@@ -470,6 +473,21 @@ class GameRegistryImpl {
     } catch (e) {
       LOG.error("Error loading types database: " + e);
     }
+
+    try {
+      const cfad = new FetchAppData(this.CHEAT_DB_FILE);
+      const cres = await cfad.fetch();
+      if (cres.ok) {
+        let cblob = await cres.blob();
+        const cuz = new Unzip();
+        cblob = await cuz.unzip(cblob, [".json"]);
+        const cjson = await cblob.text();
+        this.cheatDb = JSON.parse(cjson);
+        LOG.info(`Loaded cheat database, ${Object.keys(this.cheatDb).length} systems.`);
+      }
+    } catch (e) {
+      LOG.error("Error loading cheat database: " + e);
+    }
   }
 
   async isFileInZip(filename, blob) {
@@ -664,6 +682,12 @@ class GameRegistryImpl {
 
   getTypeEntries(type) {
     return type in this.db ? this.db[type] : null;
+  }
+
+  getCheatEntry(type) {
+    if (!this.cheatDb) return null;
+    const alias = AppRegistry.instance.getAlias(type);
+    return (alias && this.cheatDb[alias]) ? this.cheatDb[alias] : null;
   }
 
   async find(md5) {

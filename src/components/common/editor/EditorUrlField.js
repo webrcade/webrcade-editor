@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle';
+import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
@@ -14,6 +15,7 @@ import { dropboxPicker } from '../../../Dropbox';
 function AddMenu(props) {
   const {
     anchorEl,
+    extraMenuItems,
     multiselect,
     onDropText,
     setAnchorEl,
@@ -30,6 +32,13 @@ function AddMenu(props) {
       onClose={handleClose}
       disablePortal
     >
+      {extraMenuItems && extraMenuItems.map((item, i) => (
+        <MenuItem key={i} onClick={() => { handleClose(); item.onClick(); }}>
+          {item.icon ? <ListItemIcon>{item.icon}</ListItemIcon> : null}
+          {item.label}
+        </MenuItem>
+      ))}
+      {extraMenuItems && extraMenuItems.length > 0 && <Divider />}
       <MenuItem onClick={() => {
         handleClose();
         dropboxPicker((res) => {
@@ -56,6 +65,7 @@ function AddMenu(props) {
 export default function EditorUrlField(props) {
   const [menuAnchor, setMenuAnchor] = React.useState(false);
   const {
+    extraMenuItems,
     multiselect,
     ...other
   } = props;
@@ -82,6 +92,7 @@ export default function EditorUrlField(props) {
       </Stack>
       <AddMenu
         anchorEl={menuAnchor}
+        extraMenuItems={extraMenuItems}
         setAnchorEl={setMenuAnchor}
         onDropText={other.onDropText}
         multiselect={multiselect}

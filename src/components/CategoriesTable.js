@@ -50,13 +50,18 @@ function pasteCategories(feed, pCats) {
     feed.categories = [];
   }
   const cats = feed.categories;
-  for (let i = 0; i <  pCats.length; i++) {    
-    const pCat = pCats[i];  
+  for (let i = 0; i <  pCats.length; i++) {
+    const pCat = pCats[i];
 
     // The clone to add
-    const clone = Util.cloneObject(pCat);    
+    const clone = Util.cloneObject(pCat);
     clone.id = WrcCommon.uuidv4();
     delete clone.sourceId;
+    if (clone.items) {
+      clone.items.forEach((item) => {
+        item.id = WrcCommon.uuidv4();
+      });
+    }
 
     let found = false;
     for (let j = cats.length - 1; j >= 0; j--) {
@@ -211,6 +216,7 @@ export default function CategoriesTable(props) {
                   disabled={!selection}
                   onClick={() => {
                     setClipboard(cloneSelectedCategories(feed, selected));
+                    Global.displayMessage(`${selected.length} ${selected.length === 1 ? 'category' : 'categories'} copied to clipboard.`, 'success');
                   }}
                 >
                   <ContentCopyIcon />

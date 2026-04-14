@@ -3,6 +3,7 @@ import Avatar from '@mui/material/Avatar';
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
@@ -36,12 +37,20 @@ function MainAppBar(props) {
         <Typography variant="h6" noWrap sx={{ flexGrow: 1 }}>
           webЯcade Feed Editor
         </Typography>
+        <Tooltip title="Search">
+          <IconButton
+            color="inherit"
+            onClick={Global.toggleSearch}
+            sx={{ ml: 1 }}
+          >
+            <SearchIcon />
+          </IconButton>
+        </Tooltip>
         <Tooltip title="Settings">
           <IconButton
             color="inherit"
-            edge="start"
             onClick={() => { Global.openSettingsEditor(true); }}
-            sx={{ ml: 2 }}
+            sx={{ ml: 0.5 }}
           >
             <SettingsIcon />
           </IconButton>
@@ -49,9 +58,8 @@ function MainAppBar(props) {
         <Tooltip title="Help">
           <IconButton
             color="inherit"
-            edge="start"
             onClick={() => { window.open('https://docs.webrcade.com/editor/'); }}
-            sx={{ ml: .5 }}
+            sx={{ ml: 0.5 }}
           >
             <HelpCenterIcon />
           </IconButton>

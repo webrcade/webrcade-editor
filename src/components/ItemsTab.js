@@ -11,7 +11,7 @@ const PREF_CURRENT_CAT = "currentCategory";
 
 export default function ItemsTab(props) {
   const { feed } = props;
-  const [category, setCategory] = 
+  const [category, setCategory] =
     React.useState(Prefs.getPreference(PREF_CURRENT_CAT, ""));
 
   const prevFeed = Util.usePrevious(feed);
@@ -20,11 +20,11 @@ export default function ItemsTab(props) {
   GlobalHolder.setFeedCategoryId = setCategory;
   GlobalHolder.getFeedCategoryId = () => {
     return category;
-  } 
+  }
 
   // Reset page if key changes
-  React.useEffect(() => {  
-    if (prevFeed !== feed && !Feed.getCategory(feed, category)) {            
+  React.useEffect(() => {
+    if (prevFeed !== feed && !Feed.getCategory(feed, category)) {
       setCategory(
         feed.categories && feed.categories.length > 0 ?
           feed.categories[0].id : "");
@@ -32,8 +32,8 @@ export default function ItemsTab(props) {
   }, [feed, prevFeed, category, setCategory]);
 
   // Update prefs if category changes
-  React.useEffect(() => {  
-    if (prevCategory !== category) {            
+  React.useEffect(() => {
+    if (prevCategory !== category) {
       Prefs.setPreference(PREF_CURRENT_CAT, category);
       Prefs.save();
     }
@@ -41,12 +41,12 @@ export default function ItemsTab(props) {
 
   return (
     <>
-      <SelectCategory 
-        feed={feed} 
+      <SelectCategory
+        feed={feed}
         category={category}
         setCategory={setCategory} />
-      <ItemsTable 
-        feed={feed} 
+      <ItemsTable
+        feed={feed}
         category={category}
       />
     </>

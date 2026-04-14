@@ -17,7 +17,7 @@ import {
   AppRegistry
 } from '@webrcade/app-common'
 
-import { Global } from '../Global';
+import { Global, GlobalHolder } from '../Global';
 import * as Util from '../Util';
 import * as Feed from '../Feed';
 import ImageLabel from './common/ImageLabel';
@@ -60,6 +60,8 @@ export default function ItemsTable(props) {
   const { feed, category } = props;
   const [clipboard, setClipboard] = React.useState([]);
   const [moreMenuAnchor, setMoreMenuAnchor] = React.useState(false);
+
+  GlobalHolder.setItemClipboard = setClipboard;
 
   const rows = [];
 
@@ -234,6 +236,7 @@ export default function ItemsTable(props) {
                       setClipboard(cloneSelectedItems(feed, category, selected));
                       Feed.deleteItemsFromCategory(feed, category, selected);
                       Global.setFeed({ ...feed });
+                      Global.displayMessage(`${selected.length} ${selected.length === 1 ? 'item' : 'items'} cut to clipboard.`, 'success');
                     }}
                   >
                     <ContentCutIcon />
@@ -246,6 +249,7 @@ export default function ItemsTable(props) {
                     disabled={!selection}
                     onClick={() => {
                       setClipboard(cloneSelectedItems(feed, category, selected));
+                      Global.displayMessage(`${selected.length} ${selected.length === 1 ? 'item' : 'items'} copied to clipboard.`, 'success');
                     }}
                   >
                     <ContentCopyIcon />

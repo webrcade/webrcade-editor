@@ -24,6 +24,7 @@ import A5200MappingsTab from './a5200/A5200MappingsTab';
 import ColecoDescriptionsTab from './coleco/ColecoDescriptionsTab';
 import ColecoMappingsTab from './coleco/ColecoMappingsTab';
 import C64MappingsTab from './c64/C64MappingsTab';
+import CheatsTab from './cheats/CheatsTab';
 
 import {
   AppRegistry, APP_TYPE_KEYS, LOG, isEmptyString, uuidv4
@@ -272,6 +273,10 @@ export default function ItemEditor(props) {
   const isC64 = (item.type === APP_TYPE_KEYS.COMMODORE_C64 || item.type === APP_TYPE_KEYS.RETRO_COMMODORE_C64);
   const isA5200 = (item.type === APP_TYPE_KEYS.A5200 || item.type === APP_TYPE_KEYS.RETRO_A5200);
   const isA2600 = (item.type === APP_TYPE_KEYS.A2600 || item.type === APP_TYPE_KEYS.RETRO_STELLA || item.type === APP_TYPE_KEYS.RETRO_STELLA_LATEST);
+  const hasCheats = (item.type === APP_TYPE_KEYS.SNES || item.type === APP_TYPE_KEYS.RETRO_SNES9X ||
+    item.type === APP_TYPE_KEYS.NES || item.type === APP_TYPE_KEYS.RETRO_FCEUMM ||
+    item.type === APP_TYPE_KEYS.A5200 || item.type === APP_TYPE_KEYS.RETRO_A5200 ||
+    item.type === APP_TYPE_KEYS.BEETLE_PSX || item.type === APP_TYPE_KEYS.PSX);
 
   GlobalHolder.setItemEditorOpen = (open, isCreate = false) => {
     setCreate(isCreate);
@@ -319,6 +324,11 @@ export default function ItemEditor(props) {
     c64MappingsTab = index++;
   }
 
+  let cheatsTab = 0;
+  if (hasCheats) {
+    cheatsTab = index++;
+  }
+
   let thumbTab = index++;
   let bgTab = index++;
 
@@ -339,6 +349,9 @@ export default function ItemEditor(props) {
   }
   if (isC64) {
     tabs.push(<Tab label="Mappings" key={c64MappingsTab} />);
+  }
+  if (hasCheats) {
+    tabs.push(<Tab label="Cheats" key={cheatsTab} />);
   }
   tabs.push(<Tab label="Thumbnail" key={thumbTab} />);
   tabs.push(<Tab label="Background" key={bgTab} />);
@@ -602,6 +615,12 @@ export default function ItemEditor(props) {
           {isA2600 && <A2600ControllersTab
             tabValue={tabValue}
             tabIndex={a2600ControllersTab}
+            object={item}
+            setObject={setItem}
+          />}
+          {hasCheats && <CheatsTab
+            tabValue={tabValue}
+            tabIndex={cheatsTab}
             object={item}
             setObject={setItem}
           />}

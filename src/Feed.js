@@ -63,6 +63,38 @@ const getItem = (feed, categoryId, itemId) => {
   return null;
 }
 
+const getItemById = (feed, itemId) => {
+  if (feed.categories) {
+    for (let i = 0; i < feed.categories.length; i++) {
+      const cat = feed.categories[i];
+      if (cat.items) {
+        for (let j = 0; j < cat.items.length; j++) {
+          if (cat.items[j].id === itemId) {
+            return cat.items[j];
+          }
+        }
+      }
+    }
+  }
+  return null;
+}
+
+const getCategoryForItem = (feed, itemId) => {
+  if (feed.categories) {
+    for (let i = 0; i < feed.categories.length; i++) {
+      const cat = feed.categories[i];
+      if (cat.items) {
+        for (let j = 0; j < cat.items.length; j++) {
+          if (cat.items[j].id === itemId) {
+            return cat;
+          }
+        }
+      }
+    }
+  }
+  return null;
+}
+
 const replaceItem = (feed, categoryId, itemId, item) => {
   const res = findItem(feed, categoryId, itemId);
   if (res) {
@@ -139,6 +171,11 @@ const cloneCategories = (feed, categoryIds) => {
       if (categoryIdsMap[cats[i].id]) {
         const clone = Util.cloneObject(cats[i]);
         clone.id = uuidv4();
+        if (clone.items) {
+          clone.items.forEach((item) => {
+            item.id = uuidv4();
+          });
+        }
         cats.splice(i + 1, 0, clone);
       }
     }
@@ -365,6 +402,8 @@ export {
   getCategory,
   getDefaultFeedUrl,
   getItem,
+  getItemById,
+  getCategoryForItem,
   moveCategoriesUp,
   moveCategoriesDown,
   newFeed,
