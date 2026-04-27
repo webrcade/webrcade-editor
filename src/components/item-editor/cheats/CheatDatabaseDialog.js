@@ -77,7 +77,7 @@ export default function CheatDatabaseDialog(props) {
       const res = await new FetchAppData(url).setRetries(0).setProxyDisabled(true).fetch();
       if (res.ok) {
         const data = await res.json();
-        setCheats(Array.isArray(data) ? [...data].sort((a, b) => a.localeCompare(b)).map(decodeHtml) : []);
+        setCheats(Array.isArray(data) ? [...new Set(data)].sort((a, b) => a.localeCompare(b)).map(decodeHtml) : []);
       } else {
         setFetchError(true);
       }
