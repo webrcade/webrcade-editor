@@ -114,8 +114,15 @@ export function ReleaseNotesDialog({ open, setOpen, onClose }) {
           paddingTop: '16px',
         }}
       >
-        {ReleaseData.map(note => (
-          <Box key={note.version} sx={{ marginBottom: '32px' }}>
+        {ReleaseData.map((note, noteIndex) => (
+          <Box
+            key={note.version}
+            sx={{
+              marginBottom: '32px',
+              paddingTop: noteIndex > 0 ? '32px' : 0,
+              borderTop: noteIndex > 0 ? '1px solid rgba(255,255,255,0.1)' : 'none',
+            }}
+          >
             <Box
               sx={{
                 display: 'flex',
@@ -130,6 +137,24 @@ export function ReleaseNotesDialog({ open, setOpen, onClose }) {
               <span>{note.version}</span>
               <span>•</span>
               <span>{note.date}</span>
+              {note.preRelease && (
+                <Box
+                  component="span"
+                  sx={{
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    letterSpacing: '1px',
+                    textTransform: 'uppercase',
+                    color: '#f90',
+                    border: '1px solid #f90',
+                    borderRadius: '4px',
+                    px: '6px',
+                    py: '1px',
+                  }}
+                >
+                  Pre-Release
+                </Box>
+              )}
             </Box>
 
             <Box

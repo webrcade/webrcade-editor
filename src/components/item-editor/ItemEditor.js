@@ -24,6 +24,7 @@ import A5200MappingsTab from './a5200/A5200MappingsTab';
 import ColecoDescriptionsTab from './coleco/ColecoDescriptionsTab';
 import ColecoMappingsTab from './coleco/ColecoMappingsTab';
 import C64MappingsTab from './c64/C64MappingsTab';
+import CheatsTab from './cheats/CheatsTab';
 
 import {
   AppRegistry, APP_TYPE_KEYS, LOG, isEmptyString, uuidv4
@@ -272,6 +273,31 @@ export default function ItemEditor(props) {
   const isC64 = (item.type === APP_TYPE_KEYS.COMMODORE_C64 || item.type === APP_TYPE_KEYS.RETRO_COMMODORE_C64);
   const isA5200 = (item.type === APP_TYPE_KEYS.A5200 || item.type === APP_TYPE_KEYS.RETRO_A5200);
   const isA2600 = (item.type === APP_TYPE_KEYS.A2600 || item.type === APP_TYPE_KEYS.RETRO_STELLA || item.type === APP_TYPE_KEYS.RETRO_STELLA_LATEST);
+  const hasCheats = (
+    /* Super Nintendo */     item.type === APP_TYPE_KEYS.SNES || item.type === APP_TYPE_KEYS.RETRO_SNES9X ||
+    /* NES */                item.type === APP_TYPE_KEYS.NES || item.type === APP_TYPE_KEYS.RETRO_FCEUMM ||
+    /* Atari 2600 */         item.type === APP_TYPE_KEYS.A2600 || item.type === APP_TYPE_KEYS.RETRO_STELLA || item.type === APP_TYPE_KEYS.RETRO_STELLA_LATEST ||
+    /* Atari 5200 */         item.type === APP_TYPE_KEYS.A5200 || item.type === APP_TYPE_KEYS.RETRO_A5200 ||
+    /* Game Boy Advance */   item.type === APP_TYPE_KEYS.GBA || item.type === APP_TYPE_KEYS.RETRO_MGBA ||
+    /* Game Boy */           item.type === APP_TYPE_KEYS.GB || item.type === APP_TYPE_KEYS.RETRO_SAMEBOY_GB ||
+    /* Game Boy Color */     item.type === APP_TYPE_KEYS.GBC || item.type === APP_TYPE_KEYS.RETRO_SAMEBOY_GBC ||
+    /* Atari Lynx */         item.type === APP_TYPE_KEYS.LNX || item.type === APP_TYPE_KEYS.RETRO_MEDNAFEN_LYNX ||
+    /* Sega Genesis */       item.type === APP_TYPE_KEYS.GENESIS || item.type === APP_TYPE_KEYS.RETRO_GENPLUSGX_MD ||
+    /* Sega Master System */ item.type === APP_TYPE_KEYS.SMS || item.type === APP_TYPE_KEYS.RETRO_GENPLUSGX_SMS ||
+    /* Sega Game Gear */     item.type === APP_TYPE_KEYS.GG || item.type === APP_TYPE_KEYS.RETRO_GENPLUSGX_GG ||
+    /* Sega SG-1000 */       item.type === APP_TYPE_KEYS.SG1000 || item.type === APP_TYPE_KEYS.RETRO_GENPLUSGX_SG ||
+    /* Sega CD */            item.type === APP_TYPE_KEYS.SEGACD || item.type === APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD ||
+    /* Sony PlayStation */   item.type === APP_TYPE_KEYS.PSX || item.type === APP_TYPE_KEYS.BEETLE_PSX ||
+    /* NEC PC Engine */       item.type === APP_TYPE_KEYS.PCE || item.type === APP_TYPE_KEYS.RETRO_MEDNAFEN_PCE ||
+    /* NEC PC Engine CD */     item.type === APP_TYPE_KEYS.PCECD || item.type === APP_TYPE_KEYS.RETRO_PCE_FAST ||
+    /* NEC SuperGrafx */       item.type === APP_TYPE_KEYS.SGX || item.type === APP_TYPE_KEYS.RETRO_MEDNAFEN_SGX ||
+    /* Sega Saturn */            item.type === APP_TYPE_KEYS.SATURN || item.type === APP_TYPE_KEYS.RETRO_YABAUSE ||
+    /* Nintendo DS */            item.type === APP_TYPE_KEYS.NDS || item.type === APP_TYPE_KEYS.RETRO_MELONDS ||
+    /* Quake */                  item.type === APP_TYPE_KEYS.QUAKE || item.type === APP_TYPE_KEYS.TYRQUAKE
+    // /* NEC PC-FX */        item.type === APP_TYPE_KEYS.BEETLE_PCFX || item.type === APP_TYPE_KEYS.PCFX ||
+    // /* Neo Geo CD */      item.type === APP_TYPE_KEYS.RETRO_NEOCD || item.type === APP_TYPE_KEYS.NEOGEOCD ||
+    // /* 3DO */             item.type === APP_TYPE_KEYS.RETRO_OPERA || item.type === APP_TYPE_KEYS.THREEDO
+  );
 
   GlobalHolder.setItemEditorOpen = (open, isCreate = false) => {
     setCreate(isCreate);
@@ -319,6 +345,11 @@ export default function ItemEditor(props) {
     c64MappingsTab = index++;
   }
 
+  let cheatsTab = 0;
+  if (hasCheats) {
+    cheatsTab = index++;
+  }
+
   let thumbTab = index++;
   let bgTab = index++;
 
@@ -339,6 +370,9 @@ export default function ItemEditor(props) {
   }
   if (isC64) {
     tabs.push(<Tab label="Mappings" key={c64MappingsTab} />);
+  }
+  if (hasCheats) {
+    tabs.push(<Tab label="Cheats" key={cheatsTab} />);
   }
   tabs.push(<Tab label="Thumbnail" key={thumbTab} />);
   tabs.push(<Tab label="Background" key={bgTab} />);
@@ -602,6 +636,12 @@ export default function ItemEditor(props) {
           {isA2600 && <A2600ControllersTab
             tabValue={tabValue}
             tabIndex={a2600ControllersTab}
+            object={item}
+            setObject={setItem}
+          />}
+          {hasCheats && <CheatsTab
+            tabValue={tabValue}
+            tabIndex={cheatsTab}
             object={item}
             setObject={setItem}
           />}

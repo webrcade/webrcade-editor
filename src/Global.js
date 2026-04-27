@@ -25,6 +25,7 @@ class Holder {
   queuedMessage = null;
   queuedMessageSeverity = null;
   toggleDrawer = null;
+  toggleSearch = null;
   setItemEditorOpen = null;
   setImportDialogOpen = null;
   setExportDialogOpen = null;
@@ -40,6 +41,7 @@ class Holder {
   setLoadFeedDialogOpen = null;
   setSettingsEditorOpen = null;
   setBusyScreenDisableDrop = null;
+  setItemClipboard = null;
   isDebug = UrlUtil.getBoolParam(window.location.search, AppProps.RP_DEBUG);
 }
 
@@ -137,6 +139,14 @@ const Global = {
   },
   toggleDrawer: () => {
     GlobalHolder.toggleDrawer();
+  },
+  toggleSearch: () => {
+    if (GlobalHolder.toggleSearch) GlobalHolder.toggleSearch();
+  },
+  setItemClipboard: (items) => {
+    if (GlobalHolder.setItemClipboard) {
+      GlobalHolder.setItemClipboard(items);
+    }
   },
   displayMessage(message, severity) {
     if (GlobalHolder.setMessage && GlobalHolder.setMessageSeverity) {
