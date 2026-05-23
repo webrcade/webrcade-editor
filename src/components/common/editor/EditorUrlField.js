@@ -8,9 +8,13 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 
 import EditorTextField from './EditorTextField';
 import { dropboxPicker } from '../../../Dropbox';
+import { GlobalHolder } from '../../../Global';
+
+const LARGE_FILE_THRESHOLD = 5 * 1024 * 1024; // 5 MB
 
 function AddMenu(props) {
   const {
@@ -18,11 +22,24 @@ function AddMenu(props) {
     extraMenuItems,
     multiselect,
     onDropText,
+    onFileUpload,
     setAnchorEl,
   } = props;
   const open = Boolean(anchorEl);
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleFileMenuClick = () => {
+    handleClose();
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = Boolean(multiselect);
+    input.onchange = (e) => {
+      const files = Array.from(e.target.files);
+      if (files.length > 0) onFileUpload(files);
+    };
+    input.click();
   };
 
   return (
@@ -58,17 +75,64 @@ function AddMenu(props) {
         </ListItemIcon>
         Select from Dropbox...
       </MenuItem>
+      {onFileUpload && <Divider />}
+      {onFileUpload && (
+        <MenuItem onClick={handleFileMenuClick}>
+          <ListItemIcon>
+            <UploadFileIcon fontSize="small" />
+          </ListItemIcon>
+          Add file{multiselect ? 's' : ''}...
+        </MenuItem>
+      )}
     </Menu>
   );
 }
 
 export default function EditorUrlField(props) {
   const [menuAnchor, setMenuAnchor] = React.useState(false);
+  const [isUploading, setIsUploading] = React.useState(false);
   const {
     extraMenuItems,
     multiselect,
+    onFileUpload,
+    onDropText,
     ...other
   } = props;
+
+  const handleFileUpload = React.useCallback(async (files) => {
+    if (!onFileUpload) return;
+    setIsUploading(true);
+    let overlayOpen = false;
+    try {
+      const urls = [];
+      for (const file of files) {
+        const isLarge = file.size >= LARGE_FILE_THRESHOLD;
+        if (isLarge) {
+          GlobalHolder.setUploadProgressMessage(`Uploading ${file.name}...`);
+          GlobalHolder.setUploadProgressValue(0);
+          GlobalHolder.setUploadProgressOpen(true);
+          overlayOpen = true;
+        }
+        const url = await onFileUpload(
+          file,
+          isLarge ? (pct) => GlobalHolder.setUploadProgressValue(pct) : null
+        );
+        urls.push(url);
+      }
+      if (onDropText) {
+        onDropText(urls.length === 1 ? urls[0] : urls);
+      }
+    } catch (e) {
+      console.error('[EditorUrlField] Upload failed:', e);
+      GlobalHolder.setMessage(e?.message || 'Upload failed.');
+      GlobalHolder.setMessageSeverity('error');
+    } finally {
+      if (overlayOpen) {
+        GlobalHolder.setUploadProgressOpen(false);
+      }
+      setIsUploading(false);
+    }
+  }, [onFileUpload, onDropText]);
 
   return (
     <>
@@ -79,10 +143,14 @@ export default function EditorUrlField(props) {
       >
         <EditorTextField
           {...other}
+          onDropText={onDropText}
+          onFileDrop={onFileUpload ? handleFileUpload : undefined}
+          uploading={isUploading}
         />
         <Tooltip title="Select">
           <IconButton
             sx={{ ml: -.8 }}
+            disabled={isUploading}
             onClick={(e) => {
               setMenuAnchor(e.target)
             }}>
@@ -94,7 +162,8 @@ export default function EditorUrlField(props) {
         anchorEl={menuAnchor}
         extraMenuItems={extraMenuItems}
         setAnchorEl={setMenuAnchor}
-        onDropText={other.onDropText}
+        onDropText={onDropText}
+        onFileUpload={onFileUpload ? handleFileUpload : undefined}
         multiselect={multiselect}
       />
     </>

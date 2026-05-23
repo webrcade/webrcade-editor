@@ -16,6 +16,9 @@ import { GenerateManifestDialog } from './cloud/generate-manifest/GenerateManife
 import { RepackageDialog } from './tools/repackage/RepackageDialog';
 import { SelectCloudFolderDialog } from './cloud/generate-manifest/SelectCloudFolderDialog';
 import { DownloadFileDialog } from './DownloadFileDialog';
+import AddLocalFilesDialog from './AddLocalFilesDialog';
+import ResolveTypesDialog from './ResolveTypesDialog';
+import MergeDialog from './MergeDialog';
 import { ReleaseNotesDialog } from './release-notes/ReleaseNotesDialog';
 
 import * as WrcCommon from '@webrcade/app-common'
@@ -45,6 +48,9 @@ export default function Screens() {
       <LoadFeedDialog />
       <SettingsEditor />
       <GenerateManifestDialog />
+      <AddLocalFilesDialog />
+      <ResolveTypesDialog />
+      <MergeDialog />
       <RepackageDialog />
       <SelectCloudFolderDialog />
       <DownloadFileDialog />

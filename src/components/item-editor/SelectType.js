@@ -8,9 +8,10 @@ import {
 } from '@webrcade/app-common'
 
 export default function SelectType(props) {
-  const { item, setItem, onChange } = props;
+  const { item, setItem, onChange, label: labelProp, allowNone } = props;
+  const label = labelProp || 'Application';
 
-  const handleChange = (e) => {    
+  const handleChange = (e) => {
     if (onChange) onChange(e);
     setItem({ ...item, type: e.target.value });
   };
@@ -21,7 +22,7 @@ export default function SelectType(props) {
   const types =  AppRegistry.instance.getAppTypes();
   for (const key in types) {
     const type = types[key];
-    const isAlias = type.absoluteKey !== undefined;    
+    const isAlias = type.absoluteKey !== undefined;
     const name = AppRegistry.instance.getShortNameForType(key);
 
     if (isAlias) {
@@ -41,16 +42,18 @@ export default function SelectType(props) {
   return (
     <div>
       <FormControl sx={{ m: 1.5, minWidth: 200 }}>
-        <InputLabel>Application</InputLabel>
+        <InputLabel shrink={allowNone ? true : undefined}>{label}</InputLabel>
         <Select
-          native 
+          native
+          notched={allowNone ? true : undefined}
           value={item.type}
           onChange={handleChange}
           autoWidth
-          label="Application"
+          label={label}
         >
+          {allowNone && <option value="">(None)</option>}
           <optgroup label="General (Aliased)">
-            {            
+            {
               aliasTypes.map(type => {
                 return (
                   <option key={type.key} value={type.key}>{type.name}</option>
@@ -59,7 +62,7 @@ export default function SelectType(props) {
             }
           </optgroup>
           <optgroup label="Specific">
-            {            
+            {
               specificTypes.map(type => {
                 return (
                   <option key={type.key} value={type.key}>{type.name}</option>

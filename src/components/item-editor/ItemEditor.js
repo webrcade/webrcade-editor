@@ -29,6 +29,8 @@ import CheatsTab from './cheats/CheatsTab';
 import {
   AppRegistry, APP_TYPE_KEYS, LOG, isEmptyString, uuidv4
 } from '@webrcade/app-common'
+import * as WrcCommon from '@webrcade/app-common';
+import { uploadImageFile } from '../../LocalFileProcessor';
 import Prefs from '../../Prefs';
 
 // import * as deepmerge from 'deepmerge'
@@ -263,6 +265,25 @@ const setDefaultForScumm = (type, item) => {
   }
 }
 
+export function setDefaultsForType(type, object) {
+  setDefaultForDoom(type, object);
+  setDefaultForPsx(type, object);
+  setDefaultForSegaCd(type, object);
+  setDefaultForPcEngineCd(type, object);
+  // setDefaultForPhilipsCdi(type, object);
+  setDefaultForPcfx(type, object);
+  setDefaultForColeco(type, object);
+  setDefaultForA5200(type, object);
+  setDefaultForQuake(type, object);
+  setDefaultForDosBox(type, object);
+  setDefaultForScumm(type, object);
+  setDefaultForNeoGeoCd(type, object);
+  setDefaultFor3do(type, object);
+  // setDefaultForPsp(type, object);
+  setDefaultForCommodore8Bit(type, object);
+  setDefaultForSaturn(type, object);
+}
+
 export default function ItemEditor(props) {
   const [tabValue, setTabValue] = React.useState(0);
   const [item, setItem] = React.useState({});
@@ -377,25 +398,6 @@ export default function ItemEditor(props) {
   tabs.push(<Tab label="Thumbnail" key={thumbTab} />);
   tabs.push(<Tab label="Background" key={bgTab} />);
 
-  const setDefaultsForType = (type, object) => {
-    setDefaultForDoom(type, object);
-    setDefaultForPsx(type, object);
-    setDefaultForSegaCd(type, object);
-    setDefaultForPcEngineCd(type, object);
-    // setDefaultForPhilipsCdi(type, object);
-    setDefaultForPcfx(type, object);
-    setDefaultForColeco(type, object);
-    setDefaultForA5200(type, object);
-    setDefaultForQuake(type, object);
-    setDefaultForDosBox(type, object);
-    setDefaultForScumm(type, object);
-    setDefaultForNeoGeoCd(type, object);
-    setDefaultFor3do(type, object);
-    // setDefaultForPsp(type, object);
-    setDefaultForCommodore8Bit(type, object);
-    setDefaultForSaturn(type, object);
-  }
-
   return (
     <Editor
       title={`${isCreate ? "Create" : "Edit"} Item`}
@@ -441,6 +443,11 @@ export default function ItemEditor(props) {
         } else {
           // Replace the item in the feed
           Feed.replaceItem(feed, Global.getFeedCategoryId(), item.id, item);
+          // Notify any listener (e.g. Add Local Files dialog) that an item was saved
+          if (GlobalHolder.onItemSaved) {
+            GlobalHolder.onItemSaved(item);
+            GlobalHolder.onItemSaved = null;
+          }
         }
         // Update the feed (shallow clone)
         Global.setFeed({ ...feed });
@@ -652,6 +659,11 @@ export default function ItemEditor(props) {
             defaultThumbSrc={defaultThumbnail}
             object={item}
             setObject={setItem}
+            onFileUpload={WrcCommon.settings.isCloudStorageEnabled() ? (file, onProgress) => {
+              const feed = Global.getFeed();
+              const cat = Feed.getCategory(feed, Global.getFeedCategoryId());
+              return uploadImageFile(file, Feed.resolveCategoryItemImagesPath(feed, cat), item.title, onProgress);
+            } : undefined}
           />
           <BackgroundTab
             tabValue={tabValue}
@@ -660,6 +672,11 @@ export default function ItemEditor(props) {
             defaultThumbSrc={defaultBackground}
             object={item}
             setObject={setItem}
+            onFileUpload={WrcCommon.settings.isCloudStorageEnabled() ? (file, onProgress) => {
+              const feed = Global.getFeed();
+              const cat = Feed.getCategory(feed, Global.getFeedCategoryId());
+              return uploadImageFile(file, Feed.resolveCategoryItemImagesPath(feed, cat), item.title, onProgress);
+            } : undefined}
           />
         </>
       )}

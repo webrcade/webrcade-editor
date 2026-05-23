@@ -1,6 +1,9 @@
 import * as React from 'react';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
 
-import { GlobalHolder } from '../Global';
+import { Global, GlobalHolder } from '../Global';
 import * as Feed from '../Feed';
 import * as Util from '../Util';
 import ItemsTable from './ItemsTable';
@@ -41,10 +44,23 @@ export default function ItemsTab(props) {
 
   return (
     <>
-      <SelectCategory
-        feed={feed}
-        category={category}
-        setCategory={setCategory} />
+      <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+        <SelectCategory
+          feed={feed}
+          category={category}
+          setCategory={setCategory} />
+        <IconButton
+          size="medium"
+          disabled={!category}
+          sx={{ ml: 1, mt: 1.25 }}
+          onClick={() => {
+            const cat = Feed.getCategory(feed, category);
+            if (cat) Global.editCategory(cat);
+          }}
+        >
+          <EditIcon fontSize="medium" />
+        </IconButton>
+      </Box>
       <ItemsTable
         feed={feed}
         category={category}

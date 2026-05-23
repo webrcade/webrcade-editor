@@ -3,8 +3,12 @@ import * as React from 'react';
 import {
   APP_TYPE_KEYS,
 } from '@webrcade/app-common'
+import * as WrcCommon from '@webrcade/app-common';
 
 import * as Util from '../../Util';
+import * as Feed from '../../Feed';
+import { uploadSingleFile } from '../../LocalFileProcessor';
+import { Global } from '../../Global';
 import EditorMultiUrlField from '../common/editor/EditorMultiUrlField';
 import EditorSelect from '../common/editor/EditorSelect';
 import EditorSwitch from '../common/editor/EditorSwitch';
@@ -525,6 +529,15 @@ export default function PropertiesTab(props) {
 
   const showGbColors = object.props.hwType !== 1 && object.props.hwType !== 4;
 
+  const cloudEnabled = WrcCommon.settings.isCloudStorageEnabled();
+  const uploadItemFile = cloudEnabled
+    ? (file, onProgress) => {
+        const feed = Global.getFeed();
+        const category = Feed.getCategory(feed, Global.getFeedCategoryId());
+        return uploadSingleFile(file, Feed.resolveCategoryItemsPath(feed, category), onProgress);
+      }
+    : undefined;
+
   // console.log(object)
 
   return (
@@ -535,6 +548,7 @@ export default function PropertiesTab(props) {
             required
             sx={{ width: '50ch' }}
             label="ROM (URL)"
+            onFileUpload={uploadItemFile}
             onDropText={(text) => {
               const props = { ...object.props, rom: text }
               setObject({ ...object, props })
@@ -555,6 +569,7 @@ export default function PropertiesTab(props) {
             sx={{ width: '50ch' }}
             label="Package Archive or Package Manifest (URL)"
             // helperText="(.zip file containing the contents)"
+            onFileUpload={uploadItemFile}
             onDropText={(text) => {
               const props = { ...object.props, archive: text }
               setObject({ ...object, props })
@@ -595,6 +610,7 @@ export default function PropertiesTab(props) {
           <EditorMultiUrlField
             label="Additional ROMs (URLs)"
             rows={2}
+            onFileUpload={uploadItemFile}
             onDropText={(text) => {
               let urls = object.props.additionalRoms ? object.props.additionalRoms : [];
               if (Array.isArray(text)) {
@@ -629,6 +645,7 @@ export default function PropertiesTab(props) {
           <EditorMultiUrlField
             label="Discs (URLs)"
             rows={3}
+            onFileUpload={uploadItemFile}
             onDropText={(text) => {
               let urls = object.props.discs ? object.props.discs : [];
               if (Array.isArray(text)) {
@@ -663,6 +680,7 @@ export default function PropertiesTab(props) {
           <EditorMultiUrlField
             label="Media (URLs)"
             rows={4}
+            onFileUpload={uploadItemFile}
             onDropText={(text) => {
               let urls = object.props.media ? object.props.media : [];
               if (Array.isArray(text)) {
@@ -697,6 +715,7 @@ export default function PropertiesTab(props) {
           <EditorMultiUrlField
             label="SBI Files (URLs)"
             rows={3}
+            onFileUpload={uploadItemFile}
             onDropText={(text) => {
               let urls = object.props.sbi ? object.props.sbi : [];
               if (Array.isArray(text)) {
@@ -731,6 +750,7 @@ export default function PropertiesTab(props) {
           <EditorUrlField
             sx={{ width: '50ch' }}
             label="Custom BIOS (optional)"
+            onFileUpload={uploadItemFile}
             onDropText={(text) => {
               const props = { ...object.props, customBios: text }
               setObject({ ...object, props })
@@ -748,6 +768,7 @@ export default function PropertiesTab(props) {
           <EditorUrlField
             sx={{ width: '50ch' }}
             label="Samples (URL)"
+            onFileUpload={uploadItemFile}
             onDropText={(text) => {
               const props = { ...object.props, samples: text }
               setObject({ ...object, props })

@@ -13,12 +13,24 @@ import {
   ReleaseData,
 } from '@webrcade/app-common'
 
+import { enableDropHandler } from '../../UrlProcessor';
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Fade ref={ref} timeout={500} {...props} />;
 });
 
 export function ReleaseNotesDialog({ open, setOpen, onClose }) {
   const [dontShow, setDontShow] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!open) return;
+    enableDropHandler(false);
+    const interval = setInterval(() => enableDropHandler(false), 100);
+    return () => {
+      clearInterval(interval);
+      enableDropHandler(true);
+    };
+  }, [open]);
 
   const parseText = (text) => {
     const parts = text.split(/\*(.*?)\*/g);

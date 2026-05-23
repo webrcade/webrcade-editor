@@ -391,6 +391,88 @@ const getDefaultFeedUrl = () => {
   return (isDev() ? config.getLocalUrl() : "../..") + "/default-feed.json";
 }
 
+// ─── Cloud storage path helpers ───────────────────────────────────────────────
+
+/**
+ * Converts a string to a URL-friendly slug (lowercase, hyphens).
+ * Used as the default sub-directory name for categories.
+ */
+const slugify = (str) =>
+  (str || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+/**
+ * Resolves the feed's cloud root path from its cloudLocation + cloudSubdir
+ * settings (e.g. "/" + "wrc-content" → "/wrc-content/").
+ */
+const resolveFeedCloudPath = (feed) => {
+  const location = (feed && feed.cloudLocation) || '/';
+  const subdir   = (feed && feed.cloudSubdir !== undefined) ? feed.cloudSubdir : 'wrc-content';
+  let path = location;
+  if (!path.endsWith('/')) path += '/';
+  const sub = subdir.trim();
+  if (sub) {
+    path += sub.startsWith('/') ? sub.substring(1) : sub;
+    if (!path.endsWith('/')) path += '/';
+  }
+  const feedSlug = slugify(feed?.title);
+  if (feedSlug) path += feedSlug + '/';
+  while (path.includes('//')) path = path.replace('//', '/');
+  return path;
+};
+
+/**
+ * Resolves the path for feed-level assets (BIOS files, thumbnails, backgrounds).
+ * These go under a dedicated __feed__ subfolder in the content root, with an
+ * optional per-app-type subdirectory (e.g. __feed__/psx/ for PSX BIOS files).
+ */
+const resolveFeedAssetsPath = (feed, subdir) => {
+  const base = resolveFeedCloudPath(feed);
+  let path = base + '__feed__/';
+  const sub = (subdir || '').trim();
+  if (sub) path += (sub.startsWith('/') ? sub.substring(1) : sub) + '/';
+  return path;
+};
+
+/** Feed-level images (thumbnail, background) → __feed__/images/ */
+const resolveFeedImagesPath = (feed) => resolveFeedAssetsPath(feed) + 'images/';
+
+/** Category-level images (thumbnail, background) → {category}/images/ */
+const resolveCategoryImagesPath = (feed, category) =>
+  resolveCategoryCloudPath(feed, category) + 'images/';
+
+/** Category items (ROMs, property files) → {category}/items/ */
+const resolveCategoryItemsPath = (feed, category) =>
+  resolveCategoryCloudPath(feed, category) + 'items/';
+
+/** Item-level images (thumbnail, background) → {category}/items/images/ */
+const resolveCategoryItemImagesPath = (feed, category) =>
+  resolveCategoryItemsPath(feed, category) + 'images/';
+
+/**
+ * Resolves the full cloud upload directory for a category.
+ * Uses the category's cloudLocation override (if set) or the feed root as the
+ * base, then appends the category's cloudSubdir (defaults to slugify(title)).
+ */
+const resolveCategoryCloudPath = (feed, category) => {
+  const feedRoot         = resolveFeedCloudPath(feed);
+  const overrideLocation = (category && category.cloudLocation) || '';
+  const defaultSubdir    = slugify(category?.title);
+  const cloudSubdir      = (category && category.cloudSubdir !== undefined)
+    ? category.cloudSubdir
+    : defaultSubdir;
+  const base = overrideLocation
+    ? (overrideLocation.endsWith('/') ? overrideLocation : overrideLocation + '/')
+    : feedRoot;
+  let path = base;
+  const sub = cloudSubdir.trim();
+  if (sub) {
+    path += sub.startsWith('/') ? sub.substring(1) : sub;
+    if (!path.endsWith('/')) path += '/';
+  }
+  while (path.includes('//')) path = path.replace('//', '/');
+  return path;
+};
+
 export {
   addCategoryToFeed,
   addId,
@@ -412,5 +494,13 @@ export {
   replaceItem,
   loadFeed,
   loadFeedFromFile,
-  loadFeedFromUrl
+  loadFeedFromUrl,
+  resolveCategoryCloudPath,
+  resolveCategoryImagesPath,
+  resolveCategoryItemsPath,
+  resolveCategoryItemImagesPath,
+  resolveFeedCloudPath,
+  resolveFeedAssetsPath,
+  resolveFeedImagesPath,
+  slugify,
 };

@@ -41,7 +41,15 @@ class Holder {
   setLoadFeedDialogOpen = null;
   setSettingsEditorOpen = null;
   setBusyScreenDisableDrop = null;
+  setUploadProgressOpen = null;
+  setUploadProgressMessage = null;
+  setUploadProgressValue = null;
   setItemClipboard = null;
+  setAddLocalFilesDialogOpen = null;
+  setLocalFilesData = null;
+  updateLocalFile = null;
+  openResolveTypesPrompt = null;
+  openMergeDialogPrompt = null;
   isDebug = UrlUtil.getBoolParam(window.location.search, AppProps.RP_DEBUG);
 }
 
@@ -82,13 +90,15 @@ const Global = {
     }
     GlobalHolder.setConfirmDialogOpen(open);
   },
-  openCopyLinkDialog: (open, link, title, success, disableShortened) => {
+  openCopyLinkDialog: (open, link, title, success, disableShortened, message, learnMoreUrl) => {
     if (link) {
       GlobalHolder.setCopyLinkDialogProps({
         link: link,
         title: title,
         success: success,
-        disableShortened: disableShortened
+        disableShortened: disableShortened,
+        message: message,
+        learnMoreUrl: learnMoreUrl
       });
     }
     GlobalHolder.setCopyLinkDialogOpen(open);
@@ -101,6 +111,23 @@ const Global = {
   },
   openCreateFromUrlDialog: (open) => {
     GlobalHolder.setCreateFromUrlDialogOpen(open);
+  },
+  openAddLocalFilesDialog: (open) => {
+    if (GlobalHolder.setAddLocalFilesDialogOpen) {
+      GlobalHolder.setAddLocalFilesDialogOpen(open);
+    }
+  },
+  openResolveTypesDialog: (items) => {
+    if (GlobalHolder.openResolveTypesPrompt) {
+      return GlobalHolder.openResolveTypesPrompt(items);
+    }
+    return Promise.resolve(null);
+  },
+  openMergeDialog: (items, mediaField) => {
+    if (GlobalHolder.openMergeDialogPrompt) {
+      return GlobalHolder.openMergeDialogPrompt(items, mediaField);
+    }
+    return Promise.resolve(null);
   },
   openSettingsEditor: (open) => {
     GlobalHolder.setSettingsEditorOpen(open);

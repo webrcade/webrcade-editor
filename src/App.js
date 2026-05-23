@@ -21,10 +21,11 @@ import {
 } from '@webrcade/app-common'
 
 import { Global, GlobalHolder } from './Global';
-import { dropHandler } from './UrlProcessor';
+import { dropHandler, isDropHandlerEnabled } from './UrlProcessor';
 import * as Feed from './Feed';
 import * as Util from './Util';
 import BusyScreen from './components/BusyScreen';
+import UploadProgressOverlay from './components/UploadProgressOverlay';
 import Dialogs from './components/Screens';
 import EditorDrawer from './components/EditorDrawer';
 import FeedTabs from './components/FeedTabs';
@@ -81,6 +82,9 @@ function App(props) {
   const [app, setApp] = React.useState(null);
   const [editorHidden, setEditorHidden] = React.useState(false);
   const [started, setStarted] = React.useState(false);
+  const dragOverlayRef = React.useRef(null);
+  const dragPillRef = React.useRef(null);
+  const dragShowTimerRef = React.useRef(null);
   const previousApp = Util.usePrevious(app);
   const forceRefresh = Util.useForceUpdate();
 
@@ -109,8 +113,40 @@ function App(props) {
     console.log("Application was loaded");
     Global.openBusyScreen(true, "Preparing editor...", true);
 
-    document.addEventListener("drop", dropHandler);
-    document.addEventListener("dragenter", ignore);
+    const showOverlay = () => {
+      if (dragOverlayRef.current) dragOverlayRef.current.style.display = 'flex';
+      if (dragShowTimerRef.current) return; // pill already pending
+      dragShowTimerRef.current = setTimeout(() => {
+        dragShowTimerRef.current = null;
+        if (dragPillRef.current) dragPillRef.current.style.opacity = '1';
+      }, 500);
+    };
+    const hideOverlay = () => {
+      if (dragShowTimerRef.current) {
+        clearTimeout(dragShowTimerRef.current);
+        dragShowTimerRef.current = null;
+      }
+      if (dragPillRef.current) dragPillRef.current.style.opacity = '0';
+      if (dragOverlayRef.current) dragOverlayRef.current.style.display = 'none';
+    };
+
+    const dragEnterHandler = (e) => {
+      e.preventDefault();
+      if (isDropHandlerEnabled()) showOverlay();
+    };
+
+    const dragLeaveHandler = (e) => {
+      if (!e.relatedTarget) hideOverlay();
+    };
+
+    const dropHandlerWithReset = (e) => {
+      hideOverlay();
+      dropHandler(e);
+    };
+
+    document.addEventListener("drop", dropHandlerWithReset);
+    document.addEventListener("dragenter", dragEnterHandler);
+    document.addEventListener("dragleave", dragLeaveHandler);
     document.addEventListener("dragover", ignore);
 
     popstateListener = createPopstateHandler();
@@ -173,8 +209,9 @@ function App(props) {
     return () => {
       console.log("Application was unloaded");
 
-      document.removeEventListener("drop", dropHandler);
-      document.removeEventListener("dragenter", ignore);
+      document.removeEventListener("drop", dropHandlerWithReset);
+      document.removeEventListener("dragenter", dragEnterHandler);
+      document.removeEventListener("dragleave", dragLeaveHandler);
       document.removeEventListener("dragover", ignore);
 
       window.removeEventListener("popstate", popstateListener, false);
@@ -213,6 +250,61 @@ function App(props) {
     <>
       <CssBaseline />
       <BusyScreen />
+      <UploadProgressOverlay />
+      <Box
+        ref={dragOverlayRef}
+        style={{ display: 'none' }}
+        sx={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 9999,
+          pointerEvents: 'none',
+          bgcolor: 'rgba(0,0,0,0.78)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {/* Dashed outer border frame */}
+        <Box sx={{
+          position: 'absolute',
+          inset: '12px',
+          border: '2px dashed rgba(79,195,247,0.45)',
+          borderRadius: '14px',
+          pointerEvents: 'none',
+        }} />
+        {/* Centered message pill */}
+        <Box
+          ref={dragPillRef}
+          sx={{
+            px: 4,
+            py: 2.5,
+            bgcolor: 'rgba(10,20,35,0.92)',
+            border: '1.5px solid rgba(79,195,247,0.7)',
+            borderRadius: '10px',
+            boxShadow: '0 0 28px rgba(79,195,247,0.18), 0 4px 24px rgba(0,0,0,0.6)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1.5,
+            opacity: 0,
+            transition: 'opacity 0.2s ease',
+          }}>
+          <Box sx={{
+            color: '#4fc3f7',
+            fontSize: '1.55rem',
+            lineHeight: 1,
+            flexShrink: 0,
+          }}>⬇</Box>
+          <Box sx={{
+            color: 'rgba(255,255,255,0.9)',
+            fontSize: '1.1rem',
+            fontWeight: 600,
+            letterSpacing: '0.01em',
+          }}>
+            Drop URLs, files, or folders to add items to the feed.
+          </Box>
+        </Box>
+      </Box>
       {started ? (
         <>
           <Box

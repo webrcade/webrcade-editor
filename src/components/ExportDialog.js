@@ -4,7 +4,6 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Stack from '@mui/material/Stack';
 import Tab from '@mui/material/Tab';
-import { Typography } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 
 import { Base64, Zip, LOG } from '@webrcade/app-common'
@@ -18,6 +17,7 @@ import EditorSwitch from './common/editor/EditorSwitch';
 import EditorTabPanel from './common/editor/EditorTabPanel';
 import EditorTextField from './common/editor/EditorTextField';
 import CommonTooltip from './common/CommonTooltip';
+import DashedLabel from './common/DashedLabel';
 import { CloudStorage } from './cloud/generate-manifest/CloudStorage';
 import { openSelectCloudFolderDialog } from './cloud/generate-manifest/SelectCloudFolderDialog';
 import * as Feed from '../Feed';
@@ -26,8 +26,8 @@ import Prefs from '../Prefs';
 const PREF_IS_ZIPPED = "exportFeed.isZipped";
 const PREF_IS_BASE64 = "exportFeed.isBase64";
 const PREF_IS_CLOUD = "exportFeed.isCloud";
-const PREF_CLOUD_FOLDER = "exportFeed.cloudFolder";
 const PREF_CLOUD_SUBFOLDER = "exportFeed.cloudSubFolder";
+const PREF_CLOUD_DEST_FOLDER = "exportFeed.cloudDestFolder";
 
 const LOCAL_TAB = 0;
 const CLOUD_TAB = 1;
@@ -41,7 +41,8 @@ export default function ExportDialog(props) {
     React.useState(Prefs.getBoolPreference(PREF_IS_ZIPPED, false));
   const [isBase64Encoded, setBase64Encoded] =
     React.useState(Prefs.getBoolPreference(PREF_IS_BASE64, false));
-  const [destFolder, setDestFolder] = React.useState("/");
+  const [destFolder, setDestFolder] = React.useState(
+    Prefs.getPreference(PREF_CLOUD_DEST_FOLDER, "/"));
   const [subFolder, setSubFolder] =
     React.useState(Prefs.getPreference(PREF_CLOUD_SUBFOLDER, "/feeds"));
 
@@ -118,7 +119,6 @@ export default function ExportDialog(props) {
     Global.openExportDialog(false);
   }
 
-
   const uploadToCloud = async (isZip, isBase64Encoded, folder) => {
     const { blob, extension, title } = await buildBlob(isZip, isBase64Encoded);
     const name = (title || "feed").trim();
@@ -127,7 +127,7 @@ export default function ExportDialog(props) {
     Global.openBusyScreen(true, "Exporting feed to cloud storage...");
     try {
       const cloudStorage = new CloudStorage();
-      await cloudStorage.uploadFile(blob, path);
+      await WrcCommon.dropbox.uploadFile(blob, path);
       const url = WrcCommon.remapUrl(await cloudStorage.createSharedLink(path));
 
       Global.openExportDialog(false);
@@ -137,7 +137,23 @@ export default function ExportDialog(props) {
           url,
           "Exported Feed URL",
           "Successfully copied the feed URL to the clipboard.",
-          true
+          true,
+          <>
+            <p style={{ margin: '0 0 8px 0' }}>
+              For a cleaner, more memorable feed URL, consider using a link shortener such as{' '}
+              <a href="https://tiny.cc" target="_blank" rel="noopener noreferrer"
+                style={{ color: 'white', textDecoration: 'underline', cursor: 'pointer' }}
+              >tiny.cc</a>.
+              {' '}tiny.cc supports custom link endings (e.g.{' '}
+              <span style={{ fontFamily: 'monospace' }}>tiny.cc/myfeed</span>)
+              {' '}and works great with Dropbox links.
+            </p>
+            <p style={{ margin: 0 }}>
+              You only need to set this up once. Re-exporting produces the same Dropbox URL,
+              so your existing shortened link will continue to work.
+            </p>
+          </>,
+          null
         );
       }, 0);
     } catch (e) {
@@ -159,6 +175,7 @@ export default function ExportDialog(props) {
       Prefs.setPreference(PREF_IS_CLOUD, tab === CLOUD_TAB);
       if (tab === CLOUD_TAB) {
         Prefs.setPreference(PREF_CLOUD_SUBFOLDER, subFolder);
+        Prefs.setPreference(PREF_CLOUD_DEST_FOLDER, destFolder);
       }
     }
     if (cloudEnabled && tab === CLOUD_TAB) {
@@ -192,8 +209,6 @@ export default function ExportDialog(props) {
         if (cloudEnabled) {
           const lastIsCloud = Prefs.getBoolPreference(PREF_IS_CLOUD, false);
           setTabValue(lastIsCloud ? CLOUD_TAB : LOCAL_TAB);
-          setSubFolder(Prefs.getPreference(PREF_CLOUD_SUBFOLDER, "/feeds"));
-          setDestFolder("/");
         } else {
           setTabValue(LOCAL_TAB);
         }
@@ -263,30 +278,7 @@ export default function ExportDialog(props) {
                   onChange={(e) => setSubFolder(e.target.value)}
                 />
               </Box>
-              {cloudPath.length > 0 &&
-                <CommonTooltip title={cloudPath}>
-                  <Box sx={{
-                    ml: 1.5,
-                    py: .5,
-                    px: 1,
-                    border: '1px dashed grey',
-                    maxWidth: '45ch',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    opacity: 0.5
-                  }}>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        color: '#fff'
-                      }}
-                    >{cloudPath}</Typography>
-                  </Box>
-                </CommonTooltip>
-              }
+              <DashedLabel text={cloudPath} maxWidth="45ch" />
             </EditorTabPanel>
           )}
         </>
