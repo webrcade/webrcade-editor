@@ -45,8 +45,8 @@ class CloudStorage {
     return await this.dropbox.uploadFile(blob, path);
   }
 
-  async uploadFile(blob, path) {
-    return await this.dropbox.uploadFile(blob, path);
+  async uploadFile(blob, path, onProgress = null) {
+    return await this.dropbox.uploadFile(blob, path, onProgress);
   }
 
   async addChildren(rootPath, path, files) {

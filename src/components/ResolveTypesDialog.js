@@ -33,6 +33,10 @@ import { AppRegistry } from '@webrcade/app-common';
 import { Global, GlobalHolder } from '../Global';
 import { enableDropHandler } from '../UrlProcessor';
 import EditorButton from './common/editor/EditorButton';
+import SubLabel from './common/SubLabel';
+import Prefs from '../Prefs';
+
+const PREF_REPACKAGE_THRESHOLD = "addLocalFiles.repackageThreshold";
 
 // --- Helpers ------------------------------------------------------------------
 
@@ -74,6 +78,12 @@ function resolveTypeKey(key) {
   return allTypes[key] ? key : undefined;
 }
 
+function formatFileSize(bytes) {
+  if (bytes >= 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+  if (bytes >= 1024 * 1024)        return `${Math.round(bytes / (1024 * 1024))} MB`;
+  return `${Math.round(bytes / 1024)} KB`;
+}
+
 // --- TypeThumb ----------------------------------------------------------------
 
 function TypeThumb({ typeKey, width, height }) {
@@ -101,7 +111,7 @@ function TypeThumb({ typeKey, width, height }) {
 
 // --- TypeRow ------------------------------------------------------------------
 
-const TypeRow = React.memo(function TypeRow({ item, assignment, onChange }) {
+const TypeRow = React.memo(function TypeRow({ item, assignment, onChange, showSize, thresholdBytes }) {
   // If the category default is a non-alias specific type, include it in the
   // per-row dropdown as the sole extra option beyond the normal alias list.
   const extraKey = React.useMemo(() => {
@@ -111,6 +121,10 @@ const TypeRow = React.memo(function TypeRow({ item, assignment, onChange }) {
   }, [item.preSelected]);
   const options = React.useMemo(() => buildOptions(item.typeOptions, extraKey), [item.typeOptions, extraKey]);
   const selectValue = assignment ?? '';
+
+  const sizeLabel = showSize ? formatFileSize(item.file.size) : null;
+  const defs = (showSize && assignment) ? (AppRegistry.instance.getDefaultsForType(assignment) ?? {}) : {};
+  const showRepackage = showSize && thresholdBytes != null && 'archive' in defs && item.file.size > thresholdBytes;
 
   return (
     <Box
@@ -127,7 +141,7 @@ const TypeRow = React.memo(function TypeRow({ item, assignment, onChange }) {
         <TypeThumb typeKey={selectValue || null} width={56} height={42} />
       </Box>
 
-      {/* Filename */}
+      {/* Filename + size/repackage meta */}
       <Box sx={{ flexGrow: 1, minWidth: 80 }}>
         <Typography
           variant="body2"
@@ -141,6 +155,27 @@ const TypeRow = React.memo(function TypeRow({ item, assignment, onChange }) {
         >
           {item.filename}
         </Typography>
+        {showSize && (
+          <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.25 }}>
+            <SubLabel sx={{ minWidth: 120 }}>Size: {sizeLabel}</SubLabel>
+            {showRepackage && (
+              <Box sx={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                px: 0.75,
+                py: 0,
+                borderRadius: 10,
+                bgcolor: 'rgba(255,152,0,0.15)',
+                border: '1px solid rgba(255,152,0,0.4)',
+                ml: 0.5,
+              }}>
+                <Typography variant="caption" sx={{ color: '#ffb74d', fontWeight: 600, fontSize: '0.62rem', lineHeight: 1.6 }}>
+                  Repackage
+                </Typography>
+              </Box>
+            )}
+          </Box>
+        )}
       </Box>
 
       {/* Native type selector */}
@@ -174,6 +209,7 @@ export default function ResolveTypesDialog() {
   const [assignments, setAssignments] = React.useState({});
   const [bulkType, setBulkType] = React.useState('');
   const [activeTab, setActiveTab] = React.useState(0);
+  const [repackageThreshold, setRepackageThreshold] = React.useState(null);
   const resolveRef = React.useRef(null);
   // Incremented each time allAssigned resets to false, forcing a fresh DOM element
   // (and a clean CSS animation replay) on the next mount.
@@ -184,6 +220,30 @@ export default function ResolveTypesDialog() {
   const openedWithAllAssignedRef = React.useRef(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+
+  const thresholdBytes = repackageThreshold != null ? repackageThreshold * 1024 * 1024 : null;
+
+  const repackageCount = React.useMemo(() => {
+    if (thresholdBytes == null) return 0;
+    return items.filter(item => {
+      const type = assignments[item.id];
+      if (!type) return false;
+      const defs = AppRegistry.instance.getDefaultsForType(type) ?? {};
+      return 'archive' in defs && item.file.size > thresholdBytes;
+    }).length;
+  }, [items, assignments, thresholdBytes]);
+
+  // Only expose the Repackage bar when there is at least one assigned archive-capable
+  // file that is >= 100 MB (the minimum meaningful threshold).
+  const showRepackageBar = React.useMemo(() => {
+    const minBytes = 100 * 1024 * 1024;
+    return items.some(item => {
+      const type = assignments[item.id];
+      if (!type) return false;
+      const defs = AppRegistry.instance.getDefaultsForType(type) ?? {};
+      return 'archive' in defs && item.file.size >= minBytes;
+    });
+  }, [items, assignments]);
 
   // Options valid for the Apply-to-all dropdown:
   // union of typeOptions across all currently-unassigned items.
@@ -226,13 +286,16 @@ export default function ResolveTypesDialog() {
   }, [items, assignments, activeTab]);
 
   GlobalHolder.openResolveTypesPrompt = React.useCallback((reviewItems) => {
+    const stored = Prefs.getPreference(PREF_REPACKAGE_THRESHOLD, null);
+    setRepackageThreshold(stored != null ? Number(stored) : null);
     const initial = {};
     for (const item of reviewItems) {
       initial[item.id] = resolveTypeKey(item.preSelected) ?? undefined;
     }
     const allPreAssigned = reviewItems.length > 0 && reviewItems.every(item => initial[item.id] !== undefined);
     openedWithAllAssignedRef.current = allPreAssigned;
-    setItems(reviewItems);
+    const sortedItems = [...reviewItems].sort((a, b) => a.filename.toLowerCase().localeCompare(b.filename.toLowerCase()));
+    setItems(sortedItems);
     setAssignments(initial);
     setBulkType('');
     setActiveTab(allPreAssigned ? 1 : 0);
@@ -260,9 +323,11 @@ export default function ResolveTypesDialog() {
         item={item}
         assignment={assignments[item.id]}
         onChange={handleChange}
+        showSize={activeTab === 1}
+        thresholdBytes={thresholdBytes}
       />
     ),
-    [assignments, handleChange]
+    [assignments, handleChange, activeTab, thresholdBytes]
   );
 
   const handleApplyBulk = () => {
@@ -293,10 +358,16 @@ export default function ResolveTypesDialog() {
   };
 
   const handleContinue = () => {
-    const result = items.map(item => ({
-      item,
-      type: assignments[item.id] ?? null,
-    }));
+    Prefs.setPreference(PREF_REPACKAGE_THRESHOLD, repackageThreshold);
+    const result = items.map(item => {
+      const type = assignments[item.id] ?? null;
+      let repackage = false;
+      if (type && thresholdBytes != null) {
+        const defs = AppRegistry.instance.getDefaultsForType(type) ?? {};
+        repackage = 'archive' in defs && item.file.size > thresholdBytes;
+      }
+      return { item, type, repackage };
+    });
     // Close dialog first, then show the full-page busy screen (same as analysis)
     // for a brief moment before the next dialog appears.
     setOpen(false);
@@ -429,7 +500,7 @@ export default function ResolveTypesDialog() {
 
       </DialogContent>
 
-      <DialogActions sx={{ justifyContent: (!allAssigned && activeTab === 0) ? 'space-between' : 'flex-end', flexWrap: 'wrap', rowGap: 1, px: 3, py: 1.5 }}>
+      <DialogActions sx={{ justifyContent: ((!allAssigned && activeTab === 0) || (activeTab === 1 && showRepackageBar)) ? 'space-between' : 'flex-end', flexWrap: 'wrap', rowGap: 1, px: 3, py: 1.5 }}>
         {/* Left: apply-to-all — only on Unassigned tab */}
         {!allAssigned && activeTab === 0 && (
         <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1, width: { xs: '100%', md: 'auto' } }}>
@@ -449,6 +520,32 @@ export default function ResolveTypesDialog() {
           <Button variant="outlined" size="small" disabled={!bulkType || unassignedCount === 0} onClick={handleApplyBulk}>
             Apply
           </Button>
+        </Box>
+        )}
+        {/* Left: repackage threshold — only on Assigned tab when eligible files exist */}
+        {activeTab === 1 && showRepackageBar && (
+        <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1, width: { xs: '100%', md: 'auto' } }}>
+          <Typography variant="caption" sx={{ color: 'text.secondary', flexShrink: 0 }}>
+            Repackage:
+          </Typography>
+          <FormControl size="small" sx={{ minWidth: 160 }}>
+            <Select native value={repackageThreshold ?? ''}
+                onChange={e => {
+                  const v = e.target.value === '' ? null : Number(e.target.value);
+                  setRepackageThreshold(v);
+                }}
+                inputProps={{ style: { fontSize: '14px' } }}>
+              <option value="">None</option>
+              <option value="100">Files &gt; 100 MB</option>
+              <option value="200">Files &gt; 200 MB</option>
+              <option value="300">Files &gt; 300 MB</option>
+              <option value="400">Files &gt; 400 MB</option>
+              <option value="500">Files &gt; 500 MB</option>
+            </Select>
+          </FormControl>
+          <Typography variant="caption" sx={{ color: 'text.secondary', flexShrink: 0 }}>
+            ({repackageCount} {repackageCount === 1 ? 'file' : 'files'})
+          </Typography>
         </Box>
         )}
         {/* Right: cancel + continue — full-width on mobile keeps them right-aligned when wrapped */}

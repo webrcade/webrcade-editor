@@ -40,6 +40,7 @@ const PROP_DISABLE_LOOKUP = "PROP_DISABLE_LOOKUP";
 const PROP_DISABLE_MEMCARD1 = "PROP_DISABLE_MEMCARD1";
 const PROP_DISCS = "PROP_DISCS";
 const PROP_DOS_CONTROLLER_MODE = "PROP_DOS_CONTROLLER_MODE";
+const PROP_DOS_CPU_SPEED = "PROP_DOS_CPU_SPEED";
 const PROP_DUAL_ANALOG = "PROP_DUAL_ANALOG";
 const PROP_SBI = "PROP_SBI";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
@@ -56,6 +57,7 @@ const PROP_MICROPHONE = "PROP_MICROPHONE";
 const PROP_MIRRORING = "PROP_MIRRORING";
 const PROP_MOUSE_SPEED = "PROP_MOUSE_SPEED";
 const PROP_MULTITAP = "PROP_MULTITAP";
+const PROP_NDS_FIRMWARE_LANGUAGE = "PROP_NDS_FIRMWARE_LANGUAGE";
 const PROP_NEOGEO_BIOS = "PROP_NEOGEO_BIOS";
 const PROP_NEOGEO_FORCE_AES = "PROP_NEOGEO_FORCE_AES";
 const PROP_PARENT_ROM = "PROP_PARENT_ROM";
@@ -106,6 +108,7 @@ const ALL_PROPS = [
   PROP_DISCS,
   PROP_DOOM_GAME,
   PROP_DOS_CONTROLLER_MODE,
+  PROP_DOS_CPU_SPEED,
   PROP_DUAL_ANALOG,
   PROP_FLASH_SIZE,
   PROP_FORCE_EMULATED_BIOS,
@@ -123,6 +126,7 @@ const ALL_PROPS = [
   PROP_MOUSE_SPEED,
   PROP_NEOGEO_BIOS,
   PROP_MULTITAP,
+  PROP_NDS_FIRMWARE_LANGUAGE,
   PROP_PARENT_ROM,
   PROP_PLAYER_ORDER,
   PROP_SATURN_RAM_EXPANSION,
@@ -440,10 +444,10 @@ export const buildFieldMap = () => {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_WAD_SELECTOR
     },
     [APP_TYPE_KEYS.DOS]: {
-      PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_AUTO_START_PATH, PROP_DOS_CONTROLLER_MODE, PROP_MOUSE_SPEED
+      PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_AUTO_START_PATH, PROP_DOS_CPU_SPEED, PROP_DOS_CONTROLLER_MODE, PROP_MOUSE_SPEED
     },
     [APP_TYPE_KEYS.RETRO_DOSBOX_PURE]: {
-      PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_AUTO_START_PATH, PROP_DOS_CONTROLLER_MODE, PROP_MOUSE_SPEED
+      PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_AUTO_START_PATH, PROP_DOS_CPU_SPEED, PROP_DOS_CONTROLLER_MODE, PROP_MOUSE_SPEED
     },
     [APP_TYPE_KEYS.SCUMM]: {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL
@@ -452,10 +456,10 @@ export const buildFieldMap = () => {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.NDS]: {
-      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP, PROP_BOOK_MODE, PROP_DUAL_ANALOG, PROP_MICROPHONE
+      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP, PROP_BOOK_MODE, PROP_DUAL_ANALOG, PROP_MICROPHONE, PROP_NDS_FIRMWARE_LANGUAGE
     },
     [APP_TYPE_KEYS.RETRO_MELONDS]: {
-      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP, PROP_BOOK_MODE, PROP_DUAL_ANALOG, PROP_MICROPHONE
+      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP, PROP_BOOK_MODE, PROP_DUAL_ANALOG, PROP_MICROPHONE, PROP_NDS_FIRMWARE_LANGUAGE
     },
     [APP_TYPE_KEYS.RETRO_PARALLEL_N64]: {
       PROP_ROM, PROP_ZOOM_LEVEL
@@ -1190,6 +1194,20 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_MOUSE_SPEED) ? (
+        <div>
+          <MouseSpeed
+            value={object.props.mouseSpeed ? object.props.mouseSpeed : 0}
+            onChange={(e, val) => {
+              // Allows for smoother updated prior to change being committed
+              object.props.mouseSpeed = parseInt(val);
+            }}
+            onChangeCommitted={(e, val) => {
+              const props = { ...object.props, mouseSpeed: parseInt(val) }
+              setObject({ ...object, props })
+            }} />
+        </div>
+      ) : null}
       {hasProp(object, PROP_DOS_CONTROLLER_MODE) ? (
         <div>
           <EditorSelect
@@ -1207,18 +1225,32 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
-      {hasProp(object, PROP_MOUSE_SPEED) ? (
+      {hasProp(object, PROP_DOS_CPU_SPEED) ? (
         <div>
-          <MouseSpeed
-            value={object.props.mouseSpeed ? object.props.mouseSpeed : 0}
-            onChange={(e, val) => {
-              // Allows for smoother updated prior to change being committed
-              object.props.mouseSpeed = parseInt(val);
-            }}
-            onChangeCommitted={(e, val) => {
-              const props = { ...object.props, mouseSpeed: parseInt(val) }
+          <EditorSelect
+            label="CPU Speed"
+            tooltip="The CPU speed preset for the game. Default uses DOSBox's automatic CPU speed detection."
+            value={object.props.cpuSpeed ? object.props.cpuSpeed : 0}
+            menuItems={[
+              { value:  0, name: "(default)" },
+              { value:  1, name: "8086/8088, 4.77 MHz (1980)" },
+              { value:  2, name: "286, 6 MHz (1982)" },
+              { value:  3, name: "286, 12.5 MHz (1985)" },
+              { value:  4, name: "386, 20 MHz (1987)" },
+              { value:  5, name: "386DX, 33 MHz (1989)" },
+              { value:  6, name: "486DX, 33 MHz (1990)" },
+              { value:  7, name: "486DX2, 66 MHz (1992)" },
+              { value:  8, name: "Pentium, 100 MHz (1995)" },
+              { value:  9, name: "Pentium II, 300 MHz (1997)" },
+              { value: 10, name: "Pentium III, 600 MHz (1999)" },
+              { value: 11, name: "AMD Athlon, 1.2 GHz (2000)" },
+              { value: 12, name: "Maximum Performance" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, cpuSpeed: e.target.value }
               setObject({ ...object, props })
-            }} />
+            }}
+          />
         </div>
       ) : null}
       {hasProp(object, PROP_JIFFYDOS) ? (
@@ -1651,6 +1683,28 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.dualAnalog)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_NDS_FIRMWARE_LANGUAGE) ? (
+        <div>
+          <EditorSelect
+            label="Firmware Language"
+            tooltip="The language to use for the DS firmware. Select (auto) to use the language stored in the firmware file."
+            value={object.props.firmwareLanguage !== undefined ? object.props.firmwareLanguage : 0}
+            menuItems={[
+              { value: 0, name: "(auto)" },
+              { value: 1, name: "English" },
+              { value: 2, name: "Japanese" },
+              { value: 3, name: "French" },
+              { value: 4, name: "German" },
+              { value: 5, name: "Italian" },
+              { value: 6, name: "Spanish" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, firmwareLanguage: e.target.value }
+              setObject({ ...object, props })
+            }}
           />
         </div>
       ) : null}

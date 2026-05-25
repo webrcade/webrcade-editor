@@ -19,8 +19,9 @@ import { processBlob } from './UrlProcessor';
 import { ADD_LOCAL_STATES } from './components/AddLocalFilesDialog';
 import { resolveCategoryItemsPath } from './Feed';
 import { CloudStorage } from './components/cloud/generate-manifest/CloudStorage';
+import Repackage from './components/tools/repackage/Repackage';
 
-const MAX_FILE_SIZE = 1 * 1024 * 1024 * 1024; // 1 GB — files larger than this are skipped
+const MAX_FILE_SIZE = 2 * 1024 * 1024 * 1024; // 2 GB — files larger than this are skipped
 
 // Extensions for which hashing should be skipped — these are large disc images
 // that take forever to hash and are never matched via the game registry.
@@ -315,6 +316,7 @@ export async function processFiles(files, category, feed) {
             file,
             state:       ADD_LOCAL_STATES.COMPLETE,
             game:        game,
+            repackage:   false,
         });
       } else if (isAmbiguous) {
         // Build option list and pre-selection for the ResolveTypesDialog.
@@ -367,7 +369,7 @@ export async function processFiles(files, category, feed) {
       // User aborted the entire import — stop here, nothing to upload
       return;
     } else if (resolved) {
-      for (const { item, type } of resolved) {
+      for (const { item, type, repackage } of resolved) {
         if (!type) {
           // User chose Skip
           skipped.push({ id: item.id, filename: item.filename, reason: 'Skipped by user' });
@@ -383,6 +385,7 @@ export async function processFiles(files, category, feed) {
           file: item.file,
           state: ADD_LOCAL_STATES.COMPLETE,
           game,
+          repackage: repackage ?? false,
         });
       }
     } else {
@@ -409,6 +412,67 @@ export async function processFiles(files, category, feed) {
     if (_cancelRequested) break;
 
     const uploadPath = `${uploadDir}${item.filename}`;
+
+    // ── Repackage ──────────────────────────────────────────────────────────
+    if (item.repackage) {
+      const zipBaseName = item.filename.replace(/\.zip$/i, '');
+      const repackagePath = `${uploadDir}repackage/${zipBaseName}/`;
+
+      GlobalHolder.updateLocalFile?.(item.id, {
+        state:          ADD_LOCAL_STATES.UPLOADING,
+        uploadProgress: 0,
+        statusMessage:  'Analyzing archive…',
+      });
+
+      try {
+        const rp = new Repackage();
+        const results = await rp.repackage(item.file);
+
+        await rp.writeToCloud(
+          { storage: cloudStorage },
+          results,
+          repackagePath,
+          zipBaseName,
+          (manifestUrl) => {
+            // onSuccess — apply manifest URL to game and add to feed
+            const remapped = WrcCommon.remapUrl(manifestUrl);
+            applyUrlToGame(item.game, remapped);
+            setDefaultsForType(item.game?.type, item.game);
+
+            const feed = Global.getFeed();
+            const catId = Global.getFeedCategoryId();
+            const cat = Feed.getCategory(feed, catId);
+            const priorLen = cat?.items?.length ?? 0;
+            Feed.addItemsToCategory(feed, catId, [item.game]);
+            const feedId = cat?.items?.[priorLen]?.id;
+            if (feedId) item.game.id = feedId;
+            Global.setFeed({ ...feed });
+
+            GlobalHolder.updateLocalFile?.(item.id, {
+              state:          ADD_LOCAL_STATES.COMPLETE,
+              uploadProgress: undefined,
+              statusMessage:  undefined,
+              publicUrl:      remapped,
+            });
+          },
+          (message, progress) => {
+            // onStatus — forward to the dialog's progress display
+            GlobalHolder.updateLocalFile?.(item.id, {
+              statusMessage:  message,
+              uploadProgress: progress,
+            });
+          }
+        );
+      } catch (e) {
+        console.error(`[LocalFileProcessor] Repackage failed for "${item.filename}":`, e);
+        GlobalHolder.updateLocalFile?.(item.id, {
+          state:         ADD_LOCAL_STATES.ERROR,
+          statusMessage: undefined,
+          reason:        e?.message || 'Repackage failed',
+        });
+      }
+      continue;
+    }
 
     GlobalHolder.updateLocalFile?.(item.id, {
       state:          ADD_LOCAL_STATES.UPLOADING,

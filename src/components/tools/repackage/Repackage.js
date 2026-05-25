@@ -244,19 +244,25 @@ export default class Repackage {
     return [rootPath + n, f];
   }
 
-  async writeToCloud(model, results, rootPath, name, onSuccess) {
+  async writeToCloud(model, results, rootPath, name, onSuccess, onStatus = null) {
     const { zip } = window;
     const { storage } = model;
 
     let packageIndex = 1;
     for (let i = 0; i < results.length; i++) {
       const r = results[i];
+      const fileLabel = `Uploading file ${i + 1} of ${results.length}…`;
+      if (onStatus) {
+        onStatus(fileLabel, 0);
+      } else {
+        GlobalHolder.setBusyScreenMessage(fileLabel);
+      }
 
       let blob = null;
-      let name = null;
+      let fileName = null;
       if (r.isPackage()) {
         blob = await r.createPackage();
-        name = `pak${packageIndex++}.zip`;
+        fileName = `pak${packageIndex++}.zip`;
       } else {
         let retry = 5;
         while (retry-- > 0) {
@@ -268,25 +274,32 @@ export default class Repackage {
             console.log("Retrying...");
           }
         }
-        name = r.getName();
+        fileName = r.getName();
       }
-      const path = this.getPath(rootPath, name);
+      const path = this.getPath(rootPath, fileName);
       const fullPath = path[0] + (path[0].endsWith("/") ? "" : "/") + path[1];
       console.log(fullPath);
-      GlobalHolder.setBusyScreenMessage(`Uploading file ${i + 1} of ${results.length}...`);
-      await storage.uploadFile(blob, fullPath);
+      await storage.uploadFile(blob, fullPath, onStatus ? (pct) => {
+        onStatus(fileLabel, pct);
+      } : null);
     }
 
-    GlobalHolder.setBusyScreenMessage(`Generating manifest file...`);
-
-    await new GenerateManifestWrapper().generate(
-      async () => {
-        return await storage.generateManifest(rootPath, name);
-      },
-      () => {
-        onSuccess();
-      },
-      false
-    )
+    if (onStatus) {
+      // Called directly — skip the copy-link popup, just return the manifest URL
+      onStatus('Generating manifest...', 100);
+      const manifestUrl = await storage.generateManifest(rootPath, name);
+      onSuccess(manifestUrl);
+    } else {
+      GlobalHolder.setBusyScreenMessage(`Generating manifest file...`);
+      await new GenerateManifestWrapper().generate(
+        async () => {
+          return await storage.generateManifest(rootPath, name);
+        },
+        () => {
+          onSuccess();
+        },
+        false
+      );
+    }
   }
 }

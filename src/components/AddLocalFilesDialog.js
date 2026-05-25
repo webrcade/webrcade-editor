@@ -11,6 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import PagedList from './common/PagedList';
+import SubLabel from './common/SubLabel';
 import LinearProgress from '@mui/material/LinearProgress';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -89,9 +90,7 @@ const FileRow = React.memo(function FileRow({ item, onEdit, onDelete }) {
         </Typography>
 
         {typeName && (
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            {typeName}
-          </Typography>
+          <SubLabel>{typeName}</SubLabel>
         )}
       </Box>
 
@@ -125,9 +124,7 @@ const SkippedRow = React.memo(function SkippedRow({ item }) {
       >
         {item.filename}
       </Typography>
-      <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-        {item.reason}
-      </Typography>
+      <SubLabel>{item.reason}</SubLabel>
     </Box>
   );
 });
@@ -301,7 +298,7 @@ function StatusTab({ files, skipped, errors, current, onTabChange }) {
             />
             <Typography variant="caption" sx={{ color: 'text.secondary' }}>
               {current.state === ADD_LOCAL_STATES.UPLOADING
-                ? `Uploading… ${current.uploadProgress ?? 0}%`
+                ? (current.statusMessage ?? `Uploading… ${current.uploadProgress ?? 0}%`)
                 : 'Processing…'}
             </Typography>
           </Box>
@@ -395,7 +392,7 @@ export default function AddLocalFilesDialog() {
   GlobalHolder.setLocalFilesData = ({ accepted, skipped: sk, errors: er = [] }) => {
     // Reset all accepted files to QUEUED so the mock pipeline can walk through them
     setFiles(accepted.map(f => ({ ...f, state: ADD_LOCAL_STATES.QUEUED })));
-    setSkipped(sk);
+    setSkipped([...sk].sort((a, b) => a.filename.toLowerCase().localeCompare(b.filename.toLowerCase())));
     setErrors(er);
   };
   GlobalHolder.addLocalFileError = (item) => {

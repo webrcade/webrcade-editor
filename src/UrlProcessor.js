@@ -269,13 +269,18 @@ class Processor {
   }
 
   async processBlob (blob, filename, extension, defaultType = null, skipHash = false) {
+    const _t0 = isDebug ? performance.now() : 0;
+    const _mb = (b) => `${(b / (1024*1024)).toFixed(2)} MB`;
+    if (isDebug) console.log(`[processBlob] START  "${filename}" ext=${extension} size=${_mb(blob.size)} skipHash=${skipHash} defaultType=${defaultType}`);
+
     let title = filename;
     let ext = extension;
     let registryGame = {};
 
     let type = AppRegistry.instance.getTypeForExtension(ext);
-    if (type && isDebug) {
-      LOG.info("Found type based on extension.");
+    if (type) {
+      if (isDebug) console.log(`[processBlob] type from extension: ${type.key}`);
+      if (isDebug) LOG.info("Found type based on extension.");
     }
 
     if (blob.size === 0) {
@@ -284,9 +289,11 @@ class Processor {
     }
 
     const MAX_HASH_SIZE = 512 * 1024 * 1024; // 512 MB — skip registry hash lookup above this size
+    const MAX_ZIP_SIZE  = 256 * 1024 * 1024; // 256 MB — skip zip extraction above this size (covers all but the largest DS carts; oversized zips are almost certainly multi-file archives)
 
     const gameByName = await GameRegistry.findByName(title, ext, blob);
     if (gameByName) {
+      if (isDebug) console.log(`[processBlob] found by name in ${(performance.now()-_t0).toFixed(0)}ms`);
       registryGame = gameByName;
     } else {
       let zipFailed = false;
@@ -295,8 +302,17 @@ class Processor {
       try {
         // Skip zip extraction for large disc images (e.g. .chd, .pbp) — they are
         // never zipped ROMs and reading them just for zip detection is very slow.
-        if (skipHash) throw new Error('skip');
+        // Also skip for files exceeding MAX_ZIP_SIZE — legitimately zipped ROMs are
+        // never that large (DS max cart is 256 MB); anything bigger is almost
+        // certainly a multi-file archive package and is handled by the type dialog.
+        if (skipHash || blob.size > MAX_ZIP_SIZE) {
+          if (isDebug) console.log(`[processBlob] skipping zip extraction — ${skipHash ? 'skipHash=true' : `size ${_mb(blob.size)} > MAX_ZIP_SIZE ${_mb(MAX_ZIP_SIZE)}`}`);
+          throw new Error('skip');
+        }
+        if (isDebug) console.log(`[processBlob] calling processZip...`);
+        const _tz = isDebug ? performance.now() : 0;
         const zipRes = await this.processZip(blob);
+        if (isDebug) console.log(`[processBlob] processZip done in ${(performance.now()-_tz).toFixed(0)}ms — extracted name: ${zipRes[1] ?? '(none)'}`);
         const extractedBlob = zipRes[0];
         if (zipRes[1] && zipRes[2]) {
           // Check if the extracted file is suspiciously small relative to the zip.
@@ -305,35 +321,48 @@ class Processor {
           // file inside — not a real ROM zip.
           const TINY_RATIO = 0.05; // 5% threshold
           if (extractedBlob.size < originalZipSize * TINY_RATIO) {
+            if (isDebug) console.log(`[processBlob] extracted blob (${_mb(extractedBlob.size)}) is tiny relative to zip (${_mb(originalZipSize)}) — treating as multi-file archive`);
             extractedTinyRelativeToZip = true;
           } else {
             blob = extractedBlob;
             title = zipRes[1];
             ext = zipRes[2];
+            if (isDebug) console.log(`[processBlob] using extracted file: "${title}.${ext}" size=${_mb(blob.size)}`);
             if (!type) {
               type = AppRegistry.instance.getTypeForExtension(ext);
-              if (type && isDebug) {
-                LOG.info("Found type in zip.");
+              if (type) {
+                if (isDebug) console.log(`[processBlob] type from zip: ${type.key}`);
+                if (isDebug) LOG.info("Found type in zip.");
               }
             }
           }
         } else {
+          if (isDebug) console.log(`[processBlob] processZip returned no named file — keeping original blob`);
           blob = extractedBlob;
         }
       } catch (e) {
         // No recognized ROM inside the zip — keep original blob and fall through
+        if (isDebug && e.message !== 'skip') {
+          console.log(`[processBlob] processZip threw: ${e.message} — zipFailed=true`);
+        }
         zipFailed = true;
       }
 
+      const skipMagicForZip = (extension === 'zip' && zipFailed);
       if (!type) {
         // Skip magic-byte detection for large disc images — reading the entire
         // file into memory just to test magic bytes would be extremely slow.
-        if (!skipHash) {
+        // Also skip for .zip files that failed extraction — the blob is the raw zip
+        // and magic on a zip is useless (it'll just detect 'zip', not the game type).
+        if (!skipHash && !skipMagicForZip) {
+          if (isDebug) console.log(`[processBlob] running magic detection on ${_mb(blob.size)} blob...`);
+          const _tm = isDebug ? performance.now() : 0;
           const abuffer = await new Response(blob).arrayBuffer();
           type = AppRegistry.instance.testMagic(new Uint8Array(abuffer));
-          if (type && isDebug) {
-            LOG.info("Found type in magic.");
-          }
+          if (isDebug) console.log(`[processBlob] magic done in ${(performance.now()-_tm).toFixed(0)}ms — type: ${type?.key ?? '(none)'}`);
+          if (type && isDebug) LOG.info("Found type in magic.");
+        } else {
+          if (isDebug) console.log(`[processBlob] skipping magic detection (${skipHash ? 'skipHash=true' : 'zip extraction failed'})`);
         }
       }
 
@@ -349,31 +378,41 @@ class Processor {
                       (extractedTinyRelativeToZip && !isArchiveType);
         if (!block) {
           type = AppRegistry.instance.APP_TYPES[defaultType] ?? null;
-          if (type && isDebug) {
-            LOG.info("Found type from category default.");
-          }
+          if (isDebug && type) console.log(`[processBlob] type from defaultType fallback: ${type.key}`);
+          if (type && isDebug) LOG.info("Found type from category default.");
+        } else {
+          if (isDebug) console.log(`[processBlob] defaultType fallback blocked (zipFailed=${zipFailed} extractedTiny=${extractedTinyRelativeToZip} isArchiveType=${isArchiveType})`);
         }
       }
 
-      if (!skipHash && blob.size <= MAX_HASH_SIZE) {
+      // Also skip hashing if the file is a .zip that failed extraction — hashing
+      // the raw zip archive is pointless since we'd never find it in the registry.
+      const skipHashForZip = (extension === 'zip' && zipFailed);
+      if (!skipHash && !skipHashForZip && blob.size <= MAX_HASH_SIZE) {
+        if (isDebug) console.log(`[processBlob] hashing ${_mb(blob.size)} blob...`);
+        const _th = isDebug ? performance.now() : 0;
         const iMd5 = await AppRegistry.instance.getMd5(blob, type);
-        if (isDebug) {
-          LOG.info(iMd5);
-        }
+        if (isDebug) console.log(`[processBlob] hash done in ${(performance.now()-_th).toFixed(0)}ms — md5=${iMd5}`);
+        if (isDebug) LOG.info(iMd5);
         registryGame = await GameRegistry.find(iMd5);
       } else if (isDebug) {
         if (skipHash) {
+          console.log(`[processBlob] skipping hash — extension is in SKIP_HASH_EXTENSIONS`);
           LOG.info('Skipping hash lookup — extension is in SKIP_HASH_EXTENSIONS.');
+        } else if (skipHashForZip) {
+          console.log(`[processBlob] skipping hash — zip extraction failed, no ROM found inside`);
+          LOG.info('Skipping hash lookup — zip extraction failed, no ROM found inside.');
         } else {
+          console.log(`[processBlob] skipping hash — size ${_mb(blob.size)} exceeds ${_mb(MAX_HASH_SIZE)}`);
           LOG.info(`Skipping hash lookup — file exceeds ${MAX_HASH_SIZE / (1024 * 1024)} MB.`);
         }
       }
     }
-    if (isDebug) {
-      LOG.info(registryGame);
-    }
+    if (isDebug) LOG.info(registryGame);
 
-    return blobProcessor._buildGame(registryGame, type, title);
+    const result = blobProcessor._buildGame(registryGame, type, title);
+    if (isDebug) console.log(`[processBlob] DONE  "${filename}" in ${(performance.now()-_t0).toFixed(0)}ms — type=${type?.key ?? '(none)'}`);
+    return result;
   }
 
 
