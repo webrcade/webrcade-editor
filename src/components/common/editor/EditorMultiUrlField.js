@@ -14,6 +14,7 @@ export default function EditorMultiUrlField(props) {
     rows,
     onDropText,
     onChange,
+    onFileUpload,
     ...other
   } = props;
 
@@ -40,6 +41,7 @@ export default function EditorMultiUrlField(props) {
            setUuid(uuidv4());
         }
       }}
+      onFileUpload={onFileUpload}
       onChange={(e) => {if (onChange) {
         const urls = updateUrls(e.target.value);
         onChange({

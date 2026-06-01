@@ -21,6 +21,7 @@ import Repackage from './Repackage';
 import { openSelectCloudFolderDialog } from '../../cloud/generate-manifest/SelectCloudFolderDialog';
 import { openDownloadFileDialog } from '../../DownloadFileDialog';
 import CommonTooltip from '../../common/CommonTooltip';
+import DashedLabel from '../../common/DashedLabel';
 
 let _setId = null;
 let _setOpen = null;
@@ -253,30 +254,7 @@ function RepackageDialogInner({
                         </Box>
                       </CommonTooltip>
                     </Box>
-                    {fullPath.length > 0 &&
-                      <CommonTooltip title={fullPath}>
-                        <Box sx={{
-                          ml: 1.5,
-                          py: .5,
-                          px: 1,
-                          border: '1px dashed grey',
-                          maxWidth: '50ch',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          opacity: 0.5
-                        }}>
-                          <Typography
-                            variant="caption"
-                            sx={{
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              whiteSpace: 'nowrap',
-                              color: '#fff'
-                            }}
-                          >{fullPath}</Typography>
-                        </Box>
-                      </CommonTooltip>
-                    }
+                    <DashedLabel text={fullPath} />
                   </>
                 }
               </>

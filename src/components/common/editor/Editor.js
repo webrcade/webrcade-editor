@@ -15,6 +15,7 @@ import { usePrevious } from '../../../Util';
 export default function Editor(props) {
 
   const [okCount, setOkCount] = React.useState(0);
+  const [submitting, setSubmitting] = React.useState(false);
 
   const {
     isOpen,
@@ -52,6 +53,7 @@ export default function Editor(props) {
     if (isOpen && !prevOpen) {
       // Reset here
       setTabValue(0);
+      setSubmitting(false);
       if (onShow) onShow();
     }
   }, [isOpen, prevOpen, setTabValue, onShow]);
@@ -61,7 +63,9 @@ export default function Editor(props) {
       { "maxWidth": maxWidth ? maxWidth : "md" }
 
   const onOkHandler = () => {
+    if (submitting) return;
     if (onOk && onOk()) {
+      setSubmitting(true);
       setOpen(false)
     } else {
       setOkCount(okCount + 1);
@@ -103,7 +107,7 @@ export default function Editor(props) {
                   Close
               </Button> :
               <>
-                <Button onClick={onOkHandler} disabled={okDisabled}>
+                <Button onClick={onOkHandler} disabled={okDisabled || submitting}>
                   {okTitle ? okTitle : "OK"}
                 </Button>
                 <Button onClick={() => { setOpen(false) }}>

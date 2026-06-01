@@ -13,7 +13,8 @@ export default function BackgroundTab(props) {
     thumbSrc,
     defaultThumbSrc,
     object,
-    setObject
+    setObject,
+    onFileUpload,
   } = props;
   const [backgroundError, setBackgroundError] = React.useState(null);
 
@@ -27,6 +28,7 @@ export default function BackgroundTab(props) {
           helperText={backgroundError}
           color={backgroundError ? "warning" : undefined}
           focused={backgroundError ? true : false}
+          onFileUpload={onFileUpload}
           onDropText={(text) => { setObject({ ...object, background: text }) }}
           onChange={(e) => { setObject({ ...object, background: e.target.value }) }}
         />

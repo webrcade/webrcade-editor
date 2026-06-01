@@ -32,7 +32,7 @@ class CloudStorage {
         throw (e);
       }
     }
-    console.log(url);
+    // console.log(url);
     return url;
   }
 
@@ -45,8 +45,8 @@ class CloudStorage {
     return await this.dropbox.uploadFile(blob, path);
   }
 
-  async uploadFile(blob, path) {
-    return await this.dropbox.uploadFile(blob, path);
+  async uploadFile(blob, path, onProgress = null) {
+    return await this.dropbox.uploadFile(blob, path, onProgress);
   }
 
   async addChildren(rootPath, path, files) {
@@ -77,6 +77,8 @@ class CloudStorage {
   }
 
   async generateManifest(path, name) {
+    if (path.endsWith('/')) path = path.slice(0, -1);
+
     const manifest = {
       props: {
         title: name

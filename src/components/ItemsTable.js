@@ -6,6 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import ContentCutIcon from '@mui/icons-material/ContentCut';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
+import LayersIcon from '@mui/icons-material/Layers';
 import IconButton from '@mui/material/IconButton';
 // import LinkIcon from '@mui/icons-material/Link';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -39,6 +40,16 @@ function createData(id, title, type, typeName, thumbSrc, addedTime, item) {
     addedTime,
     item
   };
+}
+
+function isMergeEligible(feed, category, selected) {
+  if (!selected || selected.length < 2) return false;
+  const items = selected.map(id => Feed.getItem(feed, category, id)).filter(Boolean);
+  if (items.length < 2) return false;
+  const type = items[0].type;
+  if (!items.every(item => item.type === type)) return false;
+  const defs = AppRegistry.instance.getDefaultsForType(type) ?? {};
+  return Array.isArray(defs.discs) || Array.isArray(defs.media);
 }
 
 function cloneSelectedItems(feed, category, selection) {
@@ -266,6 +277,34 @@ export default function ItemsTable(props) {
                     }}
                   >
                     <ContentPasteIcon />
+                  </IconButton>
+                </div>
+              </Tooltip>
+              <ToolbarVerticalDivider />
+              <Tooltip title="Merge">
+                <div>
+                  <IconButton
+                    disabled={!isMergeEligible(feed, category, selected)}
+                    onClick={async () => {
+                      const mergeItems = selected.map(id => Feed.getItem(feed, category, id)).filter(Boolean);
+                      const defs = AppRegistry.instance.getDefaultsForType(mergeItems[0].type) ?? {};
+                      const mediaField = Array.isArray(defs.discs) ? 'discs' : 'media';
+                      const result = await Global.openMergeDialog(mergeItems, mediaField);
+                      if (result) {
+                        const { primaryId, mediaUrls } = result;
+                        const primaryItem = Feed.getItem(feed, category, primaryId);
+                        primaryItem.props[mediaField] = mediaUrls;
+                        const nonPrimaryIds = selected.filter(id => id !== primaryId);
+                        Feed.deleteItemsFromCategory(feed, category, nonPrimaryIds);
+                        Global.setFeed({ ...feed });
+                        Global.displayMessage(
+                          `Merged ${mergeItems.length} items into "${primaryItem.title || 'item'}".`,
+                          'success'
+                        );
+                      }
+                    }}
+                  >
+                    <LayersIcon />
                   </IconButton>
                 </div>
               </Tooltip>

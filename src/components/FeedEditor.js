@@ -1,11 +1,19 @@
 import * as React from 'react';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import Stack from '@mui/material/Stack';
 import Tab from '@mui/material/Tab';
+import ClearIcon from '@mui/icons-material/Clear';
 
 import * as Util from '../Util';
 import BackgroundTab from './common/editor/BackgroundTab';
+import CommonTooltip from './common/CommonTooltip';
+import DashedLabel from './common/DashedLabel';
 import GeneralTab from './common/editor/GeneralTab';
 import AppsTab from './common/editor/AppsTab';
 import Editor from './common/editor/Editor';
+import EditorButton from './common/editor/EditorButton';
 import EditorMultiUrlField from './common/editor/EditorMultiUrlField';
 import EditorSelect from './common/editor/EditorSelect';
 import EditorTabPanel from './common/editor/EditorTabPanel';
@@ -13,8 +21,12 @@ import EditorUrlField from './common/editor/EditorUrlField';
 import EditorTextField from './common/editor/EditorTextField';
 import EditorValidator from './common/editor/EditorValidator'
 import ThumbnailTab from './common/editor/ThumbnailTab';
+import { openSelectCloudFolderDialog } from './cloud/generate-manifest/SelectCloudFolderDialog';
 import { GlobalHolder, Global } from '../Global';
+import * as Feed from '../Feed';
+import { uploadSingleFile, uploadImageFile } from '../LocalFileProcessor';
 
+import * as WrcCommon from '@webrcade/app-common';
 import {
   AppRegistry,
   FeedBackgroundImage,
@@ -29,6 +41,11 @@ function PropertiesTab(props) {
     setObject,
     object
   } = props;
+
+  const cloudEnabled = WrcCommon.settings.isCloudStorageEnabled();
+  const uploadBiosFile = cloudEnabled
+    ? (file, onProgress) => uploadSingleFile(file, Feed.resolveFeedAssetsPath(object, app), onProgress)
+    : undefined;
 
   const is5200Enabled = AppRegistry.instance.getAppTypes()["5200"];
   const isSaturnEnabled = AppRegistry.instance.getAppTypes()["saturn"];
@@ -77,6 +94,7 @@ function PropertiesTab(props) {
           <EditorUrlField
             sx={{ width: '50ch' }}
             label="Atari 5200 ROM (URL)"
+            onFileUpload={uploadBiosFile}
             onDropText={(text) => {
               const props = { ...object.props, atari5200_rom: text }
               setObject({ ...object, props })
@@ -94,6 +112,7 @@ function PropertiesTab(props) {
           <EditorUrlField
             sx={{ width: '50ch' }}
             label="Coleco ROM (URL)"
+            onFileUpload={uploadBiosFile}
             onDropText={(text) => {
               const props = { ...object.props, coleco_rom: text }
               setObject({ ...object, props })
@@ -111,6 +130,7 @@ function PropertiesTab(props) {
           <EditorUrlField
             sx={{ width: '50ch' }}
             label="Famicom Disk System ROM (URL)"
+            onFileUpload={uploadBiosFile}
             onDropText={(text) => {
               const props = { ...object.props, fds_bios: text }
               setObject({ ...object, props })
@@ -128,6 +148,7 @@ function PropertiesTab(props) {
           <EditorUrlField
             sx={{ width: '50ch' }}
             label="Lynx Boot ROM (URL)"
+            onFileUpload={uploadBiosFile}
             onDropText={(text) => {
               const props = { ...object.props, lnx_boot: text }
               setObject({ ...object, props })
@@ -145,6 +166,7 @@ function PropertiesTab(props) {
           <EditorUrlField
             sx={{ width: '50ch' }}
             label="Neo Geo BIOS (URL)"
+            onFileUpload={uploadBiosFile}
             onDropText={(text) => {
               const props = { ...object.props, neogeo_bios: text }
               setObject({ ...object, props })
@@ -162,6 +184,7 @@ function PropertiesTab(props) {
           <EditorUrlField
             sx={{ width: '50ch' }}
             label="Neo Geo CD BIOS (URL)"
+            onFileUpload={uploadBiosFile}
             onDropText={(text) => {
               const props = { ...object.props, neogeocd_bios: text }
               setObject({ ...object, props })
@@ -179,6 +202,7 @@ function PropertiesTab(props) {
           <EditorUrlField
             sx={{ width: '50ch' }}
             label="3DO BIOS (URL)"
+            onFileUpload={uploadBiosFile}
             onDropText={(text) => {
               const props = { ...object.props, threedo_bios: text }
               setObject({ ...object, props })
@@ -197,6 +221,7 @@ function PropertiesTab(props) {
             sx={{ width: '50ch' }}
             label="3DO Fonts (URL)"
             helperText="Required for some Japanese games (optional)"
+            onFileUpload={uploadBiosFile}
             onDropText={(text) => {
               const props = { ...object.props, threedo_fonts: text }
               setObject({ ...object, props })
@@ -215,6 +240,7 @@ function PropertiesTab(props) {
             <EditorUrlField
               sx={{ width: '50ch' }}
               label="Sega Saturn BIOS (URL)"
+              onFileUpload={uploadBiosFile}
               onDropText={(text) => {
                 const props = { ...object.props, saturn_bios: text }
                 setObject({ ...object, props })
@@ -233,6 +259,7 @@ function PropertiesTab(props) {
           <EditorUrlField
             sx={{ width: '50ch' }}
             label="PC Engine CD BIOS (URL)"
+            onFileUpload={uploadBiosFile}
             onDropText={(text) => {
               const props = { ...object.props, pcecd_bios: text }
               setObject({ ...object, props })
@@ -250,6 +277,7 @@ function PropertiesTab(props) {
           <EditorUrlField
             sx={{ width: '50ch' }}
             label="PC-FX BIOS (URL)"
+            onFileUpload={uploadBiosFile}
             onDropText={(text) => {
               const props = { ...object.props, pcfx_bios: text }
               setObject({ ...object, props })
@@ -267,6 +295,7 @@ function PropertiesTab(props) {
           <EditorMultiUrlField
             label="PlayStation BIOS (URLs)"
             rows={5}
+            onFileUpload={uploadBiosFile}
             onDropText={(text) => {
               let urls = object.props.psx_bios ? object.props.psx_bios : [];
               if (Array.isArray(text)) {
@@ -335,6 +364,7 @@ function PropertiesTab(props) {
           <EditorMultiUrlField
             label="Nintendo DS (URLs)"
             rows={5}
+            onFileUpload={uploadBiosFile}
             onDropText={(text) => {
               let urls = object.props.ds_bios ? object.props.ds_bios : [];
               if (Array.isArray(text)) {
@@ -385,6 +415,7 @@ function PropertiesTab(props) {
           <EditorMultiUrlField
             label="Sega CD BIOS (URLs)"
             rows={5}
+            onFileUpload={uploadBiosFile}
             onDropText={(text) => {
               let urls = object.props.segacd_bios ? object.props.segacd_bios : [];
               if (Array.isArray(text)) {
@@ -419,6 +450,7 @@ function PropertiesTab(props) {
           <EditorMultiUrlField
             label="Commodore (8-bit) BIOS (URLs)"
             rows={5}
+            onFileUpload={uploadBiosFile}
             onDropText={(text) => {
               let urls = object.props.commodore8bit_bios ? object.props.commodore8bit_bios : [];
               if (Array.isArray(text)) {
@@ -452,6 +484,71 @@ function PropertiesTab(props) {
   );
 }
 
+function CloudStorageTab({ tabValue, tabIndex, object, setObject }) {
+  const cloudLocation = object.cloudLocation || '';
+  const cloudSubdir   = object.cloudSubdir !== undefined ? object.cloudSubdir : 'wrc-content';
+  const resolvedPath  = Feed.resolveFeedCloudPath(object);
+
+  return (
+    <EditorTabPanel value={tabValue} index={tabIndex}>
+      <Box>
+        <Stack spacing={0} direction="row" alignItems="center">
+          <EditorTextField
+            sx={{ width: '50ch' }}
+            label="Cloud Location"
+            tooltip="The root folder in cloud storage where this feed's content lives."
+            value={cloudLocation}
+            InputProps={{
+              readOnly: true,
+              endAdornment: cloudLocation ? (
+                <InputAdornment position="end">
+                  <CommonTooltip title="Clear selection">
+                    <IconButton
+                      onClick={() => setObject({ ...object, cloudLocation: '' })}
+                      size="small"
+                      edge="end"
+                    >
+                      <ClearIcon fontSize="small" />
+                    </IconButton>
+                  </CommonTooltip>
+                </InputAdornment>
+              ) : null,
+            }}
+          />
+          <EditorButton
+            label="Select folder..."
+            onClick={() => {
+              openSelectCloudFolderDialog((model, node) => {
+                setObject({ ...object, cloudLocation: node.path });
+              });
+            }}
+          />
+        </Stack>
+      </Box>
+      <Box>
+        <CommonTooltip title="An optional sub-folder within the cloud location where files will be stored. Defaults to 'wrc-content'.">
+          <Stack spacing={0} direction="row" alignItems="center">
+            <EditorTextField
+              sx={{ width: '50ch', mb: 2.5 }}
+              label="Sub-Directory (optional)"
+              value={cloudSubdir}
+              onChange={(e) => setObject({ ...object, cloudSubdir: e.target.value })}
+            />
+            {cloudSubdir !== 'wrc-content' && (
+              <EditorButton
+                label="Reset"
+                sx={{ mb: 2.5 }}
+                onClick={() => setObject({ ...object, cloudSubdir: 'wrc-content' })}
+              />
+            )}
+          </Stack>
+        </CommonTooltip>
+      </Box>
+      <DashedLabel text={resolvedPath} minLength={1} />
+    </EditorTabPanel>
+  );
+}
+
 const validator = new EditorValidator();
 
 const addValidatorCallback = (id, cb) => {
@@ -471,8 +568,10 @@ export default function FeedEditor(props) {
   const genTab = 0;
   const propsTab = 1;
   const appsTab = 2;
-  const thumbTab = 3;
-  const bgTab = 4;
+  const cloudEnabled = WrcCommon.settings.isCloudStorageEnabled();
+  const cloudTab = cloudEnabled ? 3 : -1;
+  const thumbTab = cloudEnabled ? 4 : 3;
+  const bgTab = cloudEnabled ? 5 : 4;
 
   return (
     <Editor
@@ -504,6 +603,7 @@ export default function FeedEditor(props) {
         <Tab label="General" key={genTab} />,
         <Tab label="Properties" key={propsTab} />,
         <Tab label="Applications" key={appsTab} />,
+        ...(cloudEnabled ? [<Tab label="Cloud Storage" key={cloudTab} />] : []),
         <Tab label="Thumbnail" key={thumbTab} />,
         <Tab label="Background" key={bgTab} />,
       ]}
@@ -540,6 +640,7 @@ export default function FeedEditor(props) {
             defaultThumbSrc={FeedThumbImage}
             object={feed}
             setObject={setFeed}
+            onFileUpload={cloudEnabled ? (file, onProgress) => uploadImageFile(file, Feed.resolveFeedImagesPath(feed), feed.title, onProgress) : undefined}
           />
           <BackgroundTab
             tabValue={tabValue}
@@ -548,7 +649,16 @@ export default function FeedEditor(props) {
             defaultThumbSrc={FeedBackgroundImage}
             object={feed}
             setObject={setFeed}
+            onFileUpload={cloudEnabled ? (file, onProgress) => uploadImageFile(file, Feed.resolveFeedImagesPath(feed), feed.title, onProgress) : undefined}
           />
+          {cloudEnabled && (
+            <CloudStorageTab
+              tabValue={tabValue}
+              tabIndex={cloudTab}
+              object={feed}
+              setObject={setFeed}
+            />
+          )}
         </>
       )}
     />

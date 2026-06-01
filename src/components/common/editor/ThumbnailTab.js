@@ -13,7 +13,8 @@ export default function ThumbnailTab(props) {
     thumbSrc,
     defaultThumbSrc,
     setObject,
-    object
+    object,
+    onFileUpload,
   } = props;
   const [thumbnailError, setThumbnailError] = React.useState(null);
 
@@ -27,6 +28,7 @@ export default function ThumbnailTab(props) {
           helperText={thumbnailError}
           color={thumbnailError ? "warning" : undefined}
           focused={thumbnailError ? true : false}
+          onFileUpload={onFileUpload}
           onDropText={(text) => { setObject({ ...object, thumbnail: text }) }}
           onChange={(e) => { setObject({ ...object, thumbnail: e.target.value }) }}
         />

@@ -9,10 +9,12 @@ import Editor from './common/editor/Editor';
 import EditorSelect from './common/editor/EditorSelect';
 import EditorSwitch from './common/editor/EditorSwitch';
 import EditorTabPanel from './common/editor/EditorTabPanel';
+import EditorTextField from './common/editor/EditorTextField';
+import EditorValidator from './common/editor/EditorValidator';
 import AppsTab from './common/editor/AppsTab';
 import { Global, GlobalHolder } from '../Global';
 
-import { dropbox, settings, Resources, SCREEN_SIZES, TEXT_IDS } from '@webrcade/app-common'
+import { dropbox, settings, achievements, Resources, SCREEN_SIZES, TEXT_IDS } from '@webrcade/app-common'
 
 
 function CloudStorageTab(props) {
@@ -38,7 +40,7 @@ function CloudStorageTab(props) {
       </div>
       {values.cloudStorage && (
         <div>
-          <Button variant="outlined" startIcon={values.dbLinked ? <LinkOffIcon /> : <LinkIcon />}
+          <Button sx={{ ml: 1.5 }} variant="outlined" startIcon={values.dbLinked ? <LinkOffIcon /> : <LinkIcon />}
             onClick={() => {
               if (!values.dbLinked) {
                 // Force cloud storage to be enabled
@@ -128,6 +130,108 @@ function DisplayTab(props) {
   );
 }
 
+const raValidator = new EditorValidator();
+
+function AchievementsTab(props) {
+  const { tabValue, tabIndex, values, setValues } = props;
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [okCount, setOkCount] = React.useState(0);
+
+  const raEnabled = Boolean(values.raEnabled);
+  const raLinked = Boolean(values.raLinked);
+
+  const usernameValid = raValidator.isValid(tabIndex, 'username');
+  const passwordValid = raValidator.isValid(tabIndex, 'password');
+
+  return (
+    <EditorTabPanel value={tabValue} index={tabIndex}>
+      <div>
+        <EditorSwitch
+          label="Enabled"
+          tooltip="Whether to enable RetroAchievements support."
+          onChange={(e) => setValues({ ...values, raEnabled: e.target.checked })}
+          checked={raEnabled}
+        />
+      </div>
+      {raEnabled && !raLinked && (
+        <>
+          <div>
+            <EditorTextField
+              required
+              sx={{ mt: 0.0 }}
+              label="Username"
+              value={username}
+              error={!usernameValid}
+              onChange={(e) => {
+                setUsername(e.target.value);
+                raValidator.checkMinLength(tabIndex, 'username', e.target.value);
+              }}
+            />
+          </div>
+          <div>
+            <EditorTextField
+              required
+              sx={{ mb: 3 }}
+              label="Password"
+              type="password"
+              value={password}
+              error={!passwordValid}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                raValidator.checkMinLength(tabIndex, 'password', e.target.value);
+              }}
+            />
+          </div>
+        </>
+      )}
+      {raEnabled && (
+        <>
+          <div>
+            <Button
+              variant="outlined"
+              startIcon={raLinked ? <LinkOffIcon /> : <LinkIcon />}
+              sx={{ ml: 1.5 }}
+              onClick={() => {
+                if (!raLinked) {
+                  raValidator.checkMinLength(tabIndex, 'username', username);
+                  raValidator.checkMinLength(tabIndex, 'password', password);
+                  setOkCount(okCount + 1);
+                  if (raValidator.getMinInvalidTab() >= 0) return;
+                  achievements.login(username, password)
+                    .then((result) => {
+                      if (result.success) {
+                        setValues({ ...values, raLinked: true });
+                        setUsername('');
+                        setPassword('');
+                        raValidator.reset();
+                        Global.displayMessage('Successfully logged into RetroAchievements.', 'success');
+                      } else {
+                        Global.displayMessage(result.error, 'error');
+                      }
+                    })
+                    .catch((e) => Global.displayMessage(e.message, 'error'));
+                } else {
+                  achievements.logout()
+                    .then(() => {
+                      setValues({ ...values, raLinked: false });
+                      raValidator.reset();
+                      setUsername('');
+                      setPassword('');
+                    })
+                    .catch((e) => Global.displayMessage(e.message, 'error'));
+                }
+              }}
+            >
+              {raLinked ? 'Logout From Retro Achievements' : 'Login To Retro Achievements'}
+            </Button>
+          </div>
+        </>
+      )}
+    </EditorTabPanel>
+  );
+}
+
 function AdvancedTab(props) {
   const {
     tabValue,
@@ -167,7 +271,8 @@ export default function SettingsEditor(props) {
   const displayTab = 0;
   const appsTab = 1;
   const cloudStorageTab = 2;
-  const advancedTab = 3;
+  const achievementsTab = 3;
+  const advancedTab = 4;
 
   return (
     <Editor
@@ -180,6 +285,8 @@ export default function SettingsEditor(props) {
       onShow={() => {
         // setCategory(Util.cloneObject(category))
         const vals = {
+          raEnabled: settings.isRaEnabled(),
+          raLinked: settings.getRaToken() !== null,
           expApps: settings.isExpAppsEnabled(),
           vsync: settings.isVsyncEnabled(),
           bilinear: settings.isBilinearFilterEnabled(),
@@ -196,7 +303,11 @@ export default function SettingsEditor(props) {
         forceUpdate();
       }}
       onOk={() => {
+        // If enabled but not linked, turn off
+        if (values.cloudStorage && !values.dbLinked) values.cloudStorage = false;
+        if (values.raEnabled && !values.raLinked) values.raEnabled = false;
         settings.setExpAppsEnabled(values.expApps);
+        settings.setRaEnabled(values.raEnabled);
         settings.setVsyncEnabled(values.vsync);
         settings.setBilinearFilterEnabled(values.bilinear);
         settings.setScreenSize(values.screenSize);
@@ -217,6 +328,7 @@ export default function SettingsEditor(props) {
         <Tab label="Display" key={displayTab} />,
         <Tab label="Applications" key={appsTab} />,
         <Tab label="Cloud Storage" key={cloudStorageTab} />,
+        <Tab label="Achievements" key={achievementsTab} />,
         <Tab label="Advanced" key={advancedTab} />,
       ]}
       tabPanels={(
@@ -242,6 +354,12 @@ export default function SettingsEditor(props) {
             tabIndex={cloudStorageTab}
             setValues={setValues}
             values={values}
+          />
+          <AchievementsTab
+            tabValue={tabValue}
+            tabIndex={achievementsTab}
+            values={values}
+            setValues={setValues}
           />
           <AdvancedTab
             tabValue={tabValue}

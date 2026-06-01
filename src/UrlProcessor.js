@@ -11,7 +11,9 @@ import {
   uuidv4
 } from '@webrcade/app-common'
 
+import * as WrcCommon from '@webrcade/app-common';
 import * as Drop from './Drop';
+import { processDroppedItems } from './LocalFileProcessor';
 import * as Feed from './Feed';
 import GameRegistry from './GameRegistry';
 import { Global } from './Global';
@@ -57,6 +59,62 @@ class Processor {
       parts ? parts[0] : null,
       parts ? parts[1] : null
     ];
+  }
+
+  async _buildGame(registryGame, type, title, romUrl = null) {
+    const titleFromName = registryGame._titleFromName ?? false;
+    if (registryGame._titleFromName) delete registryGame._titleFromName;
+
+    let regProps = {};
+    if (registryGame.props) {
+      regProps = { ...registryGame.props };
+      delete registryGame.props;
+    }
+
+    const game = {
+      ...registryGame,
+      props: {
+        ...(romUrl ? { rom: romUrl } : {}),
+        ...regProps,
+      },
+    };
+
+    if (!game.type && type) game.type = type.key;
+
+    let titleFromReg = true;
+    if (!game.title && !titleFromName && title) {
+      game.title = title;
+      titleFromReg = false;
+    } else if (titleFromName && title) {
+      // Hash miss + title lookup — use filename title to differentiate variants
+      game.title = title;
+      game.longTitle = title;
+      titleFromReg = false;
+    }
+
+    if (this.recordTitleSource) game._titleFromRegistry = titleFromReg;
+
+    if (game.type) {
+      const defs = AppRegistry.instance.getDefaultsForType(game.type);
+      if (defs.media) {
+        game.props.uid = uuidv4();
+        if (romUrl) game.props.media = [romUrl];
+        delete game.props.rom;
+        const metadata = await GameRegistry.getMetaDataByMediaTitle(game.type, game.title);
+        // console.log(metadata);
+        if (metadata) {
+          if (metadata.title)       game.title = metadata.title;
+          if (metadata.description) game.description = metadata.description;
+          if (metadata.thumbnail)   game.thumbnail = metadata.thumbnail;
+          if (metadata.background) {
+            game.background = metadata.background;
+            game.backgroundPixelated = true;
+          }
+        }
+      }
+    }
+
+    return (game.type && game.title ? game : null);
   }
 
   async processUrl(url, nameParts, name) {
@@ -153,6 +211,12 @@ class Processor {
             LOG.info(iMd5);
           }
           registryGame = await GameRegistry.find(iMd5);
+
+          // Fallback to title lookup if hash miss
+          if (!registryGame?.type && type && title) {
+            const meta = await GameRegistry.getMetaDataByMediaTitle(type.key, title);
+            if (meta) registryGame = { ...meta, _titleFromName: true };
+          }
         }
         if (isDebug) {
           LOG.info(registryGame);
@@ -160,61 +224,215 @@ class Processor {
       }
     }
 
-    let regProps = {}
-    if (registryGame.props) {
-      regProps = {...registryGame.props};
-      delete registryGame.props;
+    return this._buildGame(registryGame, type, title, url);
+
+    // let regProps = {}
+    // if (registryGame.props) {
+    //   regProps = {...registryGame.props};
+    //   delete registryGame.props;
+    // }
+
+    // const game = {
+    //   ...registryGame,
+    //   props: {
+    //     rom: url,
+    //     ...regProps
+    //   }
+    // };
+
+    // if (!game.type && type) {
+    //   game.type = type.key;
+    // }
+
+    // let titleFromReg = true;
+    // if (!game.title && title) {
+    //   game.title = title;
+    //   titleFromReg = false;
+    // }
+    // if (this.recordTitleSource) {
+    //   game._titleFromRegistry = titleFromReg;
+    // }
+
+    // // If the type supports media, remove rom and add media
+    // if (game.type) {
+    //   const defs = AppRegistry.instance.getDefaultsForType(game.type);
+    //   if (defs.media) {
+    //     game.props.media = [url];
+    //     game.props.uid = uuidv4();
+    //     const metadata = await GameRegistry.getMetaDataByMediaTitle(game.type, game.title);
+    //     console.log(metadata);
+    //     if (metadata) {
+    //       if (metadata.title) {
+    //         game.title = metadata.title;
+    //       }
+    //       if (metadata.description) {
+    //         game.description = metadata.description;
+    //       }
+    //       if (metadata.thumbnail) {
+    //         game.thumbnail = metadata.thumbnail;
+    //       }
+    //       if (metadata.background) {
+    //         game.background = metadata.background;
+    //         game.backgroundPixelated = true;
+    //       }
+    //     }
+    //     delete game.props.rom;
+    //   }
+    // }
+
+    // return (game.type && game.title ? game : null);
+  }
+
+  async processBlob (blob, filename, extension, defaultType = null, skipHash = false) {
+    const _t0 = isDebug ? performance.now() : 0;
+    const _mb = (b) => `${(b / (1024*1024)).toFixed(2)} MB`;
+    if (isDebug) console.log(`[processBlob] START  "${filename}" ext=${extension} size=${_mb(blob.size)} skipHash=${skipHash} defaultType=${defaultType}`);
+
+    let title = filename;
+    let ext = extension;
+    let registryGame = {};
+
+    let type = AppRegistry.instance.getTypeForExtension(ext);
+    if (type) {
+      if (isDebug) console.log(`[processBlob] type from extension: ${type.key}`);
+      if (isDebug) LOG.info("Found type based on extension.");
     }
 
-    const game = {
-      ...registryGame,
-      props: {
-        rom: url,
-        ...regProps
-      }
-    };
-
-    if (!game.type && type) {
-      game.type = type.key;
+    if (blob.size === 0) {
+      LOG.info("File size is 0.");
+      return null;
     }
 
-    let titleFromReg = true;
-    if (!game.title && title) {
-      game.title = title;
-      titleFromReg = false;
-    }
-    if (this.recordTitleSource) {
-      game._titleFromRegistry = titleFromReg;
-    }
+    const MAX_HASH_SIZE = 512 * 1024 * 1024; // 512 MB — skip registry hash lookup above this size
+    const MAX_ZIP_SIZE  = 256 * 1024 * 1024; // 256 MB — skip zip extraction above this size (covers all but the largest DS carts; oversized zips are almost certainly multi-file archives)
 
-    // If the type supports media, remove rom and add media
-    if (game.type) {
-      const defs = AppRegistry.instance.getDefaultsForType(game.type);
-      if (defs.media) {
-        game.props.media = [url];
-        game.props.uid = uuidv4();
-        const metadata = await GameRegistry.getMetaDataByMediaTitle(game.type, game.title);
-        console.log(metadata);
-        if (metadata) {
-          if (metadata.title) {
-            game.title = metadata.title;
-          }
-          if (metadata.description) {
-            game.description = metadata.description;
-          }
-          if (metadata.thumbnail) {
-            game.thumbnail = metadata.thumbnail;
-          }
-          if (metadata.background) {
-            game.background = metadata.background;
-            game.backgroundPixelated = true;
-          }
+    const gameByName = await GameRegistry.findByName(title, ext, blob);
+    if (gameByName) {
+      if (isDebug) console.log(`[processBlob] found by name in ${(performance.now()-_t0).toFixed(0)}ms`);
+      registryGame = gameByName;
+    } else {
+      let zipFailed = false;
+      let extractedTinyRelativeToZip = false;
+      const originalZipSize = blob.size;
+      try {
+        // Skip zip extraction for large disc images (e.g. .chd, .pbp) — they are
+        // never zipped ROMs and reading them just for zip detection is very slow.
+        // Also skip for files exceeding MAX_ZIP_SIZE — legitimately zipped ROMs are
+        // never that large (DS max cart is 256 MB); anything bigger is almost
+        // certainly a multi-file archive package and is handled by the type dialog.
+        if (skipHash || blob.size > MAX_ZIP_SIZE) {
+          if (isDebug) console.log(`[processBlob] skipping zip extraction — ${skipHash ? 'skipHash=true' : `size ${_mb(blob.size)} > MAX_ZIP_SIZE ${_mb(MAX_ZIP_SIZE)}`}`);
+          throw new Error('skip');
         }
-        delete game.props.rom;
+        if (isDebug) console.log(`[processBlob] calling processZip...`);
+        const _tz = isDebug ? performance.now() : 0;
+        const zipRes = await this.processZip(blob);
+        if (isDebug) console.log(`[processBlob] processZip done in ${(performance.now()-_tz).toFixed(0)}ms — extracted name: ${zipRes[1] ?? '(none)'}`);
+        const extractedBlob = zipRes[0];
+        if (zipRes[1] && zipRes[2]) {
+          // Check if the extracted file is suspiciously small relative to the zip.
+          // If so, and the defaultType is an archive type, the zip is likely a
+          // multi-file game package (DOSBox, ScummVM) with a stray ROM-extension
+          // file inside — not a real ROM zip.
+          const TINY_RATIO = 0.05; // 5% threshold
+          if (extractedBlob.size < originalZipSize * TINY_RATIO) {
+            if (isDebug) console.log(`[processBlob] extracted blob (${_mb(extractedBlob.size)}) is tiny relative to zip (${_mb(originalZipSize)}) — treating as multi-file archive`);
+            extractedTinyRelativeToZip = true;
+          } else {
+            blob = extractedBlob;
+            title = zipRes[1];
+            ext = zipRes[2];
+            if (isDebug) console.log(`[processBlob] using extracted file: "${title}.${ext}" size=${_mb(blob.size)}`);
+            if (!type) {
+              type = AppRegistry.instance.getTypeForExtension(ext);
+              if (type) {
+                if (isDebug) console.log(`[processBlob] type from zip: ${type.key}`);
+                if (isDebug) LOG.info("Found type in zip.");
+              }
+            }
+          }
+        } else {
+          if (isDebug) console.log(`[processBlob] processZip returned no named file — keeping original blob`);
+          blob = extractedBlob;
+        }
+      } catch (e) {
+        // No recognized ROM inside the zip — keep original blob and fall through
+        if (isDebug && e.message !== 'skip') {
+          console.log(`[processBlob] processZip threw: ${e.message} — zipFailed=true`);
+        }
+        zipFailed = true;
+      }
+
+      const skipMagicForZip = (extension === 'zip' && zipFailed);
+      if (!type) {
+        // Skip magic-byte detection for large disc images — reading the entire
+        // file into memory just to test magic bytes would be extremely slow.
+        // Also skip for .zip files that failed extraction — the blob is the raw zip
+        // and magic on a zip is useless (it'll just detect 'zip', not the game type).
+        if (!skipHash && !skipMagicForZip) {
+          if (isDebug) console.log(`[processBlob] running magic detection on ${_mb(blob.size)} blob...`);
+          const _tm = isDebug ? performance.now() : 0;
+          const abuffer = await new Response(blob).arrayBuffer();
+          type = AppRegistry.instance.testMagic(new Uint8Array(abuffer));
+          if (isDebug) console.log(`[processBlob] magic done in ${(performance.now()-_tm).toFixed(0)}ms — type: ${type?.key ?? '(none)'}`);
+          if (type && isDebug) LOG.info("Found type in magic.");
+        } else {
+          if (isDebug) console.log(`[processBlob] skipping magic detection (${skipHash ? 'skipHash=true' : 'zip extraction failed'})`);
+        }
+      }
+
+      if (!type && defaultType) {
+        const defs = AppRegistry.instance.getDefaultsForType(defaultType) ?? {};
+        const isArchiveType = 'archive' in defs;
+        // Block defaultType fallback when we're confident this isn't an archive game:
+        //   - zip had no recognized content at all (zipFailed) and type isn't archive-based
+        //   - zip had a recognized file but it was tiny relative to the zip,
+        //     suggesting a stray ROM-extension file in a multi-file package, but
+        //     only override toward archive if defaultType actually is archive-based
+        const block = (zipFailed && !isArchiveType) ||
+                      (extractedTinyRelativeToZip && !isArchiveType);
+        if (!block) {
+          type = AppRegistry.instance.APP_TYPES[defaultType] ?? null;
+          if (isDebug && type) console.log(`[processBlob] type from defaultType fallback: ${type.key}`);
+          if (type && isDebug) LOG.info("Found type from category default.");
+        } else {
+          if (isDebug) console.log(`[processBlob] defaultType fallback blocked (zipFailed=${zipFailed} extractedTiny=${extractedTinyRelativeToZip} isArchiveType=${isArchiveType})`);
+        }
+      }
+
+      // Also skip hashing if the file is a .zip that failed extraction — hashing
+      // the raw zip archive is pointless since we'd never find it in the registry.
+      const skipHashForZip = (extension === 'zip' && zipFailed);
+      if (!skipHash && !skipHashForZip && blob.size <= MAX_HASH_SIZE) {
+        if (isDebug) console.log(`[processBlob] hashing ${_mb(blob.size)} blob...`);
+        const _th = isDebug ? performance.now() : 0;
+        const iMd5 = await AppRegistry.instance.getMd5(blob, type);
+        if (isDebug) console.log(`[processBlob] hash done in ${(performance.now()-_th).toFixed(0)}ms — md5=${iMd5}`);
+        if (isDebug) LOG.info(iMd5);
+        registryGame = await GameRegistry.find(iMd5);
+        // Fallback to title lookup if hash miss
+        if (!registryGame?.type && type && title) {
+          const meta = await GameRegistry.getMetaDataByMediaTitle(type.key, title);
+          if (meta) registryGame = { ...meta, _titleFromName: true };
+        }
+      } else if (isDebug) {
+        if (skipHash) {
+          console.log(`[processBlob] skipping hash — extension is in SKIP_HASH_EXTENSIONS`);
+          LOG.info('Skipping hash lookup — extension is in SKIP_HASH_EXTENSIONS.');
+        } else if (skipHashForZip) {
+          console.log(`[processBlob] skipping hash — zip extraction failed, no ROM found inside`);
+          LOG.info('Skipping hash lookup — zip extraction failed, no ROM found inside.');
+        } else {
+          console.log(`[processBlob] skipping hash — size ${_mb(blob.size)} exceeds ${_mb(MAX_HASH_SIZE)}`);
+          LOG.info(`Skipping hash lookup — file exceeds ${MAX_HASH_SIZE / (1024 * 1024)} MB.`);
+        }
       }
     }
+    if (isDebug) LOG.info(registryGame);
 
-    return (game.type && game.title ? game : null);
+    const result = blobProcessor._buildGame(registryGame, type, title);
+    if (isDebug) console.log(`[processBlob] DONE  "${filename}" in ${(performance.now()-_t0).toFixed(0)}ms — type=${type?.key ?? '(none)'}`);
+    return result;
   }
 
   getNameParts(url) {
@@ -282,16 +500,40 @@ class Processor {
 
 let dropHandlerEnabled = true;
 
+const isDropHandlerEnabled = () => dropHandlerEnabled;
+
 const enableDropHandler = (enable) => {
   dropHandlerEnabled = enable;
 }
 
 const dropHandler = (e) => {
   e.preventDefault();
-  if (dropHandlerEnabled) {
-    e.preventDefault();
-    Drop.dropHandler(e, (text) => { process([text]); });
+  if (!dropHandlerEnabled) return;
+
+  // Check if any dropped item is a file/folder (OS drag-and-drop)
+  const items = e.dataTransfer?.items;
+  if (items) {
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].kind === 'file') {
+        if (!WrcCommon.settings.isCloudStorageEnabled()) {
+          Global.displayMessage(
+            'Cloud storage must be enabled to add local files and folders.',
+            'warning'
+          );
+        } else {
+          const feed = Global.getFeed();
+          const catId = Global.getFeedCategoryId();
+          const cat = Feed.getCategory(feed, catId);
+          Global.openBusyScreen(true, 'Reading files...');
+          processDroppedItems(items, cat, feed);
+        }
+        return;
+      }
+    }
   }
+
+  // No files — fall through to URL drop handling
+  Drop.dropHandler(e, (text) => { process([text]); });
 };
 
 const getMessage = (succeeded, failed, isAdd = true) => {
@@ -548,11 +790,19 @@ const analyzeItems = (itemIds) => {
   _analyze(urls, urlToItems);
 }
 
+const blobProcessor = new Processor([], null);
+
+const processBlob = async (blob, filename, extension, skipHash = false) => {
+  return await blobProcessor.processBlob(blob, filename, extension, null, skipHash);
+}
+
 export {
   analyze,
   analyzeCategories,
   analyzeItems,
   process,
   dropHandler,
-  enableDropHandler
+  enableDropHandler,
+  isDropHandlerEnabled,
+  processBlob,
 };

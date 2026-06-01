@@ -6,11 +6,14 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import LinkIcon from '@mui/icons-material/Link';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import FileIcon from '@mui/icons-material/InsertDriveFile';
 import * as Feed from '../Feed';
 
 import * as UrlProcessor from '../UrlProcessor';
 import { Global } from '../Global';
 import { dropboxPicker } from '../Dropbox';
+import { openLocalFilePicker, openLocalFolderPicker, processFiles } from '../LocalFileProcessor';
 
 import * as WrcCommon from '@webrcade/app-common';
 
@@ -42,7 +45,7 @@ export default function ItemsTableMoreMenu(props) {
           <ListItemIcon>
             <AutoAwesomeIcon fontSize="small" />
           </ListItemIcon>
-          Create from URLs...
+          Add from URLs...
         </MenuItem>
         <MenuItem onClick={() => {
           handleClose();
@@ -61,6 +64,35 @@ export default function ItemsTableMoreMenu(props) {
           </ListItemIcon>
           Add from Dropbox...
         </MenuItem>
+        {WrcCommon.settings.isCloudStorageEnabled() && <Divider />}
+        {WrcCommon.settings.isCloudStorageEnabled() && (
+          <MenuItem onClick={() => {
+            handleClose();
+            openLocalFilePicker((files) => {
+              const cat = Feed.getCategory(feed, category);
+              processFiles(files, cat, feed);
+            });
+          }}>
+            <ListItemIcon>
+              <FileIcon fontSize="small" />
+            </ListItemIcon>
+            Add from files...
+          </MenuItem>
+        )}
+        {WrcCommon.settings.isCloudStorageEnabled() && (
+          <MenuItem onClick={() => {
+            handleClose();
+            openLocalFolderPicker((files) => {
+              const cat = Feed.getCategory(feed, category);
+              processFiles(files, cat, feed);
+            });
+          }}>
+            <ListItemIcon>
+              <FolderOpenIcon fontSize="small" />
+            </ListItemIcon>
+            Add from folder...
+          </MenuItem>
+        )}
         <Divider />
         <MenuItem
           disabled={!lastSelected}
