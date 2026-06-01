@@ -17,6 +17,7 @@ import { setDefaultsForType } from './components/item-editor/ItemEditor';
 import * as Feed from './Feed';
 import { processBlob } from './UrlProcessor';
 import { ADD_LOCAL_STATES } from './components/AddLocalFilesDialog';
+import GameRegistry from './GameRegistry';
 import { resolveCategoryItemsPath } from './Feed';
 import { CloudStorage } from './components/cloud/generate-manifest/CloudStorage';
 import Repackage from './components/tools/repackage/Repackage';
@@ -211,6 +212,7 @@ export async function processFiles(files, category, feed) {
   //console.error('[LFP:process] *** processFiles entry, fileArray.length:', fileArray.length);
   if (fileArray.length === 0) {
     //console.log('[LFP:process] no files — showing warning');
+    Global.openBusyScreen(false);
     Global.displayMessage('No accessible files were found in the dropped items.', 'warning');
     return;
   }
@@ -251,7 +253,7 @@ export async function processFiles(files, category, feed) {
       skipped.push({
         id: ++_idCounter,
         filename: file.name,
-        reason: 'File too large (exceeds 1 GB limit)',
+        reason: 'File too large (exceeds 2 GB limit)',
       });
     } else {
       rawAccepted.push(file);
@@ -368,31 +370,41 @@ export async function processFiles(files, category, feed) {
     if (resolved?.aborted) {
       // User aborted the entire import — stop here, nothing to upload
       return;
-    } else if (resolved) {
-      for (const { item, type, repackage } of resolved) {
-        if (!type) {
-          // User chose Skip
-          skipped.push({ id: item.id, filename: item.filename, reason: 'Skipped by user' });
-          continue;
+    }
+    const preparingStart = Date.now();
+    try {
+      if (resolved) {
+        for (const { item, type, repackage } of resolved) {
+          if (!type) {
+            // User chose Skip
+            skipped.push({ id: item.id, filename: item.filename, reason: 'Skipped by user' });
+            continue;
+          }
+          // Build a minimal game object for this file using the chosen type
+          const dotIdx = item.filename.lastIndexOf('.');
+          const title = dotIdx > 0 ? item.filename.slice(0, dotIdx) : item.filename;
+          const game = { title, type, props: {} };
+          const meta = await GameRegistry.getMetaDataByFileName(type, item.filename);
+          if (meta) Object.assign(game, meta);
+          accepted.push({
+            id: item.id,
+            filename: item.filename,
+            file: item.file,
+            state: ADD_LOCAL_STATES.COMPLETE,
+            game,
+            repackage: repackage ?? false,
+          });
         }
-        // Build a minimal game object for this file using the chosen type
-        const dotIdx = item.filename.lastIndexOf('.');
-        const title = dotIdx > 0 ? item.filename.slice(0, dotIdx) : item.filename;
-        const game = { title, type, props: {} };
-        accepted.push({
-          id: item.id,
-          filename: item.filename,
-          file: item.file,
-          state: ADD_LOCAL_STATES.COMPLETE,
-          game,
-          repackage: repackage ?? false,
-        });
+      } else {
+        // Dialog was cancelled — treat all needsReview files as skipped
+        for (const item of needsReview) {
+          skipped.push({ id: item.id, filename: item.filename, reason: 'Skipped (type dialog cancelled)' });
+        }
       }
-    } else {
-      // Dialog was cancelled — treat all needsReview files as skipped
-      for (const item of needsReview) {
-        skipped.push({ id: item.id, filename: item.filename, reason: 'Skipped (type dialog cancelled)' });
-      }
+    } finally {
+      const elapsed = Date.now() - preparingStart;
+      if (elapsed < 1200) await new Promise(r => setTimeout(r, 1200 - elapsed));
+      Global.openBusyScreen(false);
     }
   }
 

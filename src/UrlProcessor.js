@@ -62,6 +62,9 @@ class Processor {
   }
 
   async _buildGame(registryGame, type, title, romUrl = null) {
+    const titleFromName = registryGame._titleFromName ?? false;
+    if (registryGame._titleFromName) delete registryGame._titleFromName;
+
     let regProps = {};
     if (registryGame.props) {
       regProps = { ...registryGame.props };
@@ -79,10 +82,16 @@ class Processor {
     if (!game.type && type) game.type = type.key;
 
     let titleFromReg = true;
-    if (!game.title && title) {
+    if (!game.title && !titleFromName && title) {
       game.title = title;
       titleFromReg = false;
+    } else if (titleFromName && title) {
+      // Hash miss + title lookup — use filename title to differentiate variants
+      game.title = title;
+      game.longTitle = title;
+      titleFromReg = false;
     }
+
     if (this.recordTitleSource) game._titleFromRegistry = titleFromReg;
 
     if (game.type) {
@@ -92,7 +101,7 @@ class Processor {
         if (romUrl) game.props.media = [romUrl];
         delete game.props.rom;
         const metadata = await GameRegistry.getMetaDataByMediaTitle(game.type, game.title);
-        console.log(metadata);
+        // console.log(metadata);
         if (metadata) {
           if (metadata.title)       game.title = metadata.title;
           if (metadata.description) game.description = metadata.description;
@@ -202,6 +211,12 @@ class Processor {
             LOG.info(iMd5);
           }
           registryGame = await GameRegistry.find(iMd5);
+
+          // Fallback to title lookup if hash miss
+          if (!registryGame?.type && type && title) {
+            const meta = await GameRegistry.getMetaDataByMediaTitle(type.key, title);
+            if (meta) registryGame = { ...meta, _titleFromName: true };
+          }
         }
         if (isDebug) {
           LOG.info(registryGame);
@@ -395,6 +410,11 @@ class Processor {
         if (isDebug) console.log(`[processBlob] hash done in ${(performance.now()-_th).toFixed(0)}ms — md5=${iMd5}`);
         if (isDebug) LOG.info(iMd5);
         registryGame = await GameRegistry.find(iMd5);
+        // Fallback to title lookup if hash miss
+        if (!registryGame?.type && type && title) {
+          const meta = await GameRegistry.getMetaDataByMediaTitle(type.key, title);
+          if (meta) registryGame = { ...meta, _titleFromName: true };
+        }
       } else if (isDebug) {
         if (skipHash) {
           console.log(`[processBlob] skipping hash — extension is in SKIP_HASH_EXTENSIONS`);
@@ -414,7 +434,6 @@ class Processor {
     if (isDebug) console.log(`[processBlob] DONE  "${filename}" in ${(performance.now()-_t0).toFixed(0)}ms — type=${type?.key ?? '(none)'}`);
     return result;
   }
-
 
   getNameParts(url) {
     let title = decodeURIComponent(url);

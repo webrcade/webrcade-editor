@@ -17,7 +17,9 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
+import Switch from '@mui/material/Switch';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
@@ -32,6 +34,9 @@ import { AppRegistry } from '@webrcade/app-common';
 import { GlobalHolder } from '../Global';
 import { enableDropHandler } from '../UrlProcessor';
 import EditorButton from './common/editor/EditorButton';
+import Prefs from '../Prefs';
+
+const PREF_MERGE_SHOW_FULL_URL = 'mergeShowFullUrl';
 
 // --- Helpers ------------------------------------------------------------------
 
@@ -64,8 +69,21 @@ function buildOrderedEntries(items, mediaField) {
 function getFilename(url) {
   try {
     const parts = url.split('/');
-    const name = decodeURIComponent(parts[parts.length - 1]);
+    const raw = decodeURIComponent(parts[parts.length - 1]);
+    const qIdx = raw.indexOf('?');
+    const name = qIdx !== -1 ? raw.substring(0, qIdx) : raw;
     return name || url;
+  } catch (_) {
+    return url;
+  }
+}
+
+function getDisplayUrl(url) {
+  try {
+    const qIdx = url.indexOf('?');
+    const clean = qIdx !== -1 ? url.substring(0, qIdx) : url;
+    const slashIdx = clean.lastIndexOf('/');
+    return slashIdx !== -1 ? clean.substring(slashIdx + 1) : clean;
   } catch (_) {
     return url;
   }
@@ -306,7 +324,7 @@ function PreviewCarousel({ item }) {
 // --- MediaEntryRow ------------------------------------------------------------
 
 const MediaEntryRow = React.memo(function MediaEntryRow({
-  entry, entryIndex, displayNumber, isDragOver, onDragStart, onDragOver, onDrop, onDragEnd,
+  entry, entryIndex, displayNumber, isDragOver, showFullUrl, onDragStart, onDragOver, onDrop, onDragEnd,
 }) {
   const label = entry.sourceItemMediaCount === 1
     ? entry.sourceItemTitle
@@ -346,7 +364,7 @@ const MediaEntryRow = React.memo(function MediaEntryRow({
           sx={{ color: 'text.disabled', display: 'block' }}
           title={entry.url}
         >
-          {entry.url}
+          {showFullUrl ? entry.url : getDisplayUrl(entry.url)}
         </Typography>
       </Box>
       <Typography variant="caption" sx={{ color: 'text.disabled', flexShrink: 0, minWidth: 24, textAlign: 'right' }}>
@@ -367,6 +385,7 @@ export default function MergeDialog() {
   const [orderedEntries, setOrderedEntries] = React.useState([]);
   const [activeTab,      setActiveTab     ] = React.useState(0);
   const [dragOverIndex,  setDragOverIndex ] = React.useState(null);
+  const [showFullUrl,    setShowFullUrl   ] = React.useState(() => Prefs.getBoolPreference(PREF_MERGE_SHOW_FULL_URL, false));
   const dragFromRef = React.useRef(null);
   const resolveRef  = React.useRef(null);
   const theme       = useTheme();
@@ -543,9 +562,26 @@ export default function MergeDialog() {
         {/* ── Tab 1: Media Order ───────────────────────────────────── */}
         {activeTab === 1 && (
           <Box sx={{ flexGrow: 1, overflowY: 'auto', px: 2, pt: 1.5, pb: 1 }}>
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
-              Drag to reorder the combined {mediaField === 'discs' ? 'disc' : 'media'} list.
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+              <Typography variant="caption" color="text.secondary">
+                Drag to reorder the combined {mediaField === 'discs' ? 'disc' : 'media'} list.
+              </Typography>
+              <FormControlLabel
+                control={
+                  <Switch
+                    size="small"
+                    checked={showFullUrl}
+                    onChange={e => {
+                      setShowFullUrl(e.target.checked);
+                      Prefs.setPreference(PREF_MERGE_SHOW_FULL_URL, e.target.checked);
+                    }}
+                  />
+                }
+                label={<Typography variant="caption" color="text.secondary">Show full path</Typography>}
+                labelPlacement="start"
+                sx={{ mr: 0, ml: 0, gap: 0.5 }}
+              />
+            </Box>
 
             {renderList.length === 0 && (
               <Typography variant="body2" color="text.secondary" sx={{ py: 2, textAlign: 'center' }}>
@@ -586,6 +622,7 @@ export default function MergeDialog() {
                     entryIndex={row.entryIndex}
                     displayNumber={entryDisplayNum}
                     isDragOver={dragOverIndex === row.entryIndex}
+                    showFullUrl={showFullUrl}
                     onDragStart={handleDragStart}
                     onDragOver={handleDragOver}
                     onDrop={handleDrop}

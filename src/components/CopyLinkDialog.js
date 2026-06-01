@@ -57,16 +57,16 @@ const minimizeLink = (location, copyLinkProps, setCopyLinkProps) => {
     return;
   }
 
-  fetch(`https://is.gd/create.php?format=json&url=${encodeURIComponent(location)}`)
+  new WrcCommon.FetchAppData(`https://is.gd/create.php?format=json&url=${encodeURIComponent(location)}`).fetch()
   .then(async (res) => {
-    if (res.ok) {
-      return res.json();
-    } else {
-      // Try to parse error message from body (though is.gd returns 200 even on errors)
-      const errorBody = await res.json().catch(() => null);
-      const errorMsg = errorBody?.errormessage || "Error attempting to shorten URL";
-      throw new Error(errorMsg);
+    const text = await res.text();
+    let json;
+    try {
+      json = JSON.parse(text);
+    } catch {
+      throw new Error(text.trim() || "Error attempting to shorten URL");
     }
+    return json;
   })
   .then((json) => {
     if (json?.shorturl && typeof json.shorturl === "string") {
@@ -213,6 +213,10 @@ const CopyLinkDialog = (props) => {
   const success = copyLinkProps.success;
 
   const disabledShortened = copyLinkProps.disableShortened;
+  const isLocalhost = (() => {
+    try { return new URL(copyLinkProps?.link).hostname === 'localhost'; }
+    catch { return false; }
+  })();
   const message = copyLinkProps.message;
   const learnMoreUrl = copyLinkProps.learnMoreUrl;
 
@@ -229,7 +233,7 @@ const CopyLinkDialog = (props) => {
     >
       <DialogTitle>{title ? title : "Copy Stand-alone Link"}</DialogTitle>
       <DialogContent>
-        {!disabledShortened && (
+        {!disabledShortened && !isLocalhost && (
           <div>
             <FormControlLabel sx={{ whiteSpace: 'nowrap', ml: 1 }} control={
               <Switch

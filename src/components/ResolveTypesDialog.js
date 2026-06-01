@@ -211,6 +211,7 @@ export default function ResolveTypesDialog() {
   const [activeTab, setActiveTab] = React.useState(0);
   const [repackageThreshold, setRepackageThreshold] = React.useState(null);
   const resolveRef = React.useRef(null);
+  const prevAllAssignedRef = React.useRef(false);
   // Incremented each time allAssigned resets to false, forcing a fresh DOM element
   // (and a clean CSS animation replay) on the next mount.
   const completionKeyRef = React.useRef(0);
@@ -279,6 +280,21 @@ export default function ResolveTypesDialog() {
   const allAssigned       = items.length > 0 && unassignedCount === 0;
   // Only true when the user manually resolved all items during this session.
   const userResolvedAll = allAssigned && !openedWithAllAssignedRef.current;
+  const showSuccessCallout = userResolvedAll;
+  const showPreAssignedCallout = allAssigned && openedWithAllAssignedRef.current && !userResolvedAll;
+
+  React.useEffect(() => {
+    if (!allAssigned) {
+      prevAllAssignedRef.current = false;
+      return;
+    }
+
+    if (!prevAllAssignedRef.current && activeTab === 0) {
+      setActiveTab(1);
+    }
+
+    prevAllAssignedRef.current = true;
+  }, [allAssigned, activeTab]);
 
   const tabItems = React.useMemo(() => {
     if (activeTab === 0) return items.filter(item => !assignments[item.id]);
@@ -332,16 +348,13 @@ export default function ResolveTypesDialog() {
 
   const handleApplyBulk = () => {
     if (!bulkType) return;
-    // For alias types use absoluteKey; for non-aliased impl types use the key itself
-    const regType = AppRegistry.instance.getAppTypes()[bulkType];
-    const absoluteKey = regType?.absoluteKey ?? bulkType;
     setAssignments(prev => {
       const next = { ...prev };
       for (const item of items) {
         if (next[item.id]) continue; // already assigned
         const opts = item.typeOptions ?? [];
-        // Apply if item accepts any type (empty opts) or the type is valid for this extension
-        if (!opts.length || (absoluteKey && opts.includes(absoluteKey))) {
+        // Apply if item accepts any type (empty opts) or bulkType is in the allowed alias set
+        if (!opts.length || opts.includes(bulkType)) {
           next[item.id] = bulkType;
         }
       }
@@ -373,15 +386,13 @@ export default function ResolveTypesDialog() {
     setOpen(false);
     enableDropHandler(true);
     Global.openBusyScreen(true, 'Preparing items\u2026');
-    setTimeout(() => {
-      Global.openBusyScreen(false);
-      resolveRef.current?.(result);
-      resolveRef.current = null;
-    }, 1200);
+    resolveRef.current?.(result);
+    resolveRef.current = null;
   };
 
-  // (No allAssigned effect needed — key and openedWithAllAssigned flag are
-  //  managed directly in handleChange to avoid timing issues on dialog open.)
+  // Auto-advance to Assigned when the last unresolved item gets assigned.
+  // The success card is still rendered on the Unassigned tab if the user
+  // navigates back there after completion.
 
   return (
     <Dialog
@@ -423,13 +434,21 @@ export default function ResolveTypesDialog() {
             mb: 0.5,
             p: 1.25,
             borderRadius: 1,
-            bgcolor: 'rgba(41,182,246,0.08)',
-            border: '1px solid rgba(41,182,246,0.3)',
+            bgcolor: showSuccessCallout ? 'rgba(76,175,80,0.08)' : 'rgba(41,182,246,0.08)',
+            border: showSuccessCallout ? '1px solid rgba(76,175,80,0.3)' : '1px solid rgba(41,182,246,0.3)',
             flexShrink: 0,
           }}
         >
-          <InfoOutlinedIcon sx={{ color: 'info.light', mt: '2px', flexShrink: 0, fontSize: 16 }} />
-          {openedWithAllAssignedRef.current && unassignedCount === 0 ? (
+          {showSuccessCallout ? (
+            <CheckCircleIcon sx={{ color: 'success.main', mt: '2px', flexShrink: 0, fontSize: 16 }} />
+          ) : (
+            <InfoOutlinedIcon sx={{ color: 'info.light', mt: '2px', flexShrink: 0, fontSize: 16 }} />
+          )}
+          {showSuccessCallout ? (
+            <Typography variant="body2" sx={{ color: 'success.light' }}>
+              All types assigned! Press Continue to proceed.
+            </Typography>
+          ) : showPreAssignedCallout ? (
             <Typography variant="body2" sx={{ color: 'info.light' }}>
               All files have been assigned the default type. Review or adjust assignments before continuing.
             </Typography>

@@ -432,6 +432,69 @@ class GameRegistryImpl {
     }
   }
 
+//   async init() {
+//     const { DB_FILE } = this;
+//     try {
+//       const expAppsEnabled = settings.isExpAppsEnabled();
+//       this.n64enabled = expAppsEnabled;
+//       this.a5200enabled = expAppsEnabled;
+
+//       const fad = new FetchAppData(DB_FILE);
+//       const res = await fad.fetch();
+//       if (res.ok) {
+//         let blob = await res.blob();
+//         const uz = new Unzip();
+//         blob = await uz.unzip(blob, [".json"]);
+//         const json = await blob.text();
+//         this.db = JSON.parse(json);
+//         LOG.info(`Loaded types database (MD5), ${Object.keys(this.db).length} types.`);
+
+//         // Build media based lookups
+//         const types = AppRegistry.instance.getAppTypes();
+//         const lookups = {};
+//         for (let type in types) {
+//           const defs = AppRegistry.instance.getDefaultsForType(type);
+//           if (true /*defs.media !== undefined || defs.discs !== undefined || defs.archive !== undefined*/) {
+//             const alias = AppRegistry.instance.getAlias(type);
+//             if (!lookups[alias]) {
+//               const typemap = {};
+//               lookups[alias] = typemap;
+//               const dbmap = this.db[alias];
+//               if (dbmap) {
+//                 for (let id in dbmap) {
+//                   const normalized = this.normalizeTitle(dbmap[id]);
+//                   typemap[normalized] = id;
+//                   this.addTitleAliases(typemap, normalized, id);
+//                 }
+//               }
+//             }
+//           }
+//         }
+//         this.titleLookups = lookups;
+//       }
+//     } catch (e) {
+//       LOG.error("Error loading types database: " + e);
+//     }
+
+// // console.log('[DEBUG] bards entries:',
+// //   Object.keys(this.titleLookups?.['commodore-c64'] ?? {}).filter(k => k.includes('bard')));
+
+//     try {
+//       const cfad = new FetchAppData(this.CHEAT_DB_FILE);
+//       const cres = await cfad.fetch();
+//       if (cres.ok) {
+//         let cblob = await cres.blob();
+//         const cuz = new Unzip();
+//         cblob = await cuz.unzip(cblob, [".json"]);
+//         const cjson = await cblob.text();
+//         this.cheatDb = JSON.parse(cjson);
+//         LOG.info(`Loaded cheat database, ${Object.keys(this.cheatDb).length} systems.`);
+//       }
+//     } catch (e) {
+//       LOG.error("Error loading cheat database: " + e);
+//     }
+//   }
+
   async init() {
     const { DB_FILE } = this;
     try {
@@ -453,16 +516,20 @@ class GameRegistryImpl {
         const types = AppRegistry.instance.getAppTypes();
         const lookups = {};
         for (let type in types) {
-          const defs = AppRegistry.instance.getDefaultsForType(type);
-          if (defs.media) {
-            const alias = AppRegistry.instance.getAlias(type);
-            if (!lookups[alias]) {
-              const typemap = {};
-              lookups[alias] = typemap;
-              const dbmap = this.db[alias];
+          const alias = AppRegistry.instance.getAlias(type);
+          if (!lookups[alias]) {
+            const typemap = {};
+            lookups[alias] = typemap;
+            const dbmap = this.db[alias];
+            if (dbmap) {
+              // Pass 1: add primary normalized titles only
               for (let id in dbmap) {
                 const normalized = this.normalizeTitle(dbmap[id]);
                 typemap[normalized] = id;
+              }
+              // Pass 2: add aliases — before-sep aliases won't overwrite existing primary entries
+              for (let id in dbmap) {
+                const normalized = this.normalizeTitle(dbmap[id]);
                 this.addTitleAliases(typemap, normalized, id);
               }
             }
@@ -506,18 +573,98 @@ class GameRegistryImpl {
     return filenames[filename] !== undefined;
   }
 
+  // async getMetaDataByMediaTitle(type, title) {
+  //   const alias = AppRegistry.instance.getAlias(type);
+  //   if (!this.titleLookups?.[alias]) return null;
+  //   const normalizedTitle = this.normalizeTitle(title);
+  //   const id = this.titleLookups[alias][normalizedTitle];
+  //   if (id) {
+  //     const ret = {};
+  //     const foundTitle = this.db[alias][id];
+  //     this.addTitles(ret, foundTitle);
+  //     ret.type = type;
+  //     await this.addMetaData(ret, type, foundTitle);
+  //     return ret;
+  //   }
+  //   return null;
+  // }
+
+  TITLE_ALIASES = {
+    'commodore-c64': {
+      'pirates': "sid meier's pirates",
+    }
+  }
+
   async getMetaDataByMediaTitle(type, title) {
+
+console.log('[DEBUG] entries:',
+  Object.keys(this.titleLookups?.['dos'] ?? {}).filter(k => k.includes('games')));
+
     const alias = AppRegistry.instance.getAlias(type);
-    const normalizedTitle = this.normalizeTitle(title);
-    const id = this.titleLookups[alias][normalizedTitle];
+
+    // Check for known title aliases for this type
+    const typeAliases = this.TITLE_ALIASES[alias] ?? {};
+    const normalized = this.normalizeTitle(title);
+    title = typeAliases[normalized] ?? title;
+
+    console.log(`[getMetaDataByMediaTitle] type='${type}' alias='${alias}' title='${title}'`);
+    if (!this.titleLookups?.[alias]) {
+      console.log(`[getMetaDataByMediaTitle] no titleLookups for alias '${alias}'`);
+      return null;
+    }
+
+    // Try 1: exact normalized match
+    let normalizedTitle = this.normalizeTitle(title);
+    console.log(`[getMetaDataByMediaTitle] try1 normalized='${normalizedTitle}'`);
+    let id = this.titleLookups[alias][normalizedTitle];
+    console.log(`[getMetaDataByMediaTitle] try1 id='${id}'`);
+    console.log(`[DEBUG] try2 test: '${normalizedTitle}' regex test: ${/\s1 - /.test(normalizedTitle)}`);
+
+    // Try 2: strip inline ' 1 ' before ' - ' only
+    if (!id && /\s1 - /.test(normalizedTitle)) {
+      normalizedTitle = normalizedTitle.replace(/\s1 - /, ' - ');
+      console.log(`[getMetaDataByMediaTitle] try2 stripped='${normalizedTitle}'`);
+      id = this.titleLookups[alias][normalizedTitle];
+      console.log(`[getMetaDataByMediaTitle] try2 id='${id}'`);
+    }
+
+    // Try 3: strip subtitle after ' - '
+    if (!id && normalizedTitle.indexOf(' - ') !== -1) {
+      const stripped = normalizedTitle.substring(0, normalizedTitle.indexOf(' - ')).trim();
+      console.log(`[getMetaDataByMediaTitle] try3 stripped='${stripped}'`);
+      id = this.titleLookups[alias][stripped];
+      console.log(`[getMetaDataByMediaTitle] try3 id='${id}'`);
+      if (id) normalizedTitle = stripped;
+    }
+
+    // Try 4: strip subtitle after ' in the '
+    if (!id && normalizedTitle.indexOf(' in the ') !== -1) {
+      const stripped = normalizedTitle.substring(0, normalizedTitle.indexOf(' in the ')).trim();
+      console.log(`[getMetaDataByMediaTitle] try4 stripped='${stripped}'`);
+      id = this.titleLookups[alias][stripped];
+      console.log(`[getMetaDataByMediaTitle] try4 id='${id}'`);
+      if (id) normalizedTitle = stripped;
+    }
+
+    // Try 5: strip trailing ' 1' or ' i' only — never strip 2/3/4 as those have sequels
+    if (!id && /\s(1|i)$/.test(normalizedTitle)) {
+      const stripped = normalizedTitle.replace(/\s(1|i)$/, '').trim();
+      console.log(`[getMetaDataByMediaTitle] try5 stripped='${stripped}'`);
+      id = this.titleLookups[alias][stripped];
+      console.log(`[getMetaDataByMediaTitle] try5 id='${id}'`);
+      if (id) normalizedTitle = stripped;
+    }
+
     if (id) {
       const ret = {};
       const foundTitle = this.db[alias][id];
-      ret.title = foundTitle;
+      this.addTitles(ret, foundTitle);
       ret.type = type;
-      await this.addMetaData(ret, type, foundTitle);
+      await this.addMetaData(ret, alias /*type*/, foundTitle);
       return ret;
     }
+
+    console.log(`[getMetaDataByMediaTitle] no match found for '${title}' (${type})`);
     return null;
   }
 
@@ -730,18 +877,75 @@ class GameRegistryImpl {
     return ret;
   }
 
+//   normalizeTitle = (title) => {
+//     title = title.toLowerCase();
+//     let search = "("
+//     let find = title.indexOf(search);
+//     if (find !== -1) {
+//       title = title.substring(0, find);
+//     }
+//     search = "["
+//     find = title.indexOf(search);
+//     if (find !== -1) {
+//       title = title.substring(0, find);
+//     }
+//     search = ", the"
+//     find = title.indexOf(search);
+//     if (find !== -1) {
+//       title = title.substring(0, find);
+//     }
+//     if (title.startsWith("the ")) {
+//       title = title.substring(4);
+//     }
+
+//     title = title.replaceAll("  ", " ");
+//     title = title.trim();
+
+//     if (title.endsWith("!")) {
+//       title = title.substring(0, title.length - 1);
+//     }
+
+//     title = title.replace(/\s*[-:]+$/, '').trim();
+
+// console.log("NORMALIZED TITLE: " + title);
+
+//     return title;
+//   }
+
   normalizeTitle = (title) => {
+
+// console.log('[DEBUG] simon aliases:',
+//   Object.keys(this.titleLookups?.['scumm'] ?? {}).filter(k => k.includes('police')));
+
     title = title.toLowerCase();
+
+    // Underscores → spaces (safe globally)
+    title = title.replaceAll('_', ' ');
+
+    // Strip apostrophes — colonel's → colonels, etc.
+    title = title.replaceAll("'", "");
+
     let search = "("
     let find = title.indexOf(search);
     if (find !== -1) {
       title = title.substring(0, find);
     }
-    search = ", the"
+    search = "["
     find = title.indexOf(search);
     if (find !== -1) {
       title = title.substring(0, find);
     }
+
+    // Strip disk side indicators (s1, s2 boot, etc.) — leading space prevents false positives
+    title = title.replace(/\s+s\d+(\s+\w+)?/, '');
+
+    // search = ", the"
+    // find = title.indexOf(search);
+    // if (find !== -1) {
+    //   title = title.substring(0, find);
+    // }
+    title = title.replace(/, the\b/g, '');
+
     if (title.startsWith("the ")) {
       title = title.substring(4);
     }
@@ -753,34 +957,240 @@ class GameRegistryImpl {
       title = title.substring(0, title.length - 1);
     }
 
+    title = title.replace(/\s*[-:]+$/, '').trim();
+
+    title = title.replace(/\s+r\d+$/, '');
+
+    // console.log("NORMALIZED TITLE: " + title);
+
     return title;
   }
 
+  // addTitleAliases = (typemap, title, id) => {
+  //   if (title.indexOf(":") !== -1) {
+  //     let updated = title.replaceAll(":", " -");
+  //     typemap[updated] = id;
+  //     typemap[title.replaceAll(":", "")] = id;
+  //     //typemap[title.substring(0, title.indexOf(":"))] = id;
+  //   }
+  //   if (title.indexOf("g.i. ") !== -1) {
+  //     let updated = title.replaceAll("g.i. ", "gi ");
+  //     typemap[updated] = id;
+  //   }
+  //   if (title.indexOf("gi ") !== -1) {
+  //     let updated = title.replaceAll("gi ", "g.i. ");
+  //     typemap[updated] = id;
+  //   }
+  //   if (title.endsWith(" 2")) {
+  //     typemap[title.substring(0, title.length - 2) + " ii"] = id;
+  //   }
+  //   if (title.endsWith(" ii")) {
+  //     typemap[title.substring(0, title.length - 3) + " 2"] = id;
+  //   }
+  //   if (title.endsWith(" 3")) {
+  //     typemap[title.substring(0, title.length - 2) + " iii"] = id;
+  //   }
+  //   if (title.endsWith(" iii")) {
+  //     typemap[title.substring(0, title.length - 4) + " 3"] = id;
+  //   }
+  //   if (title.endsWith(" 4")) {
+  //     typemap[title.substring(0, title.length - 2) + " iv"] = id;
+  //   }
+  //   if (title.endsWith(" iv")) {
+  //     typemap[title.substring(0, title.length - 3) + " 4"] = id;
+  //   }
+  //   if (title.endsWith(" part ii")) {
+  //     typemap[title.substring(0, title.length - 8) + " ii"] = id;
+  //   }
+  // }
+
+  // addTitleAliases = (typemap, title, id) => {
+  //   if (title.indexOf(":") !== -1) {
+  //     let updated = title.replaceAll(":", " -");
+  //     typemap[updated] = id;
+  //     typemap[title.replaceAll(":", "")] = id;
+
+  //     // Only add before-colon alias if no sequel indicator AFTER the colon
+  //     const colonIdx = title.indexOf(":");
+  //     const afterColon = title.substring(colonIdx + 1);
+  //     const hasSequelAfterColon = /\s*(ii|iii|iv|\d+)(\s|:|$)/.test(afterColon);
+  //     if (!hasSequelAfterColon) {
+  //       typemap[title.substring(0, colonIdx).trim()] = id;
+  //     }
+  //   }
+  //   if (title.indexOf(" in the ") !== -1) {
+  //     let updated = title.substring(0, title.indexOf(" in the "));
+  //     typemap[updated] = id;
+  //   }
+  //   if (title.indexOf(' - ') !== -1) {
+  //     typemap[title.substring(0, title.indexOf(' - ')).trim()] = id;
+  //   }
+  //   if (title.indexOf("g.i. ") !== -1) {
+  //     let updated = title.replaceAll("g.i. ", "gi ");
+  //     typemap[updated] = id;
+  //   }
+  //   if (title.indexOf("gi ") !== -1) {
+  //     let updated = title.replaceAll("gi ", "g.i. ");
+  //     typemap[updated] = id;
+  //   }
+  //   if (title.indexOf(" & ") !== -1) {
+  //     let updated = title.replaceAll(" & ", " and ");
+  //     typemap[updated] = id;
+  //   }
+  //   if (title.indexOf(" and ") !== -1) {
+  //     let updated = title.replaceAll(" and ", " & ");
+  //     typemap[updated] = id;
+  //   }
+  //   if (title.endsWith(" part ii")) {
+  //     typemap[title.substring(0, title.length - 8) + " ii"] = id;
+  //   }
+  //   if (title.indexOf('leaderboard') !== -1) {
+  //     typemap[title.replace('leaderboard', 'leader board')] = id;
+  //   }
+  //   if (title.indexOf('leader board') !== -1) {
+  //     typemap[title.replace('leader board', 'leaderboard')] = id;
+  //   }
+
+  //   // Roman <-> Arabic anywhere in title (longest match first to avoid ' ii' matching inside ' iii')
+  //   // No 'g' flag — avoids stateful lastIndex bug with test() + replace()
+  //   const romanArabicPairs = [
+  //     [' iv', ' 4'],
+  //     [' iii', ' 3'],
+  //     [' ii', ' 2'],
+  //   ];
+  //   for (const [roman, arabic] of romanArabicPairs) {
+  //     const romanRe = new RegExp(`${roman}(?=\\s|:|$|-|\\.)`);
+  //     const arabicRe = new RegExp(`${arabic}(?=\\s|:|$|-|\\.)`);
+
+  //     if (romanRe.test(title)) {
+  //       const aliased = title.replace(romanRe, arabic);
+  //       typemap[aliased] = id;
+  //       const colonIdx = aliased.indexOf(':');
+  //       if (colonIdx !== -1) {
+  //         typemap[aliased.substring(0, colonIdx).trim()] = id;
+  //       }
+  //       const dashIdx = aliased.indexOf(' - ');
+  //       if (dashIdx !== -1) {
+  //         typemap[aliased.substring(0, dashIdx).trim()] = id;
+  //       }
+  //     }
+  //     if (arabicRe.test(title)) {
+  //       const aliased = title.replace(arabicRe, roman);
+  //       typemap[aliased] = id;
+  //       const colonIdx = aliased.indexOf(':');
+  //       if (colonIdx !== -1) {
+  //         typemap[aliased.substring(0, colonIdx).trim()] = id;
+  //       }
+  //       const dashIdx = aliased.indexOf(' - ');
+  //       if (dashIdx !== -1) {
+  //         typemap[aliased.substring(0, dashIdx).trim()] = id;
+  //       }
+  //     }
+  //   }
+  // }
+
   addTitleAliases = (typemap, title, id) => {
+    // Helper: check if a string starts with a sequel indicator (roman numeral or number)
+    const hasSequel = (str) => /^\s*(ii|iii|iv|v|vi|vii|viii|ix|x|\d+)(\s|:|$)/.test(str);
+
+    // Helper: add before-separator alias only if:
+    // 1. No sequel indicator after the separator
+    // 2. Key doesn't already exist as a primary entry (prevents false positives like Lode Runner)
+    const addBeforeSep = (t, sepIdx, sepLen) => {
+      const after = t.substring(sepIdx + sepLen);
+      if (!hasSequel(after)) {
+        const key = t.substring(0, sepIdx).trim();
+        if (!typemap[key]) {
+          typemap[key] = id;
+        }
+      }
+    };
+
     if (title.indexOf(":") !== -1) {
-      let updated = title.replaceAll(":", " -");
-      typemap[updated] = id;
+      typemap[title.replaceAll(":", " -")] = id;
       typemap[title.replaceAll(":", "")] = id;
-      //typemap[title.substring(0, title.indexOf(":"))] = id;
+      addBeforeSep(title, title.indexOf(":"), 1);
+    }
+    if (title.indexOf(" in the ") !== -1) {
+      typemap[title.substring(0, title.indexOf(" in the "))] = id;
+    }
+    if (title.indexOf(' - ') !== -1) {
+      addBeforeSep(title, title.indexOf(' - '), 3);
     }
     if (title.indexOf("g.i. ") !== -1) {
-      let updated = title.replaceAll("g.i. ", "gi ");
-      typemap[updated] = id;
+      typemap[title.replaceAll("g.i. ", "gi ")] = id;
     }
     if (title.indexOf("gi ") !== -1) {
-      let updated = title.replaceAll("gi ", "g.i. ");
-      typemap[updated] = id;
+      typemap[title.replaceAll("gi ", "g.i. ")] = id;
     }
-    if (title.endsWith(" 2")) {
-      const updated = title.substring(0, title.length - 2) + " ii";
-      // console.log(updated);
-      typemap[updated] = id;
+    if (title.indexOf(" & ") !== -1) {
+      typemap[title.replaceAll(" & ", " and ")] = id;
+    }
+    if (title.indexOf(" and ") !== -1) {
+      typemap[title.replaceAll(" and ", " & ")] = id;
     }
     if (title.endsWith(" part ii")) {
-      const updated = title.substring(0, title.length - 8) + " ii";
-      // console.log(updated);
-      typemap[updated] = id;
+      typemap[title.substring(0, title.length - 8) + " ii"] = id;
     }
+    if (title.indexOf('leaderboard') !== -1) {
+      typemap[title.replace('leaderboard', 'leader board')] = id;
+    }
+    if (title.indexOf('leader board') !== -1) {
+      typemap[title.replace('leader board', 'leaderboard')] = id;
+    }
+
+    // Roman <-> Arabic anywhere in title (longest match first to avoid partial matches)
+    // No 'g' flag — avoids stateful lastIndex bug with test() + replace()
+    const romanArabicPairs = [
+      [' x',    ' 10'],
+      [' ix',   ' 9'],
+      [' viii', ' 8'],
+      [' vii',  ' 7'],
+      [' vi',   ' 6'],
+      [' v',    ' 5'],
+      [' iv',   ' 4'],
+      [' iii',  ' 3'],
+      [' ii',   ' 2'],
+    ];
+    for (const [roman, arabic] of romanArabicPairs) {
+      const romanRe = new RegExp(`${roman}(?=\\s|:|$|-|\\.)`);
+      const arabicRe = new RegExp(`${arabic}(?=\\s|:|$|-|\\.)`);
+
+      if (romanRe.test(title)) {
+        const aliased = title.replace(romanRe, arabic);
+        typemap[aliased] = id;
+        if (aliased.indexOf(':') !== -1) {
+          addBeforeSep(aliased, aliased.indexOf(':'), 1);
+        }
+        if (aliased.indexOf(' - ') !== -1) {
+          addBeforeSep(aliased, aliased.indexOf(' - '), 3);
+        }
+      }
+      if (arabicRe.test(title)) {
+        const aliased = title.replace(arabicRe, roman);
+        typemap[aliased] = id;
+        if (aliased.indexOf(':') !== -1) {
+          addBeforeSep(aliased, aliased.indexOf(':'), 1);
+        }
+        if (aliased.indexOf(' - ') !== -1) {
+          addBeforeSep(aliased, aliased.indexOf(' - '), 3);
+        }
+      }
+    }
+  }
+
+  cleanFileName = (filename) => {
+    const dotIdx = filename.lastIndexOf('.');
+    return dotIdx > 0 ? filename.slice(0, dotIdx) : filename;
+  }
+
+  async getMetaDataByFileName(type, filename) {
+    const alias = AppRegistry.instance.getAlias(type);
+    if (!this.titleLookups?.[alias]) return null;
+    const baseName = this.cleanFileName(filename);
+
+    // console.log(`[GameRegistry] Attempting name lookup for '${baseName}' (${type})`);
+    return await this.getMetaDataByMediaTitle(type, baseName);
   }
 }
 
