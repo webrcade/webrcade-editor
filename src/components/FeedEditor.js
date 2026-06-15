@@ -54,14 +54,17 @@ function PropertiesTab(props) {
 
   const items = [
     { value: "3do", name: "3DO" },
+    { value: "apple2", name: "Apple II" },
+    { value: "apple2gs", name: "Apple IIGS" },
     { value: "lynx", name: "Atari Lynx" },
+    { value: "astrocade", name: "Bally Astrocade" },
     { value: "coleco", name: "ColecoVision"},
     { value: "commodore", name: "Commodore (8-bit)"},
     { value: "pcecd", name: "NEC PC Engine CD"},
     { value: "pcfx", name: "NEC PC-FX"},
     { value: "ds", name: "Nintendo DS" },
     { value: "nes", name: "Nintendo NES"},
-    // { value: "philipscdi", name: "Philips CDI" },
+    { value: "philipscdi", name: "Philips CD-i" },
     { value: "segacd", name: "Sega CD" },
     // { value: "segasaturn", name: "Sega Saturn" },
     { value: "neogeo", name: "SNK Neo Geo" },
@@ -69,10 +72,10 @@ function PropertiesTab(props) {
     { value: "psx", name: "Sony PlayStation" },
   ]
   if (is5200Enabled) {
-    items.splice(1, 0, { value: "5200", name: "Atari 5200" });
+    items.splice(2, 0, { value: "5200", name: "Atari 5200" });
   }
   if (isSaturnEnabled) {
-    items.splice(10, 0, { value: "segasaturn", name: "Sega Saturn" });
+    items.splice(12, 0, { value: "segasaturn", name: "Sega Saturn" });
   }
 
   return (
@@ -122,6 +125,24 @@ function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             value={Util.asString(object.props.coleco_rom)}
+          />
+        )}
+      </div>
+      <div>
+        {app === "astrocade" && (
+          <EditorUrlField
+            sx={{ width: '50ch' }}
+            label="Bally Astrocade BIOS (URL)"
+            onFileUpload={uploadBiosFile}
+            onDropText={(text) => {
+              const props = { ...object.props, astrocade_bios: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, astrocade_bios: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.astrocade_bios)}
           />
         )}
       </div>
@@ -291,6 +312,75 @@ function PropertiesTab(props) {
         )}
       </div>
       <div>
+        {app === "apple2gs" && (
+          <EditorMultiUrlField
+            label="Apple IIGS BIOS (URLs)"
+            rows={5}
+            onFileUpload={uploadBiosFile}
+            onDropText={(text) => {
+              let urls = object.props.apple2gs_bios ? object.props.apple2gs_bios : [];
+              if (Array.isArray(text)) {
+                urls.push(...text);
+              } else {
+                urls.push(text);
+              }
+              urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, apple2gs_bios: urls }
+              if (urls.length === 0) {
+                delete props.apple2gs_bios;
+              }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const val = e.target.value;
+              let urls = Util.splitLines(val);
+              const props = { ...object.props, apple2gs_bios: urls }
+              if (urls.length === 0) {
+                delete props.apple2gs_bios;
+              }
+              setObject({ ...object, props })
+            }}
+            value={object.props.apple2gs_bios && object.props.apple2gs_bios.length > 0 ?
+              object.props.apple2gs_bios.join("\n") : ""}
+          />
+        )}
+      </div>
+      <div>
+        {app === "apple2" && (
+          <EditorMultiUrlField
+            label="Apple II BIOS (URLs)"
+            rows={5}
+            onFileUpload={uploadBiosFile}
+            onDropText={(text) => {
+              let urls = object.props.apple2_bios ? object.props.apple2_bios : [];
+              if (Array.isArray(text)) {
+                urls.push(...text);
+              } else {
+                urls.push(text);
+              }
+              urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, apple2_bios: urls }
+              if (urls.length === 0) {
+                delete props.apple2_bios;
+              }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const val = e.target.value;
+              let urls = Util.splitLines(val);
+              //urls = Util.removeEmptyItems(urls);
+              const props = { ...object.props, apple2_bios: urls }
+              if (urls.length === 0) {
+                delete props.apple2_bios;
+              }
+              setObject({ ...object, props })
+            }}
+            value={object.props.apple2_bios && object.props.apple2_bios.length > 0 ?
+              object.props.apple2_bios.join("\n") : ""}
+          />
+        )}
+      </div>
+      <div>
         {app === "psx" && (
           <EditorMultiUrlField
             label="PlayStation BIOS (URLs)"
@@ -325,11 +415,12 @@ function PropertiesTab(props) {
           />
         )}
       </div>
-      {/* <div>
+      <div>
         {app === "philipscdi" && (
           <EditorMultiUrlField
             label="Philips CDI BIOS (URLs)"
             rows={5}
+            onFileUpload={uploadBiosFile}
             onDropText={(text) => {
               let urls = object.props.philipscdi_bios ? object.props.philipscdi_bios : [];
               if (Array.isArray(text)) {
@@ -358,7 +449,7 @@ function PropertiesTab(props) {
               object.props.philipscdi_bios.join("\n") : ""}
           />
         )}
-      </div> */}
+      </div>
       <div>
         {app === "ds" && (
           <EditorMultiUrlField

@@ -126,14 +126,14 @@ const setDefaultForPcEngineCd = (type, item) => {
   }
 }
 
-// const setDefaultForPhilipsCdi = (type, item) => {
-//   if (type === APP_TYPE_KEYS.RETRO_SAME_CDI ||
-//     type === APP_TYPE_KEYS.CDI) {
-//     if (isEmptyString(item.props.uid)) {
-//       item.props.uid = uuidv4();
-//     }
-//   }
-// }
+const setDefaultForPhilipsCdi = (type, item) => {
+  if (type === APP_TYPE_KEYS.RETRO_SAME_CDI ||
+    type === APP_TYPE_KEYS.CDI) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
 
 const setDefaultForNeoGeoCd = (type, item) => {
   if (type === APP_TYPE_KEYS.RETRO_NEOCD ||
@@ -193,6 +193,35 @@ const setDefaultForCommodore8Bit = (type, item) => {
     }
   }
 }
+
+const setDefaultForApple2 = (type, item) => {
+  if (type === APP_TYPE_KEYS.APPLE2 ||
+    type === APP_TYPE_KEYS.RETRO_MAME_APPLE2 ||
+    type === APP_TYPE_KEYS.APPLE2GS ||
+    type === APP_TYPE_KEYS.RETRO_MAME_APPLE2GS) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+    // if (item.props.saveDisks === undefined) {
+    //   item.props.saveDisks = 1;
+    // }
+    // if (!item.props.mappings || Object.keys(item.props.mappings).length === 0) {
+    //   item.props.mappings = {
+    //     "start": "return",
+    //     // "left": "joy-left",
+    //     // "right": "joy-right",
+    //     // "up": "joy-up",
+    //     // "down": "joy-down",
+    //     "a": "fire1",
+    //     "b": "fire2",
+    //     "y": "space",
+    //     "lb": "runstop",
+    //     "rb": "f1"
+    //   };
+    // }
+  }
+}
+
 
 
 const setDefaultForSaturn = (type, item) => {
@@ -270,7 +299,7 @@ export function setDefaultsForType(type, object) {
   setDefaultForPsx(type, object);
   setDefaultForSegaCd(type, object);
   setDefaultForPcEngineCd(type, object);
-  // setDefaultForPhilipsCdi(type, object);
+  setDefaultForPhilipsCdi(type, object);
   setDefaultForPcfx(type, object);
   setDefaultForColeco(type, object);
   setDefaultForA5200(type, object);
@@ -281,6 +310,7 @@ export function setDefaultsForType(type, object) {
   setDefaultFor3do(type, object);
   // setDefaultForPsp(type, object);
   setDefaultForCommodore8Bit(type, object);
+  setDefaultForApple2(type, object);
   setDefaultForSaturn(type, object);
 }
 
@@ -585,11 +615,34 @@ export default function ItemEditor(props) {
                       if (oldAlias === newAlias) {
                         sameBaseType = true;
                       }
+                      // If the old and new are in the same family, don't clear
+                      if (!sameBaseType) {
+                        const oldFamily = AppRegistry.instance.getFamily(oldType);
+                        const newFamily = AppRegistry.instance.getFamily(type);
+                        if (oldFamily && newFamily && oldFamily === newFamily) {
+                          sameBaseType = true;
+                        }
+                      }
                     }
 
                     if (!sameBaseType) {
+                      // Preserve rom/media/discs if both types support them
+                      const oldDefaults = AppRegistry.instance.getDefaultsForType(oldType) || {};
+                      const newDefaults = AppRegistry.instance.getDefaultsForType(type) || {};
+                      const preserved = {};
+
+                      if (oldDefaults.rom !== undefined && newDefaults.rom !== undefined && item.props.rom) {
+                        preserved.rom = item.props.rom;
+                      }
+                      if (oldDefaults.media !== undefined && newDefaults.media !== undefined && item.props.media) {
+                        preserved.media = item.props.media;
+                      }
+                      if (oldDefaults.discs !== undefined && newDefaults.discs !== undefined && item.props.discs) {
+                        preserved.discs = item.props.discs;
+                      }
+
                       // Clear props on type change
-                      item.props = {};
+                      item.props = preserved;
                     }
 
                     applyDefaults(item, type)

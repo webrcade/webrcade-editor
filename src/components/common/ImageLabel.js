@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+import Tooltip from '@mui/material/Tooltip';
 
 import { Global } from '../../Global';
 import CommonImage from './CommonImage';
@@ -20,8 +21,18 @@ export default function ImageLabel(props) {
       <Box component="div" sx={{
         justifyContent: "center",
         display: "flex",
-        flexDirection: "column"
-      }}>{label}</Box>
+        flexDirection: "column",
+        maxWidth: '400px',
+        minWidth: 0,
+      }}>
+        <Tooltip title={label} placement="top-start">
+          <Box component="span" sx={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}>{label}</Box>
+        </Tooltip>
+      </Box>
     </Stack>
   );
 }

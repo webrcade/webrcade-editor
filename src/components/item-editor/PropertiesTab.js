@@ -27,6 +27,7 @@ const PROP_3DO_HACK = "PROP_3DO_HACK";
 const PROP_6BUTTON = "PROP_6BUTTON";
 const PROP_ADDITIONAL_ROMS = "PROP_ADDITIONAL_ROMS";
 const PROP_ANALOG = "PROP_ANALOG";
+const PROP_APPLE2GS_CPU_SPEED = "PROP_APPLE2GS_CPU_SPEED";
 const PROP_ARCHIVE = "PROP_ARCHIVE";
 const PROP_AUTO_START_PATH = "PROP_AUTO_START_PATH";
 const PROP_BOOK_MODE = "PROP_BOOK_MODE";
@@ -44,6 +45,8 @@ const PROP_DOS_CPU_SPEED = "PROP_DOS_CPU_SPEED";
 const PROP_DUAL_ANALOG = "PROP_DUAL_ANALOG";
 const PROP_SBI = "PROP_SBI";
 const PROP_DOOM_GAME = "PROP_DOOM_GAME";
+const PROP_ENABLE_2ND_525 = "PROP_ENABLE_2ND_525";
+const PROP_ENABLE_2ND_35 = "PROP_ENABLE_2ND_35";
 const PROP_TWIN_STICK = "PROP_TWIN_STICK";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
 const PROP_FORCE_EMULATED_BIOS = "PROP_FORCE_EMULATED_BIOS";
@@ -94,6 +97,7 @@ const ALL_PROPS = [
   PROP_6BUTTON,
   PROP_ADDITIONAL_ROMS,
   PROP_ANALOG,
+  PROP_APPLE2GS_CPU_SPEED,
   PROP_ARCHIVE,
   PROP_AUTO_START_PATH,
   PROP_BOOK_MODE,
@@ -110,6 +114,8 @@ const ALL_PROPS = [
   PROP_DOS_CONTROLLER_MODE,
   PROP_DOS_CPU_SPEED,
   PROP_DUAL_ANALOG,
+  PROP_ENABLE_2ND_525,
+  PROP_ENABLE_2ND_35,
   PROP_FLASH_SIZE,
   PROP_FORCE_EMULATED_BIOS,
   PROP_FORCE_PAL,
@@ -470,12 +476,30 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.RETRO_POKEMINI]: {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
-    // [APP_TYPE_KEYS.CDI]: {
-    //   PROP_DISCS, PROP_ZOOM_LEVEL
-    // },
-    // [APP_TYPE_KEYS.RETRO_SAME_CDI]: {
-    //   PROP_DISCS, PROP_ZOOM_LEVEL
-    // },
+    [APP_TYPE_KEYS.ASTROCADE]: {
+      PROP_ROM, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_MAME_ASTROCADE]: {
+      PROP_ROM, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.CDI]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_MAME_CDI]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.APPLE2]: {
+      PROP_MEDIA, PROP_ZOOM_LEVEL,
+    },
+    [APP_TYPE_KEYS.RETRO_MAME_APPLE2]: {
+      PROP_MEDIA, PROP_ZOOM_LEVEL,
+    },
+    [APP_TYPE_KEYS.APPLE2GS]: {
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_APPLE2GS_CPU_SPEED, PROP_ENABLE_2ND_525, PROP_ENABLE_2ND_35,
+    },
+    [APP_TYPE_KEYS.RETRO_MAME_APPLE2GS]: {
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_APPLE2GS_CPU_SPEED, PROP_ENABLE_2ND_525, PROP_ENABLE_2ND_35,
+    },
   }
 };
 
@@ -1248,6 +1272,55 @@ export default function PropertiesTab(props) {
             ]}
             onChange={(e) => {
               const props = { ...object.props, cpuSpeed: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_APPLE2GS_CPU_SPEED) ? (
+        <div>
+          <EditorSelect
+            label="CPU Speed"
+            tooltip="The CPU speed for the Apple IIgs. Default is standard 2.8 MHz. ZipGS speeds match real accelerator hardware that some games were designed for."
+            value={object.props.cpuSpeed ? object.props.cpuSpeed : 0}
+            menuItems={[
+              { value: 0, name: "Default (2.8 MHz)" },
+              { value: 1, name: "4 MHz" },
+              { value: 2, name: "5 MHz" },
+              { value: 3, name: "7 MHz (ZipGS)" },
+              { value: 4, name: "8 MHz (ZipGS)" },
+              { value: 5, name: "10 MHz" },
+              { value: 6, name: "12 MHz (ZipGS)" },
+              { value: 7, name: "16 MHz (ZipGS)" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, cpuSpeed: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_ENABLE_2ND_525) ? (
+        <div>
+          <EditorSwitch
+            label="Enable 2nd 5.25&quot; Drive"
+            tooltip="Enable second 5.25&quot; drive for games that need simultaneous access to two disks. Most games only need one drive with manual disk swapping."
+            value={object.props.enable2nd525 ? object.props.enable2nd525 : false}
+            onChange={(e) => {
+              const props = { ...object.props, enable2nd525: e.target.checked }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_ENABLE_2ND_35) ? (
+        <div>
+          <EditorSwitch
+            label="Enable 2nd 3.5&quot; Drive"
+            tooltip="Enable second 3.5&quot; drive for games that need simultaneous access to two disks. Most games only need one drive with manual disk swapping."
+            value={object.props.enable2nd35 ? object.props.enable2nd35 : false}
+            onChange={(e) => {
+              const props = { ...object.props, enable2nd35: e.target.checked }
               setObject({ ...object, props })
             }}
           />
