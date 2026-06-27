@@ -30,7 +30,7 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 
-import { AppRegistry } from '@webrcade/app-common';
+import { AppRegistry, computeShortNames } from '@webrcade/app-common';
 import { GlobalHolder } from '../Global';
 import { enableDropHandler } from '../UrlProcessor';
 import EditorButton from './common/editor/EditorButton';
@@ -39,6 +39,37 @@ import Prefs from '../Prefs';
 const PREF_MERGE_SHOW_FULL_URL = 'mergeShowFullUrl';
 
 // --- Helpers ------------------------------------------------------------------
+
+function computeFileSubtitles(items, field) {
+  const result = {};
+  const names = items.map(item => {
+    const urls = item.props?.[field] ?? [];
+    return urls.length === 1 ? getFilename(urls[0]) : null;
+  });
+  const eligible = names.every(n => n !== null);
+  if (!eligible) return result;
+  const shorts = computeShortNames(names);
+  for (let i = 0; i < items.length; i++) {
+    const dot = shorts[i].lastIndexOf('.');
+    const noExt = dot !== -1 ? shorts[i].substring(0, dot) : shorts[i];
+    const fullDot = names[i].lastIndexOf('.');
+    const fullNoExt = fullDot !== -1 ? names[i].substring(0, fullDot) : names[i];
+    result[items[i].id] = noExt !== fullNoExt ? noExt : null;
+  }
+  return result;
+}
+
+function computeShortTitles(items) {
+  if (items.length < 2) return {};
+  const titles = items.map(item => item.title || '(untitled)');
+  const shorts = computeShortNames(titles);
+  const result = {};
+  for (let i = 0; i < items.length; i++) {
+    const short = shorts[i].trim();
+    result[items[i].id] = short !== titles[i] ? short : null;
+  }
+  return result;
+}
 
 function computeScore(item, mediaField) {
   let score = 0;
@@ -102,13 +133,15 @@ function getTypeBg(item) {
 // --- PrimaryCard ---------------------------------------------------------------
 
 const PrimaryCard = React.memo(function PrimaryCard({
-  item, mediaField, primaryId, recommendedId, onSelect,
+  item, mediaField, primaryId, recommendedId, shortTitle, fileSubtitle, onSelect,
 }) {
   const isSelected    = primaryId === item.id;
   const isRecommended = recommendedId === item.id;
   const mediaCount    = (item.props?.[mediaField] ?? []).length;
   const mediaLabel    = mediaField === 'discs' ? 'disc' : 'media';
   const thumbSrc      = item.thumbnail || getTypeThumb(item);
+  const displayTitle  = shortTitle || item.title || '(untitled)';
+  const fullTitle     = shortTitle ? (item.title || '(untitled)') : null;
 
   return (
     <Box
@@ -146,9 +179,9 @@ const PrimaryCard = React.memo(function PrimaryCard({
       </Box>
 
       <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.4, flexWrap: 'wrap' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.2, flexWrap: 'wrap' }}>
           <Typography variant="body2" noWrap sx={{ fontWeight: isSelected ? 600 : 400, lineHeight: 1.3 }}>
-            {item.title || '(untitled)'}
+            {displayTitle}
           </Typography>
           {isRecommended && (
             <Chip
@@ -160,6 +193,16 @@ const PrimaryCard = React.memo(function PrimaryCard({
             />
           )}
         </Box>
+        {fullTitle && (
+          <Typography variant="caption" noWrap sx={{ color: 'text.disabled', display: 'block', mb: 0.3, lineHeight: 1.2 }}>
+            {fullTitle}
+          </Typography>
+        )}
+        {!fullTitle && fileSubtitle && (
+          <Typography variant="caption" noWrap sx={{ color: 'text.disabled', display: 'block', mb: 0.3, lineHeight: 1.2 }}>
+            {fileSubtitle}
+          </Typography>
+        )}
         <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
           {[['desc', item.description], ['image', item.thumbnail], ['bg', item.background]].map(([lbl, val]) => (
             <Chip
@@ -324,7 +367,7 @@ function PreviewCarousel({ item }) {
 // --- MediaEntryRow ------------------------------------------------------------
 
 const MediaEntryRow = React.memo(function MediaEntryRow({
-  entry, entryIndex, displayNumber, isDragOver, showFullUrl, onDragStart, onDragOver, onDrop, onDragEnd,
+  entry, entryIndex, displayNumber, isDragOver, showFullUrl, fileSubtitle, onDragStart, onDragOver, onDrop, onDragEnd,
 }) {
   const label = entry.sourceItemMediaCount === 1
     ? entry.sourceItemTitle
@@ -357,6 +400,11 @@ const MediaEntryRow = React.memo(function MediaEntryRow({
       <Box sx={{ flexGrow: 1, minWidth: 0 }}>
         <Typography variant="body2" noWrap>
           {label}
+          {entry.sourceItemMediaCount === 1 && fileSubtitle && (
+            <Typography component="span" variant="body2" sx={{ color: 'text.disabled', ml: 0.75 }}>
+              {fileSubtitle}
+            </Typography>
+          )}
         </Typography>
         <Typography
           variant="caption"
@@ -379,6 +427,8 @@ const MediaEntryRow = React.memo(function MediaEntryRow({
 export default function MergeDialog() {
   const [open,           setOpen          ] = React.useState(false);
   const [items,          setItems         ] = React.useState([]);
+  const [shortTitles,    setShortTitles   ] = React.useState({});
+  const [fileSubtitles,  setFileSubtitles ] = React.useState({});
   const [mediaField,     setMediaField    ] = React.useState('discs');
   const [primaryId,       setPrimaryId     ] = React.useState(null);
   const [recommendedId,  setRecommendedId ] = React.useState(null);
@@ -409,6 +459,8 @@ export default function MergeDialog() {
     const firstId = dialogItems[0]?.id ?? null;
     const entries = buildOrderedEntries(dialogItems, field);
     setItems(dialogItems);
+    setShortTitles(computeShortTitles(dialogItems));
+    setFileSubtitles(computeFileSubtitles(dialogItems, field));
     setMediaField(field);
     setPrimaryId(firstId);
     setRecommendedId(bestId);
@@ -529,6 +581,8 @@ export default function MergeDialog() {
                   mediaField={mediaField}
                   primaryId={primaryId}
                   recommendedId={recommendedId}
+                  shortTitle={shortTitles[item.id] ?? null}
+                  fileSubtitle={fileSubtitles[item.id] ?? null}
                   onSelect={(id) => {
                 setPrimaryId(id);
                 setOrderedEntries(prev => reorderEntriesForPrimary(prev, id));
@@ -623,6 +677,7 @@ export default function MergeDialog() {
                     displayNumber={entryDisplayNum}
                     isDragOver={dragOverIndex === row.entryIndex}
                     showFullUrl={showFullUrl}
+                    fileSubtitle={fileSubtitles[row.entry.sourceItemId] ?? null}
                     onDragStart={handleDragStart}
                     onDragOver={handleDragOver}
                     onDrop={handleDrop}

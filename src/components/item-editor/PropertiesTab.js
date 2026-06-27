@@ -27,7 +27,12 @@ const PROP_3DO_HACK = "PROP_3DO_HACK";
 const PROP_6BUTTON = "PROP_6BUTTON";
 const PROP_ADDITIONAL_ROMS = "PROP_ADDITIONAL_ROMS";
 const PROP_ANALOG = "PROP_ANALOG";
+const PROP_ANALOG_DIRECTION = "PROP_ANALOG_DIRECTION";
+const PROP_ANALOG_INVERT = "PROP_ANALOG_INVERT";
 const PROP_APPLE2GS_CPU_SPEED = "PROP_APPLE2GS_CPU_SPEED";
+const PROP_DUAL_CONTROLLER = "PROP_DUAL_CONTROLLER";
+const PROP_CONTROL_MODE = "PROP_CONTROL_MODE";
+const PROP_ICBM = "PROP_ICBM";
 const PROP_ARCHIVE = "PROP_ARCHIVE";
 const PROP_AUTO_START_PATH = "PROP_AUTO_START_PATH";
 const PROP_BOOK_MODE = "PROP_BOOK_MODE";
@@ -58,6 +63,7 @@ const PROP_MAP_RUN_SELECT = "PROP_MAP_RUN_SELECT";
 const PROP_MEDIA = "PROP_MEDIA";
 const PROP_MICROPHONE = "PROP_MICROPHONE";
 const PROP_MIRRORING = "PROP_MIRRORING";
+const PROP_HOMEBREW_SDCARD = "PROP_HOMEBREW_SDCARD";
 const PROP_MOUSE_SPEED = "PROP_MOUSE_SPEED";
 const PROP_MULTITAP = "PROP_MULTITAP";
 const PROP_NDS_FIRMWARE_LANGUAGE = "PROP_NDS_FIRMWARE_LANGUAGE";
@@ -97,6 +103,8 @@ const ALL_PROPS = [
   PROP_6BUTTON,
   PROP_ADDITIONAL_ROMS,
   PROP_ANALOG,
+  PROP_ANALOG_DIRECTION,
+  PROP_ANALOG_INVERT,
   PROP_APPLE2GS_CPU_SPEED,
   PROP_ARCHIVE,
   PROP_AUTO_START_PATH,
@@ -114,7 +122,10 @@ const ALL_PROPS = [
   PROP_DOS_CONTROLLER_MODE,
   PROP_DOS_CPU_SPEED,
   PROP_DUAL_ANALOG,
+  PROP_CONTROL_MODE,
+  PROP_DUAL_CONTROLLER,
   PROP_ENABLE_2ND_525,
+  PROP_ICBM,
   PROP_ENABLE_2ND_35,
   PROP_FLASH_SIZE,
   PROP_FORCE_EMULATED_BIOS,
@@ -462,10 +473,10 @@ export const buildFieldMap = () => {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.NDS]: {
-      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP, PROP_BOOK_MODE, PROP_DUAL_ANALOG, PROP_MICROPHONE, PROP_NDS_FIRMWARE_LANGUAGE
+      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP, PROP_BOOK_MODE, PROP_DUAL_ANALOG, PROP_MICROPHONE, PROP_HOMEBREW_SDCARD, PROP_NDS_FIRMWARE_LANGUAGE
     },
     [APP_TYPE_KEYS.RETRO_MELONDS]: {
-      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP, PROP_BOOK_MODE, PROP_DUAL_ANALOG, PROP_MICROPHONE, PROP_NDS_FIRMWARE_LANGUAGE
+      PROP_ROM, PROP_ZOOM_LEVEL, PROP_SCREEN_LAYOUT, PROP_SCREEN_GAP, PROP_BOOK_MODE, PROP_DUAL_ANALOG, PROP_MICROPHONE, PROP_HOMEBREW_SDCARD, PROP_NDS_FIRMWARE_LANGUAGE
     },
     [APP_TYPE_KEYS.RETRO_PARALLEL_N64]: {
       PROP_ROM, PROP_ZOOM_LEVEL
@@ -477,10 +488,10 @@ export const buildFieldMap = () => {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.ASTROCADE]: {
-      PROP_ROM, PROP_ZOOM_LEVEL
+      PROP_ROM, PROP_ZOOM_LEVEL, PROP_ANALOG_DIRECTION, PROP_ANALOG_INVERT, PROP_CONTROL_MODE
     },
     [APP_TYPE_KEYS.RETRO_MAME_ASTROCADE]: {
-      PROP_ROM, PROP_ZOOM_LEVEL
+      PROP_ROM, PROP_ZOOM_LEVEL, PROP_ANALOG_DIRECTION, PROP_ANALOG_INVERT, PROP_CONTROL_MODE
     },
     [APP_TYPE_KEYS.CDI]: {
       PROP_DISCS, PROP_ZOOM_LEVEL
@@ -1756,6 +1767,67 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.dualAnalog)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_HOMEBREW_SDCARD) ? (
+        <div>
+          <EditorSwitch
+            label="Homebrew SD Card"
+            tooltip="Enable SD card support for homebrew games (DLDI)."
+            onChange={(e) => {
+              const props = { ...object.props, homebrewSdCard: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.homebrewSdCard)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_ANALOG_DIRECTION) ? (
+        <div>
+          <EditorSelect
+            label="Analog direction"
+            tooltip="The axis used by the right analog stick for the paddle. Select Horizontal for left/right movement, or Vertical for up/down movement."
+            value={object.props.analogDirection !== undefined ? object.props.analogDirection : 0}
+            menuItems={[
+              { value: 0, name: "Horizontal" },
+              { value: 1, name: "Vertical" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, analogDirection: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_ANALOG_INVERT) ? (
+        <div>
+          <EditorSwitch
+            label="Invert analog"
+            tooltip="Whether to invert the direction of the right analog stick."
+            onChange={(e) => {
+              const props = { ...object.props, analogInvert: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.analogInvert)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_CONTROL_MODE) ? (
+        <div>
+          <EditorSelect
+            label="Control mode"
+            tooltip="The control scheme to use for the game."
+            value={object.props.controlMode !== undefined ? object.props.controlMode : 0}
+            menuItems={[
+              { value: 0, name: "Standard" },
+              { value: 1, name: "Dual controller" },
+              { value: 2, name: "ICBM Attack" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, controlMode: e.target.value }
+              setObject({ ...object, props })
+            }}
           />
         </div>
       ) : null}

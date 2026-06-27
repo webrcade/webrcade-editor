@@ -49,13 +49,18 @@ function PropertiesTab(props) {
 
   const is5200Enabled = AppRegistry.instance.getAppTypes()["5200"];
   const isSaturnEnabled = AppRegistry.instance.getAppTypes()["saturn"];
+  const isApple2gsEnabled = AppRegistry.instance.getAppTypes()["apple2gs"];
 
   const [app, setApp] = React.useState("3do");
+
+  const insertAlpha = (arr, item) => {
+    const idx = arr.findIndex(i => i.name.localeCompare(item.name) > 0);
+    arr.splice(idx === -1 ? arr.length : idx, 0, item);
+  };
 
   const items = [
     { value: "3do", name: "3DO" },
     { value: "apple2", name: "Apple II" },
-    { value: "apple2gs", name: "Apple IIGS" },
     { value: "lynx", name: "Atari Lynx" },
     { value: "astrocade", name: "Bally Astrocade" },
     { value: "coleco", name: "ColecoVision"},
@@ -66,17 +71,13 @@ function PropertiesTab(props) {
     { value: "nes", name: "Nintendo NES"},
     { value: "philipscdi", name: "Philips CD-i" },
     { value: "segacd", name: "Sega CD" },
-    // { value: "segasaturn", name: "Sega Saturn" },
     { value: "neogeo", name: "SNK Neo Geo" },
     { value: "neogeocd", name: "SNK Neo Geo CD" },
     { value: "psx", name: "Sony PlayStation" },
   ]
-  if (is5200Enabled) {
-    items.splice(2, 0, { value: "5200", name: "Atari 5200" });
-  }
-  if (isSaturnEnabled) {
-    items.splice(12, 0, { value: "segasaturn", name: "Sega Saturn" });
-  }
+  if (isApple2gsEnabled) insertAlpha(items, { value: "apple2gs", name: "Apple IIGS" });
+  if (is5200Enabled) insertAlpha(items, { value: "5200", name: "Atari 5200" });
+  if (isSaturnEnabled) insertAlpha(items, { value: "segasaturn", name: "Sega Saturn" });
 
   return (
     <EditorTabPanel value={tabValue} index={tabIndex}>
