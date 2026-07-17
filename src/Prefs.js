@@ -83,6 +83,21 @@ class PrefsImpl {
     return Util.asString(this.prefs.lastNewType);
   }
 
+  async setRecentTypes(type) {
+    let recent = this.prefs.recentTypes || [];
+    recent = recent.filter(t => t !== type);
+    recent.unshift(type);
+    if (recent.length > 8) {
+      recent = recent.slice(0, 8);
+    }
+    this.prefs.recentTypes = recent;
+    await this.save();
+  }
+
+  getRecentTypes() {
+    return this.prefs.recentTypes || [];
+  }
+
   async setFeed(feed) {
     this.feed = feed;
     await this.saveFeed(this.FEED_PROP, feed);

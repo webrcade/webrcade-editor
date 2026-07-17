@@ -1,0 +1,30 @@
+{
+  "04b9ede2208708933899685d1b40d1b0": {
+    "_name": "Red Baron / Panzer Attack",
+    "analogInvert": true
+  },
+  "c4e37cbb75848f48808352bf9a1dff80": {
+    "_name": "Conan the Barbarian",
+    "analogDirection": 1
+  },
+  "585b1dbed27e386bb2f6262024f0a537": {
+    "_name": "Conan the Barbarian",
+    "analogDirection": 1
+  },
+  "d3fcbd6eeca09a435b64daa5390f1d0d": {
+    "_name": "ICBM Attack",
+    "controlMode": 2
+  },
+  "2cf95f8efe6c39d478324206c2832db7": {
+    "_name": "ICBM Attack",
+    "controlMode": 2
+  },
+  "9f02cb1b2072791019bcd83e82abd7d4": {
+    "_name": "Crazy Climber",
+    "controlMode": 1
+  },
+  "e201e61df0dc72932ec273ead4feb9f2": {
+    "_name": "Bally Pin",
+    "controlMode": 1
+  }
+}

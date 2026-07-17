@@ -19,11 +19,15 @@ import ThumbnailTab from '../common/editor/ThumbnailTab';
 import { GlobalHolder, Global } from '../../Global';
 
 import A2600ControllersTab from './a2600/A2600ControllersTab';
+import NdsHomebrewTab from './nds/NdsHomebrewTab';
 import A5200DescriptionsTab from './a5200/A5200DescriptionsTab';
 import A5200MappingsTab from './a5200/A5200MappingsTab';
+import AstrocadeDescriptionsTab from './astrocade/AstrocadeDescriptionsTab';
+import AstrocadeMappingsTab from './astrocade/AstrocadeMappingsTab';
 import ColecoDescriptionsTab from './coleco/ColecoDescriptionsTab';
 import ColecoMappingsTab from './coleco/ColecoMappingsTab';
 import C64MappingsTab from './c64/C64MappingsTab';
+import Apple2MappingsTab from './apple2/Apple2MappingsTab';
 import CheatsTab from './cheats/CheatsTab';
 
 import {
@@ -126,14 +130,14 @@ const setDefaultForPcEngineCd = (type, item) => {
   }
 }
 
-// const setDefaultForPhilipsCdi = (type, item) => {
-//   if (type === APP_TYPE_KEYS.RETRO_SAME_CDI ||
-//     type === APP_TYPE_KEYS.CDI) {
-//     if (isEmptyString(item.props.uid)) {
-//       item.props.uid = uuidv4();
-//     }
-//   }
-// }
+const setDefaultForPhilipsCdi = (type, item) => {
+  if (type === APP_TYPE_KEYS.RETRO_SAME_CDI ||
+    type === APP_TYPE_KEYS.CDI) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
 
 const setDefaultForNeoGeoCd = (type, item) => {
   if (type === APP_TYPE_KEYS.RETRO_NEOCD ||
@@ -194,6 +198,27 @@ const setDefaultForCommodore8Bit = (type, item) => {
   }
 }
 
+const setDefaultForApple2 = (type, item) => {
+  if (type === APP_TYPE_KEYS.APPLE2 ||
+    type === APP_TYPE_KEYS.RETRO_MAME_APPLE2 ||
+    type === APP_TYPE_KEYS.APPLE2GS ||
+    type === APP_TYPE_KEYS.RETRO_MAME_APPLE2GS) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+    // if (item.props.saveDisks === undefined) {
+    //   item.props.saveDisks = 1;
+    // }
+    if (!item.props.mappings || Object.keys(item.props.mappings).length === 0) {
+      item.props.mappings = {
+        "a": "button0",
+        "b": "button1",
+      };
+    }
+  }
+}
+
+
 
 const setDefaultForSaturn = (type, item) => {
   if (type === APP_TYPE_KEYS.RETRO_YABAUSE ||
@@ -237,6 +262,20 @@ const setDefaultForA5200 = (type, item) => {
   }
 }
 
+const setDefaultForAstrocade = (type, item) => {
+  if (type === APP_TYPE_KEYS.ASTROCADE ||
+    type === APP_TYPE_KEYS.RETRO_MAME_ASTROCADE) {
+    if (!item.props.mappings || Object.keys(item.props.mappings).length === 0) {
+      item.props.mappings = {
+        "a": "fire",
+        "b": "fire",
+        "lb": "fire",
+        "rb": "fire",
+      };
+    }
+  }
+}
+
 const setDefaultForQuake = (type, item) => {
   if (type === APP_TYPE_KEYS.QUAKE ||
     type === APP_TYPE_KEYS.TYRQUAKE) {
@@ -270,10 +309,11 @@ export function setDefaultsForType(type, object) {
   setDefaultForPsx(type, object);
   setDefaultForSegaCd(type, object);
   setDefaultForPcEngineCd(type, object);
-  // setDefaultForPhilipsCdi(type, object);
+  setDefaultForPhilipsCdi(type, object);
   setDefaultForPcfx(type, object);
   setDefaultForColeco(type, object);
   setDefaultForA5200(type, object);
+  setDefaultForAstrocade(type, object);
   setDefaultForQuake(type, object);
   setDefaultForDosBox(type, object);
   setDefaultForScumm(type, object);
@@ -281,6 +321,7 @@ export function setDefaultsForType(type, object) {
   setDefaultFor3do(type, object);
   // setDefaultForPsp(type, object);
   setDefaultForCommodore8Bit(type, object);
+  setDefaultForApple2(type, object);
   setDefaultForSaturn(type, object);
 }
 
@@ -292,7 +333,12 @@ export default function ItemEditor(props) {
 
   const isColeco = (item.type === APP_TYPE_KEYS.COLEM || item.type === APP_TYPE_KEYS.COLECO);
   const isC64 = (item.type === APP_TYPE_KEYS.COMMODORE_C64 || item.type === APP_TYPE_KEYS.RETRO_COMMODORE_C64);
+  const isNds = (item.type === APP_TYPE_KEYS.NDS || item.type === APP_TYPE_KEYS.RETRO_MELONDS);
+  const hasNdsHomebrew = isNds && Util.asBoolean(item.props && item.props.homebrewSdCard);
   const isA5200 = (item.type === APP_TYPE_KEYS.A5200 || item.type === APP_TYPE_KEYS.RETRO_A5200);
+  const isAstrocade = (item.type === APP_TYPE_KEYS.ASTROCADE || item.type === APP_TYPE_KEYS.RETRO_MAME_ASTROCADE);
+  const isApple2 = (item.type === APP_TYPE_KEYS.APPLE2 || item.type === APP_TYPE_KEYS.RETRO_MAME_APPLE2 ||
+    item.type === APP_TYPE_KEYS.APPLE2GS || item.type === APP_TYPE_KEYS.RETRO_MAME_APPLE2GS);
   const isA2600 = (item.type === APP_TYPE_KEYS.A2600 || item.type === APP_TYPE_KEYS.RETRO_STELLA || item.type === APP_TYPE_KEYS.RETRO_STELLA_LATEST);
   const hasCheats = (
     /* Super Nintendo */     item.type === APP_TYPE_KEYS.SNES || item.type === APP_TYPE_KEYS.RETRO_SNES9X ||
@@ -349,6 +395,13 @@ export default function ItemEditor(props) {
     a5200DescriptionsTab = index++;
   }
 
+  let astrocadeMappingsTab = 0;
+  let astrocadeDescriptionsTab = 0;
+  if (isAstrocade) {
+    astrocadeMappingsTab = index++;
+    astrocadeDescriptionsTab = index++;
+  }
+
   let colecoMappingsTab = 0;
   let colecoDescriptionsTab = 0;
   if (isColeco) {
@@ -364,6 +417,16 @@ export default function ItemEditor(props) {
   let c64MappingsTab = 0;
   if (isC64) {
     c64MappingsTab = index++;
+  }
+
+  let apple2MappingsTab = 0;
+  if (isApple2) {
+    apple2MappingsTab = index++;
+  }
+
+  let ndsHomebrewTab = 0;
+  if (hasNdsHomebrew) {
+    ndsHomebrewTab = index++;
   }
 
   let cheatsTab = 0;
@@ -382,6 +445,10 @@ export default function ItemEditor(props) {
     tabs.push(<Tab label="Mappings" key={a5200MappingsTab} />);
     tabs.push(<Tab label="Descriptions" key={a5200DescriptionsTab} />);
   }
+  if (isAstrocade) {
+    tabs.push(<Tab label="Mappings" key={astrocadeMappingsTab} />);
+    tabs.push(<Tab label="Descriptions" key={astrocadeDescriptionsTab} />);
+  }
   if (isColeco) {
     tabs.push(<Tab label="Mappings" key={colecoMappingsTab} />);
     tabs.push(<Tab label="Descriptions" key={colecoDescriptionsTab} />);
@@ -391,6 +458,12 @@ export default function ItemEditor(props) {
   }
   if (isC64) {
     tabs.push(<Tab label="Mappings" key={c64MappingsTab} />);
+  }
+  if (isApple2) {
+    tabs.push(<Tab label="Mappings" key={apple2MappingsTab} />);
+  }
+  if (hasNdsHomebrew) {
+    tabs.push(<Tab label="Homebrew" key={ndsHomebrewTab} />);
   }
   if (hasCheats) {
     tabs.push(<Tab label="Cheats" key={cheatsTab} />);
@@ -585,11 +658,34 @@ export default function ItemEditor(props) {
                       if (oldAlias === newAlias) {
                         sameBaseType = true;
                       }
+                      // If the old and new are in the same family, don't clear
+                      if (!sameBaseType) {
+                        const oldFamily = AppRegistry.instance.getFamily(oldType);
+                        const newFamily = AppRegistry.instance.getFamily(type);
+                        if (oldFamily && newFamily && oldFamily === newFamily) {
+                          sameBaseType = true;
+                        }
+                      }
                     }
 
                     if (!sameBaseType) {
+                      // Preserve rom/media/discs if both types support them
+                      const oldDefaults = AppRegistry.instance.getDefaultsForType(oldType) || {};
+                      const newDefaults = AppRegistry.instance.getDefaultsForType(type) || {};
+                      const preserved = {};
+
+                      if (oldDefaults.rom !== undefined && newDefaults.rom !== undefined && item.props.rom) {
+                        preserved.rom = item.props.rom;
+                      }
+                      if (oldDefaults.media !== undefined && newDefaults.media !== undefined && item.props.media) {
+                        preserved.media = item.props.media;
+                      }
+                      if (oldDefaults.discs !== undefined && newDefaults.discs !== undefined && item.props.discs) {
+                        preserved.discs = item.props.discs;
+                      }
+
                       // Clear props on type change
-                      item.props = {};
+                      item.props = preserved;
                     }
 
                     applyDefaults(item, type)
@@ -628,6 +724,24 @@ export default function ItemEditor(props) {
             object={item}
             setObject={setItem}
           />}
+          {isApple2 && <Apple2MappingsTab
+            tabValue={tabValue}
+            tabIndex={apple2MappingsTab}
+            object={item}
+            setObject={setItem}
+          />}
+          {isAstrocade && <AstrocadeMappingsTab
+            tabValue={tabValue}
+            tabIndex={astrocadeMappingsTab}
+            object={item}
+            setObject={setItem}
+          />}
+          {isAstrocade && <AstrocadeDescriptionsTab
+            tabValue={tabValue}
+            tabIndex={astrocadeDescriptionsTab}
+            object={item}
+            setObject={setItem}
+          />}
           {isColeco && <ColecoMappingsTab
             tabValue={tabValue}
             tabIndex={colecoMappingsTab}
@@ -643,6 +757,12 @@ export default function ItemEditor(props) {
           {isA2600 && <A2600ControllersTab
             tabValue={tabValue}
             tabIndex={a2600ControllersTab}
+            object={item}
+            setObject={setItem}
+          />}
+          {hasNdsHomebrew && <NdsHomebrewTab
+            tabValue={tabValue}
+            tabIndex={ndsHomebrewTab}
             object={item}
             setObject={setItem}
           />}

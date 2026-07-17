@@ -292,8 +292,9 @@ export async function processFiles(files, category, feed) {
       const title = dotIdx > 0 ? file.name.slice(0, dotIdx)  : file.name;
       const isAmbiguous = ambiguousExtSet.has(extDotted);
 
-      // Skip text files — binary ROMs always contain null bytes
-      if (!(await isBinaryFile(file))) {
+      // Skip text files — but only for ambiguous extensions. Known registered
+      // extensions (e.g. .nib) may legitimately contain no null bytes.
+      if (isAmbiguous && !(await isBinaryFile(file))) {
         skipped.push({
           id: ++_idCounter,
           filename: file.name,

@@ -12,12 +12,13 @@ import {
 
 import A5200_PROPS from './props/A5200Props.json';
 import COLECO_PROPS from './props/ColecoProps.json';
+import ASTROCADE_PROPS from './props/AstrocadeProps.json';
 
 class GameRegistryImpl {
   constructor() {
     this.db = {};
 
-    this.CUSTOM_PROPS = {...this.CUSTOM_PROPS, ...COLECO_PROPS, ...A5200_PROPS};
+    this.CUSTOM_PROPS = {...this.CUSTOM_PROPS, ...COLECO_PROPS, ...A5200_PROPS, ...ASTROCADE_PROPS};
     // console.log(this.CUSTOM_PROPS)
   }
 
@@ -225,6 +226,26 @@ class GameRegistryImpl {
       thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-saturn-images/master/Named_Titles/resized',
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-saturn-images/master/Named_Snaps/output',
       descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Saturn'
+    },
+    'astrocade': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-astrocade-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-astrocade-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Bally%20Astrocade'
+    },
+    'cdi': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-cdi-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-cdi-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Philips%20CD-i'
+    },
+    'apple2': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-apple2-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-apple2-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Apple%20II'
+    },
+    'apple2gs': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-apple2gs-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-apple2gs-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Apple%20IIGS'
     },
   }
 
@@ -592,6 +613,9 @@ class GameRegistryImpl {
   TITLE_ALIASES = {
     'commodore-c64': {
       'pirates': "sid meier's pirates",
+    },
+    'apple2': {
+      'one on one': "one-on-one",
     }
   }
 
@@ -1138,6 +1162,7 @@ console.log('[DEBUG] entries:',
     if (title.indexOf('leader board') !== -1) {
       typemap[title.replace('leader board', 'leaderboard')] = id;
     }
+
 
     // Roman <-> Arabic anywhere in title (longest match first to avoid partial matches)
     // No 'g' flag — avoids stateful lastIndex bug with test() + replace()
