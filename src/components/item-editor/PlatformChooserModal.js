@@ -34,6 +34,18 @@ const CATEGORIES = [
   { id: 'other', label: 'Other' }
 ];
 
+const BASE_FEED_URL = 'https://webrcade.github.io/webrcade-default-feed/images/';
+const PLATFORM_THUMB_EXCEPTIONS = {
+  'arcade':        'arcade-thum.png',   // typo in live URL; fix when default-feed is pushed
+  'commodore-c64': 'c64-thumb.png',
+  'gg':            'gamegear-thumb.png',
+  'lnx':           'lynx-thumb.png',
+  'sms':           'mastersystem-thumb.png',
+  'scumm':         'scummvm-thumb.png',
+};
+const getPlatformThumb = (key) =>
+  BASE_FEED_URL + (PLATFORM_THUMB_EXCEPTIONS[key] || `${key}-thumb.png`);
+
 const getManufacturerFromName = (name) => {
   const nameLower = name.toLowerCase();
   if (nameLower.includes('sega')) return 'sega';
@@ -64,8 +76,9 @@ const prepareData = (feedOverrides) => {
 
     if (isAlias) {
       const aliasKey = type.alias || key;
+      const aliasThumbnail = getPlatformThumb(key);
       if (!aliasMap[manufacturer]) aliasMap[manufacturer] = [];
-      aliasMap[manufacturer].push({ key, name, thumbnail, manufacturer, aliasKey });
+      aliasMap[manufacturer].push({ key, name, thumbnail: aliasThumbnail, manufacturer, aliasKey });
     } else {
       const aliasKey = type.alias;
       const parentAlias = aliasKey ? types[aliasKey] : null;
@@ -74,8 +87,9 @@ const prepareData = (feedOverrides) => {
       const feedDefault = aliasKey && feedOverrides[aliasKey] === key;
       const globalDefault = aliasKey && types[aliasKey]?.absoluteKey === key;
 
+      const specificThumbnail = getPlatformThumb(aliasKey);
       specificList.push({
-        key, name, thumbnail, manufacturer, aliasKey,
+        key, name, thumbnail: specificThumbnail, manufacturer, aliasKey,
         parentAliasName, coreName, isFeedDefault: feedDefault, isGlobalDefault: globalDefault
       });
     }
@@ -143,7 +157,7 @@ const PlatformCard = ({ item, section, selectedItem, selectedSection, onSelect }
     <Box
       onClick={() => onSelect(item, section)}
       sx={{
-        bgcolor: isSelected ? 'action.selected' : 'background.paper',
+        bgcolor: isSelected ? 'action.selected' : 'rgba(0,0,0,0.15)',
         border: isSelected ? '2px solid' : '1px solid',
         borderColor: isSelected ? 'primary.main' : 'divider',
         borderRadius: 2,
@@ -499,21 +513,21 @@ export default function PlatformChooserModal(props) {
                     >
                       {item.thumbnail && (
                         <Box sx={{
-                          width: 40,
-                          height: 40,
+                          width: 64,
+                          height: 56,
                           overflow: 'hidden',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           mr: 2,
-                          borderRadius: 1,
+                          p: 0.75,
                           flexShrink: 0,
                         }}>
                           <Box
                             component="img"
                             src={item.thumbnail}
                             alt={item.name}
-                            sx={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                            sx={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: 1 }}
                           />
                         </Box>
                       )}
