@@ -72,7 +72,6 @@ const prepareData = (feedOverrides) => {
     const isAlias = type.absoluteKey !== undefined;
     const name = AppRegistry.instance.getShortNameForType(key);
     const manufacturer = getManufacturerFromName(name);
-    const thumbnail = AppRegistry.instance.getDefaultThumbnailForType(key);
 
     if (isAlias) {
       const aliasKey = type.alias || key;
