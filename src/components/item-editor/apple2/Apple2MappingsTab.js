@@ -5,22 +5,27 @@ import EditorTabPanel from '../../common/editor/EditorTabPanel';
 import EditorSelect from '../../common/editor/EditorSelect';
 import { OPTIONS } from './Apple2MappingOptions';
 
+// Buttons where "(none)" has an explicit default to fall back to (normal
+// joystick movement) rather than simply being unmapped. For these, "(none)"
+// must be stored explicitly rather than by deleting the key, so that
+// "user chose to disable this" can be told apart from "never configured"
+// (which keeps applying the default).
+const EXPLICIT_NONE_BUTTONS = ["up", "down", "left", "right"];
+
 function MappingField(props) {
   const {
     label,
     buttonName,
     object,
-    setObject
+    setObject,
+    defaultValue
   } = props;
 
   const NONE = "none";
 
-  let value = NONE;
-  if (object.props.mappings) {
-    value = object.props.mappings[buttonName];
-    if (!value) {
-      value = NONE;
-    }
+  let value = object.props.mappings ? object.props.mappings[buttonName] : undefined;
+  if (!value) {
+    value = defaultValue || NONE;
   }
 
   const setValue = (str) => {
@@ -29,7 +34,9 @@ function MappingField(props) {
       mappings = {};
     }
 
-    if (str === NONE) {
+    if (str === NONE && EXPLICIT_NONE_BUTTONS.includes(buttonName)) {
+      mappings[buttonName] = NONE;
+    } else if (str === NONE) {
       delete mappings[buttonName];
     } else {
       mappings[buttonName] = str;
@@ -87,6 +94,10 @@ export default function Apple2MappingsTab(props) {
       <MappingField label="Right bumper"  buttonName="rb"    object={object} setObject={setObject} />
       <MappingField label="Left trigger"  buttonName="lt"    object={object} setObject={setObject} />
       <MappingField label="Right trigger" buttonName="rt"    object={object} setObject={setObject} />
+      <MappingField label="D-pad up"      buttonName="up"    object={object} setObject={setObject} defaultValue="moveup" />
+      <MappingField label="D-pad down"    buttonName="down"  object={object} setObject={setObject} defaultValue="movedown" />
+      <MappingField label="D-pad left"    buttonName="left"  object={object} setObject={setObject} defaultValue="moveleft" />
+      <MappingField label="D-pad right"   buttonName="right" object={object} setObject={setObject} defaultValue="moveright" />
     </EditorTabPanel>
   );
 }

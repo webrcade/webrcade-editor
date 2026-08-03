@@ -418,36 +418,20 @@ function PropertiesTab(props) {
       </div>
       <div>
         {app === "philipscdi" && (
-          <EditorMultiUrlField
-            label="Philips CDI BIOS (URLs)"
-            rows={5}
+          <EditorUrlField
+            sx={{ width: '50ch' }}
+            label="Philips CDI BIOS (URL)"
             onFileUpload={uploadBiosFile}
             onDropText={(text) => {
-              let urls = object.props.philipscdi_bios ? object.props.philipscdi_bios : [];
-              if (Array.isArray(text)) {
-                urls.push(...text);
-              } else {
-                urls.push(text);
-              }
-              urls = Util.removeEmptyItems(urls);
-              const props = { ...object.props, philipscdi_bios: urls }
-              if (urls.length === 0) {
-                delete props.philipscdi_bios;
-              }
+              const props = { ...object.props, philipscdi_bios: text }
               setObject({ ...object, props })
             }}
             onChange={(e) => {
-              const val = e.target.value;
-              let urls = Util.splitLines(val);
-              //urls = Util.removeEmptyItems(urls);
-              const props = { ...object.props, philipscdi_bios: urls }
-              if (urls.length === 0) {
-                delete props.philipscdi_bios;
-              }
+              const props = { ...object.props, philipscdi_bios: e.target.value }
               setObject({ ...object, props })
             }}
-            value={object.props.philipscdi_bios && object.props.philipscdi_bios.length > 0 ?
-              object.props.philipscdi_bios.join("\n") : ""}
+            value={Util.asString(Array.isArray(object.props.philipscdi_bios) ?
+              object.props.philipscdi_bios[0] : object.props.philipscdi_bios)}
           />
         )}
       </div>

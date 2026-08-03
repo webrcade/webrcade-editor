@@ -85,6 +85,7 @@ const PROP_SAVE_TYPE = "PROP_SAVE_TYPE";
 const PROP_SCREEN_GAP = "PROP_SCREEN_GAP";
 const PROP_SCREEN_LAYOUT = "PROP_SCREEN_LAYOUT";
 const PROP_SMS_HW_TYPE = "PROP_SMS_HW_TYPE";
+const PROP_PORT2_TYPE = "PROP_PORT2_TYPE";
 const PROP_SWAP_CONTROLLERS = "PROP_SWAP_CONTROLLERS";
 const PROP_GB_HW_TYPE = "PROP_GB_HW_TYPE";
 const PROP_GB_COLORS = "PROP_GB_COLORS";
@@ -163,6 +164,7 @@ const ALL_PROPS = [
   PROP_SKIP_BIOS,
   PROP_SKIP_CD_LOADING,
   PROP_SMS_HW_TYPE,
+  PROP_PORT2_TYPE,
   PROP_SNES_MULTITAP,
   PROP_SWAP_CONTROLLERS,
   PROP_TWIN_STICK,
@@ -237,6 +239,18 @@ export const buildFieldMap = () => {
     },
     [APP_TYPE_KEYS.RETRO_GENPLUSGX_GG]: {
       PROP_ROM, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.SEGA32X]: {
+      PROP_ROM, PROP_3BUTTON, PROP_PORT2_TYPE, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_PICODRIVE_32X]: {
+      PROP_ROM, PROP_3BUTTON, PROP_PORT2_TYPE, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.SEGA32XCD]: {
+      PROP_DISCS, PROP_3BUTTON, PROP_PORT2_TYPE, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_PICODRIVE_32XCD]: {
+      PROP_DISCS, PROP_3BUTTON, PROP_PORT2_TYPE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.SMS]: {
       PROP_ROM, PROP_FORCE_PAL, PROP_SMS_HW_TYPE, PROP_FORCE_YM2413, PROP_ZOOM_LEVEL
@@ -904,6 +918,24 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_PORT2_TYPE) ? (
+        <div>
+          <EditorSelect
+            label="Controller Port #2"
+            tooltip="The type of controller to emulate in port #2. Some games (e.g. Corpse Killer) require port #2 to be disconnected."
+            value={object.props.port2 ? object.props.port2 : 0}
+            menuItems={[
+              { value: 0, name: "Gamepad" },
+              { value: 1, name: "Light Gun" },
+              { value: 10, name: "None" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, port2: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
       {hasProp(object, PROP_GB_HW_TYPE) ? (
         <div>
           <EditorSelect
@@ -1316,7 +1348,7 @@ export default function PropertiesTab(props) {
           <EditorSwitch
             label="Enable 2nd 5.25&quot; Drive"
             tooltip="Enable second 5.25&quot; drive for games that need simultaneous access to two disks. Most games only need one drive with manual disk swapping."
-            value={object.props.enable2nd525 ? object.props.enable2nd525 : false}
+            checked={Util.asBoolean(object.props.enable2nd525)}
             onChange={(e) => {
               const props = { ...object.props, enable2nd525: e.target.checked }
               setObject({ ...object, props })
@@ -1329,7 +1361,7 @@ export default function PropertiesTab(props) {
           <EditorSwitch
             label="Enable 2nd 3.5&quot; Drive"
             tooltip="Enable second 3.5&quot; drive for games that need simultaneous access to two disks. Most games only need one drive with manual disk swapping."
-            value={object.props.enable2nd35 ? object.props.enable2nd35 : false}
+            checked={Util.asBoolean(object.props.enable2nd35)}
             onChange={(e) => {
               const props = { ...object.props, enable2nd35: e.target.checked }
               setObject({ ...object, props })

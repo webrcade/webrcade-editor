@@ -311,7 +311,7 @@ const CopyLinkDialog = (props) => {
           Copy
         </Button>
         <Button onClick={() => setOpen(false)}>
-          Cancel
+          Close
         </Button>
       </DialogActions>
     </Dialog>
