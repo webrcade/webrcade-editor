@@ -355,7 +355,7 @@ export default function ItemEditor(props) {
     /* Sega Master System */ item.type === APP_TYPE_KEYS.SMS || item.type === APP_TYPE_KEYS.RETRO_GENPLUSGX_SMS ||
     /* Sega Game Gear */     item.type === APP_TYPE_KEYS.GG || item.type === APP_TYPE_KEYS.RETRO_GENPLUSGX_GG ||
     /* Sega SG-1000 */       item.type === APP_TYPE_KEYS.SG1000 || item.type === APP_TYPE_KEYS.RETRO_GENPLUSGX_SG ||
-    /* Sega 32X */           /*item.type === APP_TYPE_KEYS.SEGA32X || item.type === APP_TYPE_KEYS.RETRO_PICODRIVE_32X ||*/
+    /* Sega 32X */           item.type === APP_TYPE_KEYS.SEGA32X || item.type === APP_TYPE_KEYS.RETRO_PICODRIVE_32X ||
     /* Sega CD */            item.type === APP_TYPE_KEYS.SEGACD || item.type === APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD ||
     /* Sony PlayStation */   item.type === APP_TYPE_KEYS.PSX || item.type === APP_TYPE_KEYS.BEETLE_PSX ||
     /* NEC PC Engine */       item.type === APP_TYPE_KEYS.PCE || item.type === APP_TYPE_KEYS.RETRO_MEDNAFEN_PCE ||
