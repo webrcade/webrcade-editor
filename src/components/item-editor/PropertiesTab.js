@@ -44,6 +44,7 @@ const PROP_DISABLE_AUTOLOAD = "PROP_DISABLE_AUTOLOAD";
 const PROP_DISABLE_TDE = "PROP_DISABLE_TDE";
 const PROP_DISABLE_LOOKUP = "PROP_DISABLE_LOOKUP";
 const PROP_DISABLE_MEMCARD1 = "PROP_DISABLE_MEMCARD1";
+const PROP_INITIAL_KEYBOARD_MODE = "PROP_INITIAL_KEYBOARD_MODE";
 const PROP_DISCS = "PROP_DISCS";
 const PROP_DOS_CONTROLLER_MODE = "PROP_DOS_CONTROLLER_MODE";
 const PROP_DOS_CPU_SPEED = "PROP_DOS_CPU_SPEED";
@@ -118,6 +119,7 @@ const ALL_PROPS = [
   PROP_DISABLE_LOOKUP,
   PROP_DISABLE_MEMCARD1,
   PROP_DISABLE_TDE,
+  PROP_INITIAL_KEYBOARD_MODE,
   PROP_DISCS,
   PROP_DOOM_GAME,
   PROP_DOS_CONTROLLER_MODE,
@@ -514,16 +516,16 @@ export const buildFieldMap = () => {
       PROP_DISCS, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.APPLE2]: {
-      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_ENABLE_2ND_525,
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_ENABLE_2ND_525, PROP_INITIAL_KEYBOARD_MODE,
     },
     [APP_TYPE_KEYS.RETRO_MAME_APPLE2]: {
-      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_ENABLE_2ND_525,
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_ENABLE_2ND_525, PROP_INITIAL_KEYBOARD_MODE,
     },
     [APP_TYPE_KEYS.APPLE2GS]: {
-      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_APPLE2GS_CPU_SPEED, PROP_ENABLE_2ND_525, PROP_ENABLE_2ND_35,
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_APPLE2GS_CPU_SPEED, PROP_ENABLE_2ND_525, PROP_ENABLE_2ND_35, PROP_INITIAL_KEYBOARD_MODE,
     },
     [APP_TYPE_KEYS.RETRO_MAME_APPLE2GS]: {
-      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_APPLE2GS_CPU_SPEED, PROP_ENABLE_2ND_525, PROP_ENABLE_2ND_35,
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_APPLE2GS_CPU_SPEED, PROP_ENABLE_2ND_525, PROP_ENABLE_2ND_35, PROP_INITIAL_KEYBOARD_MODE,
     },
   }
 };
@@ -1338,6 +1340,23 @@ export default function PropertiesTab(props) {
             ]}
             onChange={(e) => {
               const props = { ...object.props, cpuSpeed: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_INITIAL_KEYBOARD_MODE) ? (
+        <div>
+          <EditorSelect
+            label="Initial Keyboard Mode"
+            tooltip="How the keyboard behaves when the game starts. Simulate Joystick maps arrow keys and buttons to the joystick (the default). Full Keyboard types normally right away, for games that need typing immediately, like text adventures. Can be toggled in-game afterward either way."
+            value={object.props.initialKeyboardMode ? object.props.initialKeyboardMode : 0}
+            menuItems={[
+              { value: 0, name: "Simulate Joystick" },
+              { value: 1, name: "Full Keyboard" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, initialKeyboardMode: e.target.value }
               setObject({ ...object, props })
             }}
           />
