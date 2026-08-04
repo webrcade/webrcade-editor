@@ -50,6 +50,7 @@ class Holder {
   updateLocalFile = null;
   openResolveTypesPrompt = null;
   openMergeDialogPrompt = null;
+  openArrangeCategoriesPrompt = null;
   isDebug = UrlUtil.getBoolParam(window.location.search, AppProps.RP_DEBUG);
 }
 
@@ -128,6 +129,11 @@ const Global = {
       return GlobalHolder.openMergeDialogPrompt(items, mediaField);
     }
     return Promise.resolve(null);
+  },
+  openArrangeCategoriesDialog: () => {
+    if (GlobalHolder.openArrangeCategoriesPrompt) {
+      GlobalHolder.openArrangeCategoriesPrompt();
+    }
   },
   openSettingsEditor: (open) => {
     GlobalHolder.setSettingsEditorOpen(open);

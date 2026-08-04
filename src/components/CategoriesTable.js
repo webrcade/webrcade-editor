@@ -1,6 +1,7 @@
 import * as React from 'react';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import LowPriorityIcon from '@mui/icons-material/LowPriority';
 import CommonTable from './common/CommonTable';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import Button from '@mui/material/Button';
@@ -206,6 +207,18 @@ export default function CategoriesTable(props) {
                   }}
                 >
                   <ArrowDownwardIcon />
+                </IconButton>
+              </div>
+            </Tooltip>
+            <Tooltip title="Arrange">
+              <div>
+                <IconButton
+                  disabled={!hasFeed}
+                  onClick={() => {
+                    Global.openArrangeCategoriesDialog();
+                  }}
+                >
+                  <LowPriorityIcon />
                 </IconButton>
               </div>
             </Tooltip>
