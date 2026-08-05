@@ -8,6 +8,12 @@ import {
 
 export default function EditorMultiUrlField(props) {
   const [uuid, setUuid] = React.useState(uuidv4());
+  // Lifted out of EditorUrlField so the Raw/Simplified toggle and the full-URL
+  // display toggle survive the uuid-based remount below (that remount exists
+  // to reset the raw textarea's uncontrolled state after a drop, not to reset
+  // UI mode/preferences).
+  const [mode, setMode] = React.useState('simplified');
+  const [showFullUrl, setShowFullUrl] = React.useState(true);
 
   const {
     sx,
@@ -35,6 +41,10 @@ export default function EditorMultiUrlField(props) {
   return (
     <EditorUrlField
       key={uuid}
+      mode={mode}
+      onModeChange={setMode}
+      showFullUrl={showFullUrl}
+      onShowFullUrlChange={setShowFullUrl}
       onDropText={(text) => {
         if (onDropText) {
            onDropText(updateUrls(text))
@@ -56,9 +66,13 @@ export default function EditorMultiUrlField(props) {
       rows={rows ? rows : 5}
       sx={{
         width: '50ch',
+        // react-textarea-autosize (used internally by MUI's multiline
+        // TextField) sets its own inline `overflow` style, which beats a
+        // plain sx rule — !important in a stylesheet rule is the one thing
+        // that still wins over an inline style.
+        '& textarea': { whiteSpace: 'nowrap', overflowX: 'auto !important' },
         ...sx
       }}
-      inputProps={{ ref: input => { if (input) { input.style['white-space'] = 'nowrap' } } }}
       {...other}
     />
   );

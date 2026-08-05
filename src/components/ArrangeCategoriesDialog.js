@@ -25,6 +25,7 @@ import { GlobalHolder, Global } from '../Global';
 import * as Util from '../Util';
 import { enableDropHandler } from '../UrlProcessor';
 import CommonImage from './common/CommonImage';
+import { setDragGhostImage } from './common/DragGhostImage';
 import EditorButton from './common/editor/EditorButton';
 
 // --- CategoryRow ---------------------------------------------------------------
@@ -35,7 +36,10 @@ const CategoryRow = React.memo(function CategoryRow({
   return (
     <Box
       draggable
-      onDragStart={() => onDragStart(index)}
+      onDragStart={(e) => {
+        onDragStart(index);
+        setDragGhostImage(e, category.title || '(untitled)', category.description || '');
+      }}
       onDragOver={e => { e.preventDefault(); onDragOver(index); }}
       onDrop={e => { e.preventDefault(); onDrop(index); }}
       onDragEnd={onDragEnd}
@@ -235,8 +239,8 @@ export default function ArrangeCategoriesDialog() {
       </DialogContent>
 
       <DialogActions sx={{ px: 3, py: 1.5 }}>
+        <EditorButton label="OK" variant="contained" onClick={handleSave} />
         <EditorButton label="Cancel" onClick={handleCancel} />
-        <EditorButton label="Save" variant="contained" onClick={handleSave} />
       </DialogActions>
     </Dialog>
   );

@@ -34,6 +34,8 @@ import { AppRegistry, computeShortNames } from '@webrcade/app-common';
 import { GlobalHolder } from '../Global';
 import { enableDropHandler } from '../UrlProcessor';
 import EditorButton from './common/editor/EditorButton';
+import { setDragGhostImage } from './common/DragGhostImage';
+import { getDisplayUrl, getFilename } from '../Util';
 import Prefs from '../Prefs';
 
 const PREF_MERGE_SHOW_FULL_URL = 'mergeShowFullUrl';
@@ -95,29 +97,6 @@ function buildOrderedEntries(items, mediaField) {
     }
   }
   return entries;
-}
-
-function getFilename(url) {
-  try {
-    const parts = url.split('/');
-    const raw = decodeURIComponent(parts[parts.length - 1]);
-    const qIdx = raw.indexOf('?');
-    const name = qIdx !== -1 ? raw.substring(0, qIdx) : raw;
-    return name || url;
-  } catch (_) {
-    return url;
-  }
-}
-
-function getDisplayUrl(url) {
-  try {
-    const qIdx = url.indexOf('?');
-    const clean = qIdx !== -1 ? url.substring(0, qIdx) : url;
-    const slashIdx = clean.lastIndexOf('/');
-    return slashIdx !== -1 ? clean.substring(slashIdx + 1) : clean;
-  } catch (_) {
-    return url;
-  }
 }
 
 function getTypeThumb(item) {
@@ -376,7 +355,10 @@ const MediaEntryRow = React.memo(function MediaEntryRow({
   return (
     <Box
       draggable
-      onDragStart={() => onDragStart(entryIndex)}
+      onDragStart={(e) => {
+        onDragStart(entryIndex);
+        setDragGhostImage(e, label, showFullUrl ? entry.url : getDisplayUrl(entry.url));
+      }}
       onDragOver={e => { e.preventDefault(); onDragOver(entryIndex); }}
       onDrop={e => { e.preventDefault(); onDrop(entryIndex); }}
       onDragEnd={onDragEnd}
@@ -750,8 +732,8 @@ export default function MergeDialog() {
           <WarningAmberIcon sx={{ fontSize: 16 }} />
           <Typography variant="caption">Non-primary items will be removed after merging.</Typography>
         </Box>
-        <EditorButton label="Cancel" onClick={handleCancel} />
         <EditorButton label="Merge" variant="contained" onClick={handleMerge} disabled={!primaryId} />
+        <EditorButton label="Cancel" onClick={handleCancel} />
       </DialogActions>
     </Dialog>
   );

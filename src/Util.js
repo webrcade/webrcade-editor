@@ -51,3 +51,30 @@ export function usePrevious(value) {
   // Return previous value (happens before update in useEffect above)
   return ref.current;
 }
+
+// Strips a URL down to its filename, decoded and with any query string
+// removed (e.g. ".../foo%20bar.zip?dl=1" -> "foo bar.zip").
+export function getFilename(url) {
+  try {
+    const parts = url.split('/');
+    const raw = decodeURIComponent(parts[parts.length - 1]);
+    const qIdx = raw.indexOf('?');
+    const name = qIdx !== -1 ? raw.substring(0, qIdx) : raw;
+    return name || url;
+  } catch (_) {
+    return url;
+  }
+}
+
+// Strips a URL down to its last path segment for display, query string
+// removed, without decoding (e.g. for showing a short, still-copyable path).
+export function getDisplayUrl(url) {
+  try {
+    const qIdx = url.indexOf('?');
+    const clean = qIdx !== -1 ? url.substring(0, qIdx) : url;
+    const slashIdx = clean.lastIndexOf('/');
+    return slashIdx !== -1 ? clean.substring(slashIdx + 1) : clean;
+  } catch (_) {
+    return url;
+  }
+}

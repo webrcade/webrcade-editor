@@ -76,6 +76,7 @@ export default function CreateFromUrlDialog(props) {
           <EditorTabPanel value={urlTab} index={urlTab}>
             <EditorMultiUrlField
               required
+              rawOnly
               label="URLs (one per line)"
               onDropText={(text) => {
                 if (Array.isArray(text)) {

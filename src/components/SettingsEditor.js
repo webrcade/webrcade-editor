@@ -13,6 +13,8 @@ import EditorTextField from './common/editor/EditorTextField';
 import EditorValidator from './common/editor/EditorValidator';
 import AppsTab from './common/editor/AppsTab';
 import { Global, GlobalHolder } from '../Global';
+import Prefs from '../Prefs';
+import { PREF_CLASSIC_URL_FIELDS } from './common/editor/EditorUrlField';
 
 import { dropbox, settings, achievements, Resources, SCREEN_SIZES, TEXT_IDS } from '@webrcade/app-common'
 
@@ -232,6 +234,31 @@ function AchievementsTab(props) {
   );
 }
 
+function EditorTab(props) {
+  const {
+    tabValue,
+    tabIndex,
+    values,
+    setValues
+  } = props;
+
+  return (
+    <EditorTabPanel value={tabValue} index={tabIndex}>
+      <div>
+        <EditorSwitch
+          label="Use classic URL entry fields"
+          tooltip="Show URL fields (Discs, Media, BIOS, etc.) as simple text boxes instead of the enhanced list view."
+          onChange={(e) => {
+            const vals = { ...values, classicUrlFields: e.target.checked };
+            setValues(vals);
+          }}
+          checked={Util.asBoolean(values.classicUrlFields)}
+        />
+      </div>
+    </EditorTabPanel>
+  );
+}
+
 function AdvancedTab(props) {
   const {
     tabValue,
@@ -273,6 +300,7 @@ export default function SettingsEditor(props) {
   const cloudStorageTab = 2;
   const achievementsTab = 3;
   const advancedTab = 4;
+  const editorTab = 5;
 
   return (
     <Editor
@@ -294,7 +322,8 @@ export default function SettingsEditor(props) {
           screenSize: settings.getScreenSize(),
           dbLinked: settings.getDbToken() !== null,
           disableInGame: settings.isGameSavesDisabledAfterState(),
-          overrides: settings.getOverrides() ? settings.getOverrides() : {}
+          overrides: settings.getOverrides() ? settings.getOverrides() : {},
+          classicUrlFields: Prefs.getBoolPreference(PREF_CLASSIC_URL_FIELDS, false)
         }
         setValues({
           ...vals,
@@ -314,6 +343,7 @@ export default function SettingsEditor(props) {
         settings.setCloudStorageEnabled(values.cloudStorage);
         settings.setGameSavesDisabledAfterState(values.disableInGame);
         settings.setOverrides(values.overrides)
+        Prefs.setPreference(PREF_CLASSIC_URL_FIELDS, values.classicUrlFields);
         settings.save().finally(() => {
           if (values.originalValues.expApps !== values.expApps) {
             window.location.reload();
@@ -330,6 +360,7 @@ export default function SettingsEditor(props) {
         <Tab label="Cloud Storage" key={cloudStorageTab} />,
         <Tab label="Achievements" key={achievementsTab} />,
         <Tab label="Advanced" key={advancedTab} />,
+        <Tab label="Editor" key={editorTab} />,
       ]}
       tabPanels={(
         <>
@@ -364,6 +395,12 @@ export default function SettingsEditor(props) {
           <AdvancedTab
             tabValue={tabValue}
             tabIndex={advancedTab}
+            setValues={setValues}
+            values={values}
+          />
+          <EditorTab
+            tabValue={tabValue}
+            tabIndex={editorTab}
             setValues={setValues}
             values={values}
           />
