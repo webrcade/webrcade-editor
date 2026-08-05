@@ -255,8 +255,16 @@ export default function CategoriesTable(props) {
                 <IconButton
                   disabled={!selection}
                   onClick={() => {
-                    Feed.deleteCategories(feed, selected);
-                    Global.setFeed({ ...feed });
+                    const single = selected.length === 1;
+                    Global.openConfirmDialog(
+                      true,
+                      `Delete Categor${single ? "y" : "ies"}`,
+                      `Are you sure you want to delete the selected categor${single ? "y" : "ies"}? All items within ${single ? "it" : "them"} will also be deleted.`,
+                      () => {
+                        Feed.deleteCategories(feed, selected);
+                        Global.setFeed({ ...feed });
+                      }
+                    );
                   }}
                 >
                   <DeleteIcon />
