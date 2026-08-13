@@ -13,7 +13,7 @@ import {
 
 import * as WrcCommon from '@webrcade/app-common';
 import * as Drop from './Drop';
-import { processDroppedItems } from './LocalFileProcessor';
+import { processDroppedItems, SKIP_HASH_EXTENSIONS } from './LocalFileProcessor';
 import * as Feed from './Feed';
 import GameRegistry from './GameRegistry';
 import { Global } from './Global';
@@ -96,7 +96,7 @@ class Processor {
 
     if (game.type) {
       const defs = AppRegistry.instance.getDefaultsForType(game.type);
-      if (defs.media) {
+      if (defs.media || defs.discs) {
         game.props.uid = uuidv4();
         if (romUrl) game.props.media = [romUrl];
         delete game.props.rom;
@@ -126,6 +126,14 @@ class Processor {
     let type = AppRegistry.instance.getTypeForExtension(ext);
     if (type && isDebug) {
       LOG.info("Found type based on extension.");
+    }
+
+    // Large disc-image container formats are never matched via hash and are
+    // too large to be worth downloading just to fail — reject immediately
+    // rather than fetching the whole file.
+    if (SKIP_HASH_EXTENSIONS.has('.' + ext.toLowerCase())) {
+      if (isDebug) LOG.info(`Rejecting URL add for unhashable extension: .${ext}`);
+      return null;
     }
 
     if (url.indexOf(MD5_PREFIX) !== -1) {
@@ -194,6 +202,15 @@ class Processor {
               if (type && isDebug) {
                 LOG.info("Found type in zip.");
               }
+            }
+          }
+
+          // Let a resolved type refine/redirect itself based on content
+          // (e.g. Apple II disk size -> Apple IIGS, C64 .nib -> Apple II)
+          if (type) {
+            type = await AppRegistry.instance.applyTypeCheck(type, ext, blob);
+            if (type && isDebug) {
+              LOG.info("Type refined via typeCheck.");
             }
           }
 
@@ -361,6 +378,13 @@ class Processor {
           console.log(`[processBlob] processZip threw: ${e.message} — zipFailed=true`);
         }
         zipFailed = true;
+      }
+
+      // Let a resolved type refine/redirect itself based on content
+      // (e.g. Apple II disk size -> Apple IIGS, C64 .nib -> Apple II)
+      if (type) {
+        type = await AppRegistry.instance.applyTypeCheck(type, ext, blob);
+        if (isDebug) console.log(`[processBlob] type after typeCheck: ${type?.key ?? '(none)'}`);
       }
 
       const skipMagicForZip = (extension === 'zip' && zipFailed);

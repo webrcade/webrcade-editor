@@ -22,6 +22,8 @@ import A2600ControllersTab from './a2600/A2600ControllersTab';
 import NdsHomebrewTab from './nds/NdsHomebrewTab';
 import A5200DescriptionsTab from './a5200/A5200DescriptionsTab';
 import A5200MappingsTab from './a5200/A5200MappingsTab';
+import JaguarDescriptionsTab from './jaguar/JaguarDescriptionsTab';
+import JaguarMappingsTab from './jaguar/JaguarMappingsTab';
 import AstrocadeDescriptionsTab from './astrocade/AstrocadeDescriptionsTab';
 import AstrocadeMappingsTab from './astrocade/AstrocadeMappingsTab';
 import ColecoDescriptionsTab from './coleco/ColecoDescriptionsTab';
@@ -220,8 +222,6 @@ const setDefaultForApple2 = (type, item) => {
   }
 }
 
-
-
 const setDefaultForSaturn = (type, item) => {
   if (type === APP_TYPE_KEYS.RETRO_YABAUSE ||
     type === APP_TYPE_KEYS.SATURN) {
@@ -260,6 +260,35 @@ const setDefaultForA5200 = (type, item) => {
         "a": "bottomfire",
         "b": "topfire",
       };
+    }
+  }
+}
+
+const setDefaultForJaguar = (type, item) => {
+  if (type === APP_TYPE_KEYS.JAGUAR ||
+    type === APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR ||
+    type === APP_TYPE_KEYS.JAGUAR_CD ||
+    type === APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD) {
+    if (!item.props.mappings || Object.keys(item.props.mappings).length === 0) {
+      item.props.mappings = {
+        "x": "firec",
+        "a": "fireb",
+        "b": "firea",
+        // "y": "1",
+        "lb": "option",
+        "rb": "option",
+        // "lt": "2",
+        // "rt": "3",
+      };
+    }
+  }
+}
+
+const setDefaultForJaguarCd = (type, item) => {
+  if (type === APP_TYPE_KEYS.JAGUAR_CD ||
+    type === APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
     }
   }
 }
@@ -315,6 +344,8 @@ export function setDefaultsForType(type, object) {
   setDefaultForPcfx(type, object);
   setDefaultForColeco(type, object);
   setDefaultForA5200(type, object);
+  setDefaultForJaguar(type, object);
+  setDefaultForJaguarCd(type, object);
   setDefaultForAstrocade(type, object);
   setDefaultForQuake(type, object);
   setDefaultForDosBox(type, object);
@@ -338,6 +369,8 @@ export default function ItemEditor(props) {
   const isNds = (item.type === APP_TYPE_KEYS.NDS || item.type === APP_TYPE_KEYS.RETRO_MELONDS);
   const hasNdsHomebrew = isNds && Util.asBoolean(item.props && item.props.homebrewSdCard);
   const isA5200 = (item.type === APP_TYPE_KEYS.A5200 || item.type === APP_TYPE_KEYS.RETRO_A5200);
+  const isJaguar = (item.type === APP_TYPE_KEYS.JAGUAR || item.type === APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR ||
+    item.type === APP_TYPE_KEYS.JAGUAR_CD || item.type === APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD);
   const isAstrocade = (item.type === APP_TYPE_KEYS.ASTROCADE || item.type === APP_TYPE_KEYS.RETRO_MAME_ASTROCADE);
   const isApple2 = (item.type === APP_TYPE_KEYS.APPLE2 || item.type === APP_TYPE_KEYS.RETRO_MAME_APPLE2 ||
     item.type === APP_TYPE_KEYS.APPLE2GS || item.type === APP_TYPE_KEYS.RETRO_MAME_APPLE2GS);
@@ -351,6 +384,8 @@ export default function ItemEditor(props) {
     /* Game Boy */           item.type === APP_TYPE_KEYS.GB || item.type === APP_TYPE_KEYS.RETRO_SAMEBOY_GB ||
     /* Game Boy Color */     item.type === APP_TYPE_KEYS.GBC || item.type === APP_TYPE_KEYS.RETRO_SAMEBOY_GBC ||
     /* Atari Lynx */         item.type === APP_TYPE_KEYS.LNX || item.type === APP_TYPE_KEYS.RETRO_MEDNAFEN_LYNX ||
+    /* Atari Jaguar */       item.type === APP_TYPE_KEYS.JAGUAR || item.type === APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR ||
+    /* Atari Jaguar CD */    item.type === APP_TYPE_KEYS.JAGUAR_CD || item.type === APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD ||
     /* Sega Genesis */       item.type === APP_TYPE_KEYS.GENESIS || item.type === APP_TYPE_KEYS.RETRO_GENPLUSGX_MD ||
     /* Sega Master System */ item.type === APP_TYPE_KEYS.SMS || item.type === APP_TYPE_KEYS.RETRO_GENPLUSGX_SMS ||
     /* Sega Game Gear */     item.type === APP_TYPE_KEYS.GG || item.type === APP_TYPE_KEYS.RETRO_GENPLUSGX_GG ||
@@ -396,6 +431,13 @@ export default function ItemEditor(props) {
   if (isA5200) {
     a5200MappingsTab = index++;
     a5200DescriptionsTab = index++;
+  }
+
+  let jaguarMappingsTab = 0;
+  let jaguarDescriptionsTab = 0;
+  if (isJaguar) {
+    jaguarMappingsTab = index++;
+    jaguarDescriptionsTab = index++;
   }
 
   let astrocadeMappingsTab = 0;
@@ -447,6 +489,10 @@ export default function ItemEditor(props) {
   if (isA5200) {
     tabs.push(<Tab label="Mappings" key={a5200MappingsTab} />);
     tabs.push(<Tab label="Descriptions" key={a5200DescriptionsTab} />);
+  }
+  if (isJaguar) {
+    tabs.push(<Tab label="Mappings" key={jaguarMappingsTab} />);
+    tabs.push(<Tab label="Descriptions" key={jaguarDescriptionsTab} />);
   }
   if (isAstrocade) {
     tabs.push(<Tab label="Mappings" key={astrocadeMappingsTab} />);
@@ -718,6 +764,18 @@ export default function ItemEditor(props) {
           {isA5200 && <A5200DescriptionsTab
             tabValue={tabValue}
             tabIndex={a5200DescriptionsTab}
+            object={item}
+            setObject={setItem}
+          />}
+          {isJaguar && <JaguarMappingsTab
+            tabValue={tabValue}
+            tabIndex={jaguarMappingsTab}
+            object={item}
+            setObject={setItem}
+          />}
+          {isJaguar && <JaguarDescriptionsTab
+            tabValue={tabValue}
+            tabIndex={jaguarDescriptionsTab}
             object={item}
             setObject={setItem}
           />}

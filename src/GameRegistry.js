@@ -13,6 +13,7 @@ import {
 import A5200_PROPS from './props/A5200Props.json';
 import COLECO_PROPS from './props/ColecoProps.json';
 import ASTROCADE_PROPS from './props/AstrocadeProps.json';
+import { getJaguarMappings } from './mappings/jaguar';
 
 class GameRegistryImpl {
   constructor() {
@@ -256,6 +257,16 @@ class GameRegistryImpl {
       thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-32xcd-images/master/Named_Titles/resized',
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-32xcd-images/master/Named_Snaps/output',
       descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sega%20CD%2032X/output'
+    },
+    'jaguar': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-jaguar-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-jaguar-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Atari%20Jaguar/output'
+    },
+    'jaguarcd': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-jaguar-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-jaguar-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Atari%20Jaguar%20CD/output'
     },
   }
 
@@ -532,6 +543,7 @@ class GameRegistryImpl {
       const expAppsEnabled = settings.isExpAppsEnabled();
       this.n64enabled = expAppsEnabled;
       this.a5200enabled = expAppsEnabled;
+      this.jaguarenabled = expAppsEnabled;
 
       const fad = new FetchAppData(DB_FILE);
       const res = await fad.fetch();
@@ -802,6 +814,10 @@ console.log('[DEBUG] entries:',
     const matches = name.match(TITLE_REGEX);
     if (matches.length > 1) {
       shortName = matches[1].trim();
+      // Strip trailing version strings (v1.000, v3.08, etc.) — same pattern
+      // as getShortName()/normalizeTitle(), keeps the displayed title clean
+      // while longTitle below retains the full original name.
+      shortName = shortName.replace(/\s*v\d+(\.\d+)+\s*$/g, "");
     }
 
     const hasShortName = shortName && shortName.length > 0;
@@ -881,6 +897,9 @@ console.log('[DEBUG] entries:',
       // Skip 5200 if not enabled
       if (type === '5200' && !this.a5200enabled) continue;
 
+      // Skip jaguar if not enabled
+      if (type === 'jaguar' && !this.jaguarenabled) continue;
+
       let name = this.db[type][md5];
       if (name) {
         // Add titles
@@ -905,6 +924,21 @@ console.log('[DEBUG] entries:',
           delete clone._name;
           ret.props = clone
         }
+
+        // Overlay platform-wide default mappings + any per-game override
+        // (by MD5) on top -- Jaguar needs a numpad mapping to be playable
+        // at all, unlike A5200/Coleco's CUSTOM_PROPS entries above which
+        // are only for bonus/special controls. See mappings/jaguar.js.
+        //
+        // DISABLED FOR NOW: per-game descriptions in mappings/jaguar.js
+        // haven't been validated by the user yet (several entries rest on
+        // reading overlay artwork rather than an independently-quotable
+        // source -- see that file's per-game comments for exactly which).
+        // Re-enable once validated, don't just uncomment blindly.
+        // if (type === 'jaguar') {
+        //   const { mappings, descriptions } = getJaguarMappings(md5);
+        //   ret.props = { ...ret.props, mappings, descriptions };
+        // }
       }
     }
 
@@ -972,6 +1006,12 @@ console.log('[DEBUG] entries:',
 
     // Strip disk side indicators (s1, s2 boot, etc.) — leading space prevents false positives
     title = title.replace(/\s+s\d+(\s+\w+)?/, '');
+
+    // Strip trailing version strings (v1.000, v3.08, etc.) — same pattern as
+    // getShortName(), which already handles this correctly for autocomplete.
+    // Anchored at the end and requires a decimal point, so titles like
+    // "Metal Gear Solid V" or "V-Rally" are untouched.
+    title = title.replace(/\s*v\d+(\.\d+)+\s*$/g, '');
 
     // search = ", the"
     // find = title.indexOf(search);
