@@ -110,6 +110,13 @@ class Processor {
             game.background = metadata.background;
             game.backgroundPixelated = true;
           }
+          // Per-title overrides (e.g. Jaguar CD's mappings/descriptions/
+          // disableFastBlitter, see mappings/jaguarcd.js) -- this is the
+          // live path for a dropped disc-image file (.cdi etc.), which
+          // skips hashing entirely and is identified by title alone.
+          if (metadata.props) {
+            game.props = { ...game.props, ...metadata.props };
+          }
         }
       }
     }

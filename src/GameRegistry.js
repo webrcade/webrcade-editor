@@ -14,6 +14,7 @@ import A5200_PROPS from './props/A5200Props.json';
 import COLECO_PROPS from './props/ColecoProps.json';
 import ASTROCADE_PROPS from './props/AstrocadeProps.json';
 import { getJaguarMappings } from './mappings/jaguar';
+import { getJaguarCdMappings } from './mappings/jaguarcd';
 
 class GameRegistryImpl {
   constructor() {
@@ -707,6 +708,16 @@ console.log('[DEBUG] entries:',
       this.addTitles(ret, foundTitle);
       ret.type = type;
       await this.addMetaData(ret, alias /*type*/, foundTitle);
+
+      // Jaguar CD is title-matched (no ROM file to hash), so this is the
+      // path that actually applies per-game mappings/descriptions for it
+      // -- mirrors the "jaguarcd" branch in find(), same id shape
+      // ("jaguarcd:N", already resolved above), see mappings/jaguarcd.js.
+      if (alias === 'jaguarcd') {
+        const { mappings, descriptions, disableFastBlitter } = getJaguarCdMappings(id);
+        ret.props = { ...ret.props, mappings, descriptions, disableFastBlitter };
+      }
+
       return ret;
     }
 
@@ -929,16 +940,22 @@ console.log('[DEBUG] entries:',
         // (by MD5) on top -- Jaguar needs a numpad mapping to be playable
         // at all, unlike A5200/Coleco's CUSTOM_PROPS entries above which
         // are only for bonus/special controls. See mappings/jaguar.js.
-        //
-        // DISABLED FOR NOW: per-game descriptions in mappings/jaguar.js
-        // haven't been validated by the user yet (several entries rest on
-        // reading overlay artwork rather than an independently-quotable
-        // source -- see that file's per-game comments for exactly which).
-        // Re-enable once validated, don't just uncomment blindly.
-        // if (type === 'jaguar') {
-        //   const { mappings, descriptions } = getJaguarMappings(md5);
-        //   ret.props = { ...ret.props, mappings, descriptions };
-        // }
+        // Per-game descriptions there are only added once validated
+        // against an actual overlay scan, so it's safe to apply
+        // unconditionally here -- unrecognized hashes just get the
+        // platform-wide defaults (empty descriptions).
+        if (type === 'jaguar') {
+          const { mappings, descriptions, disableFastBlitter } = getJaguarMappings(md5);
+          ret.props = { ...ret.props, mappings, descriptions, disableFastBlitter };
+        } else if (type === 'jaguarcd') {
+          // Same mechanism, keyed by the stable "jaguarcd:N" id (md5 here
+          // is really just the lookup key, generic across types) instead
+          // of an MD5 -- there's no ROM file to hash for a CD title. Only
+          // covers this find()/dropdown-select path for now, not drag-drop
+          // .cdi import -- see mappings/jaguarcd.js.
+          const { mappings, descriptions, disableFastBlitter } = getJaguarCdMappings(md5);
+          ret.props = { ...ret.props, mappings, descriptions, disableFastBlitter };
+        }
       }
     }
 

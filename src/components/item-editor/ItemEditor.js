@@ -210,9 +210,12 @@ const setDefaultForApple2 = (type, item) => {
     if (isEmptyString(item.props.uid)) {
       item.props.uid = uuidv4();
     }
-    // if (item.props.saveDisks === undefined) {
-    //   item.props.saveDisks = 1;
-    // }
+    // Save Disks: Apple II only for now (IIGS design deferred, see
+    // SAVE_DISKS_DESIGN.md in webrcade-app-retro-mame-apple2/apple2gs).
+    if ((type === APP_TYPE_KEYS.APPLE2 || type === APP_TYPE_KEYS.RETRO_MAME_APPLE2) &&
+      item.props.saveDisks === undefined) {
+      item.props.saveDisks = 1;
+    }
     if (!item.props.mappings || Object.keys(item.props.mappings).length === 0) {
       item.props.mappings = {
         "a": "button0",
@@ -274,11 +277,11 @@ const setDefaultForJaguar = (type, item) => {
         "x": "firec",
         "a": "fireb",
         "b": "firea",
-        // "y": "1",
-        "lb": "option",
-        "rb": "option",
-        // "lt": "2",
-        // "rt": "3",
+        "y": "8",
+        "lb": "7",
+        "rb": "9",
+        "lt": "4",
+        "rt": "6",
       };
     }
   }
@@ -625,16 +628,21 @@ export default function ItemEditor(props) {
                             update.backgroundPixelated = true;
                           }
 
-                          // Set 3DO hack.
-                          // TODO: This should be moved to common location for use by all
-                          // types.
+                          // 3DO resets its "hack" prop to a baseline on
+                          // every title change (not just when the new
+                          // title has an override), so a leftover value
+                          // from the previous title never carries over.
                           let props = null;
                           if (item.type === '3do') {
                             props = {hack: 0}
-                            const hack = info.props?.hack;
-                            if (hack) {
-                              props.hack = hack;
-                            }
+                          }
+
+                          // Per-title metadata overrides (e.g. Jaguar's
+                          // mappings/descriptions/disableFastBlitter from
+                          // GameRegistry.find(), see mappings/jaguar.js) --
+                          // applies to every type, not just 3do.
+                          if (info.props) {
+                            props = {...props, ...info.props}
                           }
 
                           if (props) {
