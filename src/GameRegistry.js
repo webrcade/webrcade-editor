@@ -15,6 +15,7 @@ import COLECO_PROPS from './props/ColecoProps.json';
 import ASTROCADE_PROPS from './props/AstrocadeProps.json';
 import { getJaguarMappings } from './mappings/jaguar';
 import { getJaguarCdMappings } from './mappings/jaguarcd';
+import { getN64Mappings } from './mappings/n64';
 
 class GameRegistryImpl {
   constructor() {
@@ -955,6 +956,13 @@ console.log('[DEBUG] entries:',
           // .cdi import -- see mappings/jaguarcd.js.
           const { mappings, descriptions, disableFastBlitter } = getJaguarCdMappings(md5);
           ret.props = { ...ret.props, mappings, descriptions, disableFastBlitter };
+        } else if (type === 'n64') {
+          // disableOpenGL2, countPerOp, and audioLatency are only
+          // meaningful for the RETRO_MUPEN64PLUS_NEXT core -- harmlessly
+          // inert as unused props if the item ends up using a different
+          // N64 core instead. See mappings/n64.js.
+          const { disableOpenGL2, countPerOp, audioLatency } = getN64Mappings(md5);
+          ret.props = { ...ret.props, disableOpenGL2, countPerOp, audioLatency };
         }
       }
     }

@@ -61,11 +61,14 @@ const DEFAULT_DESCRIPTIONS = {};
 // via find(), so they don't fit this MD5-keyed mechanism. Out of scope
 // here, not forgotten.
 
-// Wolfenstein 3D -- confirmed against the physical overlay scan. Most of
-// the grid (4/5/6/7/9/*/#) has no label on the overlay and is left out.
+// Wolfenstein 3D -- confirmed against the physical overlay scan. Map is
+// key 5 (middle of the 4/5/6 row) -- an earlier pass misread it as key 8
+// (middle of 7/8/9), a one-row miscount, caught and corrected against a
+// second look at the same scan. Most of the grid (4/6/7/9/*/#) has no
+// label on the overlay and is left out.
 const WOLFENSTEIN_3D_DESC = {
   "1": "Save Game 1", "2": "Save Game 2", "3": "Save Game 3",
-  "8": "Map",
+  "5": "Map",
   "0": "Music",
 };
 

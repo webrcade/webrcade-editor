@@ -50,6 +50,7 @@ function PropertiesTab(props) {
   const is5200Enabled = AppRegistry.instance.getAppTypes()["5200"];
   const isSaturnEnabled = AppRegistry.instance.getAppTypes()["saturn"];
   const isApple2gsEnabled = AppRegistry.instance.getAppTypes()["apple2gs"];
+  const isDreamcastEnabled = AppRegistry.instance.getAppTypes()["dreamcast"];
 
   const [app, setApp] = React.useState("3do");
 
@@ -78,6 +79,7 @@ function PropertiesTab(props) {
   if (isApple2gsEnabled) insertAlpha(items, { value: "apple2gs", name: "Apple IIGS" });
   if (is5200Enabled) insertAlpha(items, { value: "5200", name: "Atari 5200" });
   if (isSaturnEnabled) insertAlpha(items, { value: "segasaturn", name: "Sega Saturn" });
+  if (isDreamcastEnabled) insertAlpha(items, { value: "dreamcast", name: "Sega Dreamcast" });
 
   return (
     <EditorTabPanel value={tabValue} index={tabIndex}>
@@ -272,6 +274,43 @@ function PropertiesTab(props) {
                 setObject({ ...object, props })
               }}
               value={Util.asString(object.props.saturn_bios)}
+            />
+          )}
+        </div>
+      )}
+      {isDreamcastEnabled && (
+        <div>
+          {app === "dreamcast" && (
+            <EditorMultiUrlField
+              label="Sega Dreamcast BIOS (URLs)"
+              helperText="Requires both dc_boot.bin and dc_flash.bin"
+              rows={5}
+              onFileUpload={uploadBiosFile}
+              onDropText={(text) => {
+                let urls = object.props.flycast_bios ? object.props.flycast_bios : [];
+                if (Array.isArray(text)) {
+                  urls.push(...text);
+                } else {
+                  urls.push(text);
+                }
+                urls = Util.removeEmptyItems(urls);
+                const props = { ...object.props, flycast_bios: urls }
+                if (urls.length === 0) {
+                  delete props.flycast_bios;
+                }
+                setObject({ ...object, props })
+              }}
+              onChange={(e) => {
+                const val = e.target.value;
+                let urls = Util.splitLines(val);
+                const props = { ...object.props, flycast_bios: urls }
+                if (urls.length === 0) {
+                  delete props.flycast_bios;
+                }
+                setObject({ ...object, props })
+              }}
+              value={object.props.flycast_bios && object.props.flycast_bios.length > 0 ?
+                object.props.flycast_bios.join("\n") : ""}
             />
           )}
         </div>

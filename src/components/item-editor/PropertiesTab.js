@@ -39,11 +39,14 @@ const PROP_BOOK_MODE = "PROP_BOOK_MODE";
 const PROP_C64_RAM_EXPANSION = "PROP_C64_RAM_EXPANSION";
 const PROP_CD_SPEED_HACK = "PROP_CD_SPEED_HACK";
 const PROP_COLECO_CONTROLS_MODE = "PROP_COLECO_CONTROLS_MODE";
+const PROP_COUNT_PER_OP = "PROP_COUNT_PER_OP";
+const PROP_AUDIO_LATENCY = "PROP_AUDIO_LATENCY";
 const PROP_CUSTOM_BIOS = "PROP_CUSTOM_BIOS";
 const PROP_DISABLE_AUTOLOAD = "PROP_DISABLE_AUTOLOAD";
 const PROP_DISABLE_TDE = "PROP_DISABLE_TDE";
 const PROP_DISABLE_LOOKUP = "PROP_DISABLE_LOOKUP";
 const PROP_DISABLE_MEMCARD1 = "PROP_DISABLE_MEMCARD1";
+const PROP_DISABLE_OPENGL2 = "PROP_DISABLE_OPENGL2";
 const PROP_INITIAL_KEYBOARD_MODE = "PROP_INITIAL_KEYBOARD_MODE";
 const PROP_DISCS = "PROP_DISCS";
 const PROP_DOS_CONTROLLER_MODE = "PROP_DOS_CONTROLLER_MODE";
@@ -118,10 +121,13 @@ const ALL_PROPS = [
   PROP_C64_RAM_EXPANSION,
   PROP_CD_SPEED_HACK,
   PROP_COLECO_CONTROLS_MODE,
+  PROP_COUNT_PER_OP,
+  PROP_AUDIO_LATENCY,
   PROP_CUSTOM_BIOS,
   PROP_DISABLE_AUTOLOAD,
   PROP_DISABLE_LOOKUP,
   PROP_DISABLE_MEMCARD1,
+  PROP_DISABLE_OPENGL2,
   PROP_DISABLE_TDE,
   PROP_INITIAL_KEYBOARD_MODE,
   PROP_DISCS,
@@ -335,6 +341,9 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.PARALLEL_N64]: {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
+    [APP_TYPE_KEYS.RETRO_MUPEN64PLUS_NEXT]: {
+      PROP_ROM, PROP_ZOOM_LEVEL, PROP_DISABLE_OPENGL2, PROP_COUNT_PER_OP, PROP_AUDIO_LATENCY
+    },
     [APP_TYPE_KEYS.PCE]: {
       PROP_ROM, PROP_6BUTTON, PROP_MAP_RUN_SELECT, PROP_ZOOM_LEVEL
     },
@@ -488,12 +497,18 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.SATURN]: {
       PROP_DISCS, PROP_ZOOM_LEVEL, PROP_FORCE_EMULATED_BIOS, PROP_SATURN_RAM_EXPANSION,
     },
-    // [APP_TYPE_KEYS.RETRO_PPSSPP]: {
-    //   PROP_DISCS, PROP_ZOOM_LEVEL,
-    // },
-    // [APP_TYPE_KEYS.PSP]: {
-    //   PROP_DISCS, PROP_ZOOM_LEVEL,
-    // },
+    [APP_TYPE_KEYS.RETRO_FLYCAST]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.DREAMCAST]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_PPSSPP]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL,
+    },
+    [APP_TYPE_KEYS.PSP]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL,
+    },
     [APP_TYPE_KEYS.QUAKE]: {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_WAD_SELECTOR
     },
@@ -1077,6 +1092,58 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.disableFastBlitter)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_DISABLE_OPENGL2) ? (
+        <div>
+          <EditorSwitch
+            label="Disable OpenGL 2"
+            tooltip="Uses a WebGL1/GLES2 build of the core instead of the default WebGL2 build. Enable this for devices or browsers with broken or unreliable WebGL2 support."
+            onChange={(e) => {
+              const props = { ...object.props, disableOpenGL2: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.disableOpenGL2)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_COUNT_PER_OP) ? (
+        <div>
+          <EditorSelect
+            label="Performance Boost (Cycles per Operation)"
+            tooltip="Approximates the CPU's Counter register at a coarser granularity, trading accuracy for speed. Disabled uses the core's own per-game database default (or 2 if the game isn't in it). Higher values run faster but are more likely to break timing-sensitive games. Applied once at launch."
+            value={object.props.countPerOp ? object.props.countPerOp : 0}
+            menuItems={[
+              { value: 0, name: "Disabled" },
+              { value: 1, name: "1" },
+              { value: 2, name: "2" },
+              { value: 3, name: "3" },
+              { value: 4, name: "4" },
+              { value: 5, name: "5" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, countPerOp: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_AUDIO_LATENCY) ? (
+        <div>
+          <EditorSelect
+            label="Audio Latency"
+            tooltip="Size of the audio buffer. Low has the least delay between game audio and what you hear, but can crackle/underrun on titles with heavier audio processing. Raise it for games with audio hitches or crackling, at the cost of added latency."
+            value={object.props.audioLatency ? object.props.audioLatency : 0}
+            menuItems={[
+              { value: 0, name: "Low" },
+              { value: 1, name: "Medium" },
+              { value: 2, name: "High" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, audioLatency: e.target.value }
+              setObject({ ...object, props })
+            }}
           />
         </div>
       ) : null}

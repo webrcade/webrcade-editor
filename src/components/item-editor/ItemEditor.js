@@ -167,14 +167,14 @@ const setDefaultFor3do = (type, item) => {
   }
 }
 
-// const setDefaultForPsp = (type, item) => {
-//   if (type === APP_TYPE_KEYS.RETRO_PPSSPP ||
-//     type === APP_TYPE_KEYS.PSP) {
-//     if (isEmptyString(item.props.uid)) {
-//       item.props.uid = uuidv4();
-//     }
-//   }
-// }
+const setDefaultForPsp = (type, item) => {
+  if (type === APP_TYPE_KEYS.RETRO_PPSSPP ||
+    type === APP_TYPE_KEYS.PSP) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
 
 const setDefaultForCommodore8Bit = (type, item) => {
   if (type === APP_TYPE_KEYS.COMMODORE_C64 ||
@@ -228,6 +228,15 @@ const setDefaultForApple2 = (type, item) => {
 const setDefaultForSaturn = (type, item) => {
   if (type === APP_TYPE_KEYS.RETRO_YABAUSE ||
     type === APP_TYPE_KEYS.SATURN) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
+
+const setDefaultForFlycast = (type, item) => {
+  if (type === APP_TYPE_KEYS.RETRO_FLYCAST ||
+    type === APP_TYPE_KEYS.DREAMCAST) {
     if (isEmptyString(item.props.uid)) {
       item.props.uid = uuidv4();
     }
@@ -355,10 +364,11 @@ export function setDefaultsForType(type, object) {
   setDefaultForScumm(type, object);
   setDefaultForNeoGeoCd(type, object);
   setDefaultFor3do(type, object);
-  // setDefaultForPsp(type, object);
+  setDefaultForPsp(type, object);
   setDefaultForCommodore8Bit(type, object);
   setDefaultForApple2(type, object);
   setDefaultForSaturn(type, object);
+  setDefaultForFlycast(type, object);
 }
 
 export default function ItemEditor(props) {
@@ -400,7 +410,10 @@ export default function ItemEditor(props) {
     /* NEC PC Engine CD */     item.type === APP_TYPE_KEYS.PCECD || item.type === APP_TYPE_KEYS.RETRO_PCE_FAST ||
     /* NEC SuperGrafx */       item.type === APP_TYPE_KEYS.SGX || item.type === APP_TYPE_KEYS.RETRO_MEDNAFEN_SGX ||
     /* Sega Saturn */            item.type === APP_TYPE_KEYS.SATURN || item.type === APP_TYPE_KEYS.RETRO_YABAUSE ||
+    /* Sega Dreamcast */         item.type === APP_TYPE_KEYS.DREAMCAST || item.type === APP_TYPE_KEYS.RETRO_FLYCAST ||
     /* Nintendo DS */            item.type === APP_TYPE_KEYS.NDS || item.type === APP_TYPE_KEYS.RETRO_MELONDS ||
+    /* Nintendo 64 */            item.type === APP_TYPE_KEYS.N64 || item.type === APP_TYPE_KEYS.RETRO_MUPEN64PLUS_NEXT ||
+                                  item.type === APP_TYPE_KEYS.RETRO_PARALLEL_N64 ||
     /* Quake */                  item.type === APP_TYPE_KEYS.QUAKE || item.type === APP_TYPE_KEYS.TYRQUAKE
     // /* NEC PC-FX */        item.type === APP_TYPE_KEYS.BEETLE_PCFX || item.type === APP_TYPE_KEYS.PCFX ||
     // /* Neo Geo CD */      item.type === APP_TYPE_KEYS.RETRO_NEOCD || item.type === APP_TYPE_KEYS.NEOGEOCD ||
