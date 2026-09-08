@@ -393,6 +393,7 @@ export default function ItemEditor(props) {
     /* NES */                item.type === APP_TYPE_KEYS.NES || item.type === APP_TYPE_KEYS.RETRO_FCEUMM ||
     /* Atari 2600 */         item.type === APP_TYPE_KEYS.A2600 || item.type === APP_TYPE_KEYS.RETRO_STELLA || item.type === APP_TYPE_KEYS.RETRO_STELLA_LATEST ||
     /* Atari 5200 */         item.type === APP_TYPE_KEYS.A5200 || item.type === APP_TYPE_KEYS.RETRO_A5200 ||
+    /* Atari 7800 */         item.type === APP_TYPE_KEYS.A7800 || item.type === APP_TYPE_KEYS.RETRO_PROSYSTEM ||
     /* Game Boy Advance */   item.type === APP_TYPE_KEYS.GBA || item.type === APP_TYPE_KEYS.RETRO_MGBA ||
     /* Game Boy */           item.type === APP_TYPE_KEYS.GB || item.type === APP_TYPE_KEYS.RETRO_SAMEBOY_GB ||
     /* Game Boy Color */     item.type === APP_TYPE_KEYS.GBC || item.type === APP_TYPE_KEYS.RETRO_SAMEBOY_GBC ||
@@ -414,6 +415,8 @@ export default function ItemEditor(props) {
     /* Nintendo DS */            item.type === APP_TYPE_KEYS.NDS || item.type === APP_TYPE_KEYS.RETRO_MELONDS ||
     /* Nintendo 64 */            item.type === APP_TYPE_KEYS.N64 || item.type === APP_TYPE_KEYS.RETRO_MUPEN64PLUS_NEXT ||
                                   item.type === APP_TYPE_KEYS.RETRO_PARALLEL_N64 ||
+    /* Sega Dreamcast */         item.type === APP_TYPE_KEYS.DREAMCAST || item.type === APP_TYPE_KEYS.RETRO_FLYCAST ||
+    /* Sony PSP */               item.type === APP_TYPE_KEYS.PSP || item.type === APP_TYPE_KEYS.RETRO_PPSSPP ||
     /* Quake */                  item.type === APP_TYPE_KEYS.QUAKE || item.type === APP_TYPE_KEYS.TYRQUAKE
     // /* NEC PC-FX */        item.type === APP_TYPE_KEYS.BEETLE_PCFX || item.type === APP_TYPE_KEYS.PCFX ||
     // /* Neo Geo CD */      item.type === APP_TYPE_KEYS.RETRO_NEOCD || item.type === APP_TYPE_KEYS.NEOGEOCD ||
@@ -714,6 +717,7 @@ export default function ItemEditor(props) {
             otherFields={
               <div>
                 <SelectType
+                  hideDropdown
                   item={item}
                   setItem={setItem}
                   onChange={(e) => {

@@ -15,7 +15,6 @@ import COLECO_PROPS from './props/ColecoProps.json';
 import ASTROCADE_PROPS from './props/AstrocadeProps.json';
 import { getJaguarMappings } from './mappings/jaguar';
 import { getJaguarCdMappings } from './mappings/jaguarcd';
-import { getN64Mappings } from './mappings/n64';
 
 class GameRegistryImpl {
   constructor() {
@@ -269,6 +268,16 @@ class GameRegistryImpl {
       thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-jaguar-images/master/Named_Titles/resized',
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-jaguar-images/master/Named_Snaps/output',
       descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Atari%20Jaguar%20CD/output'
+    },
+    'dreamcast': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-dreamcast-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-dreamcast-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sega%20Dreamcast/output'
+    },
+    'psp': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-psp-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-psp-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sony%20PSP/output'
     },
   }
 
@@ -956,14 +965,12 @@ console.log('[DEBUG] entries:',
           // .cdi import -- see mappings/jaguarcd.js.
           const { mappings, descriptions, disableFastBlitter } = getJaguarCdMappings(md5);
           ret.props = { ...ret.props, mappings, descriptions, disableFastBlitter };
-        } else if (type === 'n64') {
-          // disableOpenGL2, countPerOp, and audioLatency are only
-          // meaningful for the RETRO_MUPEN64PLUS_NEXT core -- harmlessly
-          // inert as unused props if the item ends up using a different
-          // N64 core instead. See mappings/n64.js.
-          const { disableOpenGL2, countPerOp, audioLatency } = getN64Mappings(md5);
-          ret.props = { ...ret.props, disableOpenGL2, countPerOp, audioLatency };
         }
+        // n64's disableOpenGL2/countPerOp/audioLatency editor-mapping
+        // block (mappings/n64.js) removed -- the RETRO_MUPEN64PLUS_NEXT
+        // core now controls all three itself (see compat.js's
+        // GAME_SETTINGS in webrcade-app-retro-mupen64plus-next) rather
+        // than through editor-set props.
       }
     }
 

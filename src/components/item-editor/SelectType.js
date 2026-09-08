@@ -4,15 +4,18 @@ import Button from '@mui/material/Button';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import Stack from '@mui/material/Stack';
 
 import {
   AppRegistry
 } from '@webrcade/app-common'
+import EditorButton from '../common/editor/EditorButton';
+import EditorTextField from '../common/editor/EditorTextField';
 import PlatformChooserModal from './PlatformChooserModal';
 import { Global } from '../../Global';
 
 export default function SelectType(props) {
-  const { item, setItem, onChange, label: labelProp, allowNone } = props;
+  const { item, setItem, onChange, label: labelProp, allowNone, hideDropdown } = props;
   const label = labelProp || 'Application';
   const [modalOpen, setModalOpen] = React.useState(false);
 
@@ -53,6 +56,31 @@ export default function SelectType(props) {
     };
     handleChange(syntheticEvent);
   };
+
+  if (hideDropdown) {
+    const currentName = item.type ? AppRegistry.instance.getShortNameForType(item.type) : '';
+    return (
+      <Stack spacing={0} direction="row" alignItems="center">
+        <EditorTextField
+          sx={{ width: '50ch', cursor: 'pointer', '& .MuiInputBase-input': { cursor: 'pointer' } }}
+          label={label}
+          value={currentName}
+          InputProps={{ readOnly: true }}
+          onClick={() => setModalOpen(true)}
+        />
+        <EditorButton
+          label="Select..."
+          onClick={() => setModalOpen(true)}
+        />
+        <PlatformChooserModal
+          isOpen={modalOpen}
+          setOpen={setModalOpen}
+          onSelect={handleModalSelect}
+          feedOverrides={feedOverrides}
+        />
+      </Stack>
+    );
+  }
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>

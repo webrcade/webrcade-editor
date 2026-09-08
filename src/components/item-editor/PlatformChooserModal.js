@@ -169,15 +169,15 @@ const PlatformCard = ({ item, section, selectedItem, selectedSection, onSelect }
       <Box sx={{ p: 1.5, pt: 1, textAlign: 'center' }}>
         {item.isSpecificCore && item.parentAliasName ? (
           <>
-            <Typography variant="body2" sx={{ fontSize: '0.875rem', lineHeight: 1.3 }}>
+            <Typography variant="body2" sx={{ fontSize: '0.875rem', lineHeight: 1.15 }}>
               {item.parentAliasName}
             </Typography>
-            <Typography variant="caption" sx={{ fontSize: '0.75rem', color: 'text.secondary', lineHeight: 1.2 }}>
+            <Typography variant="caption" sx={{ fontSize: '0.75rem', color: 'text.secondary', lineHeight: 1.1, display: 'block', mt: 0.75 }}>
               {item.name}
             </Typography>
           </>
         ) : (
-          <Typography variant="body2" sx={{ fontSize: '0.875rem', lineHeight: 1.3 }}>
+          <Typography variant="body2" sx={{ fontSize: '0.875rem', lineHeight: 1.15 }}>
             {item.name}
           </Typography>
         )}
