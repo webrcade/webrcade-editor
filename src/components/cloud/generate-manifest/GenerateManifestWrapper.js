@@ -16,8 +16,7 @@ export default class GenerateManifestWrapper {
           true,
           manifestUrl,
           "Package Manifest File URL",
-          "Successfully copied the package manifest file URL to the clipboard.",
-          true
+          "Successfully copied the package manifest file URL to the clipboard."
         )
 
       }, 0);

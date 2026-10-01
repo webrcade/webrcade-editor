@@ -128,7 +128,20 @@ export default function ItemsTableMoreMenu(props) {
             const qIndex = appLocation.indexOf("?")
             location += "?app=" + encodeURIComponent(appLocation.substring(0, qIndex)) + "&" + appLocation.substring(qIndex + 1);
 
-            Global.openCopyLinkDialog(true, location);
+            Global.openCopyLinkDialog(
+              true,
+              location,
+              undefined,
+              undefined,
+              <p style={{ margin: 0 }}>
+                For a cleaner, more memorable link, consider using a link shortener such as{' '}
+                <a href="https://tiny.cc" target="_blank" rel="noopener noreferrer"
+                  style={{ color: 'white', textDecoration: 'underline', cursor: 'pointer' }}
+                >tiny.cc</a>.
+                {' '}tiny.cc supports custom link endings (e.g.{' '}
+                <span style={{ fontFamily: 'monospace' }}>tiny.cc/mygame</span>).
+              </p>
+            );
           }}>
           <ListItemIcon>
             <LinkIcon fontSize="small" />

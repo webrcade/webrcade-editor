@@ -46,12 +46,15 @@ function CloudTab({ tabValue, tabIndex, object, setObject }) {
   return (
     <EditorTabPanel value={tabValue} index={tabIndex}>
       <Box>
-        <SelectType
-          label="Default Application"
-          allowNone
-          item={{ type: object.defaultType || '' }}
-          setItem={(newItem) => setObject({ ...object, defaultType: newItem.type || undefined })}
-        />
+        <Stack spacing={0} direction="row" alignItems="center" sx={{ minWidth: 0 }}>
+          <SelectType
+            label="Default Application"
+            allowNone
+            hideDropdown
+            item={{ type: object.defaultType || '' }}
+            setItem={(newItem) => setObject({ ...object, defaultType: newItem.type || undefined })}
+          />
+        </Stack>
       </Box>
       <Box>
         <Stack spacing={0} direction="row" alignItems="center">

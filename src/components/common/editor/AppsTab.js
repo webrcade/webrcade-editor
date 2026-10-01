@@ -8,6 +8,7 @@ import { Typography } from '@mui/material';
 import {
   AppRegistry,
 } from '@webrcade/app-common'
+import { getPlatformThumb } from '../../item-editor/PlatformChooserModal';
 
 
 export default function AppsTab(props) {
@@ -83,6 +84,7 @@ export default function AppsTab(props) {
         onChange={(e) => {
           setAlias(e.target.value);
         }}
+        thumbnail={getPlatformThumb(currentAlias)}
         sx={{ mb: 1.5 }}
       />
       <EditorSelect

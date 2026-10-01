@@ -7,8 +7,6 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
@@ -17,8 +15,6 @@ import { useTheme } from '@mui/material/styles';
 import { Global, GlobalHolder } from '../Global';
 import { enableDropHandler } from '../UrlProcessor';
 import { usePrevious } from '../Util';
-
-import * as WrcCommon from '@webrcade/app-common';
 
 const copyToClipboard = (text) => {
   const input = document.createElement('input');
@@ -50,152 +46,10 @@ const copyToClipboard = (text) => {
   document.body.removeChild(input);
 };
 
-const minimizeLink = (location, copyLinkProps, setCopyLinkProps) => {
-  const originalLocation = location;
-
-  if (copyLinkProps.minLink) {
-    return;
-  }
-
-  new WrcCommon.FetchAppData(`https://is.gd/create.php?format=json&url=${encodeURIComponent(location)}`).fetch()
-  .then(async (res) => {
-    const text = await res.text();
-    let json;
-    try {
-      json = JSON.parse(text);
-    } catch {
-      throw new Error(text.trim() || "Error attempting to shorten URL");
-    }
-    return json;
-  })
-  .then((json) => {
-    if (json?.shorturl && typeof json.shorturl === "string") {
-      location = json.shorturl;
-    } else if (json?.errormessage) {
-      throw new Error(json.errormessage);
-    } else {
-      throw new Error("Invalid response from is.gd");
-    }
-  })
-  .catch((err) => {
-    WrcCommon.LOG.error(err);
-    Global.displayMessage(err.message || "An error occurred while attempting to shorten the URL.", "error");
-  })
-  .finally(() => {
-    // Global.openBusyScreen(false);
-    if (location !== originalLocation) {
-      setCopyLinkProps({ ...copyLinkProps, minLink: location });
-    }
-  });
-
-  // fetch("https://spoo.me", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/x-www-form-urlencoded",
-  //     "Accept": "application/json"
-  //   },
-  //   body: `url=${encodeURIComponent(location)}`
-  // })
-  // .then(async (res) => {
-  //   if (res.ok) {
-  //     return res.json();
-  //   } else {
-  //     const errorBody = await res.json().catch(() => null);
-  //     const errorMsg = errorBody?.UrlError || "Error attempting to shorten URL";
-  //     throw new Error(errorMsg);
-  //   }
-  // })
-  // .then((json) => {
-  //   if (json?.short_url?.toLowerCase().startsWith("https://spoo.me")) {
-  //     location = json.short_url;
-  //   } else {
-  //     throw new Error("Invalid response from spoo.me");
-  //   }
-  // })
-  // .catch((err) => {
-  //   WrcCommon.LOG.error(err);
-  //   Global.displayMessage(err.message || "An error occurred while attempting to shorten the URL.", "error");
-  // })
-  // .finally(() => {
-  //   // Global.openBusyScreen(false);
-  //   if (location !== originalLocation) {
-  //     setCopyLinkProps({ ...copyLinkProps, minLink: location });
-  //   }
-  // });
-
-  // Global.openBusyScreen(true, "Shortening URL...", true, false);
-  // new WrcCommon.FetchAppData(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(location)}`).fetch()
-  //   .then((res) => {
-  //     if (res.ok) {
-  //         return res.text();
-  //     } else {
-  //       throw Error("Error attempting to shorten URL");
-  //     }
-  //   })
-  //   .then((text) => {
-  //     if (text.toLowerCase().indexOf("//tinyurl.com") !== -1) {
-  //       location = text;
-  //     } else {
-  //       throw Error("Invalid response from tinyurl");
-  //     }
-  //   })
-  //   .catch((err) => {
-  //     WrcCommon.LOG.error(err);
-  //     Global.displayMessage("An error occurred while attempting to shorten the URL.", "error");
-  //   })
-  //   .finally(() => {
-  //     // Global.openBusyScreen(false);
-  //     if (location !== originalLocation) {
-  //       setCopyLinkProps({...copyLinkProps, minLink: location});
-  //     }
-  //   });
-}
-
-// const minimizeLink = (location, copyLinkProps, setCopyLinkProps) => {
-//   const originalLocation = location;
-
-//   if (copyLinkProps.minLink) {
-//     return;
-//   }
-
-//   // Global.openBusyScreen(true, "Shortening URL...", true, false);
-//   fetch("https://clc.is/api/links", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json"
-//     },
-//     body: JSON.stringify({ target_url: location })
-//   })
-//     .then((res) => {
-//       if (res.ok) {
-//         return res.json();
-//       } else {
-//         throw new Error("Error attempting to shorten URL");
-//       }
-//     })
-//     .then((data) => {
-//       if (data && data.short_url && data.short_url.startsWith("https://clc.is")) {
-//         location = data.short_url;
-//       } else {
-//         throw new Error("Invalid response from clc.is");
-//       }
-//     })
-//     .catch((err) => {
-//       WrcCommon.LOG.error(err);
-//       Global.displayMessage("An error occurred while attempting to shorten the URL.", "error");
-//     })
-//     .finally(() => {
-//       // Global.openBusyScreen(false);
-//       if (location !== originalLocation) {
-//         setCopyLinkProps({ ...copyLinkProps, minLink: location });
-//       }
-//     });
-// };
-
 const CopyLinkDialog = (props) => {
   const [isOpen, setOpen] = React.useState(false);
   const prevOpen = usePrevious(isOpen);
-  const [copyLinkProps, setCopyLinkProps] = React.useState({ link: "", checked: false });
+  const [copyLinkProps, setCopyLinkProps] = React.useState({ link: "" });
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -212,16 +66,11 @@ const CopyLinkDialog = (props) => {
   const title = copyLinkProps.title;
   const success = copyLinkProps.success;
 
-  const disabledShortened = copyLinkProps.disableShortened;
-  const isLocalhost = (() => {
-    try { return new URL(copyLinkProps?.link).hostname === 'localhost'; }
-    catch { return false; }
-  })();
   const message = copyLinkProps.message;
   const learnMoreUrl = copyLinkProps.learnMoreUrl;
 
   const getLink = () => {
-    return copyLinkProps.checked && copyLinkProps.minLink ? copyLinkProps.minLink : copyLinkProps.link;
+    return copyLinkProps.link;
   }
 
   return (
@@ -233,23 +82,6 @@ const CopyLinkDialog = (props) => {
     >
       <DialogTitle>{title ? title : "Copy Stand-alone Link"}</DialogTitle>
       <DialogContent>
-        {!disabledShortened && !isLocalhost && (
-          <div>
-            <FormControlLabel sx={{ whiteSpace: 'nowrap', ml: 1 }} control={
-              <Switch
-                onChange={(e) => {
-                  const updatedProps = {...copyLinkProps, checked: e.target.checked};
-                  setCopyLinkProps(updatedProps);
-                  if (e.target.checked) {
-                    minimizeLink(copyLinkProps.link, updatedProps, setCopyLinkProps)
-                  }
-                }}
-              />
-            }
-            label={"Shortened URL"}
-          />
-          </div>
-        )}
         <div>
           {message ? (
             <TextField

@@ -91,13 +91,12 @@ const Global = {
     }
     GlobalHolder.setConfirmDialogOpen(open);
   },
-  openCopyLinkDialog: (open, link, title, success, disableShortened, message, learnMoreUrl) => {
+  openCopyLinkDialog: (open, link, title, success, message, learnMoreUrl) => {
     if (link) {
       GlobalHolder.setCopyLinkDialogProps({
         link: link,
         title: title,
         success: success,
-        disableShortened: disableShortened,
         message: message,
         learnMoreUrl: learnMoreUrl
       });

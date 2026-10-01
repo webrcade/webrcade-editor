@@ -137,7 +137,6 @@ export default function ExportDialog(props) {
           url,
           "Exported Feed URL",
           "Successfully copied the feed URL to the clipboard.",
-          true,
           <>
             <p style={{ margin: '0 0 8px 0' }}>
               For a cleaner, more memorable feed URL, consider using a link shortener such as{' '}

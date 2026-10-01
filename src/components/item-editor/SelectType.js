@@ -1,17 +1,21 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
+import InputAdornment from '@mui/material/InputAdornment';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
+import ClearIcon from '@mui/icons-material/Clear';
 
 import {
   AppRegistry
 } from '@webrcade/app-common'
+import CommonTooltip from '../common/CommonTooltip';
 import EditorButton from '../common/editor/EditorButton';
 import EditorTextField from '../common/editor/EditorTextField';
-import PlatformChooserModal from './PlatformChooserModal';
+import PlatformChooserModal, { getPlatformThumb } from './PlatformChooserModal';
 import { Global } from '../../Global';
 
 export default function SelectType(props) {
@@ -58,14 +62,58 @@ export default function SelectType(props) {
   };
 
   if (hideDropdown) {
-    const currentName = item.type ? AppRegistry.instance.getShortNameForType(item.type) : '';
+    const currentName = item.type ? AppRegistry.instance.getShortNameForType(item.type) : (allowNone ? '(None)' : '');
+    const currentType = item.type ? types[item.type] : null;
+    const thumbKey = currentType
+      ? (currentType.absoluteKey !== undefined ? item.type : currentType.alias)
+      : null;
+    const thumbnail = thumbKey ? getPlatformThumb(thumbKey) : null;
     return (
-      <Stack spacing={0} direction="row" alignItems="center">
+      <Stack spacing={0} direction="row" alignItems="center" sx={{ minWidth: 0 }}>
         <EditorTextField
-          sx={{ width: '50ch', cursor: 'pointer', '& .MuiInputBase-input': { cursor: 'pointer' } }}
+          sx={{
+            width: '50ch',
+            minWidth: 0,
+            cursor: 'pointer',
+            '& .MuiInputBase-input': {
+              cursor: 'pointer',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            },
+            '& .MuiOutlinedInput-root': { paddingRight: '10px' },
+          }}
           label={label}
           value={currentName}
-          InputProps={{ readOnly: true }}
+          InputProps={{
+            readOnly: true,
+            endAdornment: (thumbnail || (allowNone && item.type)) && (
+              <InputAdornment position="end">
+                {thumbnail && (
+                  <Box
+                    component="img"
+                    src={thumbnail}
+                    alt={currentName}
+                    onClick={() => setModalOpen(true)}
+                    onError={(e) => { e.target.style.visibility = 'hidden'; }}
+                    sx={{ height: 34, width: 'auto', objectFit: 'contain', borderRadius: 1, cursor: 'pointer' }}
+                  />
+                )}
+                {allowNone && item.type && (
+                  <CommonTooltip title="Clear">
+                    <IconButton
+                      onClick={(e) => { e.stopPropagation(); setItem({ ...item, type: '' }); }}
+                      size="small"
+                      edge="end"
+                      sx={{ ml: 1 }}
+                    >
+                      <ClearIcon fontSize="small" />
+                    </IconButton>
+                  </CommonTooltip>
+                )}
+              </InputAdornment>
+            ),
+          }}
           onClick={() => setModalOpen(true)}
         />
         <EditorButton

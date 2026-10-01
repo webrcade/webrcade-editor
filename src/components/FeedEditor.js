@@ -20,6 +20,7 @@ import EditorTabPanel from './common/editor/EditorTabPanel';
 import EditorUrlField from './common/editor/EditorUrlField';
 import EditorTextField from './common/editor/EditorTextField';
 import EditorValidator from './common/editor/EditorValidator'
+import { getPlatformThumb } from './item-editor/PlatformChooserModal';
 import ThumbnailTab from './common/editor/ThumbnailTab';
 import { openSelectCloudFolderDialog } from './cloud/generate-manifest/SelectCloudFolderDialog';
 import { GlobalHolder, Global } from '../Global';
@@ -48,7 +49,6 @@ function PropertiesTab(props) {
     : undefined;
 
   const is5200Enabled = AppRegistry.instance.getAppTypes()["5200"];
-  const isSaturnEnabled = AppRegistry.instance.getAppTypes()["saturn"];
   const isApple2gsEnabled = AppRegistry.instance.getAppTypes()["apple2gs"];
   const isDreamcastEnabled = AppRegistry.instance.getAppTypes()["dreamcast"];
 
@@ -57,6 +57,16 @@ function PropertiesTab(props) {
   const insertAlpha = (arr, item) => {
     const idx = arr.findIndex(i => i.name.localeCompare(item.name) > 0);
     arr.splice(idx === -1 ? arr.length : idx, 0, item);
+  };
+
+  // The values below are this dialog's own internal ids (used to pick which
+  // BIOS field to show) and don't all match the AppRegistry alias key used
+  // for the platform thumbnail image, so map the ones that differ here.
+  const ICON_TYPE_OVERRIDES = {
+    ds: "nds",
+    segasaturn: "saturn",
+    philipscdi: "cdi",
+    commodore: "commodore-c64",
   };
 
   const items = [
@@ -78,7 +88,7 @@ function PropertiesTab(props) {
   ]
   if (isApple2gsEnabled) insertAlpha(items, { value: "apple2gs", name: "Apple IIGS" });
   if (is5200Enabled) insertAlpha(items, { value: "5200", name: "Atari 5200" });
-  if (isSaturnEnabled) insertAlpha(items, { value: "segasaturn", name: "Sega Saturn" });
+  insertAlpha(items, { value: "segasaturn", name: "Sega Saturn" });
   if (isDreamcastEnabled) insertAlpha(items, { value: "dreamcast", name: "Sega Dreamcast" });
 
   return (
@@ -92,6 +102,7 @@ function PropertiesTab(props) {
           onChange={(e) => {
             setApp(e.target.value);
           }}
+          thumbnail={app ? getPlatformThumb(ICON_TYPE_OVERRIDES[app] || app) : null}
           sx={{ mb: 1.5 }}
         />
       </div>
@@ -258,26 +269,24 @@ function PropertiesTab(props) {
           />
         )}
       </div>
-      {isSaturnEnabled && (
-        <div>
-          {app === "segasaturn" && (
-            <EditorUrlField
-              sx={{ width: '50ch' }}
-              label="Sega Saturn BIOS (URL)"
-              onFileUpload={uploadBiosFile}
-              onDropText={(text) => {
-                const props = { ...object.props, saturn_bios: text }
-                setObject({ ...object, props })
-              }}
-              onChange={(e) => {
-                const props = { ...object.props, saturn_bios: e.target.value }
-                setObject({ ...object, props })
-              }}
-              value={Util.asString(object.props.saturn_bios)}
-            />
-          )}
-        </div>
-      )}
+      <div>
+        {app === "segasaturn" && (
+          <EditorUrlField
+            sx={{ width: '50ch' }}
+            label="Sega Saturn BIOS (URL)"
+            onFileUpload={uploadBiosFile}
+            onDropText={(text) => {
+              const props = { ...object.props, saturn_bios: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, saturn_bios: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.saturn_bios)}
+          />
+        )}
+      </div>
       {isDreamcastEnabled && (
         <div>
           {app === "dreamcast" && (

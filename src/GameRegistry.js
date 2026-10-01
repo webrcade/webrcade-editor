@@ -1,7 +1,6 @@
 import {
   normalizeFileName,
   resolvePath,
-  settings,
   AppRegistry,
   FetchAppData,
   Unzip,
@@ -551,11 +550,6 @@ class GameRegistryImpl {
   async init() {
     const { DB_FILE } = this;
     try {
-      const expAppsEnabled = settings.isExpAppsEnabled();
-      this.n64enabled = expAppsEnabled;
-      this.a5200enabled = expAppsEnabled;
-      this.jaguarenabled = expAppsEnabled;
-
       const fad = new FetchAppData(DB_FILE);
       const res = await fad.fetch();
       if (res.ok) {
@@ -911,16 +905,6 @@ console.log('[DEBUG] entries:',
   async find(md5) {
     let ret = {};
     for (let type in this.db) {
-
-      // Skip n64 if not enabled
-      if (type === 'n64' && !this.n64enabled) continue;
-
-      // Skip 5200 if not enabled
-      if (type === '5200' && !this.a5200enabled) continue;
-
-      // Skip jaguar if not enabled
-      if (type === 'jaguar' && !this.jaguarenabled) continue;
-
       let name = this.db[type][md5];
       if (name) {
         // Add titles

@@ -259,31 +259,6 @@ function EditorTab(props) {
   );
 }
 
-function AdvancedTab(props) {
-  const {
-    tabValue,
-    tabIndex,
-    values,
-    setValues
-  } = props;
-
-  return (
-    <EditorTabPanel value={tabValue} index={tabIndex}>
-      <div>
-        <EditorSwitch
-          label="Experimental apps"
-          tooltip="Whether to enable experimental applications (not ready for general public release)."
-          onChange={(e) => {
-            const vals = { ...values, expApps: e.target.checked };
-            setValues(vals);
-          }}
-          checked={Util.asBoolean(values.expApps)}
-        />
-      </div>
-    </EditorTabPanel>
-  );
-}
-
 export default function SettingsEditor(props) {
   const [tabValue, setTabValue] = React.useState(0);
   const [isOpen, setOpen] = React.useState(false);
@@ -299,8 +274,7 @@ export default function SettingsEditor(props) {
   const appsTab = 1;
   const cloudStorageTab = 2;
   const achievementsTab = 3;
-  const advancedTab = 4;
-  const editorTab = 5;
+  const editorTab = 4;
 
   return (
     <Editor
@@ -315,7 +289,6 @@ export default function SettingsEditor(props) {
         const vals = {
           raEnabled: settings.isRaEnabled(),
           raLinked: settings.getRaToken() !== null,
-          expApps: settings.isExpAppsEnabled(),
           vsync: settings.isVsyncEnabled(),
           bilinear: settings.isBilinearFilterEnabled(),
           cloudStorage: settings.isCloudStorageEnabled(),
@@ -325,17 +298,13 @@ export default function SettingsEditor(props) {
           overrides: settings.getOverrides() ? settings.getOverrides() : {},
           classicUrlFields: Prefs.getBoolPreference(PREF_CLASSIC_URL_FIELDS, false)
         }
-        setValues({
-          ...vals,
-          originalValues: vals
-        })
+        setValues(vals)
         forceUpdate();
       }}
       onOk={() => {
         // If enabled but not linked, turn off
         if (values.cloudStorage && !values.dbLinked) values.cloudStorage = false;
         if (values.raEnabled && !values.raLinked) values.raEnabled = false;
-        settings.setExpAppsEnabled(values.expApps);
         settings.setRaEnabled(values.raEnabled);
         settings.setVsyncEnabled(values.vsync);
         settings.setBilinearFilterEnabled(values.bilinear);
@@ -345,11 +314,7 @@ export default function SettingsEditor(props) {
         settings.setOverrides(values.overrides)
         Prefs.setPreference(PREF_CLASSIC_URL_FIELDS, values.classicUrlFields);
         settings.save().finally(() => {
-          if (values.originalValues.expApps !== values.expApps) {
-            window.location.reload();
-          } else {
-            setOpen(false);
-          }
+          setOpen(false);
         });
         Global.forceRefresh();
         return false;
@@ -359,7 +324,6 @@ export default function SettingsEditor(props) {
         <Tab label="Applications" key={appsTab} />,
         <Tab label="Cloud Storage" key={cloudStorageTab} />,
         <Tab label="Achievements" key={achievementsTab} />,
-        <Tab label="Advanced" key={advancedTab} />,
         <Tab label="Editor" key={editorTab} />,
       ]}
       tabPanels={(
@@ -391,12 +355,6 @@ export default function SettingsEditor(props) {
             tabIndex={achievementsTab}
             values={values}
             setValues={setValues}
-          />
-          <AdvancedTab
-            tabValue={tabValue}
-            tabIndex={advancedTab}
-            setValues={setValues}
-            values={values}
           />
           <EditorTab
             tabValue={tabValue}
