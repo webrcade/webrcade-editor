@@ -43,7 +43,7 @@ const PLATFORM_THUMB_EXCEPTIONS = {
   'sms':           'mastersystem-thumb.png',
   'scumm':         'scummvm-thumb.png',
 };
-const getPlatformThumb = (key) =>
+export const getPlatformThumb = (key) =>
   BASE_FEED_URL + (PLATFORM_THUMB_EXCEPTIONS[key] || `${key}-thumb.png`);
 
 const getManufacturerFromName = (name) => {
@@ -77,7 +77,7 @@ const prepareData = (feedOverrides) => {
       const aliasKey = type.alias || key;
       const aliasThumbnail = getPlatformThumb(key);
       if (!aliasMap[manufacturer]) aliasMap[manufacturer] = [];
-      aliasMap[manufacturer].push({ key, name, thumbnail: aliasThumbnail, manufacturer, aliasKey });
+      aliasMap[manufacturer].push({ key, name, thumbnail: aliasThumbnail, manufacturer, aliasKey, experimental: !!type.experimental });
     } else {
       const aliasKey = type.alias;
       const parentAlias = aliasKey ? types[aliasKey] : null;
@@ -89,7 +89,8 @@ const prepareData = (feedOverrides) => {
       const specificThumbnail = getPlatformThumb(aliasKey);
       specificList.push({
         key, name, thumbnail: specificThumbnail, manufacturer, aliasKey,
-        parentAliasName, coreName, isFeedDefault: feedDefault, isGlobalDefault: globalDefault
+        parentAliasName, coreName, isFeedDefault: feedDefault, isGlobalDefault: globalDefault,
+        experimental: !!type.experimental
       });
     }
   }
@@ -149,6 +150,23 @@ const ThumbnailImage = ({ src, alt }) => (
   </Box>
 );
 
+const ExperimentalBadge = ({ sx }) => (
+  <Typography component="span" sx={{
+    display: 'inline-block',
+    px: 0.6, py: 0.05,
+    bgcolor: 'rgba(255, 167, 38, 0.12)',
+    color: 'warning.light',
+    border: '1px solid',
+    borderColor: 'rgba(255, 167, 38, 0.5)',
+    borderRadius: 3,
+    fontSize: '0.6rem',
+    lineHeight: 1.6,
+    ...sx
+  }}>
+    experimental
+  </Typography>
+);
+
 const PlatformCard = ({ item, section, selectedItem, selectedSection, onSelect }) => {
   const isSelected = selectedItem?.key === item.key && selectedSection === section;
 
@@ -169,17 +187,22 @@ const PlatformCard = ({ item, section, selectedItem, selectedSection, onSelect }
       <Box sx={{ p: 1.5, pt: 1, textAlign: 'center' }}>
         {item.isSpecificCore && item.parentAliasName ? (
           <>
-            <Typography variant="body2" sx={{ fontSize: '0.875rem', lineHeight: 1.3 }}>
+            <Typography variant="body2" sx={{ fontSize: '0.875rem', lineHeight: 1.15 }}>
               {item.parentAliasName}
             </Typography>
-            <Typography variant="caption" sx={{ fontSize: '0.75rem', color: 'text.secondary', lineHeight: 1.2 }}>
+            <Typography variant="caption" sx={{ fontSize: '0.75rem', color: 'text.secondary', lineHeight: 1.1, display: 'block', mt: 0.75 }}>
               {item.name}
             </Typography>
           </>
         ) : (
-          <Typography variant="body2" sx={{ fontSize: '0.875rem', lineHeight: 1.3 }}>
+          <Typography variant="body2" sx={{ fontSize: '0.875rem', lineHeight: 1.15 }}>
             {item.name}
           </Typography>
+        )}
+        {item.experimental && (
+          <Box sx={{ mt: 0.75 }}>
+            <ExperimentalBadge />
+          </Box>
         )}
       </Box>
     </Box>
@@ -551,6 +574,7 @@ export default function PlatformChooserModal(props) {
                                 {item.isFeedDefault ? 'feed default' : 'default'}
                               </Typography>
                             )}
+                            {item.experimental && <ExperimentalBadge />}
                           </Box>
                         }
                         secondary={item.parentAliasName}

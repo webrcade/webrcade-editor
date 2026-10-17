@@ -1,5 +1,9 @@
 import * as React from 'react';
 
+import * as WrcCommon from '@webrcade/app-common';
+import * as Feed from '../../../Feed';
+import { uploadSingleFile } from '../../../LocalFileProcessor';
+import { Global } from '../../../Global';
 import EditorTabPanel from '../../common/editor/EditorTabPanel';
 import EditorUrlField from '../../common/editor/EditorUrlField';
 import * as Util from '../../../Util';
@@ -16,6 +20,15 @@ export default function CheatsTab(props) {
 
   const [dbDialogOpen, setDbDialogOpen] = React.useState(false);
   const cheatEntry = GameRegistry.getCheatEntry(object.type);
+
+  const cloudEnabled = WrcCommon.settings.isCloudStorageEnabled();
+  const uploadItemFile = cloudEnabled
+    ? (file, onProgress) => {
+        const feed = Global.getFeed();
+        const category = Feed.getCategory(feed, Global.getFeedCategoryId());
+        return uploadSingleFile(file, Feed.resolveCategoryItemsPath(feed, category), onProgress);
+      }
+    : undefined;
 
   const extraMenuItems = cheatEntry ? [
     {
@@ -39,6 +52,7 @@ export default function CheatsTab(props) {
           sx={{ width: '50ch' }}
           label="Cheat File (URL)"
           extraMenuItems={extraMenuItems}
+          onFileUpload={uploadItemFile}
           onDropText={(text) => {
             const props = { ...object.props, cheat: text }
             setObject({ ...object, props })

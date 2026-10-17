@@ -81,6 +81,7 @@ export default function ImportDialog(props) {
           <EditorTabPanel value={tabValue} index={urlTab}>
             <EditorUrlField
               required
+              rawOnly
               sx={{ width: '50ch' }}
               label="Feed location (URL)"
               onDropText={(text) => { setFeedUrl(text); }}

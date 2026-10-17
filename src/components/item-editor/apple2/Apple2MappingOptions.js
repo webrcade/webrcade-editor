@@ -1,6 +1,10 @@
 export const OPTIONS = [
   { label: "Button 0",      value: "button0"     },
   { label: "Button 1",      value: "button1"     },
+  { label: "Move Up",       value: "moveup"      },
+  { label: "Move Down",     value: "movedown"    },
+  { label: "Move Left",     value: "moveleft"    },
+  { label: "Move Right",    value: "moveright"   },
   { label: "Open Apple",    value: "openapple"   },
   { label: "Closed Apple",  value: "closedapple" },
   { label: "Return",        value: "return"      },

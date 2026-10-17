@@ -1,7 +1,6 @@
 import {
   normalizeFileName,
   resolvePath,
-  settings,
   AppRegistry,
   FetchAppData,
   Unzip,
@@ -13,6 +12,8 @@ import {
 import A5200_PROPS from './props/A5200Props.json';
 import COLECO_PROPS from './props/ColecoProps.json';
 import ASTROCADE_PROPS from './props/AstrocadeProps.json';
+import { getJaguarMappings } from './mappings/jaguar';
+import { getJaguarCdMappings } from './mappings/jaguarcd';
 
 class GameRegistryImpl {
   constructor() {
@@ -246,6 +247,36 @@ class GameRegistryImpl {
       thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-apple2gs-images/master/Named_Titles/resized',
       backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-apple2gs-images/master/Named_Snaps/output',
       descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Apple%20IIGS'
+    },
+    '32x': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-32x-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-32x-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sega%2032X/output'
+    },
+    '32xcd': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-32xcd-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-32xcd-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sega%20CD%2032X/output'
+    },
+    'jaguar': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-jaguar-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-jaguar-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Atari%20Jaguar/output'
+    },
+    'jaguarcd': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-jaguar-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-jaguar-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Atari%20Jaguar%20CD/output'
+    },
+    'dreamcast': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-dreamcast-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-dreamcast-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sega%20Dreamcast/output'
+    },
+    'psp': {
+      thumbPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-psp-images/master/Named_Titles/resized',
+      backPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-psp-images/master/Named_Snaps/output',
+      descriptionPrefix: 'https://raw.githubusercontent.com/webrcade-assets/webrcade-assets-metadata/master/descriptions/Sony%20PSP/output'
     },
   }
 
@@ -519,10 +550,6 @@ class GameRegistryImpl {
   async init() {
     const { DB_FILE } = this;
     try {
-      const expAppsEnabled = settings.isExpAppsEnabled();
-      this.n64enabled = expAppsEnabled;
-      this.a5200enabled = expAppsEnabled;
-
       const fad = new FetchAppData(DB_FILE);
       const res = await fad.fetch();
       if (res.ok) {
@@ -685,6 +712,16 @@ console.log('[DEBUG] entries:',
       this.addTitles(ret, foundTitle);
       ret.type = type;
       await this.addMetaData(ret, alias /*type*/, foundTitle);
+
+      // Jaguar CD is title-matched (no ROM file to hash), so this is the
+      // path that actually applies per-game mappings/descriptions for it
+      // -- mirrors the "jaguarcd" branch in find(), same id shape
+      // ("jaguarcd:N", already resolved above), see mappings/jaguarcd.js.
+      if (alias === 'jaguarcd') {
+        const { mappings, descriptions, disableFastBlitter } = getJaguarCdMappings(id);
+        ret.props = { ...ret.props, mappings, descriptions, disableFastBlitter };
+      }
+
       return ret;
     }
 
@@ -792,6 +829,10 @@ console.log('[DEBUG] entries:',
     const matches = name.match(TITLE_REGEX);
     if (matches.length > 1) {
       shortName = matches[1].trim();
+      // Strip trailing version strings (v1.000, v3.08, etc.) — same pattern
+      // as getShortName()/normalizeTitle(), keeps the displayed title clean
+      // while longTitle below retains the full original name.
+      shortName = shortName.replace(/\s*v\d+(\.\d+)+\s*$/g, "");
     }
 
     const hasShortName = shortName && shortName.length > 0;
@@ -864,13 +905,6 @@ console.log('[DEBUG] entries:',
   async find(md5) {
     let ret = {};
     for (let type in this.db) {
-
-      // Skip n64 if not enabled
-      if (type === 'n64' && !this.n64enabled) continue;
-
-      // Skip 5200 if not enabled
-      if (type === '5200' && !this.a5200enabled) continue;
-
       let name = this.db[type][md5];
       if (name) {
         // Add titles
@@ -895,6 +929,32 @@ console.log('[DEBUG] entries:',
           delete clone._name;
           ret.props = clone
         }
+
+        // Overlay platform-wide default mappings + any per-game override
+        // (by MD5) on top -- Jaguar needs a numpad mapping to be playable
+        // at all, unlike A5200/Coleco's CUSTOM_PROPS entries above which
+        // are only for bonus/special controls. See mappings/jaguar.js.
+        // Per-game descriptions there are only added once validated
+        // against an actual overlay scan, so it's safe to apply
+        // unconditionally here -- unrecognized hashes just get the
+        // platform-wide defaults (empty descriptions).
+        if (type === 'jaguar') {
+          const { mappings, descriptions, disableFastBlitter } = getJaguarMappings(md5);
+          ret.props = { ...ret.props, mappings, descriptions, disableFastBlitter };
+        } else if (type === 'jaguarcd') {
+          // Same mechanism, keyed by the stable "jaguarcd:N" id (md5 here
+          // is really just the lookup key, generic across types) instead
+          // of an MD5 -- there's no ROM file to hash for a CD title. Only
+          // covers this find()/dropdown-select path for now, not drag-drop
+          // .cdi import -- see mappings/jaguarcd.js.
+          const { mappings, descriptions, disableFastBlitter } = getJaguarCdMappings(md5);
+          ret.props = { ...ret.props, mappings, descriptions, disableFastBlitter };
+        }
+        // n64's disableOpenGL2/countPerOp/audioLatency editor-mapping
+        // block (mappings/n64.js) removed -- the RETRO_MUPEN64PLUS_NEXT
+        // core now controls all three itself (see compat.js's
+        // GAME_SETTINGS in webrcade-app-retro-mupen64plus-next) rather
+        // than through editor-set props.
       }
     }
 
@@ -962,6 +1022,12 @@ console.log('[DEBUG] entries:',
 
     // Strip disk side indicators (s1, s2 boot, etc.) — leading space prevents false positives
     title = title.replace(/\s+s\d+(\s+\w+)?/, '');
+
+    // Strip trailing version strings (v1.000, v3.08, etc.) — same pattern as
+    // getShortName(), which already handles this correctly for autocomplete.
+    // Anchored at the end and requires a decimal point, so titles like
+    // "Metal Gear Solid V" or "V-Rally" are untouched.
+    title = title.replace(/\s*v\d+(\.\d+)+\s*$/g, '');
 
     // search = ", the"
     // find = title.indexOf(search);

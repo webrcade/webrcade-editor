@@ -34,6 +34,8 @@ import { AppRegistry, computeShortNames } from '@webrcade/app-common';
 import { GlobalHolder } from '../Global';
 import { enableDropHandler } from '../UrlProcessor';
 import EditorButton from './common/editor/EditorButton';
+import { setDragGhostImage } from './common/DragGhostImage';
+import { getDisplayUrl, getFilename } from '../Util';
 import Prefs from '../Prefs';
 
 const PREF_MERGE_SHOW_FULL_URL = 'mergeShowFullUrl';
@@ -95,29 +97,6 @@ function buildOrderedEntries(items, mediaField) {
     }
   }
   return entries;
-}
-
-function getFilename(url) {
-  try {
-    const parts = url.split('/');
-    const raw = decodeURIComponent(parts[parts.length - 1]);
-    const qIdx = raw.indexOf('?');
-    const name = qIdx !== -1 ? raw.substring(0, qIdx) : raw;
-    return name || url;
-  } catch (_) {
-    return url;
-  }
-}
-
-function getDisplayUrl(url) {
-  try {
-    const qIdx = url.indexOf('?');
-    const clean = qIdx !== -1 ? url.substring(0, qIdx) : url;
-    const slashIdx = clean.lastIndexOf('/');
-    return slashIdx !== -1 ? clean.substring(slashIdx + 1) : clean;
-  } catch (_) {
-    return url;
-  }
 }
 
 function getTypeThumb(item) {
@@ -376,7 +355,10 @@ const MediaEntryRow = React.memo(function MediaEntryRow({
   return (
     <Box
       draggable
-      onDragStart={() => onDragStart(entryIndex)}
+      onDragStart={(e) => {
+        onDragStart(entryIndex);
+        setDragGhostImage(e, label, showFullUrl ? entry.url : getDisplayUrl(entry.url));
+      }}
       onDragOver={e => { e.preventDefault(); onDragOver(entryIndex); }}
       onDrop={e => { e.preventDefault(); onDrop(entryIndex); }}
       onDragEnd={onDragEnd}
@@ -438,6 +420,8 @@ export default function MergeDialog() {
   const [showFullUrl,    setShowFullUrl   ] = React.useState(() => Prefs.getBoolPreference(PREF_MERGE_SHOW_FULL_URL, false));
   const dragFromRef = React.useRef(null);
   const resolveRef  = React.useRef(null);
+  const scrollContainerRef   = React.useRef(null);
+  const autoScrollIntervalRef = React.useRef(null);
   const theme       = useTheme();
   const fullScreen  = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -488,9 +472,53 @@ export default function MergeDialog() {
     resolveRef.current = null;
   }, [primaryId, orderedEntries]);
 
+  const stopAutoScroll = React.useCallback(() => {
+    if (autoScrollIntervalRef.current) {
+      clearInterval(autoScrollIntervalRef.current);
+      autoScrollIntervalRef.current = null;
+    }
+  }, []);
+
+  // Auto-scroll the media-order list while dragging near its top/bottom edge.
+  // Native drag-and-drop only auto-scrolls within a few px of the true edge,
+  // which is impractical to hit reliably, so this widens the activation zone.
+  const AUTO_SCROLL_ZONE = 50; // px from edge that triggers scrolling
+  const AUTO_SCROLL_SPEED = 12; // px per tick
+
+  const handleContainerDragOver = React.useCallback((e) => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    const distFromTop = e.clientY - rect.top;
+    const distFromBottom = rect.bottom - e.clientY;
+
+    let direction = 0;
+    if (distFromTop < AUTO_SCROLL_ZONE) {
+      direction = -1;
+    } else if (distFromBottom < AUTO_SCROLL_ZONE) {
+      direction = 1;
+    }
+
+    if (direction === 0) {
+      stopAutoScroll();
+      return;
+    }
+
+    if (!autoScrollIntervalRef.current) {
+      autoScrollIntervalRef.current = setInterval(() => {
+        const el = scrollContainerRef.current;
+        if (el) el.scrollTop += direction * AUTO_SCROLL_SPEED;
+      }, 16);
+    }
+  }, [stopAutoScroll]);
+
   const handleDragStart = React.useCallback((index) => { dragFromRef.current = index; }, []);
   const handleDragOver  = React.useCallback((index) => { setDragOverIndex(index); }, []);
-  const handleDragEnd   = React.useCallback(() => { dragFromRef.current = null; setDragOverIndex(null); }, []);
+  const handleDragEnd   = React.useCallback(() => {
+    dragFromRef.current = null;
+    setDragOverIndex(null);
+    stopAutoScroll();
+  }, [stopAutoScroll]);
 
   const handleDrop = React.useCallback((targetIndex) => {
     const fromIndex = dragFromRef.current;
@@ -504,7 +532,11 @@ export default function MergeDialog() {
     }
     dragFromRef.current = null;
     setDragOverIndex(null);
-  }, []);
+    stopAutoScroll();
+  }, [stopAutoScroll]);
+
+  // Safety net: stop any running auto-scroll if the component unmounts mid-drag
+  React.useEffect(() => stopAutoScroll, [stopAutoScroll]);
 
   // Build render list: inject non-draggable group headers before runs of
   // multi-disc entries from the same source item.
@@ -615,7 +647,11 @@ export default function MergeDialog() {
 
         {/* ── Tab 1: Media Order ───────────────────────────────────── */}
         {activeTab === 1 && (
-          <Box sx={{ flexGrow: 1, overflowY: 'auto', px: 2, pt: 1.5, pb: 1 }}>
+          <Box
+            ref={scrollContainerRef}
+            onDragOver={handleContainerDragOver}
+            sx={{ flexGrow: 1, overflowY: 'auto', px: 2, pt: 1.5, pb: 1 }}
+          >
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
               <Typography variant="caption" color="text.secondary">
                 Drag to reorder the combined {mediaField === 'discs' ? 'disc' : 'media'} list.
@@ -696,8 +732,8 @@ export default function MergeDialog() {
           <WarningAmberIcon sx={{ fontSize: 16 }} />
           <Typography variant="caption">Non-primary items will be removed after merging.</Typography>
         </Box>
-        <EditorButton label="Cancel" onClick={handleCancel} />
         <EditorButton label="Merge" variant="contained" onClick={handleMerge} disabled={!primaryId} />
+        <EditorButton label="Cancel" onClick={handleCancel} />
       </DialogActions>
     </Dialog>
   );

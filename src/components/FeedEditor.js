@@ -20,6 +20,7 @@ import EditorTabPanel from './common/editor/EditorTabPanel';
 import EditorUrlField from './common/editor/EditorUrlField';
 import EditorTextField from './common/editor/EditorTextField';
 import EditorValidator from './common/editor/EditorValidator'
+import { getPlatformThumb } from './item-editor/PlatformChooserModal';
 import ThumbnailTab from './common/editor/ThumbnailTab';
 import { openSelectCloudFolderDialog } from './cloud/generate-manifest/SelectCloudFolderDialog';
 import { GlobalHolder, Global } from '../Global';
@@ -48,14 +49,24 @@ function PropertiesTab(props) {
     : undefined;
 
   const is5200Enabled = AppRegistry.instance.getAppTypes()["5200"];
-  const isSaturnEnabled = AppRegistry.instance.getAppTypes()["saturn"];
   const isApple2gsEnabled = AppRegistry.instance.getAppTypes()["apple2gs"];
+  const isDreamcastEnabled = AppRegistry.instance.getAppTypes()["dreamcast"];
 
   const [app, setApp] = React.useState("3do");
 
   const insertAlpha = (arr, item) => {
     const idx = arr.findIndex(i => i.name.localeCompare(item.name) > 0);
     arr.splice(idx === -1 ? arr.length : idx, 0, item);
+  };
+
+  // The values below are this dialog's own internal ids (used to pick which
+  // BIOS field to show) and don't all match the AppRegistry alias key used
+  // for the platform thumbnail image, so map the ones that differ here.
+  const ICON_TYPE_OVERRIDES = {
+    ds: "nds",
+    segasaturn: "saturn",
+    philipscdi: "cdi",
+    commodore: "commodore-c64",
   };
 
   const items = [
@@ -77,7 +88,8 @@ function PropertiesTab(props) {
   ]
   if (isApple2gsEnabled) insertAlpha(items, { value: "apple2gs", name: "Apple IIGS" });
   if (is5200Enabled) insertAlpha(items, { value: "5200", name: "Atari 5200" });
-  if (isSaturnEnabled) insertAlpha(items, { value: "segasaturn", name: "Sega Saturn" });
+  insertAlpha(items, { value: "segasaturn", name: "Sega Saturn" });
+  if (isDreamcastEnabled) insertAlpha(items, { value: "dreamcast", name: "Sega Dreamcast" });
 
   return (
     <EditorTabPanel value={tabValue} index={tabIndex}>
@@ -90,6 +102,7 @@ function PropertiesTab(props) {
           onChange={(e) => {
             setApp(e.target.value);
           }}
+          thumbnail={app ? getPlatformThumb(ICON_TYPE_OVERRIDES[app] || app) : null}
           sx={{ mb: 1.5 }}
         />
       </div>
@@ -256,22 +269,57 @@ function PropertiesTab(props) {
           />
         )}
       </div>
-      {isSaturnEnabled && (
+      <div>
+        {app === "segasaturn" && (
+          <EditorUrlField
+            sx={{ width: '50ch' }}
+            label="Sega Saturn BIOS (URL)"
+            onFileUpload={uploadBiosFile}
+            onDropText={(text) => {
+              const props = { ...object.props, saturn_bios: text }
+              setObject({ ...object, props })
+            }}
+            onChange={(e) => {
+              const props = { ...object.props, saturn_bios: e.target.value }
+              setObject({ ...object, props })
+            }}
+            value={Util.asString(object.props.saturn_bios)}
+          />
+        )}
+      </div>
+      {isDreamcastEnabled && (
         <div>
-          {app === "segasaturn" && (
-            <EditorUrlField
-              sx={{ width: '50ch' }}
-              label="Sega Saturn BIOS (URL)"
+          {app === "dreamcast" && (
+            <EditorMultiUrlField
+              label="Sega Dreamcast BIOS (URLs)"
+              helperText="Requires both dc_boot.bin and dc_flash.bin"
+              rows={5}
               onFileUpload={uploadBiosFile}
               onDropText={(text) => {
-                const props = { ...object.props, saturn_bios: text }
+                let urls = object.props.flycast_bios ? object.props.flycast_bios : [];
+                if (Array.isArray(text)) {
+                  urls.push(...text);
+                } else {
+                  urls.push(text);
+                }
+                urls = Util.removeEmptyItems(urls);
+                const props = { ...object.props, flycast_bios: urls }
+                if (urls.length === 0) {
+                  delete props.flycast_bios;
+                }
                 setObject({ ...object, props })
               }}
               onChange={(e) => {
-                const props = { ...object.props, saturn_bios: e.target.value }
+                const val = e.target.value;
+                let urls = Util.splitLines(val);
+                const props = { ...object.props, flycast_bios: urls }
+                if (urls.length === 0) {
+                  delete props.flycast_bios;
+                }
                 setObject({ ...object, props })
               }}
-              value={Util.asString(object.props.saturn_bios)}
+              value={object.props.flycast_bios && object.props.flycast_bios.length > 0 ?
+                object.props.flycast_bios.join("\n") : ""}
             />
           )}
         </div>
@@ -418,36 +466,20 @@ function PropertiesTab(props) {
       </div>
       <div>
         {app === "philipscdi" && (
-          <EditorMultiUrlField
-            label="Philips CDI BIOS (URLs)"
-            rows={5}
+          <EditorUrlField
+            sx={{ width: '50ch' }}
+            label="Philips CDI BIOS (URL)"
             onFileUpload={uploadBiosFile}
             onDropText={(text) => {
-              let urls = object.props.philipscdi_bios ? object.props.philipscdi_bios : [];
-              if (Array.isArray(text)) {
-                urls.push(...text);
-              } else {
-                urls.push(text);
-              }
-              urls = Util.removeEmptyItems(urls);
-              const props = { ...object.props, philipscdi_bios: urls }
-              if (urls.length === 0) {
-                delete props.philipscdi_bios;
-              }
+              const props = { ...object.props, philipscdi_bios: text }
               setObject({ ...object, props })
             }}
             onChange={(e) => {
-              const val = e.target.value;
-              let urls = Util.splitLines(val);
-              //urls = Util.removeEmptyItems(urls);
-              const props = { ...object.props, philipscdi_bios: urls }
-              if (urls.length === 0) {
-                delete props.philipscdi_bios;
-              }
+              const props = { ...object.props, philipscdi_bios: e.target.value }
               setObject({ ...object, props })
             }}
-            value={object.props.philipscdi_bios && object.props.philipscdi_bios.length > 0 ?
-              object.props.philipscdi_bios.join("\n") : ""}
+            value={Util.asString(Array.isArray(object.props.philipscdi_bios) ?
+              object.props.philipscdi_bios[0] : object.props.philipscdi_bios)}
           />
         )}
       </div>

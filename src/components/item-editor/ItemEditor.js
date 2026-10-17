@@ -22,6 +22,8 @@ import A2600ControllersTab from './a2600/A2600ControllersTab';
 import NdsHomebrewTab from './nds/NdsHomebrewTab';
 import A5200DescriptionsTab from './a5200/A5200DescriptionsTab';
 import A5200MappingsTab from './a5200/A5200MappingsTab';
+import JaguarDescriptionsTab from './jaguar/JaguarDescriptionsTab';
+import JaguarMappingsTab from './jaguar/JaguarMappingsTab';
 import AstrocadeDescriptionsTab from './astrocade/AstrocadeDescriptionsTab';
 import AstrocadeMappingsTab from './astrocade/AstrocadeMappingsTab';
 import ColecoDescriptionsTab from './coleco/ColecoDescriptionsTab';
@@ -114,7 +116,9 @@ const setDefaultForPsx = (type, item) => {
 
 const setDefaultForSegaCd = (type, item) => {
   if (type === APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD ||
-    type === APP_TYPE_KEYS.SEGACD) {
+    type === APP_TYPE_KEYS.SEGACD ||
+    type === APP_TYPE_KEYS.RETRO_PICODRIVE_32XCD ||
+    type === APP_TYPE_KEYS.SEGA32XCD) {
     if (isEmptyString(item.props.uid)) {
       item.props.uid = uuidv4();
     }
@@ -163,14 +167,14 @@ const setDefaultFor3do = (type, item) => {
   }
 }
 
-// const setDefaultForPsp = (type, item) => {
-//   if (type === APP_TYPE_KEYS.RETRO_PPSSPP ||
-//     type === APP_TYPE_KEYS.PSP) {
-//     if (isEmptyString(item.props.uid)) {
-//       item.props.uid = uuidv4();
-//     }
-//   }
-// }
+const setDefaultForPsp = (type, item) => {
+  if (type === APP_TYPE_KEYS.RETRO_PPSSPP ||
+    type === APP_TYPE_KEYS.PSP) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
 
 const setDefaultForCommodore8Bit = (type, item) => {
   if (type === APP_TYPE_KEYS.COMMODORE_C64 ||
@@ -206,9 +210,12 @@ const setDefaultForApple2 = (type, item) => {
     if (isEmptyString(item.props.uid)) {
       item.props.uid = uuidv4();
     }
-    // if (item.props.saveDisks === undefined) {
-    //   item.props.saveDisks = 1;
-    // }
+    // Save Disks: Apple II only for now (IIGS design deferred, see
+    // SAVE_DISKS_DESIGN.md in webrcade-app-retro-mame-apple2/apple2gs).
+    if ((type === APP_TYPE_KEYS.APPLE2 || type === APP_TYPE_KEYS.RETRO_MAME_APPLE2) &&
+      item.props.saveDisks === undefined) {
+      item.props.saveDisks = 1;
+    }
     if (!item.props.mappings || Object.keys(item.props.mappings).length === 0) {
       item.props.mappings = {
         "a": "button0",
@@ -218,11 +225,18 @@ const setDefaultForApple2 = (type, item) => {
   }
 }
 
-
-
 const setDefaultForSaturn = (type, item) => {
   if (type === APP_TYPE_KEYS.RETRO_YABAUSE ||
     type === APP_TYPE_KEYS.SATURN) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
+    }
+  }
+}
+
+const setDefaultForFlycast = (type, item) => {
+  if (type === APP_TYPE_KEYS.RETRO_FLYCAST ||
+    type === APP_TYPE_KEYS.DREAMCAST) {
     if (isEmptyString(item.props.uid)) {
       item.props.uid = uuidv4();
     }
@@ -258,6 +272,35 @@ const setDefaultForA5200 = (type, item) => {
         "a": "bottomfire",
         "b": "topfire",
       };
+    }
+  }
+}
+
+const setDefaultForJaguar = (type, item) => {
+  if (type === APP_TYPE_KEYS.JAGUAR ||
+    type === APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR ||
+    type === APP_TYPE_KEYS.JAGUAR_CD ||
+    type === APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD) {
+    if (!item.props.mappings || Object.keys(item.props.mappings).length === 0) {
+      item.props.mappings = {
+        "x": "firec",
+        "a": "fireb",
+        "b": "firea",
+        "y": "8",
+        "lb": "7",
+        "rb": "9",
+        "lt": "4",
+        "rt": "6",
+      };
+    }
+  }
+}
+
+const setDefaultForJaguarCd = (type, item) => {
+  if (type === APP_TYPE_KEYS.JAGUAR_CD ||
+    type === APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD) {
+    if (isEmptyString(item.props.uid)) {
+      item.props.uid = uuidv4();
     }
   }
 }
@@ -313,16 +356,19 @@ export function setDefaultsForType(type, object) {
   setDefaultForPcfx(type, object);
   setDefaultForColeco(type, object);
   setDefaultForA5200(type, object);
+  setDefaultForJaguar(type, object);
+  setDefaultForJaguarCd(type, object);
   setDefaultForAstrocade(type, object);
   setDefaultForQuake(type, object);
   setDefaultForDosBox(type, object);
   setDefaultForScumm(type, object);
   setDefaultForNeoGeoCd(type, object);
   setDefaultFor3do(type, object);
-  // setDefaultForPsp(type, object);
+  setDefaultForPsp(type, object);
   setDefaultForCommodore8Bit(type, object);
   setDefaultForApple2(type, object);
   setDefaultForSaturn(type, object);
+  setDefaultForFlycast(type, object);
 }
 
 export default function ItemEditor(props) {
@@ -336,6 +382,8 @@ export default function ItemEditor(props) {
   const isNds = (item.type === APP_TYPE_KEYS.NDS || item.type === APP_TYPE_KEYS.RETRO_MELONDS);
   const hasNdsHomebrew = isNds && Util.asBoolean(item.props && item.props.homebrewSdCard);
   const isA5200 = (item.type === APP_TYPE_KEYS.A5200 || item.type === APP_TYPE_KEYS.RETRO_A5200);
+  const isJaguar = (item.type === APP_TYPE_KEYS.JAGUAR || item.type === APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR ||
+    item.type === APP_TYPE_KEYS.JAGUAR_CD || item.type === APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD);
   const isAstrocade = (item.type === APP_TYPE_KEYS.ASTROCADE || item.type === APP_TYPE_KEYS.RETRO_MAME_ASTROCADE);
   const isApple2 = (item.type === APP_TYPE_KEYS.APPLE2 || item.type === APP_TYPE_KEYS.RETRO_MAME_APPLE2 ||
     item.type === APP_TYPE_KEYS.APPLE2GS || item.type === APP_TYPE_KEYS.RETRO_MAME_APPLE2GS);
@@ -345,21 +393,30 @@ export default function ItemEditor(props) {
     /* NES */                item.type === APP_TYPE_KEYS.NES || item.type === APP_TYPE_KEYS.RETRO_FCEUMM ||
     /* Atari 2600 */         item.type === APP_TYPE_KEYS.A2600 || item.type === APP_TYPE_KEYS.RETRO_STELLA || item.type === APP_TYPE_KEYS.RETRO_STELLA_LATEST ||
     /* Atari 5200 */         item.type === APP_TYPE_KEYS.A5200 || item.type === APP_TYPE_KEYS.RETRO_A5200 ||
+    /* Atari 7800 */         item.type === APP_TYPE_KEYS.A7800 || item.type === APP_TYPE_KEYS.RETRO_PROSYSTEM ||
     /* Game Boy Advance */   item.type === APP_TYPE_KEYS.GBA || item.type === APP_TYPE_KEYS.RETRO_MGBA ||
     /* Game Boy */           item.type === APP_TYPE_KEYS.GB || item.type === APP_TYPE_KEYS.RETRO_SAMEBOY_GB ||
     /* Game Boy Color */     item.type === APP_TYPE_KEYS.GBC || item.type === APP_TYPE_KEYS.RETRO_SAMEBOY_GBC ||
     /* Atari Lynx */         item.type === APP_TYPE_KEYS.LNX || item.type === APP_TYPE_KEYS.RETRO_MEDNAFEN_LYNX ||
+    /* Atari Jaguar */       item.type === APP_TYPE_KEYS.JAGUAR || item.type === APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR ||
+    /* Atari Jaguar CD */    item.type === APP_TYPE_KEYS.JAGUAR_CD || item.type === APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD ||
     /* Sega Genesis */       item.type === APP_TYPE_KEYS.GENESIS || item.type === APP_TYPE_KEYS.RETRO_GENPLUSGX_MD ||
     /* Sega Master System */ item.type === APP_TYPE_KEYS.SMS || item.type === APP_TYPE_KEYS.RETRO_GENPLUSGX_SMS ||
     /* Sega Game Gear */     item.type === APP_TYPE_KEYS.GG || item.type === APP_TYPE_KEYS.RETRO_GENPLUSGX_GG ||
     /* Sega SG-1000 */       item.type === APP_TYPE_KEYS.SG1000 || item.type === APP_TYPE_KEYS.RETRO_GENPLUSGX_SG ||
+    /* Sega 32X */           item.type === APP_TYPE_KEYS.SEGA32X || item.type === APP_TYPE_KEYS.RETRO_PICODRIVE_32X ||
     /* Sega CD */            item.type === APP_TYPE_KEYS.SEGACD || item.type === APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD ||
     /* Sony PlayStation */   item.type === APP_TYPE_KEYS.PSX || item.type === APP_TYPE_KEYS.BEETLE_PSX ||
     /* NEC PC Engine */       item.type === APP_TYPE_KEYS.PCE || item.type === APP_TYPE_KEYS.RETRO_MEDNAFEN_PCE ||
     /* NEC PC Engine CD */     item.type === APP_TYPE_KEYS.PCECD || item.type === APP_TYPE_KEYS.RETRO_PCE_FAST ||
     /* NEC SuperGrafx */       item.type === APP_TYPE_KEYS.SGX || item.type === APP_TYPE_KEYS.RETRO_MEDNAFEN_SGX ||
     /* Sega Saturn */            item.type === APP_TYPE_KEYS.SATURN || item.type === APP_TYPE_KEYS.RETRO_YABAUSE ||
+    /* Sega Dreamcast */         item.type === APP_TYPE_KEYS.DREAMCAST || item.type === APP_TYPE_KEYS.RETRO_FLYCAST ||
     /* Nintendo DS */            item.type === APP_TYPE_KEYS.NDS || item.type === APP_TYPE_KEYS.RETRO_MELONDS ||
+    /* Nintendo 64 */            item.type === APP_TYPE_KEYS.N64 || item.type === APP_TYPE_KEYS.RETRO_MUPEN64PLUS_NEXT ||
+                                  item.type === APP_TYPE_KEYS.RETRO_PARALLEL_N64 ||
+    /* Sega Dreamcast */         item.type === APP_TYPE_KEYS.DREAMCAST || item.type === APP_TYPE_KEYS.RETRO_FLYCAST ||
+    /* Sony PSP */               item.type === APP_TYPE_KEYS.PSP || item.type === APP_TYPE_KEYS.RETRO_PPSSPP ||
     /* Quake */                  item.type === APP_TYPE_KEYS.QUAKE || item.type === APP_TYPE_KEYS.TYRQUAKE
     // /* NEC PC-FX */        item.type === APP_TYPE_KEYS.BEETLE_PCFX || item.type === APP_TYPE_KEYS.PCFX ||
     // /* Neo Geo CD */      item.type === APP_TYPE_KEYS.RETRO_NEOCD || item.type === APP_TYPE_KEYS.NEOGEOCD ||
@@ -393,6 +450,13 @@ export default function ItemEditor(props) {
   if (isA5200) {
     a5200MappingsTab = index++;
     a5200DescriptionsTab = index++;
+  }
+
+  let jaguarMappingsTab = 0;
+  let jaguarDescriptionsTab = 0;
+  if (isJaguar) {
+    jaguarMappingsTab = index++;
+    jaguarDescriptionsTab = index++;
   }
 
   let astrocadeMappingsTab = 0;
@@ -444,6 +508,10 @@ export default function ItemEditor(props) {
   if (isA5200) {
     tabs.push(<Tab label="Mappings" key={a5200MappingsTab} />);
     tabs.push(<Tab label="Descriptions" key={a5200DescriptionsTab} />);
+  }
+  if (isJaguar) {
+    tabs.push(<Tab label="Mappings" key={jaguarMappingsTab} />);
+    tabs.push(<Tab label="Descriptions" key={jaguarDescriptionsTab} />);
   }
   if (isAstrocade) {
     tabs.push(<Tab label="Mappings" key={astrocadeMappingsTab} />);
@@ -576,16 +644,21 @@ export default function ItemEditor(props) {
                             update.backgroundPixelated = true;
                           }
 
-                          // Set 3DO hack.
-                          // TODO: This should be moved to common location for use by all
-                          // types.
+                          // 3DO resets its "hack" prop to a baseline on
+                          // every title change (not just when the new
+                          // title has an override), so a leftover value
+                          // from the previous title never carries over.
                           let props = null;
                           if (item.type === '3do') {
                             props = {hack: 0}
-                            const hack = info.props?.hack;
-                            if (hack) {
-                              props.hack = hack;
-                            }
+                          }
+
+                          // Per-title metadata overrides (e.g. Jaguar's
+                          // mappings/descriptions/disableFastBlitter from
+                          // GameRegistry.find(), see mappings/jaguar.js) --
+                          // applies to every type, not just 3do.
+                          if (info.props) {
+                            props = {...props, ...info.props}
                           }
 
                           if (props) {
@@ -644,6 +717,7 @@ export default function ItemEditor(props) {
             otherFields={
               <div>
                 <SelectType
+                  hideDropdown
                   item={item}
                   setItem={setItem}
                   onChange={(e) => {
@@ -715,6 +789,18 @@ export default function ItemEditor(props) {
           {isA5200 && <A5200DescriptionsTab
             tabValue={tabValue}
             tabIndex={a5200DescriptionsTab}
+            object={item}
+            setObject={setItem}
+          />}
+          {isJaguar && <JaguarMappingsTab
+            tabValue={tabValue}
+            tabIndex={jaguarMappingsTab}
+            object={item}
+            setObject={setItem}
+          />}
+          {isJaguar && <JaguarDescriptionsTab
+            tabValue={tabValue}
+            tabIndex={jaguarDescriptionsTab}
             object={item}
             setObject={setItem}
           />}

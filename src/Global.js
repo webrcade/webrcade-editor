@@ -50,6 +50,7 @@ class Holder {
   updateLocalFile = null;
   openResolveTypesPrompt = null;
   openMergeDialogPrompt = null;
+  openArrangeCategoriesPrompt = null;
   isDebug = UrlUtil.getBoolParam(window.location.search, AppProps.RP_DEBUG);
 }
 
@@ -90,13 +91,12 @@ const Global = {
     }
     GlobalHolder.setConfirmDialogOpen(open);
   },
-  openCopyLinkDialog: (open, link, title, success, disableShortened, message, learnMoreUrl) => {
+  openCopyLinkDialog: (open, link, title, success, message, learnMoreUrl) => {
     if (link) {
       GlobalHolder.setCopyLinkDialogProps({
         link: link,
         title: title,
         success: success,
-        disableShortened: disableShortened,
         message: message,
         learnMoreUrl: learnMoreUrl
       });
@@ -128,6 +128,11 @@ const Global = {
       return GlobalHolder.openMergeDialogPrompt(items, mediaField);
     }
     return Promise.resolve(null);
+  },
+  openArrangeCategoriesDialog: () => {
+    if (GlobalHolder.openArrangeCategoriesPrompt) {
+      GlobalHolder.openArrangeCategoriesPrompt();
+    }
   },
   openSettingsEditor: (open) => {
     GlobalHolder.setSettingsEditorOpen(open);

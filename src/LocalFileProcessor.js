@@ -26,7 +26,7 @@ const MAX_FILE_SIZE = 2 * 1024 * 1024 * 1024; // 2 GB — files larger than this
 
 // Extensions for which hashing should be skipped — these are large disc images
 // that take forever to hash and are never matched via the game registry.
-const SKIP_HASH_EXTENSIONS = new Set(['.chd', '.pbp']);
+export const SKIP_HASH_EXTENSIONS = new Set(['.chd', '.pbp', '.cso', '.cdi', '.iso']);
 
 async function isBinaryFile(file, sampleSize = 8192) {
   // Only read the first 8KB — plenty for binary detection

@@ -19,6 +19,7 @@ import { DownloadFileDialog } from './DownloadFileDialog';
 import AddLocalFilesDialog from './AddLocalFilesDialog';
 import ResolveTypesDialog from './ResolveTypesDialog';
 import MergeDialog from './MergeDialog';
+import ArrangeCategoriesDialog from './ArrangeCategoriesDialog';
 import { ReleaseNotesDialog } from './release-notes/ReleaseNotesDialog';
 
 import * as WrcCommon from '@webrcade/app-common'
@@ -51,6 +52,7 @@ export default function Screens() {
       <AddLocalFilesDialog />
       <ResolveTypesDialog />
       <MergeDialog />
+      <ArrangeCategoriesDialog />
       <RepackageDialog />
       <SelectCloudFolderDialog />
       <DownloadFileDialog />

@@ -16,6 +16,7 @@ export default function EditorSelect(props) {
     onChange,
     tooltip,
     children,
+    thumbnail,
     ...other
   } = props;
 
@@ -43,6 +44,8 @@ export default function EditorSelect(props) {
   return (
     <Box
       sx={{
+        display: thumbnail ? 'flex' : undefined,
+        alignItems: thumbnail ? 'center' : undefined,
         ...sx
       }}
       {...other}
@@ -57,6 +60,21 @@ export default function EditorSelect(props) {
         <>
           {selectControl}
         </>
+      )}
+      {thumbnail && (
+        <Box
+          component="img"
+          src={thumbnail}
+          alt={label}
+          onError={(e) => { e.target.style.visibility = 'hidden'; }}
+          sx={{
+            height: '48px !important',
+            width: 'auto !important',
+            objectFit: 'inherit !important',
+            borderRadius: '4px !important',
+            marginLeft: '10px !important',
+          }}
+        />
       )}
     </Box>
   );

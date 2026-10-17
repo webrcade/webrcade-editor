@@ -44,6 +44,7 @@ const PROP_DISABLE_AUTOLOAD = "PROP_DISABLE_AUTOLOAD";
 const PROP_DISABLE_TDE = "PROP_DISABLE_TDE";
 const PROP_DISABLE_LOOKUP = "PROP_DISABLE_LOOKUP";
 const PROP_DISABLE_MEMCARD1 = "PROP_DISABLE_MEMCARD1";
+const PROP_INITIAL_KEYBOARD_MODE = "PROP_INITIAL_KEYBOARD_MODE";
 const PROP_DISCS = "PROP_DISCS";
 const PROP_DOS_CONTROLLER_MODE = "PROP_DOS_CONTROLLER_MODE";
 const PROP_DOS_CPU_SPEED = "PROP_DOS_CPU_SPEED";
@@ -53,6 +54,10 @@ const PROP_DOOM_GAME = "PROP_DOOM_GAME";
 const PROP_ENABLE_2ND_525 = "PROP_ENABLE_2ND_525";
 const PROP_ENABLE_2ND_35 = "PROP_ENABLE_2ND_35";
 const PROP_TWIN_STICK = "PROP_TWIN_STICK";
+const PROP_FAST_BLITTER = "PROP_FAST_BLITTER";
+const PROP_USE_REAL_BIOS = "PROP_USE_REAL_BIOS";
+const PROP_M68K_CLOCK_SCALE = "PROP_M68K_CLOCK_SCALE";
+const PROP_RISC_CLOCK_SCALE = "PROP_RISC_CLOCK_SCALE";
 const PROP_FLASH_SIZE = "PROP_FLASH_SIZE";
 const PROP_FORCE_EMULATED_BIOS = "PROP_FORCE_EMULATED_BIOS";
 const PROP_FORCE_PAL = "PROP_FORCE_PAL";
@@ -85,6 +90,7 @@ const PROP_SAVE_TYPE = "PROP_SAVE_TYPE";
 const PROP_SCREEN_GAP = "PROP_SCREEN_GAP";
 const PROP_SCREEN_LAYOUT = "PROP_SCREEN_LAYOUT";
 const PROP_SMS_HW_TYPE = "PROP_SMS_HW_TYPE";
+const PROP_PORT2_TYPE = "PROP_PORT2_TYPE";
 const PROP_SWAP_CONTROLLERS = "PROP_SWAP_CONTROLLERS";
 const PROP_GB_HW_TYPE = "PROP_GB_HW_TYPE";
 const PROP_GB_COLORS = "PROP_GB_COLORS";
@@ -117,6 +123,7 @@ const ALL_PROPS = [
   PROP_DISABLE_LOOKUP,
   PROP_DISABLE_MEMCARD1,
   PROP_DISABLE_TDE,
+  PROP_INITIAL_KEYBOARD_MODE,
   PROP_DISCS,
   PROP_DOOM_GAME,
   PROP_DOS_CONTROLLER_MODE,
@@ -127,6 +134,10 @@ const ALL_PROPS = [
   PROP_ENABLE_2ND_525,
   PROP_ICBM,
   PROP_ENABLE_2ND_35,
+  PROP_FAST_BLITTER,
+  PROP_USE_REAL_BIOS,
+  PROP_M68K_CLOCK_SCALE,
+  PROP_RISC_CLOCK_SCALE,
   PROP_FLASH_SIZE,
   PROP_FORCE_EMULATED_BIOS,
   PROP_FORCE_PAL,
@@ -163,6 +174,7 @@ const ALL_PROPS = [
   PROP_SKIP_BIOS,
   PROP_SKIP_CD_LOADING,
   PROP_SMS_HW_TYPE,
+  PROP_PORT2_TYPE,
   PROP_SNES_MULTITAP,
   PROP_SWAP_CONTROLLERS,
   PROP_TWIN_STICK,
@@ -199,9 +211,25 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.JS7800]: {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
-    // [APP_TYPE_KEYS.RETRO_PROSYSTEM]: {
-    //   PROP_ROM, PROP_ZOOM_LEVEL
-    // },
+    [APP_TYPE_KEYS.RETRO_PROSYSTEM]: {
+      PROP_ROM, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.JAGUAR]: {
+      // PROP_M68K_CLOCK_SCALE, PROP_RISC_CLOCK_SCALE: tried as a lever for
+      // the "games run too fast" investigation, confirmed zero effect in
+      // both directions on both processors. Hidden from the UI rather than
+      // deleted -- add back to re-enable if this gets revisited.
+      PROP_ROM, PROP_FAST_BLITTER, PROP_USE_REAL_BIOS, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR]: {
+      PROP_ROM, PROP_FAST_BLITTER, PROP_USE_REAL_BIOS, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.JAGUAR_CD]: {
+      PROP_DISCS, PROP_FAST_BLITTER, PROP_USE_REAL_BIOS, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD]: {
+      PROP_DISCS, PROP_FAST_BLITTER, PROP_USE_REAL_BIOS, PROP_ZOOM_LEVEL
+    },
     [APP_TYPE_KEYS.NES]: {
       PROP_ROM, PROP_FORCE_PAL, PROP_ZOOM_LEVEL
     },
@@ -237,6 +265,18 @@ export const buildFieldMap = () => {
     },
     [APP_TYPE_KEYS.RETRO_GENPLUSGX_GG]: {
       PROP_ROM, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.SEGA32X]: {
+      PROP_ROM, PROP_3BUTTON, PROP_PORT2_TYPE, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_PICODRIVE_32X]: {
+      PROP_ROM, PROP_3BUTTON, PROP_PORT2_TYPE, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.SEGA32XCD]: {
+      PROP_DISCS, PROP_3BUTTON, PROP_PORT2_TYPE, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_PICODRIVE_32XCD]: {
+      PROP_DISCS, PROP_3BUTTON, PROP_PORT2_TYPE, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.SMS]: {
       PROP_ROM, PROP_FORCE_PAL, PROP_SMS_HW_TYPE, PROP_FORCE_YM2413, PROP_ZOOM_LEVEL
@@ -293,6 +333,9 @@ export const buildFieldMap = () => {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.PARALLEL_N64]: {
+      PROP_ROM, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_MUPEN64PLUS_NEXT]: {
       PROP_ROM, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.PCE]: {
@@ -448,12 +491,18 @@ export const buildFieldMap = () => {
     [APP_TYPE_KEYS.SATURN]: {
       PROP_DISCS, PROP_ZOOM_LEVEL, PROP_FORCE_EMULATED_BIOS, PROP_SATURN_RAM_EXPANSION,
     },
-    // [APP_TYPE_KEYS.RETRO_PPSSPP]: {
-    //   PROP_DISCS, PROP_ZOOM_LEVEL,
-    // },
-    // [APP_TYPE_KEYS.PSP]: {
-    //   PROP_DISCS, PROP_ZOOM_LEVEL,
-    // },
+    [APP_TYPE_KEYS.RETRO_FLYCAST]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.DREAMCAST]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL
+    },
+    [APP_TYPE_KEYS.RETRO_PPSSPP]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL,
+    },
+    [APP_TYPE_KEYS.PSP]: {
+      PROP_DISCS, PROP_ZOOM_LEVEL,
+    },
     [APP_TYPE_KEYS.QUAKE]: {
       PROP_ARCHIVE, PROP_ZOOM_LEVEL, PROP_WAD_SELECTOR
     },
@@ -500,18 +549,27 @@ export const buildFieldMap = () => {
       PROP_DISCS, PROP_ZOOM_LEVEL
     },
     [APP_TYPE_KEYS.APPLE2]: {
-      PROP_MEDIA, PROP_ZOOM_LEVEL,
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_ENABLE_2ND_525, PROP_INITIAL_KEYBOARD_MODE, PROP_SAVE_DISKS,
     },
     [APP_TYPE_KEYS.RETRO_MAME_APPLE2]: {
-      PROP_MEDIA, PROP_ZOOM_LEVEL,
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_ENABLE_2ND_525, PROP_INITIAL_KEYBOARD_MODE, PROP_SAVE_DISKS,
     },
     [APP_TYPE_KEYS.APPLE2GS]: {
-      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_APPLE2GS_CPU_SPEED, PROP_ENABLE_2ND_525, PROP_ENABLE_2ND_35,
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_APPLE2GS_CPU_SPEED, PROP_ENABLE_2ND_525, PROP_ENABLE_2ND_35, PROP_INITIAL_KEYBOARD_MODE,
     },
     [APP_TYPE_KEYS.RETRO_MAME_APPLE2GS]: {
-      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_APPLE2GS_CPU_SPEED, PROP_ENABLE_2ND_525, PROP_ENABLE_2ND_35,
+      PROP_MEDIA, PROP_ZOOM_LEVEL, PROP_APPLE2GS_CPU_SPEED, PROP_ENABLE_2ND_525, PROP_ENABLE_2ND_35, PROP_INITIAL_KEYBOARD_MODE,
     },
   }
+};
+
+// DS microphone/blow prop used to be a boolean (Microphone Supported); it's
+// now 0=disabled/1=blow type 1/2=blow type 2. Normalize legacy true/false
+// saved values so the dropdown still shows the right selection.
+const normalizeMicBlow = (value) => {
+  if (value === true) return 1;
+  if (value === false || value === undefined) return 0;
+  return value;
 };
 
 const hasProp = (object, prop) => {
@@ -904,6 +962,24 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_PORT2_TYPE) ? (
+        <div>
+          <EditorSelect
+            label="Controller Port #2"
+            tooltip="The type of controller to emulate in port #2. Some games (e.g. Corpse Killer) require port #2 to be disconnected."
+            value={object.props.port2 ? object.props.port2 : 0}
+            menuItems={[
+              { value: 0, name: "Gamepad" },
+              { value: 1, name: "Light Gun" },
+              { value: 10, name: "None" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, port2: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
       {hasProp(object, PROP_GB_HW_TYPE) ? (
         <div>
           <EditorSelect
@@ -997,6 +1073,71 @@ export default function PropertiesTab(props) {
               setObject({ ...object, props })
             }}
             checked={Util.asBoolean(object.props.port2 === 1)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_FAST_BLITTER) ? (
+        <div>
+          <EditorSwitch
+            label="Disable Fast Blitter"
+            tooltip="The Fast Blitter trades rendering accuracy for speed and is used by default. Enable this to fall back to the slower, more accurate blitter instead, for games with visual glitches (some rely on Z-buffer / pixel-comparator precision the fast path skips)."
+            onChange={(e) => {
+              const props = { ...object.props, disableFastBlitter: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.disableFastBlitter)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_USE_REAL_BIOS) ? (
+        <div>
+          <EditorSwitch
+            label="Use Real BIOS"
+            tooltip="How the cartridge or disc boots. Off (HLE) has the core emulate the BIOS setup and services itself, which lets most commercial titles boot faster and skips the boot animation. On runs the actual Jaguar boot ROM (and, for CD content, an actual CD BIOS), which some titles require. The boot ROM is built into the core either way -- no file is needed for either setting. Applied once at launch."
+            onChange={(e) => {
+              const props = { ...object.props, useRealBios: e.target.checked }
+              setObject({ ...object, props })
+            }}
+            checked={Util.asBoolean(object.props.useRealBios)}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_M68K_CLOCK_SCALE) ? (
+        <div>
+          <EditorSelect
+            label="M68K Clock Scale (Overclock)"
+            tooltip="Run the 68000 CPU at a multiple of its stock ~13.3 MHz. An enhancement lever, not an accuracy fix: overclocking can smooth framerate-limited games (Doom, AvP, Checkered Flag) but may break titles that rely on stock CPU timing. Applied once at launch. Leave at 1x unless a specific game benefits."
+            value={object.props.m68kClockScale ? object.props.m68kClockScale : 100}
+            menuItems={[
+              { value: 50, name: "0.5x" },
+              { value: 100, name: "1x (stock)" },
+              { value: 150, name: "1.5x" },
+              { value: 200, name: "2x" },
+              { value: 300, name: "3x" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, m68kClockScale: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
+      {hasProp(object, PROP_RISC_CLOCK_SCALE) ? (
+        <div>
+          <EditorSelect
+            label="RISC (GPU/DSP) Clock Scale (Overclock)"
+            tooltip="Run the GPU and DSP RISC processors at a multiple of their stock ~26.6 MHz. An enhancement lever, not an accuracy fix: extra RISC cycles can lift GPU-bound framerates, but may break titles that rely on stock RISC timing. Applied once at launch. Leave at 1x unless a specific game benefits."
+            value={object.props.riscClockScale ? object.props.riscClockScale : 100}
+            menuItems={[
+              { value: 50, name: "0.5x" },
+              { value: 100, name: "1x (stock)" },
+              { value: 150, name: "1.5x" },
+              { value: 200, name: "2x" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, riscClockScale: e.target.value }
+              setObject({ ...object, props })
+            }}
           />
         </div>
       ) : null}
@@ -1311,12 +1452,29 @@ export default function PropertiesTab(props) {
           />
         </div>
       ) : null}
+      {hasProp(object, PROP_INITIAL_KEYBOARD_MODE) ? (
+        <div>
+          <EditorSelect
+            label="Initial Keyboard Mode"
+            tooltip="How the keyboard behaves when the game starts. Simulate Joystick maps arrow keys and buttons to the joystick (the default). Full Keyboard types normally right away, for games that need typing immediately, like text adventures. Can be toggled in-game afterward either way."
+            value={object.props.initialKeyboardMode ? object.props.initialKeyboardMode : 0}
+            menuItems={[
+              { value: 0, name: "Simulate Joystick" },
+              { value: 1, name: "Full Keyboard" },
+            ]}
+            onChange={(e) => {
+              const props = { ...object.props, initialKeyboardMode: e.target.value }
+              setObject({ ...object, props })
+            }}
+          />
+        </div>
+      ) : null}
       {hasProp(object, PROP_ENABLE_2ND_525) ? (
         <div>
           <EditorSwitch
             label="Enable 2nd 5.25&quot; Drive"
             tooltip="Enable second 5.25&quot; drive for games that need simultaneous access to two disks. Most games only need one drive with manual disk swapping."
-            value={object.props.enable2nd525 ? object.props.enable2nd525 : false}
+            checked={Util.asBoolean(object.props.enable2nd525)}
             onChange={(e) => {
               const props = { ...object.props, enable2nd525: e.target.checked }
               setObject({ ...object, props })
@@ -1329,7 +1487,7 @@ export default function PropertiesTab(props) {
           <EditorSwitch
             label="Enable 2nd 3.5&quot; Drive"
             tooltip="Enable second 3.5&quot; drive for games that need simultaneous access to two disks. Most games only need one drive with manual disk swapping."
-            value={object.props.enable2nd35 ? object.props.enable2nd35 : false}
+            checked={Util.asBoolean(object.props.enable2nd35)}
             onChange={(e) => {
               const props = { ...object.props, enable2nd35: e.target.checked }
               setObject({ ...object, props })
@@ -1746,14 +1904,19 @@ export default function PropertiesTab(props) {
       ) : null}
       {hasProp(object, PROP_MICROPHONE) ? (
         <div>
-          <EditorSwitch
-            label="Microphone Supported"
-            tooltip="Whether the game supports the use of a microphone."
+          <EditorSelect
+            label="Microphone (Blow)"
+            tooltip="Whether the game supports the use of a microphone, and which blow simulation to use. Different games respond better to different blow types."
+            value={normalizeMicBlow(object.props.microphone)}
+            menuItems={[
+              { value: 0, name: "Disabled" },
+              { value: 1, name: "Random Noise" },
+              { value: 2, name: "Realistic Sample" },
+            ]}
             onChange={(e) => {
-              const props = { ...object.props, microphone: e.target.checked }
+              const props = { ...object.props, microphone: e.target.value }
               setObject({ ...object, props })
             }}
-            checked={Util.asBoolean(object.props.microphone)}
           />
         </div>
       ) : null}

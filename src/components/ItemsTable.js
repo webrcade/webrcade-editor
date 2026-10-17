@@ -313,8 +313,16 @@ export default function ItemsTable(props) {
                 <div>
                   <IconButton disabled={!selection}
                     onClick={() => {
-                      Feed.deleteItemsFromCategory(feed, category, selected);
-                      Global.setFeed({ ...feed });
+                      const single = selected.length === 1;
+                      Global.openConfirmDialog(
+                        true,
+                        `Delete Item${single ? "" : "s"}`,
+                        `Are you sure you want to delete the selected item${single ? "" : "s"}?`,
+                        () => {
+                          Feed.deleteItemsFromCategory(feed, category, selected);
+                          Global.setFeed({ ...feed });
+                        }
+                      );
                     }}
                   >
                     <DeleteIcon />
