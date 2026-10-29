@@ -201,7 +201,7 @@ export default function EditorUrlField(props) {
     onShowFullUrlChange,
     onFileUpload,
     onDropText,
-    value,
+    value: rawValue,
     onChange,
     label,
     required,
@@ -211,6 +211,12 @@ export default function EditorUrlField(props) {
     rows,
     ...other
   } = props;
+
+  // Feed values aren't guaranteed to be strings (e.g. arcade "samples" may be
+  // an array). The old plain text field stringified these implicitly; do the
+  // same here so value.split() below can't throw.
+  const value = Array.isArray(rawValue) ? rawValue.join('\n') :
+    (rawValue === undefined || rawValue === null) ? '' : String(rawValue);
 
   const handleFileUpload = React.useCallback(async (files) => {
     if (!onFileUpload) return;
